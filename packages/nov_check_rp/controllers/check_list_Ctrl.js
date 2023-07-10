@@ -40,12 +40,18 @@ function llenar_tipo_check(clasif){
 }
 function enviar_pdf(){
 	if($('#tipo').val()=='TODOS' || $('#clasificacion').val()=='TODOS'){
-		toastr.error('Debe Seleccionar Clasicacion y Tipo');
+		toastr.error('Debe Seleccionar Clasificación y Tipo');
 	}else{
 		$('#reporte').val('pdf');
 		$('#tipos').val($('#tipo option:selected').text());
 		$('#procesar').click();
 	}
 
+}
+
+function enviar_excel(){
+	$('#reporte').val('excel');
+	$('#tipos').val($('#tipo option:selected').text());
+	$('#procesar').click();
 }
 

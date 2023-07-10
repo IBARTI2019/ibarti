@@ -8,7 +8,7 @@ $ubicacion = $_POST['ubicacion'];
 $producto = $_POST['producto'];
 $cliente =  $_POST['cliente'];
 $stock_ubic_alcance    = new stock_ubic_alcance;
-$lista     = $stock_ubic_alcance->buscar($fecha_desde, $fecha_hasta, $codigo, $ubicacion, $producto,$cliente);
+$lista     = $stock_ubic_alcance->buscar($fecha_desde, $fecha_hasta, $codigo, $ubicacion, $producto, $cliente);
 
 foreach ($lista as  $datos) {
   echo '<tr onclick="Form_stock_ubic_alcance(\'' . $datos["codigo"] . '\', \'modificar\',\'' . $datos["anulado"] . '\')">

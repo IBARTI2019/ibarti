@@ -9,6 +9,11 @@ $contratacion   = $_POST['contratacion'];
 $apertura = $_POST['apertura'];
 $usuario   = $_POST['usuario'];
 
+$sql = "SELECT ficha_activo FROm control LIMIT 1;";
+$result['sql'][] = $sql;
+$qrs  = $bd->consultar($sql);
+$ficha_activo = $bd->obtener_name($qrs);
+
 $sql = "SELECT 
 a.codigo cod_planif,
 a.cod_planif_cl_trab planif_cl_trab,
@@ -32,7 +37,7 @@ a.cod_turno
 FROM
 planif_clientes_trab_det AS a
 INNER JOIN clientes_ub_puesto ON a.cod_puesto_trabajo = clientes_ub_puesto.codigo
-INNER JOIN ficha ON a.cod_ficha = ficha.cod_ficha
+INNER JOIN ficha ON a.cod_ficha = ficha.cod_ficha AND ficha.cod_ficha_status = '".$ficha_activo['ficha_activo']."'
 INNER JOIN turno ON a.cod_turno = turno.codigo
 LEFT JOIN horarios ON turno.cod_horario = horarios.codigo
 LEFT JOIN conceptos ON horarios.cod_concepto = conceptos.codigo

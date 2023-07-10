@@ -157,6 +157,37 @@ if($reporte == 'pdf'){
 	//$dompdf->set_paper('letter','landscape');
 	$dompdf->render();
 	$dompdf->stream($archivo, array('Attachment' => 0));
+}else if($reporte == 'excel'){
+	echo "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />";
+	header("Content-type: application/vnd.ms-excel");
+	header("Content-Disposition:  filename=\"$archivo.xls\";");
+
+	echo "<table border=1>
+	<tr><th> Código Clasificación </th><th> Clasificación </th><th> Código Tipo </th><th> Tipo </th><th> Código Novedad </th><th> Novedad </th>";
+
+		// <th> Abreviatura </th><th> Valor </th><th> Valor MAX</th><th> % Cumplimiento </th>
+		// <th> Factor </th><th> Observación </th><th> Fec. Ult. Modificación </th><th> Status </th></tr>";
+
+	$sql = "SELECT a.codigo,b.codigo, b.descripcion clasif, c.codigo, c.descripcion tipo, a.codigo, a.descripcion pregunta from novedades a, nov_clasif b,nov_tipo c
+	where a.cod_nov_tipo = c.codigo
+	and a.cod_nov_clasif = b.codigo
+	and a.`status` = 'T'";
+
+	if($clasif != "TODOS"){
+		$sql .= " and b.codigo = '".$clasif."' ";
+	}
+	
+	if($tipo != "TODOS"){
+		$sql .= " and c.codigo = '".$tipo."' ";
+	}
+	
+	$query=$bd->consultar($sql);
+	while($row = $bd->obtener_num($query)){
+		echo '<tr><td>'.$row[1].'</td><td>'.$row[2].'</td><td>'.$row[3].'</td><td>'.$row[4].'</td><td>'.$row[5].'</td><td>'.$row[6].'</td>' ;
+		echo '</tr>';
+	}
+	echo "</table>";
+
 }else{
 	echo $clasif;
 }

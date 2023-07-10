@@ -5,6 +5,7 @@ require "../" . class_bd;
 require "../" . Leng;
 $bd = new DataBase();
 
+$area    = $_POST['area'];
 $proyecto    = $_POST['proyecto'];
 $status    = $_POST['status'];
 $actividad  = $_POST['actividad'];
@@ -12,6 +13,10 @@ $cargo  = $_POST['cargo'];
 
 $where = " WHERE planif_proyecto.codigo = planif_proyecto.codigo ";
 
+
+if ($area != "TODOS") {
+	$where  .= " AND area_proyecto.codigo = '$area' ";
+}
 
 if ($proyecto != "TODOS") {
 	$where  .= " AND planif_proyecto.codigo = '$proyecto' ";
@@ -38,6 +43,7 @@ FROM
 planif_proyecto
 LEFT JOIN planif_actividad ON planif_actividad.cod_proyecto = planif_proyecto.codigo
 LEFT JOIN planif_proyecto_cargos ON planif_proyecto_cargos.cod_proyecto = planif_proyecto.codigo
+LEFT JOIN area_proyecto ON planif_proyecto.cod_area = area_proyecto.codigo
 $where
 GROUP BY planif_proyecto.codigo";
 

@@ -410,8 +410,7 @@ function Feriado_as($valor, $tipo){
 }
 
 function imgExtension($link){
-	$extension =  explode(".", $link);
-	$ext     = $extension[1];
+	$ext =  end(explode(".", $link));
 
 	switch ($ext) {
 		case 'png': case 'jpg': case 'jpeg': case 'gif':
