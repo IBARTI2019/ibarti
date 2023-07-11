@@ -1,7 +1,7 @@
 <?php
 include_once('../funciones/funciones.php');
 require("../autentificacion/aut_config.inc.php");
-require_once("../".class_bd);
+require_once("../bd/class_mysqli.php");
 $bd = new DataBase();
 
 $tabla       = 'men_perfil_menu';
@@ -14,6 +14,8 @@ $href        = $_POST['href'];
 $usuario     = $_POST['usuario'];
 $orden       = $_POST['orden'];
 $status      = statusbd($_POST['status']);
+$cod_criticidad= $_POST['cod_criticidad'];
+// codcriticidad
 
 	if (isset($_POST['metodo'])) {
 	$i=$_POST['metodo'];
@@ -21,8 +23,8 @@ $status      = statusbd($_POST['status']);
 		case 'agregar':
 		
 				$sql = "INSERT INTO men_perfiles
-					           (codigo, descripcion, orden, status )		
-			            VALUES ('$codigo', '$descripcion', '$orden', '$status')";						  
+					           (codigo, descripcion, orden, status,idcriticidad )		
+			            VALUES ('$codigo', '$descripcion', '$orden', '$status','$cod_criticidad')";						  
 			    $query = $bd->consultar($sql);	
 
 		break;

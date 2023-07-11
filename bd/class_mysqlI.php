@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-if(!defined("SPECIALCONSTANT")) die ("Acceso denegado");
+//if(!defined("SPECIALCONSTANT")) die ("Acceso denegado");
 
 class DataBase {
 //  private $link, $host, $user, $pass, $database,  $charset;
