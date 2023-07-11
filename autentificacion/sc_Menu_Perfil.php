@@ -1,7 +1,7 @@
 <?php
 include_once('../funciones/funciones.php');
 require("../autentificacion/aut_config.inc.php");
-require_once("../bd/class_mysqli.php");
+require_once("../".class_bd);
 $bd = new DataBase();
 
 $tabla       = 'men_perfil_menu';
@@ -23,7 +23,7 @@ $cod_criticidad= $_POST['cod_criticidad'];
 		case 'agregar':
 		
 				$sql = "INSERT INTO men_perfiles
-					           (codigo, descripcion, orden, status,idcriticidad )		
+					           (codigo, descripcion, orden, status, cod_criticidad )		
 			            VALUES ('$codigo', '$descripcion', '$orden', '$status','$cod_criticidad')";						  
 			    $query = $bd->consultar($sql);	
 
@@ -32,7 +32,7 @@ $cod_criticidad= $_POST['cod_criticidad'];
 
 					$sql =" UPDATE men_perfiles SET   
 								   descripcion  = '$descripcion',    orden   = '$orden',
-								   status       = '$status'								    
+								   status       = '$status',	cod_criticidad = '$cod_criticidad'					    
 						    WHERE  codigo       = '$codigo'";
 			    $query = $bd->consultar($sql);	
 

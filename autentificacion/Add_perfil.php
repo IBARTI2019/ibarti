@@ -11,8 +11,19 @@
 		$archivo = "empresa"; 
 		$archivo2 = "autentificacion/cons_perfil&Nmenu=".$Nmenu.""; 
 
-	$sql = " SELECT men_perfiles.codigo,men_perfiles.descripcion,men_perfiles.orden, men_perfiles.status,men_perfiles.idcriticidad,criticidad.descripcion as descrit
-  FROM men_perfiles inner join criticidad on men_perfiles.idcriticidad = criticidad.codigo WHERE men_perfiles.codigo = '$codigo'";
+	$sql = "SELECT
+            men_perfiles.codigo,
+            men_perfiles.descripcion,
+            men_perfiles.orden,
+            men_perfiles.status,
+            men_perfiles.cod_criticidad idcriticidad,
+            criticidad.descripcion AS descrit 
+          FROM
+            men_perfiles
+            LEFT JOIN criticidad ON men_perfiles.cod_criticidad = criticidad.codigo 
+          WHERE
+            men_perfiles.codigo = '$codigo'";
+            
 	$query = $bd->consultar($sql);
 	$result=$bd->obtener_fila($query,0);
 	  	   
@@ -20,7 +31,7 @@
 	$descripcion = $result['descripcion'];
 	$orden       = $result['orden'];
 	$status      = $result['status'];
-  $cod_criticidad= $result['idcriticidad'];
+  $cod_criticidad = $result['idcriticidad'];
   $criticidad = $result['descrit'];
 	}else{
 	$codigo      = '';
@@ -39,7 +50,7 @@
     <tr>
       <td class="etiqueta">Codigo:</td>
       <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo;?>" /> 
-         Activo: <input name="status" type="checkbox"<?php echo statusCheck("$status");?> value="T" /><br />
+         Activo: <input name="status" type="checkbox" <?php echo statusCheck("$status");?> value="T" /><br />
         <span class="textfieldRequiredMsg">El Campo es Requerido.</span> 
         <span class="textfieldMinCharsMsg">Debe Escribir m&aacute;s de 4 caracteres.</span></td>
 	 </tr>

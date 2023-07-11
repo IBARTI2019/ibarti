@@ -1,7 +1,8 @@
 <?php
 include_once('../funciones/funciones.php');
 require("../autentificacion/aut_config.inc.php");
-require_once("../bd/class_mysqli.php");
+require_once("../".class_bd);
+
 $bd = new DataBase();
 $codigo    = $_POST['codigo'];
 $tb    = $_POST['tb'];
