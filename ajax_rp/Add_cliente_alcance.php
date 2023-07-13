@@ -74,7 +74,7 @@ if($estado != "TODOS"){
 			<th width="15%" class="etiqueta">Sub Linea </th>
 			<th width="5%" class="etiqueta">Cantidad</th>
 			<th width="5%" class="etiqueta">Días</th>
-			<th width="5%" class="etiqueta">Aplica brvencimiento</th>
+			<th width="5%" class="etiqueta">Aplica </br> vencimiento</th>
 		</tr>
 		<?php
 		$valor = 0;
