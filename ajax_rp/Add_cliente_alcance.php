@@ -46,7 +46,7 @@ if($estado != "TODOS"){
 		$where .= " AND clientes_ub_alcance.vencimiento = '$vencimiento' "; 
 	}
 
-	if($sub_linea != NULL && $sub_linea != ""){
+	if($sub_linea != "TODOS"){
 		$where  .= " AND prod_sub_lineas.codigo = '$sub_linea' ";
 	}
 

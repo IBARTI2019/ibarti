@@ -16,9 +16,9 @@ if(isset($reporte)){
 	$cliente          = $_POST['cliente'];
 	$ubicacion          = $_POST['ubicacion'];
 	$vencimiento      = $_POST['vencimiento'];
-	$producto      = $_POST['producto'];
+	$sub_linea      = $_POST['sub_linea'];
 	
-	$where = " 	WHERE clientes_ub_alcance.cod_producto = productos.item
+	$where = " 	WHERE clientes_ub_alcance.cod_sub_linea = prod_sub_lineas.codigo
 	AND clientes_ub_alcance.cod_cl_ubicacion = clientes_ubicacion.codigo
 	AND clientes_ubicacion.cod_cliente = clientes.codigo
 	AND clientes.status = 'T'
@@ -51,8 +51,8 @@ if(isset($reporte)){
 			$where .= " AND clientes_ub_alcance.vencimiento = '$vencimiento' "; 
 		}
 	
-		if($producto != NULL){
-			$where  .= " AND productos.item = '$producto' ";
+		if($sub_linea != "TODOS"){
+			$where  .= " AND prod_sub_lineas.codigo = '$sub_linea' ";
 		}
 	
 		// QUERY A MOSTRAR //
@@ -61,11 +61,11 @@ if(isset($reporte)){
 		ciudades.descripcion ciudad,
 		clientes.nombre cliente, 
 		clientes_ubicacion.descripcion ubicacion,
-		productos.descripcion producto,
+		prod_sub_lineas.descripcion sub_linea,
 		clientes_ub_alcance.cantidad,
 		clientes_ub_alcance.dias,
 		clientes_ub_alcance.vencimiento
-		FROM clientes_ub_alcance, productos, clientes_ubicacion, clientes, regiones, estados, ciudades
+		FROM clientes_ub_alcance, prod_sub_lineas, clientes_ubicacion, clientes, regiones, estados, ciudades
 		$where
 		ORDER BY 5,6 ASC;";
 
@@ -78,7 +78,7 @@ if(isset($reporte)){
 		echo "<table border=1>";
 
 		echo "<tr><th>".$leng['region']." </th><th> ".$leng['estado']."  </th> <th> ".$leng['ciudad']."  </th>
-		<th> ".$leng['cliente']."  </th><th> ".$leng['ubicacion']."  </th> <th> ".$leng['producto']." </th> <th> Cantidad </th>
+		<th> ".$leng['cliente']."  </th><th> ".$leng['ubicacion']."  </th> <th> Sub Linea </th> <th> Cantidad </th>
 		<th> Nro. de días para reponer </th><th> Aplica Vencimiento</th></tr>";
 
 		while ($row01 = $bd->obtener_num($query01)){
@@ -110,7 +110,7 @@ if(isset($reporte)){
 		<th width='10%'>".$leng['ciudad']."</th>
 		<th width='12%'>".$leng['cliente']." </th>
 		<th width='12%'>".$leng['ubicacion']." </th>
-		<th width='28%'>".$leng['producto']." </th>
+		<th width='28%'>Sub Linea </th>
 		<th width='5%'>Cantidad</th>
 		<th width='5%'>Días para Reponer</th>
 		<th width='8%'>Aplica vencimiento</th>
