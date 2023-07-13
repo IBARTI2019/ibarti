@@ -141,7 +141,7 @@ cod_linea,
 cod_sub_linea 
 HAVING
 ( vencido = 1 ) 
-OR ( vencido = 0 AND cantidad < alcance ) 
+OR ( vencido = 0 AND cantidad < alcance AND cantidad > 0 ) 
 UNION
 	SELECT
 	'SIN DOTAR' fecha,

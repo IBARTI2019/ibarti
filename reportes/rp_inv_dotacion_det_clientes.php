@@ -155,6 +155,7 @@ ORDER BY 2 ASC";
 </html>";
 
 		    $dompdf->load_html(ob_get_clean(),'UTF-8');
+			$dompdf->set_paper('letter','landscape');
 		    $dompdf->render();
 		    $dompdf->stream($archivo, array('Attachment' => 0));
 }
