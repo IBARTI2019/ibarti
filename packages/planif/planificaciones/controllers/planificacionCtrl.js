@@ -632,6 +632,7 @@ function save_planif_det(cod) {
 					alert(resp.mensaje);
 				} else {
 					alert('Actualizacion Exitosa...');
+					CloseModal();
 				}
 			},
 			error: function (xhr, ajaxOptions, thrownError) {

@@ -54,7 +54,7 @@ foreach ($trab as  $datos)
 	<td>('.$datos["cod_ficha"].') - '.$datos["trabajador"].'<input type="hidden" id="det_codigo'.$i.'" value="'.$datos["codigo"].'">
 	<input type="hidden" id="det_ficha'.$i.'" value="'.$datos["cod_ficha"].'">
 	<input type="hidden" id="det_metodo'.$i.'" value="'.$metodo.'"></td>
-	<td><select id="det_puesto_trab'.$i.'" style="width:140px" onchange="save_planif_det('.$i.')" '.$disabled.' required>
+	<td><select id="det_puesto_trab'.$i.'" style="width:140px" '.$disabled.' required>
 	<option value="'.$datos["cod_puesto_trabajo"].'">'.$datos["puesto_trabajo"].'</option>';
 	foreach ($puesto as $datosX){
 		echo '<option value="'.$datosX[0].'">'.$datosX[1].'</option>';
@@ -66,7 +66,7 @@ foreach ($trab as  $datos)
 		echo '<option value="'.$datosX[0].'">'.$datosX[1].'</option>';
 	}
 	echo'</select></td>
-	<td><select id="det_posicion'.$i.'" style="width:120px" required onchange="save_planif_det('.$i.')" '.$disabled.'>
+	<td><select id="det_posicion'.$i.'" style="width:120px" required '.$disabled.'>
 	<option value="'.$datos["posicion_inicio"].'">('.($datos["posicion_inicio"]+1).') - '.$datos["turno"].'</option>';
 	$rotacion_det = $modelo->get_rotacion_det($datos["cod_rotacion"]);
 	$i2 = 0;
@@ -75,9 +75,11 @@ foreach ($trab as  $datos)
 		$i2++;
 	}
 	echo '</select></td>
-	<td><input id="det_fec_inicio'.$i.'" type="date" value="'.$datos["fecha_inicio"].'" onchange="save_planif_det('.$i.')" required min="'.$datos["ap_fecha_inicio"].'" max="'.$datos["ap_fecha_fin"].'" '.$readonly.'> | <input id="det_fec_fin'.$i.'" type="date" value="'.$datos["fecha_fin"].'" onchange="save_planif_det('.$i.')" required
+	<td><input id="det_fec_inicio'.$i.'" type="date" value="'.$datos["fecha_inicio"].'" required min="'.$datos["ap_fecha_inicio"].'" max="'.$datos["ap_fecha_fin"].'" '.$readonly.'> | <input id="det_fec_fin'.$i.'" type="date" value="'.$datos["fecha_fin"].'" required
 	min="'.$datos["ap_fecha_inicio"].'" max="'.$datos["ap_fecha_fin"].'" '.$readonly.'></td>
-	<td><img src="imagenes/detalle.bmp" width="16px" height="16px" onClick="cargar_planif_trab_det('.$i.', \'NO\')"  alt="Detalle" title="Cargar Detalle" class="imgLink">
+	<td>
+	<img src="imagenes/actualizar.bmp" width="16px" height="16px" onClick="save_planif_det('.$i.')"  alt="Guardar" title="Guardar" class="imgLink">
+	<img src="imagenes/detalle.bmp" width="16px" height="16px" onClick="cargar_planif_trab_det('.$i.', \'NO\')"  alt="Detalle" title="Cargar Detalle" class="imgLink">
 	<img src="imagenes/borrar.bmp" width="16px" height="16px" onClick="Borrar_trab_det('.$i.')"  alt="Borrar" title="Borrar Registro" class="imgLink">
 	<img src="imagenes/excel.gif" width="16px" height="16px" onClick="rp_planif_trab('.$i.', \'excel\')"  alt="Detalle" title="Cargar Detalle" class="imgLink">
 	<img src="imagenes/pdf.gif" width="16px" height="16px" onClick="rp_planif_trab('.$i.', \'pdf\')"  alt="Detalle" title="Cargar Detalle" class="imgLink">

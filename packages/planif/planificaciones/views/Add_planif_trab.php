@@ -1,7 +1,7 @@
 <script language="javascript">
 $("#pl_trab_form").on('submit', function(evt){
 	 evt.preventDefault();
-	 save_planif_det("X01", "agregar");
+	 save_planif_det("X01");
 });
 	</script>
 <?php
@@ -34,14 +34,14 @@ echo '<form id="pl_trab_form" name="pl_trab_form" method="post">
 $i = "X01";
 
 	echo '<tr>
-					<td><select id="det_ficha'.$i.'" style="width:220px" onchange="save_planif_det('.$i.')" required>
+					<td><select id="det_ficha'.$i.'" style="width:220px" required>
 		  					<option value="">Seleccione...</option>';
 								foreach ($trab as $datosX){
 									echo '<option value="'.$datosX[0].'">('.$datosX[0].') '.$datosX[2].'</option>';
 								}
 						echo'</select><input type="hidden" id="det_codigo'.$i.'" value="">
 						    					<input type="hidden" id="det_metodo'.$i.'" value="agregar">
-					<td><select id="det_puesto_trab'.$i.'" style="width:140px" onchange="save_planif_det('.$i.')" required>
+					<td><select id="det_puesto_trab'.$i.'" style="width:140px" required>
 		  					<option value="">Seleccione...</option>';
 								foreach ($puesto as $datosX){
 									echo '<option value="'.$datosX[0].'">'.$datosX[1].'</option>';
@@ -53,10 +53,10 @@ $i = "X01";
 									echo '<option value="'.$datosX[0].'">'.$datosX[1].'</option>';
 								}
 							 echo'</select></td>
-					<td><select id="det_posicion'.$i.'" style="width:120px" required onchange="save_planif_det('.$i.')">
+					<td><select id="det_posicion'.$i.'" style="width:120px" required>
 								<option value="">0</option>
 							</select></td>
-					<td><input id="det_fec_inicio'.$i.'" type="date" value="'.$datos_ap["fecha_inicio"].'" onchange="save_planif_det('.$i.')" required min="'.$datos_ap["fecha_inicio"].'" max="'.$datos_ap["fecha_fin"].'"> | <input id="det_fec_fin'.$i.'" type="date" value="'.$datos_ap["fecha_fin"].'" onchange="save_planif_det('.$i.')" required
+					<td><input id="det_fec_inicio'.$i.'" type="date" value="'.$datos_ap["fecha_inicio"].'" required min="'.$datos_ap["fecha_inicio"].'" max="'.$datos_ap["fecha_fin"].'"> | <input id="det_fec_fin'.$i.'" type="date" value="'.$datos_ap["fecha_fin"].'" required
 					           min="'.$datos_ap["fecha_inicio"].'" max="'.$datos_ap["fecha_fin"].'"></td>
 					<td><span class="art-button-wrapper">
 					                    <span class="art-button-l"> </span>
