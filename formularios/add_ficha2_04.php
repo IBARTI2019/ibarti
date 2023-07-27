@@ -4,6 +4,9 @@ $metodo = 'agregar';
 $proced      = "p_fichas_04";
 $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar";
 ?>
+
+<link rel="stylesheet" href="css/modal_planif.css" type="text/css" media="screen" />
+
 <form action="scripts/sc_ficha_04.php" method="post" name="add" id="add">
 	<fieldset class="fieldset">
 		<legend>Documento Trabajador </legend>
@@ -74,7 +77,7 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 				$img_src = $link;
 				if ($img_src) {
 					$img_ext =  imgExtension($img_src);
-					$img_src = 	'<a href="' . $img_src . '"><img src="' . $img_ext . '" width="22px" height="22px" /></a>';
+					$img_src = 	'<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\')" width="22px" height="22px"  />';
 				} else {
 					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
@@ -125,6 +128,19 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 	</fieldset>
 </form>
 
+<div id="myModalDocument" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="cerrarModalDocument()">&times;</span>
+      <span>Documento</span>
+    </div>
+    <div class="modal-body">
+      <div id="modal_documento_cont">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script language="javascript" type="text/javascript">
 	function spryFecVenc(ValorN) {
 		var ValorN = new Spry.Widget.ValidationTextField(ValorN, "date", {
@@ -133,5 +149,16 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 			validateOn: ["blur", "change"],
 			useCharacterMasking: true
 		});
+	}
+
+	function openModalDocument(document, link) {	
+		console.log(document, link)	
+		$("#myModalDocument").show();
+		var contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+		$("#modal_documento_cont").html(contenido);
+	}
+
+	function cerrarModalDocument(refresh) {
+		$("#myModalDocument").hide();
 	}
 </script>
