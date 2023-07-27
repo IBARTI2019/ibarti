@@ -74,7 +74,7 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 				$img_src = $link;
 				if ($img_src) {
 					$img_ext =  imgExtension($img_src);
-					$img_src = 	'<a target="_blank" href="' . $img_src . '"><img class="imgLink" src="' . $img_ext . '" width="22px" height="22px" /></a>';
+					$img_src = 	'<a target="_blank" href="' . $img_src . '"><img src="' . $img_ext . '" width="22px" height="22px" /></a>';
 				} else {
 					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
