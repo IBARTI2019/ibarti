@@ -8,6 +8,21 @@ $archivo = "reportes/rp_nov_check_list_det.php?Nmenu=$Nmenu&mod=$mod";
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report.php');
 $bd = new DataBase();
+
+if ($_SESSION['r_cliente'] == "F") {
+	$sql_cliente    = "SELECT clientes.codigo, clientes.nombre
+						   FROM clientes WHERE clientes.status = 'T'
+						  ORDER BY 2 ASC ";
+  } else {
+	$sql_cliente = " SELECT clientes.codigo, clientes.nombre
+						 FROM clientes
+						WHERE clientes.status = 'T' AND 
+						clientes.codigo IN (SELECT DISTINCT clientes_ubicacion.cod_cliente
+						 FROM usuario_clientes, clientes_ubicacion
+						WHERE usuario_clientes.cod_usuario = '" . $_SESSION['usuario_cod'] . "'
+						  AND usuario_clientes.cod_ubicacion = clientes_ubicacion.codigo)
+					 ORDER BY 2 ASC ";
+  }
 ?>
 <script language="JavaScript" type="text/javascript">
 	function Add_filtroX() { // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
