@@ -132,7 +132,7 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
   <div class="modal-content">
     <div class="modal-header">
       <span class="close" onclick="cerrarModalDocument()">&times;</span>
-      <span>Documento</span>
+      <span id='titleDocument'>Documento</span>
     </div>
     <div class="modal-body">
       <div id="modal_documento_cont">
@@ -151,11 +151,36 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 		});
 	}
 
-	function openModalDocument(document, link) {	
-		console.log(document, link)	
+	function openModalDocument(documentName, link) {	
+		console.log(documentName, link)	
 		$("#myModalDocument").show();
-		var contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
-		$("#modal_documento_cont").html(contenido);
+		$("#titleDocument").html(documentName);
+		$("#modal_documento_cont").html("<img src='imagenes/loading.gif' /> Procesando, espere por favor...");
+		$.ajax({
+			type: 'GET',
+			url: link,
+			responseType:'arraybuffer',
+			success: function (data){
+				let blob = new Blob([data], { type: 'application/pdf'} );
+        		let url = window.URL.createObjectURL(blob);
+				var contenido = '<embed src="' + url + '" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+				$("#modal_documento_cont").html(contenido);	
+			},
+			error: function() {
+				console.log("Error");
+			}
+		});
+		
+	}
+
+	function _base64ToArrayBuffer(base64) {
+		var binary_string = window.atob(base64);
+		var len = binary_string.length;
+		var bytes = new Uint8Array(len);
+		for (var i = 0; i < len; i++) {
+			bytes[i] = binary_string.charCodeAt(i);
+		}
+		return bytes.buffer;
 	}
 
 	function cerrarModalDocument(refresh) {
