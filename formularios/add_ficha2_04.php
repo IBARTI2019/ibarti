@@ -155,22 +155,25 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 		console.log(documentName, link)	
 		$("#myModalDocument").show();
 		$("#titleDocument").html(documentName);
-		$("#modal_documento_cont").html("<img src='imagenes/loading.gif' /> Procesando, espere por favor...");
-		$.ajax({
-			type: 'GET',
-			url: link,
-			responseType:'arraybuffer',
-			success: function (data){
-				let blob = new Blob([data], { type: 'application/pdf'} );
-        		let url = window.URL.createObjectURL(blob);
-				var contenido = '<embed src="' + url + '" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
-				$("#modal_documento_cont").html(contenido);	
-			},
-			error: function() {
-				console.log("Error");
-			}
-		});
-		
+		var contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+		$("#modal_documento_cont").html(contenido);
+		/* 	
+			$("#modal_documento_cont").html("<img src='imagenes/loading.gif' /> Procesando, espere por favor...");
+			$.ajax({
+				type: 'GET',
+				url: link,
+				responseType: 'arraybuffer',
+				success: function (data){
+					let blob = new Blob([data], { type: 'application/pdf'} );
+					let url = window.URL.createObjectURL(blob);
+					var contenido = '<embed src="' + url + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+					$("#modal_documento_cont").html(contenido);	
+				},
+				error: function() {
+					console.log("Error");
+				}
+			}); 
+		*/
 	}
 
 	function _base64ToArrayBuffer(base64) {
