@@ -3,6 +3,7 @@
 $metodo = 'agregar';
 $proced      = "p_fichas_04";
 $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar";
+$admin_rrhh	    = $_SESSION['admin_rrhh'];
 ?>
 
 <link rel="stylesheet" href="css/modal_planif.css" type="text/css" media="screen" />
@@ -79,7 +80,9 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 				if ($img_src) {
 					$img_ext =  imgExtension($img_src);
 					$img_src = 	'<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\')" width="22px" height="22px"  />';
-					$borrarDoc = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$cod_documento.'\')"/>';
+					if($admin_rrhh == 'T'){
+						$borrarDoc = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$cod_documento.'\')"/>';
+					}
 				} else {
 					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
@@ -180,7 +183,7 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 			}); 
 		*/
 	}
-	
+
 	function showMessage(message) {
 		$(".messages").html("").show();
 		$(".messages").html(message);

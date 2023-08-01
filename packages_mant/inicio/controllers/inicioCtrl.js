@@ -174,6 +174,7 @@ function Ver_log(){
 					sessionStorage.setItem('numero',0);
 					localStorage.setItem('userIbartiKanban', resp.codigo);
 					localStorage.setItem('admin_kanban', resp.admin_kanban);
+					localStorage.setItem('admin_rrhh', resp.admin_rrhh);
 				}
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
