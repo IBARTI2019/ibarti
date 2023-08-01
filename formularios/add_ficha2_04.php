@@ -12,11 +12,11 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 		<legend>Documento Trabajador </legend>
 		<table width="98%" align="center">
 			<tr>
-				<td width="26%" class="etiqueta">Documentos:</td>
-				<td width="11%" class="etiqueta">Check:</td>
+				<td width="20%" class="etiqueta">Documentos:</td>
+				<td width="10%" class="etiqueta">Check:</td>
 				<td width="18%" class="etiqueta">observación:</td>
-				<td width="12%" class="etiqueta">Descargar - Subir</td>
-				<td width="25%" class="etiqueta">Vencimiento - Fecha</td>
+				<td width="16%" class="etiqueta">Descargar - Subir</td>
+				<td width="22%" class="etiqueta">Vencimiento - Fecha</td>
 				<td width="8%" class="etiqueta">Fec. Ult. Mod.</td>
 			</tr>
 			<?php
@@ -75,9 +75,11 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 			while ($datos = $bd->obtener_fila($query, 0)) {
 				extract($datos);
 				$img_src = $link;
+				$borrarDoc = "";
 				if ($img_src) {
 					$img_ext =  imgExtension($img_src);
 					$img_src = 	'<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\')" width="22px" height="22px"  />';
+					$borrarDoc = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$cod_documento.'\')"/>';
 				} else {
 					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
@@ -91,7 +93,10 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 						                            ' . CheckX($checks, 'S') . '/>NO <input type = "radio" name="documento' . $cod_documento . '"
 													value = "N" style="width:auto" disabled="disabled" ' . CheckX($checks, 'N') . '/><input type="hidden"                                                     name="documento_old' . $cod_documento . '" value = "' . $checks . '"/></td>
 						<td><textarea name="observ_doc' . $cod_documento . '" cols="20" rows="1">' . $observacion . '</textarea></td>
-						<td>' . $img_src . ' - <a target="_blank" onClick="' . $subir . '"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a></td>
+						<td>' . $img_src . ' - <a target="_blank" onClick="' . $subir . '">
+						<img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>'. $borrarDoc . '
+						</td>
+						
 						<td class="texto">SI <input type = "radio" name="vencimiento' . $cod_documento . '"  value = "S" style="width:auto"
 																				' . CheckX($vencimiento, 'S') . '/>NO <input type = "radio"
 																				name="vencimiento' . $cod_documento . '" value = "N" style="width:auto"
@@ -121,8 +126,8 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 			</span>
 			<input name="metodo" type="hidden" value="<?php echo $metodo; ?>" />
 			<input name="proced" type="hidden" value="<?php echo $proced; ?>" />
-			<input name="codigo" type="hidden" value="<?php echo $codigo; ?>" />
-			<input name="usuario" type="hidden" value="<?php echo $usuario; ?>" />
+			<input id="codigo" name="codigo" type="hidden" value="<?php echo $codigo; ?>" />
+			<input id="usuario" name="usuario" type="hidden" value="<?php echo $usuario; ?>" />
 			<input name="href" type="hidden" value="../inicio.php?area=<?php echo $archivo ?>" />
 		</div>
 	</fieldset>
@@ -174,6 +179,39 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 				}
 			}); 
 		*/
+	}
+	
+	function showMessage(message) {
+		$(".messages").html("").show();
+		$(".messages").html(message);
+	}
+
+	function BorrarDocumento(codigoDoc) {
+		if (confirm("¿Esta seguro de eliminar la imagen de este documento?")) {	
+			var codigo = $("#codigo").val();
+			var usuario = $("#usuario").val();
+			var parametros = {
+				"link": "",
+				"ficha": codigo,
+				"doc": codigoDoc,
+				"borrar": true,
+				"usuario": usuario
+			};
+
+			$.ajax({
+				url: 'upload/documentos.php',
+				type: 'POST',
+				data: parametros,
+				success: function (data) {
+					location.reload();
+				},
+				//si ha ocurrido un error
+				error: function () {
+					message = $("<span class='error'>Ha ocurrido un error.</span>");
+					showMessage(message);
+				}
+			});
+		}
 	}
 
 	function _base64ToArrayBuffer(base64) {
