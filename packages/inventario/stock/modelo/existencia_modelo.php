@@ -97,7 +97,7 @@ class Existencia
     AND e.cod_producto = a.cod_producto
     ORDER BY e.cod_ajuste DESC, e.reng_num DESC LIMIT 1),'SIN DATA') cos_prom_actual
     FROM stock a, productos b, almacenes c 
-    WHERE a.cod_producto = b.item AND a.cod_almacen = c.codigo  
+    WHERE a.cod_producto = b.item AND a.cod_almacen = c.codigo AND c.status = 'T'
     ";
     if($linea != "TODOS"){
       $sql .= " AND b.cod_linea = '$linea'";
@@ -130,7 +130,7 @@ class Existencia
     AND e.cod_producto = a.cod_producto
     ORDER BY e.cod_ajuste DESC, e.reng_num DESC LIMIT 1),'SIN DATA') cos_prom_actual
     FROM stock a, productos b, almacenes c 
-    WHERE a.cod_producto = b.item AND a.cod_almacen = c.codigo  
+    WHERE a.cod_producto = b.item AND a.cod_almacen = c.codigo AND c.status = 'T'
     ORDER BY 1,2 ASC LIMIT 100";
     $query        = $this->bd->consultar($sql);
     while ($datos = $this->bd->obtener_fila($query)){
