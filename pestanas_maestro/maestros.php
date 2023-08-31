@@ -22,7 +22,7 @@ $pag = 0;
 		<li class="TabbedPanelsTab">ADICIONALES</li>
 	 </ul>				
 	  <div class="TabbedPanelsContentGroup"> 
-	  	 <div class="TabbedPanelsContent"><?php include('maestros/Add_maestros.php');?></div>
+	  	 <div class="TabbedPanelsContent"><?php include('maestros/Add_rventas.php');?></div>
   	  	 <div class="TabbedPanelsContent"><?php include('maestros/add_adicionales_ad.php');?></div>
 	  </div>
  </div> 

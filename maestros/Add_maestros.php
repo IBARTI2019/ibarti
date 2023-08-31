@@ -179,7 +179,7 @@ if ($metodo == 'modificar') {
     if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas' ) {
       echo '<tr>
       <td class="etiqueta">Orden:</td> 
-      <td  id="input04" > <input type="number" name="orden" style="width:50px" value="' . $orden . '"  onblur="<?php echo $codigo_orden;?>"  />
+      <td  id="input04" > <input type="number" name="orden" style="width:50px" value="' . $orden . '"  />
       <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>    
       </tr>';
