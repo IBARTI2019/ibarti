@@ -345,7 +345,9 @@ function Add_ajax_maestros(codigo, archivo, contenido, tb) {  // CARGAR  ARCHIVO
 		alert("Debe de Seleccionar Un Campo ");
 	}
 }
-
+function procesar() {
+	alert("Haz hecho clic en el botón");
+}
 /*
 $cod_cliente  = $_POST['codigo'];
 $usuario      = $_POST['usuario'];

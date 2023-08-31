@@ -115,7 +115,7 @@ if ($metodo == 'modificar') {
   <table width="80%" align="center">
     <tr>
       <td class="etiqueta">C&oacute;digo:</td>
-      <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo; ?> " readonly/>
+      <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo; ?> "  readonly/>
         Activo: <input name="activo" type="checkbox" <?php echo statusCheck("$status"); ?> value="T" /> 
         <?php
         if ($tabla == 'cargos') {
@@ -135,7 +135,7 @@ if ($metodo == 'modificar') {
     </tr>
     <tr>
       <td class="etiqueta">Descripci&oacute;n: </td>
-      <td id="input02"><input type="text" name="descripcion" maxlength="100" style="width:300px" value="<?php echo $descripcion; ?>" /><br />
+      <td id="input02"><input type="text" name="descripcion" maxlength="100" style="width:300px" value="<?php echo $descripcion; ?>"  /><br />
         <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
     </tr>
@@ -179,10 +179,10 @@ if ($metodo == 'modificar') {
     if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas' ) {
       echo '<tr>
       <td class="etiqueta">Orden:</td> 
-      <td  id="input04" > <input type="number" name="orden" style="width:50px" value="' . $orden . '"  />
+      <td  id="input04" > <input type="number" name="orden" style="width:50px" value="' . $orden . '"  onblur="<?php echo $codigo_orden;?>"  />
       <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>    
-    </tr>';
+      </tr>';
     }
     if ($tabla == 'nov_status_kanban') {
       echo '<tr>
