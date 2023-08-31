@@ -329,9 +329,9 @@ function Add_ajax02(codigo, codigo2, archivo, contenido) {  // CARGAR  ARCHIVO D
 	}
 }
 function Add_ajax_maestros(codigo, archivo, contenido, tb) {  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO Y TABLAS//
-
+	
 	if (codigo != '') {
-
+      
 		ajax = nuevoAjax();
 		ajax.open("POST", archivo, true);
 		ajax.onreadystatechange = function () {
