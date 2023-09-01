@@ -84,8 +84,8 @@
     var direccion_input = $("#c_direccion_google").val();
     autocomplete_input.value = direccion_input;
     var autocomplete_results = document.querySelector('.autocomplete-results');
-    var lat = Number($("#c_latitud").val());
-    var lng = Number($("#c_longitud").val());
+    var lat = Number($("#prec_latitud").val());
+    var lng = Number($("#prec_longitud").val());
 
     var positionInitial = {
       lat: lat === 0 || lat === undefined ? 10.1675248 : lat,
@@ -166,8 +166,8 @@
         url: 'scripts/sc_lat_lng.php',
         type: 'post',
         success: (response) => {
-          $("#c_latitud").val(lat);
-          $("#c_longitud").val(lng);
+          $("#prec_latitud").val(lat);
+          $("#prec_longitud").val(lng);
           toastr.success('Guardado con éxito.');
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -267,10 +267,10 @@
       </tr>
       <tr>
         <td class="etiqueta">Latitud: </td>
-        <td><input type="text" name="latitud" id="c_latitud" maxlength="60" size="26" value="<?php echo $cl['latitud']; ?>" />
+        <td><input type="text" name="latitud" id="prec_latitud" maxlength="60" size="26" value="<?php echo $cl['latitud']; ?>" />
         </td>
         <td class="etiqueta">Longitud: </td>
-        <td><input type="text" name="longitud" id="c_longitud" maxlength="60" size="26" value="<?php echo $cl['longitud']; ?>" />
+        <td><input type="text" name="longitud" id="prec_longitud" maxlength="60" size="26" value="<?php echo $cl['longitud']; ?>" />
         </td>
       </tr>
       <tr>

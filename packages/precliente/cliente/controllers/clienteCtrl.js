@@ -78,8 +78,8 @@ function save_precliente() {
   var campo03 = $("#c_campo03").val();
   var campo04 = $("#c_campo04").val();
 
-  var latitud = $("#c_latitud").val();
-  var longitud = $("#c_longitud").val();
+  var latitud = $("#prec_latitud").val();
+  var longitud = $("#prec_longitud").val();
   var direccion_google = $("#c_direccion_google").val();
 
   var lunes = Status($("#c_lunes:checked").val());
