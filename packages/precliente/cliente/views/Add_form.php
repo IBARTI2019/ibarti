@@ -65,11 +65,13 @@ if ($metodo == 'modificar') {
     <ul class="TabbedPanelsTabGroup">
       <li class="TabbedPanelsTab"><?php echo $leng['precliente']; ?></li>
       <li class="TabbedPanelsTab" <?php echo 'style="' . $vistas . '"' ?>>Datos Adiccionales <?php echo $leng['precliente']; ?></li>
+      <li class="TabbedPanelsTab" <?php echo 'style="' . $vistas . '"' ?>>Ruta De Venta <?php echo $leng['precliente']; ?></li>
     </ul>
 
     <div class="TabbedPanelsContentGroup">
       <div class="TabbedPanelsContent"><?php include('p_precliente.php'); ?></div>
       <div class="TabbedPanelsContent"><?php include('p_precliente_ad.php'); ?></div>
+      <div class="TabbedPanelsContent"><?php include('../../ruta_venta/index.php'); ?></div>
     </div>
   </div>
 </div>

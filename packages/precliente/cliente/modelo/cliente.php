@@ -23,15 +23,14 @@ if (isset($_POST['proced'])) {
 		if (!$desc_p_pago) $desc_p_pago = 0;
 
 		$sql    = "$SELECT $proced('$metodo', '$codigo', '$cl_tipo', '$vendedor',
-																'$region', '$abrev', '$rif', '$nit',
+									'$region', '$abrev', '$rif', '$nit',
 									'$nombre', '$telefono', '$fax', '$direccion',
-									'$dir_entrega', '$email', '$website', '$contacto',
-									'$observ',
+									'$dir_entrega', '$email', '$website', '$contacto', '$observ',
 									'$juridico', '$contrib', '$lunes', '$martes',
 									'$miercoles', '$jueves', '$viernes', '$sabado',
 									'$domingo', '$limite_cred', '$plazo_pago', '$desc_global',
-									'$desc_p_pago',
-									'$campo01', '$campo02', '$campo03', '$campo04', '$usuario',  '$activo')";
+									'$desc_p_pago', '$campo01', '$campo02', '$campo03', '$campo04', '$usuario', 
+									'$responsable', '$empresa_actual', '$cantidad_hombres', '$problema_identificado', '$activo')";
 		$query = $bd->consultar($sql);
 
 		$result['sql'] = $sql;

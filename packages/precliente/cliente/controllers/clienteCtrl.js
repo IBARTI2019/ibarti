@@ -94,6 +94,11 @@ function save_precliente() {
   var usuario = $("#usuario").val();
   var metodo = $("#c_metodo").val();
 
+  var responsable = $("#c_responsable").val();
+  var empresa_actual = $("#c_empresa_actual").val();
+  var cantidad_hombres = $("#c_cantidad_hombres").val();
+  var problema_identificado = $("#c_problema_identificado").val();
+
   if (error == 0) {
     var parametros = {
       codigo: codigo,
@@ -135,7 +140,11 @@ function save_precliente() {
       metodo: metodo,
       latitud: latitud,
       longitud: longitud,
-      direccion_google: direccion_google
+      direccion_google: direccion_google,
+      responsable: responsable,
+      empresa_actual: empresa_actual,
+      cantidad_hombres: cantidad_hombres,
+      problema_identificado: problema_identificado
     };
 
     $.ajax({

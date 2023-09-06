@@ -21,7 +21,8 @@ class Cliente
 		preclientes.cod_vendedor, vendedores.nombre AS vendedor, preclientes.cod_region,
 		regiones.descripcion AS region, preclientes.abrev, preclientes.rif,
 		preclientes.nit, preclientes.nombre, preclientes.telefono, preclientes.contacto,
-		preclientes.status, preclientes.latitud, preclientes.longitud, preclientes.direccion_google
+		preclientes.status, preclientes.latitud, preclientes.longitud, preclientes.direccion_google,
+		preclientes.responsable, preclientes.empresa_actual, preclientes.cantidad_hombres, preclientes.problema_identificado
 		FROM preclientes, clientes_tipos, vendedores, regiones
 		WHERE preclientes.cod_cl_tipo = clientes_tipos.codigo
 		AND preclientes.cod_vendedor = vendedores.codigo
@@ -52,7 +53,8 @@ class Cliente
 			'limite_cred' => '', 'plazo_pago' => '', 'desc_global' => '', 'desc_p_pago' => '',
 			'campo01' => '', 'campo02' => '', 'campo03' => '', 'campo04' => '',
 			'cod_us_ing' => '', 'fec_us_ing' => '', 'cod_us_mod' => '', 'fec_us_mod' => '', 'status' => '',
-			'latitud' => '', 'longitud' => '', 'direccion_google' => ''
+			'latitud' => '', 'longitud' => '', 'direccion_google' => '',
+			'responsable' => '', 'empresa_actual' => '', 'cantidad_hombres' => '', 'problema_identificado' => ''
 		);
 		return $this->datos;
 	}
@@ -72,7 +74,8 @@ class Cliente
 		a.limite_cred, a.plazo_pago, a.desc_global, a.desc_p_pago,
 		a.campo01, a.campo02, a.campo03, a.campo04, a.contacto,
 		a.cod_us_ing, a.fec_us_ing,a.cod_us_mod, a.fec_us_mod, a.`status`, 
-		a.latitud, a.longitud, a.direccion_google
+		a.latitud, a.longitud, a.direccion_google,
+		a.responsable, a.empresa_actual, a.cantidad_hombres, a.problema_identificado
 		FROM preclientes a , clientes_tipos , vendedores , regiones
 		WHERE a.codigo = '$cod'
 		AND a.cod_cl_tipo = clientes_tipos.codigo

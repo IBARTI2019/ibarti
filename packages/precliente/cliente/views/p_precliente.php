@@ -266,6 +266,18 @@
         <td><textarea id="c_observ" cols="38" rows="4"><?php echo $cl['observacion']; ?></textarea></td>
       </tr>
       <tr>
+        <td class="etiqueta">Cargo Responsable (Contacto):</td>
+        <td><textarea id="c_responsable" cols="38" rows="1"><?php echo $cl['responsable']; ?></textarea></td></td>
+        <td class="etiqueta">Nombre de Empresa que presta el servicio actualmente:</td>
+        <td><textarea id="c_empresa_actual" cols="38" rows="1"><?php echo $cl['empresa_actual']; ?></textarea></td></td>
+      </tr>
+      <tr>
+        <td class="etiqueta">Cantidad de hombres:</td>
+        <td><input type="number" id="c_cantidad_hombres" style="width:75px" value="<?php echo $cl['cantidad_hombres']; ?>" min="0" placeholder=""></td>
+        <td class="etiqueta">Principal problema de seguridad identificado:</td>
+        <td><textarea id="c_problema_identificado" cols="38" rows="4"><?php echo $cl['problema_identificado']; ?></textarea></td>
+      </tr>
+      <tr>
         <td class="etiqueta">Latitud: </td>
         <td><input type="text" name="latitud" id="prec_latitud" maxlength="60" size="26" value="<?php echo $cl['latitud']; ?>" />
         </td>
