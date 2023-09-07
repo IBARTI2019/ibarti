@@ -36,11 +36,11 @@ if ($metodo == 'modificar') {
       $sql = " SELECT $tabla.codigo, $tabla.color, $tabla.descripcion,
           $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	$tabla.status, $tabla.inicial, $tabla.anula_vencimiento
           FROM $tabla WHERE codigo = '$codigo' ";
-    } else if ($tabla == 'ruta_de_ventas') {
-      $sql = " SELECT $tabla.codigo, $tabla.descripcion,$tabla.orden,$tabla.descripcion_global,
-	                $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
-				    $tabla.status
-             FROM $tabla WHERE codigo = '$codigo' ";
+    } else if ($tabla == 'subruta_de_ventas') {
+      $sql = " SELECT $tabla.codigo, $tabla.descripcion,
+             $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
+             $tabla.status, ruta_de_ventas.descripcion as ruta
+             FROM $tabla  inner join ruta_de_ventas on $tabla.cod_ruta=ruta_de_ventas.codigo  WHERE $tabla.codigo = '$codigo' ";
     } else {
       $sql = " SELECT $tabla.codigo, $tabla.descripcion,
 	                $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
@@ -59,6 +59,7 @@ if ($metodo == 'modificar') {
   $campo03     = $result['campo03'];
   $campo04     = $result['campo04'];
   $status      = $result['status'];
+  $ruta    =$result['ruta'];
   $kanban = 'F';
   if ($tabla == 'nov_tipo') {
     $kanban      = $result['kanban'];
@@ -143,12 +144,27 @@ if ($metodo == 'modificar') {
       </td>
     </tr>
     <tr>
+	     <td class="etiqueta">Ruta de Venta:</td>
+	     <td id="select01">
+			   <select name="cod_ruta" style="width:200px;">
+     				   <option value="<?php echo $cod_ruta;?>"><?php echo $ruta;?></option>
+	        <?php  	$sql = " SELECT codigo, descripcion FROM ruta_de_ventas
+			                  WHERE status = 'T' AND ruta_de_ventas.codigo <> '$cod_ruta'
+						   ORDER BY 2 ASC ";
+		            $query = $bd->consultar($sql);
+            		while($datos=$bd->obtener_fila($query,0)){
+		    ?>
+          <option value="<?php echo $datos[0];?>"><?php echo $datos[1];?></option>
+          <?php }?></select><br />
+       	<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
+    </tr>
+    <tr>
       <td class="etiqueta">Descripci&oacute;n: </td>
       <td id="input02"><input type="text" name="descripcion" maxlength="100" style="width:300px" value="<?php echo $descripcion; ?>"  /><br />
         <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
     </tr>
-   
+    
     <tr>
       <td height="8" colspan="2" align="center">
         <hr>

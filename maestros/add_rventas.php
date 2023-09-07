@@ -39,8 +39,8 @@ if ($metodo == 'modificar') {
     } else if ($tabla == 'ruta_de_ventas') {
       $sql = " SELECT $tabla.codigo, $tabla.descripcion,$tabla.orden,$tabla.descripcion_global,
 	                $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
-				    $tabla.status, subruta_de_ventas.descripcion as subruta
-             FROM $tabla inner join subruta_de_ventas on $tabla.cod_sub_ruta=subruta_de_ventas.codigo WHERE $tabla.codigo = '$codigo' ";
+				    $tabla.status
+             FROM $tabla WHERE $tabla.codigo = '$codigo' ";
     } else {
       $sql = " SELECT $tabla.codigo, $tabla.descripcion,
 	                $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
@@ -148,21 +148,7 @@ if ($metodo == 'modificar') {
       <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
     </tr>
-    <tr>
-	     <td class="etiqueta">Sub Ruta de Venta:</td>
-	     <td id="select01">
-			   <select name="cod_subruta" style="width:200px;">
-     				   <option value="<?php echo $cod_subruta;?>"><?php echo $subruta;?></option>
-	        <?php  	$sql = " SELECT codigo, descripcion FROM subruta_de_ventas
-			                  WHERE status = 'T' AND subruta_de_ventas.codigo <> '$cod_subruta'
-						   ORDER BY 2 ASC ";
-		            $query = $bd->consultar($sql);
-            		while($datos=$bd->obtener_fila($query,0)){
-		    ?>
-          <option value="<?php echo $datos[0];?>"><?php echo $datos[1];?></option>
-          <?php }?></select><br />
-       	<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
-    </tr>
+    
     <tr>
       <td class="etiqueta">Orden:</td> 
       <td  id="input04" > <input type="number" name="orden" style="width:50px" value="<?php echo $orden; ?>" onchange="<?php echo $codigo_orden; ?> " />

@@ -18,7 +18,7 @@ $codigo      = $_POST['codigo'];
 
 $descripcion = $_POST['descripcion'];
 $descripcion_global=$_POST['descripcionglobal'];
-$cod_subruta=$_POST['cod_subruta'];
+$cod_ruta=$_POST['cod_ruta'];
 $tipo = null;
 if (isset($_POST['tipo'])) {
 	$tipo = $_POST['tipo'];
@@ -130,7 +130,14 @@ if (isset($_POST['metodo'])) {
 					VALUES ('$codigo', '$descripcion','$descripcion_global', $orden,
 					'$campo01', '$campo02', '$campo03', '$campo04', 
 					'$usuario', '$date', '$usuario','$date' , '$activo','$cod_subruta')";
+				} else if  ($tabla == 'subruta_de_ventas') {
+					$sql = "INSERT INTO $tabla (codigo, descripcion, campo01, campo02, campo03, campo04,
+					cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status,cod_ruta) 
+					VALUES ('$codigo', '$descripcion',
+					'$campo01', '$campo02', '$campo03', '$campo04', 
+					'$usuario', '$date', '$usuario','$date' , '$activo','$cod_ruta')";
 				} else {
+
 					$sql = "INSERT INTO $tabla (codigo, descripcion, campo01, campo02, campo03, campo04,
 					cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status) 
 					VALUES ('$codigo', '$descripcion',
