@@ -18,7 +18,7 @@ $codigo      = $_POST['codigo'];
 
 $descripcion = $_POST['descripcion'];
 $descripcion_global=$_POST['descripcionglobal'];
-
+$cod_subruta=$_POST['cod_subruta'];
 $tipo = null;
 if (isset($_POST['tipo'])) {
 	$tipo = $_POST['tipo'];
@@ -126,10 +126,10 @@ if (isset($_POST['metodo'])) {
 							'$usuario', '$date', '$usuario','$date' , '$activo', '$inicial', '$anula_vencimiento')";
 				} else if  ($tabla == 'ruta_de_ventas') {
 					$sql = "INSERT INTO $tabla (codigo, descripcion,descripcion_global, orden, campo01, campo02, campo03, campo04,
-					cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status) 
+					cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status,cod_sub_ruta) 
 					VALUES ('$codigo', '$descripcion','$descripcion_global', $orden,
 					'$campo01', '$campo02', '$campo03', '$campo04', 
-					'$usuario', '$date', '$usuario','$date' , '$activo')";
+					'$usuario', '$date', '$usuario','$date' , '$activo','$cod_subruta')";
 				} else {
 					$sql = "INSERT INTO $tabla (codigo, descripcion, campo01, campo02, campo03, campo04,
 					cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status) 
