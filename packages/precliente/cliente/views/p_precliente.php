@@ -267,9 +267,9 @@
       </tr>
       <tr>
         <td class="etiqueta">Cargo Responsable (Contacto):</td>
-        <td><textarea id="c_responsable" cols="38" rows="1"><?php echo $cl['responsable']; ?></textarea></td></td>
+        <td><textarea id="c_responsable" cols="38" rows="1"><?php echo $cl['responsable']; ?></textarea></td>
         <td class="etiqueta">Nombre de Empresa que presta el servicio actualmente:</td>
-        <td><textarea id="c_empresa_actual" cols="38" rows="1"><?php echo $cl['empresa_actual']; ?></textarea></td></td>
+        <td><textarea id="c_empresa_actual" cols="38" rows="1"><?php echo $cl['empresa_actual']; ?></textarea></td>
       </tr>
       <tr>
         <td class="etiqueta">Cantidad de hombres:</td>
@@ -291,6 +291,16 @@
           <?php } ?>
         </td>
       </tr>
+      <?php if ($metodo == 'modificar') { ?>
+      <tr>
+        <td class="etiqueta">Usuario de cierre de venta:</td>
+        <td>
+          <input type="text" id="us_cierre" readonly="true" maxlength="60" style="width:250px" value="<?php echo $cl['us_venta_cerrada']; ?>" />
+        </td>
+        <td class="etiqueta">Fecha de cierre de venta:</td>
+        <td><input id="fec_cierre" cols="38" rows="1" readonly="true" value="<?php echo $cl['fec_venta_cerrada']; ?>"/></td>
+      </tr>
+      <?php } ?>
       <tr>
         <td class="etiqueta">Latitud: </td>
         <td><input type="text" name="latitud" id="prec_latitud" maxlength="60" size="26" value="<?php echo $cl['latitud']; ?>" />

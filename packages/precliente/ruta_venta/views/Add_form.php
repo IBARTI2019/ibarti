@@ -18,8 +18,9 @@ $rutaventa_det   = $rutaventa->get_ruta_det($precliente);
 			<tr>
 				<th width="20%">Ruta de Venta</th>
 				<th width="20%">Sub Ruta de Venta</th>
-				<th width="45%">Comentario:</th>
+				<th width="30%">Comentario:</th>
 				<th width="15%">Usuario</th>
+				<th width="15%">Fecha</th>
 			</tr>
 			<!-- <tr>
 				<td><select id="ruta_de_venta" required style="width:300px;">
@@ -57,6 +58,9 @@ $rutaventa_det   = $rutaventa->get_ruta_det($precliente);
 						</td>
 						<td>
 							' . $datos['usuario'] . '
+						</td>
+						<td>
+						' . $datos['fec_us_ing'] . '
 						</td>
 					</tr>';
 			}

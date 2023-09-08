@@ -35,7 +35,9 @@ if (isset($_POST['proced'])) {
 		$query = $bd->consultar($sql);
 		$result['sql_cliente'] = $sql;
 
-		$sql    = "UPDATE preclientes SET venta_cerrada = 'T' WHERE codigo = '$codigo';"; 
+		$sql    = "UPDATE preclientes SET 
+					venta_cerrada = 'T', cod_us_venta_cerrada = '$usuario', fec_venta_cerrada = CURRENT_TIMESTAMP
+				WHERE codigo = '$codigo';"; 
 		$query = $bd->consultar($sql);
 		$result['sql'] = $sql;
 	} catch (Exception $e) {
