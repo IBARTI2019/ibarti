@@ -39,7 +39,7 @@ if ($metodo == 'modificar') {
     } else if ($tabla == 'subruta_de_ventas') {
       $sql = " SELECT $tabla.codigo, $tabla.descripcion,
              $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
-             $tabla.status, ruta_de_ventas.descripcion as ruta
+             $tabla.status, $tabla.cod_ruta, ruta_de_ventas.descripcion as ruta
              FROM $tabla  inner join ruta_de_ventas on $tabla.cod_ruta=ruta_de_ventas.codigo  WHERE $tabla.codigo = '$codigo' ";
     } else {
       $sql = " SELECT $tabla.codigo, $tabla.descripcion,
@@ -59,6 +59,7 @@ if ($metodo == 'modificar') {
   $campo03     = $result['campo03'];
   $campo04     = $result['campo04'];
   $status      = $result['status'];
+  $cod_ruta      = $result['cod_ruta'];
   $ruta    =$result['ruta'];
   $kanban = 'F';
   if ($tabla == 'nov_tipo') {
