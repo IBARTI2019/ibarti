@@ -62,5 +62,15 @@ $rutaventa_det   = $rutaventa->get_ruta_det($precliente);
 			}
 			?>
 		</table>
+		<?php if($cl['venta_cerrada'] == 'F') { ?>
+			<span class="art-button-wrapper">
+				<span class="art-button-l"> </span>
+				<span class="art-button-r"> </span>
+				<input 
+					type="button" name="c_cerrar_venta" id="c_cerrar_venta" value="Cerrar Ruta Venta" class="readon art-button" 
+					onclick="cerrar_venta()"
+				/>
+			</span>&nbsp;
+		<?php } ?>
 	</div>
 </form>

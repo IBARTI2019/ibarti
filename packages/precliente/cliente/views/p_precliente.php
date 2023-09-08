@@ -190,7 +190,7 @@
         <td width="35%"><input type="text" id="c_codigo" maxlength="11" style="width:120px" required value="<?php echo $cl['codigo']; ?>" <?php echo $readonly; ?> /></td>
         <td width="15%" class="etiqueta">Abreviatura:</td>
         <td width="35%"><input type="text" id="c_abrev" maxlength="14" required style="width:120px" value="<?php echo $cl['abrev']; ?>" />
-          Activo: <input id="c_activo" type="checkbox" <?php echo statusCheck($cl['status']); ?> value="T" />
+          Activo: <input id="c_activo" type="checkbox" <?php echo statusCheck($cl['status']); ?> value="T" /> 
         </td>
       </tr>
 
@@ -273,9 +273,23 @@
       </tr>
       <tr>
         <td class="etiqueta">Cantidad de hombres:</td>
-        <td><input type="number" id="c_cantidad_hombres" style="width:75px" value="<?php echo $cl['cantidad_hombres']; ?>" min="0" placeholder=""></td>
-        <td class="etiqueta">Principal problema de seguridad identificado:</td>
-        <td><textarea id="c_problema_identificado" cols="38" rows="4"><?php echo $cl['problema_identificado']; ?></textarea></td>
+        <td>
+          <input type="number" id="c_cantidad_hombres" style="width:75px" value="<?php echo $cl['cantidad_hombres']; ?>" min="0" placeholder="">
+        </td>
+        <td class="etiqueta" rowspan="2">Principal problema de seguridad identificado:</td>
+        <td  rowspan="2"><textarea id="c_problema_identificado" cols="38" rows="4"><?php echo $cl['problema_identificado']; ?></textarea></td>
+      </tr>
+      <tr>
+        <td class="etiqueta">
+          <?php if ($metodo == 'modificar') { ?>
+            Venta Cerrada:
+          <?php } ?>
+        </td>
+        <td>
+          <?php if ($metodo == 'modificar') { ?>
+           <input id="c_venta_cerrada" disabled="true" type="checkbox" <?php echo statusCheck($cl['venta_cerrada']); ?> value="F" />
+          <?php } ?>
+        </td>
       </tr>
       <tr>
         <td class="etiqueta">Latitud: </td>
@@ -302,6 +316,16 @@
           <span class="art-button-l"> </span>
           <span class="art-button-r"> </span>
           <input type="button" name="setAddress" id="setAddress" value="Mapa" class="readon art-button" onclick="initMap();" />
+        </span>&nbsp;
+      <?php } ?>
+      <?php if($cl['venta_cerrada'] == 'F' && $metodo == 'modificar') { ?>
+        <span class="art-button-wrapper">
+          <span class="art-button-l"> </span>
+          <span class="art-button-r"> </span>
+          <input 
+            type="button" name="c_cerrar_venta" id="c_cerrar_venta" value="Cerrar Ruta Venta" class="readon art-button" 
+            onclick="cerrar_venta()"
+          />
         </span>&nbsp;
       <?php } ?>
       <span class="art-button-wrapper">
