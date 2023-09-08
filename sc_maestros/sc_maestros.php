@@ -136,7 +136,6 @@ if (isset($_POST['metodo'])) {
 					VALUES ('$codigo', '$descripcion',
 					'$campo01', '$campo02', '$campo03', '$campo04', 
 					'$usuario', '$date', '$usuario','$date' , '$activo', $cod_ruta)";
-					echo $sql;
 				} else {
 
 					$sql = "INSERT INTO $tabla (codigo, descripcion, campo01, campo02, campo03, campo04,
@@ -169,18 +168,18 @@ if (isset($_POST['metodo'])) {
 								  status      = '$activo'";
 			if ($tabla == 'subruta_de_ventas') {
 				$sql = "UPDATE $tabla SET   
-						          codigo          = '$codigo',     descripcion    = '$descripcion',
+						          descripcion    = '$descripcion',
 								  campo01     = '$campo01',    campo02        = '$campo02',
 								  campo03     = '$campo03',    campo04        = '$campo04', 
 						          cod_us_mod  = '$usuario',    fec_us_mod     = '$date',
-								  status      = '$activo', cod_ruta=$cod_ruta";
+								  status      = '$activo', cod_ruta = $cod_ruta ";
 			}						  
 			if ($tabla == 'ruta_de_ventas') {
 				$sql = "UPDATE $tabla SET codigo = '$codigo',descripcion_global = '$descripcion_global', descripcion= '$descripcion',orden='$orden',
 								  campo01     = '$campo01',    campo02        = '$campo02',
 								  campo03     = '$campo03',    campo04        = '$campo04', 
 						          cod_us_mod  = '$usuario',    fec_us_mod     = '$date',
-								  status      = '$activo'";
+								  status      = '$activo' ";
 		       					  
 			}				  
 			if ($tabla == 'cargos') {
@@ -199,7 +198,7 @@ if (isset($_POST['metodo'])) {
 				$sql .= " , color = '$color', inicial = '$inicial', anula_vencimiento = '$anula_vencimiento' ";
 			}
 
-			$sql .= "WHERE codigo = '$codigo'";
+			$sql .= " WHERE codigo = '$codigo'";
 			$query = $bd->consultar($sql);
 
 			if ($tabla == 'nov_status_kanban' && $inicial = 'T') {
@@ -217,7 +216,6 @@ if (isset($_POST['metodo'])) {
 					$query = $bd->consultar($sql_concepto);
 				}
 			}
-			echo $codigo;
 			break;
 		case 'borrar':
 			$sql = "DELETE FROM $tabla WHERE  $tabla_id = '$codigo'";
