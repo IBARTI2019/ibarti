@@ -1,9 +1,9 @@
-<script language="javascript">
+<!-- <script language="javascript">
 	$("#cl_rutaventa_det_form").on('submit', function(evt) {
 		evt.preventDefault();
 		save_rutaventa("", "agregar");
 	});
-</script>
+</script> -->
 <?php
 require "../modelo/rutaventa_modelo.php";
 require "../../../../" . Leng;
@@ -16,11 +16,12 @@ $rutaventa_det   = $rutaventa->get_ruta_det($precliente);
 	<div class="tabla_sistema">
 		<table width="100%" border="0" align="center">
 			<tr>
-				<th width="30%">Ruta de Venta</th>
-				<th width="55%">Comentario:</th>
-				<th width="15%">Acciones</th>
+				<th width="20%">Ruta de Venta</th>
+				<th width="20%">Sub Ruta de Venta</th>
+				<th width="45%">Comentario:</th>
+				<th width="15%">Usuario</th>
 			</tr>
-			<tr>
+			<!-- <tr>
 				<td><select id="ruta_de_venta" required style="width:300px;">
 						<option value="">Seleccione...</option>
 						<?php
@@ -37,7 +38,7 @@ $rutaventa_det   = $rutaventa->get_ruta_det($precliente);
 						<span class="art-button-r"> </span>
 						<input type="submit" id="Ingresar_det" value="Ingresar" class="readon art-button" />
 					</span></td>
-			</tr>
+			</tr> -->
 			<?php
 			$i     = 0;
 			foreach ($rutaventa_det as $datos) {
@@ -47,6 +48,9 @@ $rutaventa_det   = $rutaventa->get_ruta_det($precliente);
 					'<tr>
 						<td>
 							' . $datos['rutaventa'] . '
+						</td>
+						<td>
+						' . $datos['subrutaventa'] . '
 						</td>
 						<td>
 							<textarea disabled="disabled" id="ruta_comentario" cols="60" rows="2">' . $datos['comentario'] . '</textarea>

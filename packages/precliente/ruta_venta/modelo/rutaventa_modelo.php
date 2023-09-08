@@ -31,8 +31,10 @@ class Rutaventa
 		$this->datos   = array();
 		$sql = " SELECT
 					a.codigo,
-					a.cod_rutaventa,
+					b.codigo cod_rutaventa,
 					b.descripcion rutaventa,
+					a.cod_subrutaventa,
+					c.descripcion subrutaventa,
 					a.cod_precliente,
 					a.comentario,
 					a.cod_us_ing,
@@ -43,9 +45,11 @@ class Rutaventa
 				FROM
 					precliente_rutaventa a,
 					ruta_de_ventas b,
+					subruta_de_ventas c,
 					men_usuarios
 				WHERE
-					a.cod_rutaventa = b.codigo
+					a.cod_subrutaventa = c.codigo
+					ANd c.cod_ruta = b.codigo
 					AND a.cod_us_ing = men_usuarios.codigo
 					AND a.cod_precliente ='$precliente'
 				ORDER BY a.codigo ASC";
@@ -60,7 +64,7 @@ class Rutaventa
 	public function get_ruta($precliente)
 	{
 		$this->datos   = array();
-		$sql = " SELECT DISTINCT
+		$sql = " SELECT
 					ruta_de_ventas.codigo,
 					ruta_de_ventas.descripcion,
 					ruta_de_ventas.orden 
