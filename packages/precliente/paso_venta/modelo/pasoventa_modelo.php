@@ -24,6 +24,7 @@ class Pasoventa
 					preclientes a
 				WHERE
 					a.status = 'T'
+					AND a.venta_cerrada = 'F'
 				ORDER BY 2 ASC";
 		$query = $this->bd->consultar($sql);
 
