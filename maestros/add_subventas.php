@@ -8,7 +8,7 @@ $archivo2 = "../inicio.php?area=maestros/Cons_$archivo&Nmenu=" . $_GET['Nmenu'] 
 
 if ($metodo == 'modificar') {
   $codigo = $_GET['codigo'];
-  $archivo2 = "../inicio.php?area=pestanas_maestro/maestrossubruta&Nmenu=" . $_GET['Nmenu'] . "&mod=" . $_GET['mod'] . "&titulo=Sub Ruta de Ventas&tb=".$tabla ."&archivo=".$archivo."&codigo=".$codigo."&metodo=modificar";
+  // $archivo2 = "../inicio.php?area=pestanas_maestro/maestrossubruta&Nmenu=" . $_GET['Nmenu'] . "&mod=" . $_GET['mod'] . "&titulo=Sub Ruta de Ventas&tb=".$tabla ."&archivo=".$archivo."&codigo=".$codigo."&metodo=modificar";
 
   $bd = new DataBase();
   if ($tabla == 'cargos') {
