@@ -52,7 +52,10 @@ if ($metodo == 'modificar') {
   
   $codigo_onblur = "";
   $descripcion = $result['descripcion'];
-  $descripcionglobal= $result['descripcion_global'];
+  if ($tabla == 'subruta_de_ventas' || $tabla == 'ruta_de_ventas') {
+    $descripcionglobal= $result['descripcion_global'];
+    $subruta =$result['subruta'];
+  }
   $campo01     = $result['campo01'];
   $campo02     = $result['campo02'];
   $campo03     = $result['campo03'];
@@ -84,7 +87,8 @@ if ($metodo == 'modificar') {
     $query_tipos = $bd->consultar($sql_tipos);
     $result = $bd->obtener_fila($query_tipos, 0);
     $codigo = $result['Codigo'] + 1;
-
+    $descripcionglobal= '';
+    $subruta = '';
   }
   if ($tabla == 'cargos') {
     $sql_tipos = "SELECT codigo, descripcion FROM tipos_cargo WHERE status = 'T';";
@@ -141,6 +145,14 @@ if ($metodo == 'modificar') {
     </tr>
    
     <?php
+    if ($tabla == 'ruta_de_ventas') {
+      echo  '<tr>
+            <td class="etiqueta">Descripcion Global: </td>
+            <td id="input03"><input type="text" name="descripcionglobal" maxlength="100" style="width:300px" value="'.$descripcionglobal.'" /><br />
+            <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
+            </td>
+          </tr>';
+    }
     if ($tabla == 'ficha_egreso_motivo') {
       echo  '<tr>
           <td class="etiqueta">Motivo:</td>
@@ -166,16 +178,6 @@ if ($metodo == 'modificar') {
             </td>    
           </tr>';
     }
-    if ($tabla == 'ruta_de_ventas' ) {
-    echo   '<tr>
-            <td class="etiqueta">Descripcion Global: </td>
-            <td id="input03"><input type="text" name="descripcionglobal" maxlength="100" style="width:300px" value="'.$descripcionglobal.'" /><br />
-             <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
-            </td>
-           </tr>' ;
-     
-    }
-      
     if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas' ) {
       echo '<tr>
       <td class="etiqueta">Orden:</td> 
