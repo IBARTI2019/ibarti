@@ -99,7 +99,8 @@ if ($metodo == 'modificar') {
   $codigo_orden = "Add_ajax_maestros(this.value, 'ajax/validar_orden.php', 'Contenedor', '$tabla')";
  
   $descripcion = '';
- 
+  $descripcionglobal= '';
+  $subruta = '';
   $kanban = 'F';
   $color = '';
   $inicial = 'F';
@@ -143,13 +144,14 @@ if ($metodo == 'modificar') {
         <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
     </tr>
+    <?php if ($tabla == 'ruta_de_ventas') { ?>
     <tr>
       <td class="etiqueta">Descripcion Global: </td>
       <td id="input03"><input type="text" name="descripcionglobal" maxlength="100" style="width:300px" value="<?php echo $descripcionglobal; ?>" /><br />
       <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
     </tr>
-    
+    <?php } ?>
     <tr>
       <td class="etiqueta">Orden:</td> 
       <td  id="input04" > <input type="number" name="orden" style="width:50px" value="<?php echo $orden; ?>" onchange="<?php echo $codigo_orden; ?> " />
