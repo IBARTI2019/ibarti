@@ -52,10 +52,10 @@ if ($metodo == 'modificar') {
   
   $codigo_onblur = "";
   $descripcion = $result['descripcion'];
-  if ($tabla == 'subruta_de_ventas' || $tabla == 'ruta_de_ventas') {
+  if ($tabla == 'ruta_de_ventas') {
     $descripcionglobal= $result['descripcion_global'];
-    $subruta =$result['subruta'];
   }
+  
   $campo01     = $result['campo01'];
   $campo02     = $result['campo02'];
   $campo03     = $result['campo03'];
@@ -80,23 +80,31 @@ if ($metodo == 'modificar') {
     $anula_vencimiento = $result['anula_vencimiento'];
   }
   $readonly = 'readonly="readonly"';
+  $codigo_orden = "Add_ajax_maestros(this.value, 'ajax/validar_orden.php', 'Contenedor', '$tabla')";
 } else {
+  $readonly = '';
   $codigo="";
-  if ($tabla == 'ruta_de_ventas' || $tabla == 'subruta_de_ventas') {
+  if ($tabla == 'ruta_de_ventas') {
     $sql_tipos = "SELECT max(codigo) as Codigo FROM ruta_de_ventas WHERE codigo > 0 ;";
     $query_tipos = $bd->consultar($sql_tipos);
     $result = $bd->obtener_fila($query_tipos, 0);
     $codigo = $result['Codigo'] + 1;
     $descripcionglobal= '';
+    $readonly = 'readonly="readonly"';
   }
   if ($tabla == 'subruta_de_ventas') {
-    $subruta = '';
+    $sql_tipos = "SELECT max(codigo) as Codigo FROM subruta_de_ventas WHERE codigo > 0 ;";
+    $query_tipos = $bd->consultar($sql_tipos);
+    $result = $bd->obtener_fila($query_tipos, 0);
+    $codigo = $result['Codigo'] + 1;
+    $readonly = 'readonly="readonly"';
   }
+
   if ($tabla == 'cargos') {
     $sql_tipos = "SELECT codigo, descripcion FROM tipos_cargo WHERE status = 'T';";
     $query_tipos = $bd->consultar($sql_tipos);
   }
-  $readonly = '';
+
   $orden = '';
   $codigo_onblur = "Add_ajax_maestros(this.value, 'ajax/validar_maestros.php', 'Contenedor', '$tabla')";
   $codigo_orden = "Add_ajax_maestros(this.value, 'ajax/validar_orden.php', 'Contenedor', '$tabla')";
@@ -183,7 +191,12 @@ if ($metodo == 'modificar') {
     if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas' ) {
       echo '<tr>
       <td class="etiqueta">Orden:</td> 
-      <td  id="input04" > <input type="number" name="orden" style="width:50px" value="' . $orden . '"  />
+      <td  id="input04" > <input type="number" name="orden" style="width:50px" value="' . $orden . '" ';
+
+      if($tabla == 'ruta_de_ventas' ){
+        echo ' onchange="'.$codigo_orden.'" ';
+      }
+      echo ' />
       <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>    
       </tr>';
