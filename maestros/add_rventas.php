@@ -110,6 +110,8 @@ if ($metodo == 'modificar') {
   $campo04     = '';
   $status      = 'T';
 }
+
+echo $sql;
 ?>
 <div id="Contenedor" class="mensaje"></div>
 <input type="hidden" name="codigos" value="<?php echo $codigo; ?>">
