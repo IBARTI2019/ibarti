@@ -82,12 +82,14 @@ if ($metodo == 'modificar') {
   $readonly = 'readonly="readonly"';
 } else {
   $codigo="";
-  if ($tabla == 'ruta_de_ventas') {
+  if ($tabla == 'ruta_de_ventas' || $tabla == 'subruta_de_ventas') {
     $sql_tipos = "SELECT max(codigo) as Codigo FROM ruta_de_ventas WHERE codigo > 0 ;";
     $query_tipos = $bd->consultar($sql_tipos);
     $result = $bd->obtener_fila($query_tipos, 0);
     $codigo = $result['Codigo'] + 1;
     $descripcionglobal= '';
+  }
+  if ($tabla == 'subruta_de_ventas') {
     $subruta = '';
   }
   if ($tabla == 'cargos') {
