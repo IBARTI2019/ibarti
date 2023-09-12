@@ -198,7 +198,6 @@ if (isset($_POST['metodo'])) {
 			}
 
 			$sql .= " WHERE codigo = '$codigo'";
-			echo $sql;
 			$query = $bd->consultar($sql);
 
 			if ($tabla == 'nov_status_kanban' && $inicial = 'T') {
