@@ -160,8 +160,7 @@ if (isset($_POST['metodo'])) {
 			
 			break;
 		case 'modificar':
-			$sql = "UPDATE $tabla SET   
-						          codigo          = '$codigo',     descripcion    = '$descripcion',
+			$sql = "UPDATE $tabla SET descripcion    = '$descripcion',
 								  campo01     = '$campo01',    campo02        = '$campo02',
 								  campo03     = '$campo03',    campo04        = '$campo04', 
 						          cod_us_mod  = '$usuario',    fec_us_mod     = '$date',
