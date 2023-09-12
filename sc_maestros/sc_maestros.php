@@ -165,7 +165,7 @@ if (isset($_POST['metodo'])) {
 								  campo01     = '$campo01',    campo02        = '$campo02',
 								  campo03     = '$campo03',    campo04        = '$campo04', 
 						          cod_us_mod  = '$usuario',    fec_us_mod     = '$date',
-								  status      = '$activo'";
+								  status      = '$activo' ";
 			if ($tabla == 'subruta_de_ventas') {
 				$sql = "UPDATE $tabla SET   
 						          descripcion    = '$descripcion',
@@ -199,6 +199,7 @@ if (isset($_POST['metodo'])) {
 			}
 
 			$sql .= " WHERE codigo = '$codigo'";
+			echo $sql;
 			$query = $bd->consultar($sql);
 
 			if ($tabla == 'nov_status_kanban' && $inicial = 'T') {
