@@ -17,7 +17,7 @@ $rutas = $pasoventa->get_rutas();
     <table width="75%" border="0" align="center">
         <td height="8" colspan="2" align="center"><hr></td>
         <tr>
-          <td class="etiqueta" ><?php echo $leng['precliente'];: ?></td>
+          <td class="etiqueta" ><?php echo $leng['precliente'];?>:</td>
           <td>
             <select name="precliente" id="paso_precliente" style="width:320px">
               <option value="">Seleccione...</option>
