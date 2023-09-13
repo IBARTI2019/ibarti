@@ -23,8 +23,8 @@ if (isset($_POST['proced'])) {
 		if (!$desc_p_pago) $desc_p_pago = 0;
 
 		$sql    = "$SELECT $proced('$metodo', '$codigo', '$cl_tipo', '$vendedor',
-									'$region', '$abrev', '$rif', '$nit',
-									'$nombre', '$telefono', '$fax', '$direccion',
+									'$region', '".strtoupper($abrev)."', '$rif', '$nit',
+									'".strtoupper($nombre)."', '$telefono', '$fax', '$direccion',
 									'$dir_entrega', '$email', '$website', '$contacto', '$observ',
 									'$juridico', '$contrib', '$lunes', '$martes',
 									'$miercoles', '$jueves', '$viernes', '$sabado',

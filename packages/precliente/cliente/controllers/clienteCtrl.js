@@ -184,6 +184,8 @@ function save_precliente() {
           $("#limpiar_precliente").click(function () {
             Cons_precliente(codigo, "modificar");
           });
+
+          Cons_precliente(codigo, "modificar");
           //Paso a false el input que almacena el valor que indica si el formulario a sufrido cambios
           //$("#c_cambios").val('false');
           //Desabilito el boton guardar hasta que el formulario sufra cambios
