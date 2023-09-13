@@ -2,7 +2,7 @@
 define("SPECIALCONSTANT", true);
 include_once('../../../../funciones/funciones.php');
 require  "../../../../autentificacion/aut_config.inc.php";
-require_once  "../../../../" . class_bdI;
+require_once  "../../../../" .class_bdI;
 
 class Pasoventa
 {
