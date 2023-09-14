@@ -69,6 +69,11 @@ if (isset($reporte)) {
 		<th> Estatu</th>
 		</tr>";
 		while ($row01 = $bd->obtener_num($query01)) {
+			if ($row01[12] == 'T'){
+				$activo ="Activo";
+			} else {
+                $activo="Inactivo";
+			}
 			echo "<tr><td > " . $row01[0] . " </td>
 			<td>" . $row01[1] . "</td>
 			<td>" . $row01[2] . "</td>
@@ -81,7 +86,8 @@ if (isset($reporte)) {
 			<td>" . $row01[9] . "</td>
 			<td>" . $row01[10] . "</td>
 			<td>" . $row01[11] . "</td>
-			<td>" . $row01[12] . "</td>
+			
+			<td>" . $activo . "</td>
 			</tr>";
 		}
 		echo "</table>";
@@ -125,6 +131,11 @@ if (isset($reporte)) {
 			} else {
 				echo "<tr class='class= odd_row'>";
 			}
+			if ($row[12] == 'T'){
+				$activo ="Activo";
+			} else {
+                $activo="Inactivo";
+			}
 			echo   "<td width='15%'>" . $row[0] . "</td>
 			<td width='20%'>" . $row[1] . "</td>
 			<td width='20%'>" . $row[2] . "</td>
@@ -137,7 +148,7 @@ if (isset($reporte)) {
 			<td width='35%'>" . $row[9] . "</td>
 			<td width='35%'>" . $row[10] . "</td>	
 			<td width='35%'>" . $row[11] . "</td>
-			<td width='35%'>" . $row[12] . "</td>
+			<td width='35%'>$activo</td>
 			</tr>";
 
 			$f++;
