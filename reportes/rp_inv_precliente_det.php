@@ -46,7 +46,7 @@ if (isset($reporte)) {
 	inner join clientes_tipos on preclientes.cod_cl_tipo=clientes_tipos.codigo
 	$where
 	ORDER BY 1 ASC";
-
+    
 	if ($reporte == 'excel' ) {
 		echo "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />";
 		header("Content-type: application/vnd.ms-excel");
@@ -90,7 +90,7 @@ if (isset($reporte)) {
 
 		require_once('../' . ConfigDomPdf);
 		$dompdf = new DOMPDF();
-
+        echo $dompdf ;
 		$query  = $bd->consultar($sql);
 
 		ob_start();
@@ -130,7 +130,13 @@ if (isset($reporte)) {
 			<td width='10%'>" . $row[3] . "</td>
 			<td width='10%'>" . $row[4] . "</td>
 			<td width='35%'>" . $row[5] . "</td>
-						
+			<td width='35%'>" . $row[6] . "</td>
+			<td width='35%'>" . $row[7] . "</td>
+			<td width='35%'>" . $row[8] . "</td>
+			<td width='35%'>" . $row[9] . "</td>
+			<td width='35%'>" . $row[10] . "</td>	
+			<td width='35%'>" . $row[11] . "</td>
+			<td width='35%'>" . $row[12] . "</td>
 			</tr>";
 
 			$f++;
