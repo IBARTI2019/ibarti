@@ -18,6 +18,7 @@ $archivo         = "rp_cs_precliente_" . $fecha . "";
 $titulo          = "  REPORTE DE PRE-CLIENTES \n";
 
 if (isset($reporte)) {
+       
 
 	$where = "";
 
@@ -87,12 +88,12 @@ if (isset($reporte)) {
 	}
 
 	if ($reporte == 'pdf') {
-
+     
+        
 		require_once('../' . ConfigDomPdf);
 		$dompdf = new DOMPDF();
-        echo $dompdf ;
 		$query  = $bd->consultar($sql);
-
+        
 		ob_start();
 
 		require('../' . PlantillaDOM . '/header_ibarti_2.php');
