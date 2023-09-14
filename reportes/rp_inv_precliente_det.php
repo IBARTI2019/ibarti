@@ -40,7 +40,7 @@ if (isset($reporte)) {
 	clientes_tipos.descripcion AS cliente_tipo,
 	preclientes.rif, IF(preclientes.latitud, 'SI', 'NO') geolocalizacion_cliente,
 	preclientes.latitud latitud_cliente,
-	preclientes.longitud longitud_cliente,preclientes.status
+	preclientes.longitud longitud_cliente,preclientes.direccion,preclientes.dir_entrega,preclientes.email,preclientes.status
 	from preclientes
 	inner JOIN regiones ON preclientes.cod_region = regiones.codigo
 	inner join clientes_tipos on preclientes.cod_cl_tipo=clientes_tipos.codigo
@@ -62,6 +62,9 @@ if (isset($reporte)) {
 		<th> Rif </th><th> " . $leng['rif'] . " </th>
 		<th> Latitud</th>
 		<th> Longitud</th>
+		<th> Direccion</th>
+		<th> Direccion de Entrega</th>
+		<th> Email</th>
 		<th> Estatu</th>
 		</tr>";
 		while ($row01 = $bd->obtener_num($query01)) {
@@ -75,6 +78,9 @@ if (isset($reporte)) {
 			<td>" . $row01[7] . "</td>
 			<td>" . $row01[8] . "</td>
 			<td>" . $row01[9] . "</td>
+			<td>" . $row01[10] . "</td>
+			<td>" . $row01[11] . "</td>
+			<td>" . $row01[12] . "</td>
 			</tr>";
 		}
 		echo "</table>";
@@ -96,13 +102,19 @@ if (isset($reporte)) {
 		<table>
 		<tbody>
 		<tr style='background-color: #4CAF50;'>
-		<th width='15%'>" . $leng['estado'] . "</th>
-		<th width='20%'>" . $leng['cliente'] . "</th>
-		<th width='20%'>" . $leng['ubicacion'] . "</th>
-		<th width='10%'>Puesto</th>
-		<th width='10%'>Teléfono</th>
-		<th width='35%'>Dirección</th>
-			
+		<th width='15%'>Region</th>
+		<th width='15%'>Nombre</th>
+		<th width='20%'>Telefono</th>
+		<th width='20%'>Fax</th>
+		<th width='10%'>Tipo</th>
+		<th width='10%'>Rif</th>
+		<th width='10%'>Nit</th>
+		<th width='35%'>Latitud</th>
+		<th width='20%'>Longitud</th>
+		<th width='20%'>Direccion</th>
+		<th width='20%'>Direccion de Entrega</th>
+		<th width='20%'>Email</th>
+		<th width='20%'>Estatu</th>
 		</tr>";
 
 		$f = 0;
@@ -112,12 +124,12 @@ if (isset($reporte)) {
 			} else {
 				echo "<tr class='class= odd_row'>";
 			}
-			echo   "<td width='15%'>" . $row[1] . "</td>
-			<td width='20%'>" . $row[3] . "</td>
-			<td width='20%'>" . $row[7] . "</td>
-			<td width='10%'>" . $row[15] . "</td>
-			<td width='10%'>" . $row[11] . "</td>
-			<td width='35%'>" . $row[13] . "</td>
+			echo   "<td width='15%'>" . $row[0] . "</td>
+			<td width='20%'>" . $row[1] . "</td>
+			<td width='20%'>" . $row[2] . "</td>
+			<td width='10%'>" . $row[3] . "</td>
+			<td width='10%'>" . $row[4] . "</td>
+			<td width='35%'>" . $row[5] . "</td>
 						
 			</tr>";
 
