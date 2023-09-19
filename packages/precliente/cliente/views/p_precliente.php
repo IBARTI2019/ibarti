@@ -268,7 +268,7 @@
       <tr>
         <td class="etiqueta">Cargo Responsable (Contacto):</td>
         <td><textarea id="c_responsable" cols="38" rows="1"><?php echo $cl['responsable']; ?></textarea></td>
-        <td class="etiqueta">Nombre de Empresa que presta el servicio actualmente:</td>
+        <td class="etiqueta">Empresa de seguridad actual:</td>
         <td><textarea id="c_empresa_actual" cols="38" rows="1"><?php echo $cl['empresa_actual']; ?></textarea></td>
       </tr>
       <tr>
