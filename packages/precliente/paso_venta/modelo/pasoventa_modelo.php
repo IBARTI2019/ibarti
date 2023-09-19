@@ -38,28 +38,19 @@ class Pasoventa
 	{
 		$this->datos   = array();
 		$sql = " SELECT
-				ruta_de_ventas.codigo,
-				ruta_de_ventas.descripcion,
-				ruta_de_ventas.orden 
-			FROM
-				ruta_de_ventas 
-			WHERE
-				ruta_de_ventas.`status` = 'T'
-				AND ruta_de_ventas.codigo >= (
-						SELECT
-						subruta_de_ventas.cod_ruta 
-					FROM
-						precliente_rutaventa,
-						subruta_de_ventas 
-					WHERE
-						cod_precliente = '$precliente' 
-						AND precliente_rutaventa.cod_subrutaventa = subruta_de_ventas.codigo 
-					ORDER BY 1 DESC
-					LIMIT 1
-				)
-			ORDER BY
-				ruta_de_ventas.orden ASC
-			LIMIT 2; ";
+					ruta_de_ventas.codigo,
+					ruta_de_ventas.descripcion,
+					ruta_de_ventas.orden 
+				FROM
+					ruta_de_ventas 
+				WHERE
+					ruta_de_ventas.`status` = 'T' 
+					AND (
+						ruta_de_ventas.codigo >= ( SELECT subruta_de_ventas.cod_ruta FROM precliente_rutaventa, subruta_de_ventas WHERE cod_precliente = '$precliente' AND precliente_rutaventa.cod_subrutaventa = subruta_de_ventas.codigo ORDER BY 1 DESC LIMIT 1 ) 
+					OR ruta_de_ventas.codigo NOT IN ( SELECT subruta_de_ventas.cod_ruta FROM precliente_rutaventa, subruta_de_ventas WHERE cod_precliente = '$precliente' AND precliente_rutaventa.cod_subrutaventa = subruta_de_ventas.codigo)) 
+				ORDER BY
+					ruta_de_ventas.orden ASC 
+					LIMIT 2; ";
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query)) {
 			$this->datos[] = $datos;
