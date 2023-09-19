@@ -9,7 +9,6 @@ require "../modelo/pasoventa_modelo.php";
 require "../../../../" . Leng;
 $pasoventa = new Pasoventa;
 $preclientes = $pasoventa->get_preclientes();
-$rutas = $pasoventa->get_rutas();
 ?>
 
 <div>
@@ -19,7 +18,7 @@ $rutas = $pasoventa->get_rutas();
         <tr>
           <td class="etiqueta" ><?php echo $leng['precliente'];?>:</td>
           <td>
-            <select name="precliente" id="paso_precliente" style="width:320px">
+            <select name="precliente" id="paso_precliente" style="width:320px" onchange="getRutas(this.value)">
               <option value="">Seleccione...</option>
               <?php
                 foreach ($preclientes as  $datos) {
@@ -35,11 +34,6 @@ $rutas = $pasoventa->get_rutas();
           <td>
             <select name="ruta" id="paso_ruta" style="width:320px" onchange="getSubRutas(this.value)">
               <option value="">Seleccione...</option>
-                <?php
-                  foreach ($rutas as  $datos) {
-                    echo '<option value="' . $datos[0] . '">' . $datos[1] . '</option>';
-                  }
-                ?>
             </select>
           </td>
         </tr>

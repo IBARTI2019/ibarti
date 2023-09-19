@@ -13,7 +13,9 @@ if ($metodo == 'modificar') {
   $sql = " SELECT $tabla.codigo, $tabla.descripcion,
     $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
     $tabla.status, $tabla.cod_ruta, ruta_de_ventas.descripcion as ruta
-    FROM $tabla  inner join ruta_de_ventas on $tabla.cod_ruta=ruta_de_ventas.codigo  WHERE $tabla.codigo = '$codigo' ";
+    FROM $tabla  inner join ruta_de_ventas on $tabla.cod_ruta=ruta_de_ventas.codigo 
+     WHERE $tabla.codigo = '$codigo'
+     ORDER BY ruta_de_ventas.orden ASC, $tabla.codigo ASC; ";
   
   $query = $bd->consultar($sql);
   $result = $bd->obtener_fila($query, 0);
@@ -67,7 +69,7 @@ if ($metodo == 'modificar') {
      				   <option value="<?php echo $cod_ruta;?>"><?php echo $ruta;?></option>
 	        <?php  	$sql = " SELECT codigo, descripcion FROM ruta_de_ventas
 			                  WHERE status = 'T' AND ruta_de_ventas.codigo <> '$cod_ruta'
-						   ORDER BY 2 ASC ";
+						   ORDER BY ruta_de_ventas.orden ASC ";
 		            $query = $bd->consultar($sql);
             		while($datos=$bd->obtener_fila($query,0)){
 		    ?>

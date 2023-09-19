@@ -34,7 +34,25 @@ function getSubRutas(cod_ruta) {
 		url: 'packages/precliente/paso_venta/views/optionsSubRutas.php',
 		type: 'post',
 		success: function (response) {
+			console.log(response);
 			$("#paso_subruta").html(response);
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			alert(xhr.status);
+			alert(thrownError);
+		}
+	});
+}
+
+function getRutas(precliente) {
+	var usuario = $("#usuario").val();
+	var parametros = { "precliente": precliente, "usuario": usuario };
+	$.ajax({
+		data: parametros,
+		url: 'packages/precliente/paso_venta/views/optionsRutas.php',
+		type: 'post',
+		success: function (response) {
+			$("#paso_ruta").html(response);
 		},
 		error: function (xhr, ajaxOptions, thrownError) {
 			alert(xhr.status);

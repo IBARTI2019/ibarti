@@ -261,7 +261,7 @@
       </tr>
       <tr>
         <td class="etiqueta">Direcci&oacute;n:</td>
-        <td><textarea id="c_direccion" cols="38" rows="4" maxlength="300" required><?php echo $cl['direccion']; ?></textarea>
+        <td><textarea id="c_direccion" cols="38" rows="4" maxlength="300"><?php echo $cl['direccion']; ?></textarea>
         <td class="etiqueta">Observación:</td>
         <td><textarea id="c_observ" cols="38" rows="4"><?php echo $cl['observacion']; ?></textarea></td>
       </tr>
