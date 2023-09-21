@@ -15,7 +15,7 @@ $estatu          = $_POST['estatu'];
 $reporte         = $_POST['reporte'];
 
 $archivo         = "rp_cs_precliente_" . $fecha . "";
-$titulo          = "  REPORTE DE PRE-CLIENTES \n";
+$titulo          = "  Reporte de ".$leng["precliente"]." \n";
 
 if (isset($reporte)) {
        
@@ -245,19 +245,16 @@ if (isset($reporte)) {
 		<table>
 		<tbody>
 		<tr style='background-color: #4CAF50;'>
-		<th width='15%'>Region</th>
-		<th width='15%'>Nombre</th>
-		<th width='20%'>Telefono</th>
-		<th width='20%'>Fax</th>
-		<th width='10%'>Tipo</th>
-		<th width='10%'>Rif</th>
-		<th width='10%'>Nit</th>
-		<th width='35%'>Latitud</th>
-		<th width='20%'>Longitud</th>
-		<th width='20%'>Direccion</th>
-		<th width='20%'>Direccion de Entrega</th>
-		<th width='20%'>Email</th>
-		<th width='20%'>Estatu</th>
+			<th width='10%'>Región</th>
+			<th width='15%'>Nombre</th>
+			<th width='10%'>Teléfono</th>
+			<th width='10%'>Fax</th>
+			<th width='10%'>Tipo</th>
+			<th width='10%'>Rif</th>
+			<th width='10%'>Nit</th>
+			<th width='15%'>Dirección</th>
+			<th width='5%'>Correo</th>
+			<th width='5%'>Estatus</th>
 		</tr>";
 
 		$f = 0;
@@ -267,24 +264,17 @@ if (isset($reporte)) {
 			} else {
 				echo "<tr class='class= odd_row'>";
 			}
-			if ($row[12] == 'T'){
-				$activo ="Activo";
-			} else {
-                $activo="Inactivo";
-			}
-			echo   "<td width='15%'>" . $row[0] . "</td>
-			<td width='20%'>" . $row[1] . "</td>
-			<td width='20%'>" . $row[2] . "</td>
-			<td width='10%'>" . $row[3] . "</td>
-			<td width='10%'>" . $row[4] . "</td>
-			<td width='35%'>" . $row[5] . "</td>
-			<td width='35%'>" . $row[6] . "</td>
-			<td width='35%'>" . $row[7] . "</td>
-			<td width='35%'>" . $row[8] . "</td>
-			<td width='35%'>" . $row[9] . "</td>
-			<td width='35%'>" . $row[10] . "</td>	
-			<td width='35%'>" . $row[11] . "</td>
-			<td width='35%'>$activo</td>
+			echo   "
+			<td>" . $row[1] . "</td>
+			<td>" . $row[10] . "</td>
+			<td>" . $row[11] . "</td>
+			<td>" . $row[12] . "</td>
+			<td>" . $row[3] . "</td>
+			<td>" . $row[8] . "</td>
+			<td>" . $row[9] . "</td>
+			<td>" . $row[13] . "</td>
+			<td>" . $row[15] . "</td>	
+			<td>" . $row[45] . "</td>
 			</tr>";
 
 			$f++;
