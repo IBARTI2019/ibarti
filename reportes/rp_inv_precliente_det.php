@@ -40,9 +40,10 @@ if (isset($reporte)) {
 	$sql = " SELECT regiones.descripcion AS region,preclientes.nombre AS cliente,preclientes.telefono AS telefono,preclientes.fax AS fax,
 	clientes_tipos.descripcion AS cliente_tipo,
 	preclientes.rif, IF(preclientes.latitud, 'SI', 'NO') geolocalizacion_cliente,
-	preclientes.latitud latitud_cliente,
-	preclientes.longitud longitud_cliente,preclientes.direccion,preclientes.dir_entrega,preclientes.email,preclientes.status
+	preclientes.direccion,preclientes.dir_entrega,preclientes.email,
+	preclientes.venta_cerrada,preclientes.fec_venta_cerrada,CONCAT(men_usuarios.nombre,' ',men_usuarios.apellido) us_venta_cerrada,preclientes.status
 	from preclientes
+	LEFT JOIN men_usuarios ON preclientes.cod_us_venta_cerrada = men_usuarios.codigo
 	inner JOIN regiones ON preclientes.cod_region = regiones.codigo
 	inner join clientes_tipos on preclientes.cod_cl_tipo=clientes_tipos.codigo
 	$where
@@ -61,15 +62,16 @@ if (isset($reporte)) {
 		<th> Fax</th>
 		<th> Tipo </th>
 		<th> Rif </th><th> " . $leng['rif'] . " </th>
-		<th> Latitud</th>
-		<th> Longitud</th>
 		<th> Direccion</th>
 		<th> Direccion de Entrega</th>
 		<th> Email</th>
+		<th> Venta Cerrada</th>
+		<th> Fecha Venta</th>
+		<th> Vendedor</th>
 		<th> Estatu</th>
 		</tr>";
 		while ($row01 = $bd->obtener_num($query01)) {
-			if ($row01[12] == 'T'){
+			if ($row01[13] == 'T'){
 				$activo ="Activo";
 			} else {
                 $activo="Inactivo";
@@ -86,7 +88,7 @@ if (isset($reporte)) {
 			<td>" . $row01[9] . "</td>
 			<td>" . $row01[10] . "</td>
 			<td>" . $row01[11] . "</td>
-			
+			<td>" . $row01[12] . "</td>
 			<td>" . $activo . "</td>
 			</tr>";
 		}
