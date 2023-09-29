@@ -20,7 +20,7 @@ ficha_egreso.fec_inicio, ficha_egreso.fec_culminacion,
 ficha_egreso.dia_p_legal, ficha_egreso.dia_p_cumplido,
 ficha_egreso.calculo, ficha_egreso.calculo_status,
 ficha_egreso.fec_calculo, ficha_egreso.fec_posible_pago,
-ficha_egreso.fec_pago, ficha_egreso.cheque,
+ficha_egreso.fec_pago, ficha_egreso.soporte_pago, ficha_egreso.cheque,
 ficha_egreso.banco, ficha_egreso.importe,
 ficha_egreso.entrega_uniforme, ficha_egreso.observacion,
 ficha_egreso.observacion2, 
@@ -31,6 +31,9 @@ WHERE ficha_egreso.cod_ficha = '$codigo' ";
 
 $query = $bd->consultar($sql);
 $result = $bd->obtener_fila($query, 0);
+
+$img_src = 	'<img id="imgSoporte" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
+
 if (count($result) == 0) {
 
   $metodo = "agregar";
@@ -49,6 +52,7 @@ if (count($result) == 0) {
   $fec_posible_pago = '';
   $fec_pago       = '';
   $cheque         = '';
+  $soporte_pago         = '';
   $banco          = '';
   $importe        = '';
   $entrega_uniforme = '';
@@ -86,6 +90,14 @@ if (count($result) == 0) {
   $observacion2   = $result['observacion2'];
   $cod_motivo_egreso   =  $result['cod_motivo_egreso'];
   $motivo_egreso   =  $result['motivo_egreso'];
+
+  $img_link = $result['soporte_pago'];
+  if ($img_link) {
+    $img_ext =  imgExtension($img_link);
+    $img_src = 	'<img id="imgSoporte" src="' . $img_ext . '" onclick="openModalDocument(\'' . $link . '\')" width="22px" height="22px"  />';
+  } else {
+    $img_src = 	'<img id="imgSoporte" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
+  }
 }
 ?>
 <form action="scripts/sc_ficha_05.php" method="post" name="add" id="add">
@@ -238,7 +250,16 @@ if (count($result) == 0) {
       </tr>
       <tr>
         <td class="etiqueta">Cheque/Transferencia N&ordm;:</td>
-        <td id="input03_5"><input type="text" name="cheque" maxlength="20" size="20" value="<?php echo $cheque; ?>" /> <br />
+        <td id="input03_5">
+          <div>
+            <input type="text" name="cheque" maxlength="20" size="20" value="<?php echo $cheque; ?>" />
+            <?php 
+            if($metodo == 'modificar'){
+              echo $img_src . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$img_link.'\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
+            }
+            ?> 
+          </div>
+          <br />
           <span class="textfieldRequiredMsg">El Campo es Requerido.</span>
           <span class="textfieldMinCharsMsg">Debe Escribir 4 caracteres.</span>
         </td>
@@ -326,12 +347,60 @@ if (count($result) == 0) {
       <input name="metodo" type="hidden" value="<?php echo $metodo; ?>" />
       <input name="pestana" type="hidden" value="egreso" />
       <input name="proced" id="proced" type="hidden" value="<?php echo $proced; ?>" />
-      <input name="codigo" type="hidden" value="<?php echo $codigo; ?>" />
+      <input id="codigo" name="codigo" type="hidden" value="<?php echo $codigo; ?>" />
       <input type="hidden" name="usuario" id="usuario" value="<?php echo $usuario; ?>" />
       <input name="href" type="hidden" value="../inicio.php?area=<?php echo $archivo ?>" />
     </div>
   </fieldset>
 </form>
+
+<div id="myModalSoporte" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="cerrarModalDocument()">&times;</span>
+      <span id='titleDocument'>Documento</span>
+    </div>
+    <div class="modal-body">
+      <div id="modal_documento_cont">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="myModalSubir" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="cerrarModalSubir()">&times;</span>
+      <span id='titleDocument'>Subir Soporte de Pago</span>
+    </div>
+    <div class="modal-body">
+      <div>
+      <form enctype="multipart/form-data" class="formulario">
+        <table width="100%">
+          <tr>
+            <td width="100%">
+              <div id="contenedorImagen" align="center">
+                <img id="fotografia_subir" class="fotografia" />
+              </div>
+              <div align="center">
+                <input name="images" type="file" id="imagen_subir" value="Subir Imagen" /><br/><br/><br/><br/>
+                <span class="art-button-wrapper" id="botonSubir">
+                  <span class="art-button-l"> </span>
+                  <span class="art-button-r"> </span> 
+                  <input type="button" id="subir_img" value="Subir Soporte" class="readon art-button" onClick="subirSoporteToS3()" />
+                </span>
+              </div>
+              <br/>
+              <br/>
+            </td>
+          </tr>
+        </table>   
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script language="javascript" type="text/javascript">
   function funcionSubmit(event) {
     var uno = $('#fec_min').val();
@@ -498,5 +567,139 @@ if (count($result) == 0) {
         alert(thrownError);
       }
     });
+  }
+
+  function openModalDocument(link) {	
+		$("#myModalSoporte").show();
+		var contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+		$("#modal_documento_cont").html(contenido);
+	}
+  
+  function cerrarModalDocument(refresh) {
+		$("#myModalSoporte").hide();
+	}
+
+  function openModalSubirSoporte(ficha, link) {	
+    if(link){
+      $("#fotografia_subir").attr("src", link);
+      $("#fotografia_subir").show();
+    }else{
+      $("#fotografia_subir").hide();
+    }
+		$("#myModalSubir").show();
+	}
+
+  function cerrarModalSubir(refresh) {
+		$("#myModalSubir").hide();
+	}
+
+  function subirSoporteToS3() {
+    var soporte = document.getElementById('imagen_subir').files[0];
+    if(soporte){
+      var ficha = $("#codigo").val();
+      var config = [
+        {
+          folder:  'soportes_de_liquidacion',
+          key: ficha
+        }
+      ]
+      var formData = new FormData();
+      var data =  {
+        images: soporte,
+        config
+      };
+      formData.append("images", soporte);
+      formData.append("config", JSON.stringify(config));
+      return;
+      //hacemos la petici�n ajax  
+      $.ajax({
+          url: 'http://194.163.161.64:9090/docs/upload/',
+          type: 'POST',
+          // Form data
+          //datos del formulario
+          data: formData,
+          //necesario para subir archivos via ajax
+          cache: false,
+          contentType: false,
+          processData: false,
+          //mientras enviamos el archivo
+          beforeSend: function () {
+              message = $("<span class='before'>Subiendo la imagen, por favor espere...</span>");
+              showMessage(message)
+          },
+          //una vez finalizado correctamente
+          success: function (data) {
+            uploadActuliazarS3(data.data.image[0]);
+          },
+          //si ha ocurrido un error
+          error: function () {
+            alert('Ha ocurrido un error.');
+          }
+      });
+    }else{
+      alert('Debe seleccionar el archivo de soporte')
+    }
+  }
+
+  function uploadActuliazarS3(url) {
+    var ficha = $("#codigo").val();
+    var usuario = $("#usuario").val();
+    var parametros = {
+      "link": url,
+      "ficha": ficha,
+      "usuario": usuario
+    };
+
+    $.ajax({
+        url: 'upload/soportes.php',
+        type: 'POST',
+        data: parametros,
+        beforeSend: function () {},
+        success: function (data) {
+          alert('La imagen ha subido correctamente. Actualizando.');
+          const img = getFileExtension(url);
+          $("#imgSoporte").attr("src", img);
+          $('#imgSoporte').unbind('click');
+          $("#imgSoporte").click(function () {
+            openModalDocument(url);
+          };
+          cerrarModalSubir();
+        },
+        //si ha ocurrido un error
+        error: function () {
+          alert('Ha ocurrido un error.');  
+        }
+    });
+  };
+
+  function getFileExtension(link) {
+    const ext = link.slice((link.lastIndexOf(".") - 1 >>> 0) + 2);
+    img_ext = '';
+    switch (ext) {
+      case 'png': case 'jpg': case 'jpeg': case 'gif':
+        img_ext = $link;
+      break;
+
+      case 'pdf':
+        img_ext = "imagenes/pdf.gif";
+      break;
+
+      case 'doc': case 'docx':
+        img_ext = "imagenes/word.gif";
+      break;
+
+      case 'ppt':
+        img_ext = "imagenes/powerpoint.png";
+      break;
+
+      case 'xls':
+        img_ext = "imagenes/excel.gif";
+      break;
+
+      default:
+        img_ext = link;
+      break;
+    }
+    return img_ext;
   }
 </script>
