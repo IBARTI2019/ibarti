@@ -13,6 +13,10 @@ $result = $bd->obtener_fila($query, 0);
 $fecha_min = '';
 $fecha_min = conversion($result['fecha']);
 
+$sql_control = "SELECT ficha_activo FROM control;";
+$query_control = $bd->consultar($sql_control);
+$result_control = $bd->obtener_fila($query_control, 0);
+
 $sql = " SELECT ficha_egreso.cod_ficha, ficha_egreso.fec_egreso,
 ficha_egreso.motivo, ficha_egreso.cod_color,
 ficha_egreso.preaviso, 
@@ -94,7 +98,7 @@ if (count($result) == 0) {
   $img_link = $result['soporte_pago'];
   if ($img_link) {
     $img_ext =  imgExtension($img_link);
-    $img_src = 	'<img id="imgSoporte" src="' . $img_ext . '" onclick="openModalDocument(\'' . $link . '\')" width="22px" height="22px"  />';
+    $img_src = 	'<img id="imgSoporte" src="' . $img_ext . '" onclick="openModalDocument(\'' . $img_link . '\')" width="22px" height="22px"  />';
   } else {
     $img_src = 	'<img id="imgSoporte" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
   }
@@ -251,19 +255,24 @@ if (count($result) == 0) {
       <tr>
         <td class="etiqueta">Cheque/Transferencia N&ordm;:</td>
         <td id="input03_5">
-          <div>
-            <input type="text" name="cheque" maxlength="20" size="20" value="<?php echo $cheque; ?>" />
-            <?php 
-            if($metodo == 'modificar'){
-              echo $img_src . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$img_link.'\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
-            }
-            ?> 
-          </div>
+          <input type="text" name="cheque" maxlength="20" size="20" value="<?php echo $cheque; ?>" />
           <br />
           <span class="textfieldRequiredMsg">El Campo es Requerido.</span>
           <span class="textfieldMinCharsMsg">Debe Escribir 4 caracteres.</span>
         </td>
       </tr>
+      <?php 
+        if($metodo == 'modificar' && $result_control["ficha_activo"] != $cod_status){
+      ?>
+      <tr>
+        <td class="etiqueta">Soporte de Liquidación:</td>
+        <td>
+        <?php 
+          echo $img_src . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$img_link.'\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
+        ?> 
+        </td>
+      </tr>
+      <?php } ?> 
       <tr>
         <td class="etiqueta">Banco:</td>
         <td id="input04_5"><input type="text" name="banco" size="20" value="<?php echo $banco; ?>" /><br />
@@ -361,7 +370,7 @@ if (count($result) == 0) {
       <span id='titleDocument'>Documento</span>
     </div>
     <div class="modal-body">
-      <div id="modal_documento_cont">
+      <div id="modal_soporte_cont">
       </div>
     </div>
   </div>
@@ -572,7 +581,7 @@ if (count($result) == 0) {
   function openModalDocument(link) {	
 		$("#myModalSoporte").show();
 		var contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
-		$("#modal_documento_cont").html(contenido);
+		$("#modal_soporte_cont").html(contenido);
 	}
   
   function cerrarModalDocument(refresh) {
@@ -610,7 +619,7 @@ if (count($result) == 0) {
       };
       formData.append("images", soporte);
       formData.append("config", JSON.stringify(config));
-      return;
+
       //hacemos la petici�n ajax  
       $.ajax({
           url: 'http://194.163.161.64:9090/docs/upload/',
@@ -629,7 +638,11 @@ if (count($result) == 0) {
           },
           //una vez finalizado correctamente
           success: function (data) {
-            uploadActuliazarS3(data.data.image[0]);
+            if(data.error == true){
+              alert('Ha ocurrido un error.');
+            }else{
+              uploadActuliazarS3(data.data.image[0]);
+            }
           },
           //si ha ocurrido un error
           error: function () {
@@ -662,7 +675,7 @@ if (count($result) == 0) {
           $('#imgSoporte').unbind('click');
           $("#imgSoporte").click(function () {
             openModalDocument(url);
-          };
+          });
           cerrarModalSubir();
         },
         //si ha ocurrido un error
@@ -670,14 +683,14 @@ if (count($result) == 0) {
           alert('Ha ocurrido un error.');  
         }
     });
-  };
+  }
 
   function getFileExtension(link) {
     const ext = link.slice((link.lastIndexOf(".") - 1 >>> 0) + 2);
     img_ext = '';
     switch (ext) {
       case 'png': case 'jpg': case 'jpeg': case 'gif':
-        img_ext = $link;
+        img_ext = link;
       break;
 
       case 'pdf':

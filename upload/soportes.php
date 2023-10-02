@@ -14,10 +14,10 @@ if(isset($_SESSION['usuario_cod'])){
 
 $sql = "UPDATE ficha_egreso SET       
 	soporte_pago = '$link',
-	cod_us_soporte_pago = usuario,       
+	cod_us_soporte_pago = '$usuario',       
 	fec_us_soporte_pago = CURRENT_DATE
 WHERE cod_ficha   = '$ficha'; ";
 
 $query = $bd->consultar($sql);
-	
+echo $sql;	
 ?>
