@@ -398,6 +398,9 @@ if (count($result) == 0) {
                   <span class="art-button-r"> </span> 
                   <input type="button" id="subir_img" value="Subir Soporte" class="readon art-button" onClick="subirSoporteToS3()" />
                 </span>
+                <div id="msgSubiendo" style="display: none;">
+                  <img src='imagenes/loading.gif'/>Subiendo el soporte, por favor espere...
+                </div>
               </div>
               <br/>
               <br/>
@@ -633,8 +636,8 @@ if (count($result) == 0) {
           processData: false,
           //mientras enviamos el archivo
           beforeSend: function () {
-              message = $("<span class='before'>Subiendo la imagen, por favor espere...</span>");
-              showMessage(message)
+              $("#botonSubir").hide();
+              $("#msgSubiendo").show();
           },
           //una vez finalizado correctamente
           success: function (data) {
@@ -646,6 +649,8 @@ if (count($result) == 0) {
           },
           //si ha ocurrido un error
           error: function () {
+            $("#botonSubir").show();
+            $("#msgSubiendo").hide();
             alert('Ha ocurrido un error.');
           }
       });
@@ -669,6 +674,8 @@ if (count($result) == 0) {
         data: parametros,
         beforeSend: function () {},
         success: function (data) {
+          $("#botonSubir").show();
+          $("#msgSubiendo").hide();
           alert('La imagen ha subido correctamente. Actualizando.');
           const img = getFileExtension(url);
           $("#imgSoporte").attr("src", img);
@@ -680,6 +687,8 @@ if (count($result) == 0) {
         },
         //si ha ocurrido un error
         error: function () {
+          $("#botonSubir").show();
+          $("#msgSubiendo").hide();
           alert('Ha ocurrido un error.');  
         }
     });
