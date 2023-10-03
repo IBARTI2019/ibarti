@@ -98,7 +98,7 @@ if (count($result) == 0) {
   $img_link = $result['soporte_pago'];
   if ($img_link) {
     $img_ext =  imgExtension($img_link);
-    $img_src = 	'<img id="imgSoporte" src="' . $img_ext . '" onclick="openModalDocument(\'' . $img_link . '\')" width="22px" height="22px"  />';
+    $img_src = 	'<img id="imgSoporte" src="' . $img_ext . '" onclick="openModalSoporte(\'' . $img_link . '\')" width="22px" height="22px"  />';
   } else {
     $img_src = 	'<img id="imgSoporte" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
   }
@@ -366,7 +366,7 @@ if (count($result) == 0) {
 <div id="myModalSoporte" class="modal">
   <div class="modal-content">
     <div class="modal-header">
-      <span class="close" onclick="cerrarModalDocument()">&times;</span>
+      <span class="close" onclick="cerrarModalSoporte()">&times;</span>
       <span id='titleDocument'>Documento</span>
     </div>
     <div class="modal-body">
@@ -578,13 +578,13 @@ if (count($result) == 0) {
     });
   }
 
-  function openModalDocument(link) {	
+  function openModalSoporte(link) {	
 		$("#myModalSoporte").show();
 		var contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
 		$("#modal_soporte_cont").html(contenido);
 	}
   
-  function cerrarModalDocument(refresh) {
+  function cerrarModalSoporte(refresh) {
 		$("#myModalSoporte").hide();
 	}
 
@@ -674,7 +674,7 @@ if (count($result) == 0) {
           $("#imgSoporte").attr("src", img);
           $('#imgSoporte').unbind('click');
           $("#imgSoporte").click(function () {
-            openModalDocument(url);
+            openModalSoporte(url);
           });
           cerrarModalSubir();
         },
