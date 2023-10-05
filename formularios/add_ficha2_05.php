@@ -274,18 +274,18 @@ if (count($result) == 0) {
         if($metodo == 'modificar' && $result_control["ficha_activo"] != $cod_status){
       ?>
       <tr>
-        <td class="etiqueta">Soporte de Liquidación:</td>
-        <td>
-        <?php 
-          echo $img_soporte . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$link_soporte.'\', \'soportes_de_liquidacion\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
-        ?> 
-        </td>
-      </tr>
-      <tr>
         <td class="etiqueta">Cálculo de Liquidación:</td>
         <td>
         <?php 
           echo $img_soporte . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$link_soporte.'\', \'calculos_de_liquidacion\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
+        ?> 
+        </td>
+      </tr>
+      <tr>
+        <td class="etiqueta">Soporte de Liquidación:</td>
+        <td>
+        <?php 
+          echo $img_soporte . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$link_soporte.'\', \'soportes_de_liquidacion\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
         ?> 
         </td>
       </tr>
