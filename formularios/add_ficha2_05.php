@@ -24,8 +24,8 @@ ficha_egreso.fec_inicio, ficha_egreso.fec_culminacion,
 ficha_egreso.dia_p_legal, ficha_egreso.dia_p_cumplido,
 ficha_egreso.calculo, ficha_egreso.calculo_status,
 ficha_egreso.fec_calculo, ficha_egreso.fec_posible_pago,
-ficha_egreso.fec_pago, ficha_egreso.soporte_pago, ficha_egreso.cheque,
-ficha_egreso.banco, ficha_egreso.importe,
+ficha_egreso.fec_pago, ficha_egreso.soporte_pago, ficha_egreso.calculo_pago,
+ficha_egreso.cheque, ficha_egreso.banco, ficha_egreso.importe,
 ficha_egreso.entrega_uniforme, ficha_egreso.observacion,
 ficha_egreso.observacion2, 
 IFNULL(ficha_egreso.cod_ficha_egreso_motivo, NULL) cod_motivo_egreso, IFNULL(ficha_egreso_motivo.descripcion, 'Sin definir') motivo_egreso, 
@@ -36,7 +36,7 @@ WHERE ficha_egreso.cod_ficha = '$codigo' ";
 $query = $bd->consultar($sql);
 $result = $bd->obtener_fila($query, 0);
 
-$img_src = 	'<img id="imgSoporte" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
+$img_soporte = 	'<img id="imgSoporte" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 
 if (count($result) == 0) {
 
@@ -57,6 +57,7 @@ if (count($result) == 0) {
   $fec_pago       = '';
   $cheque         = '';
   $soporte_pago         = '';
+  $calculo_pago         = '';
   $banco          = '';
   $importe        = '';
   $entrega_uniforme = '';
@@ -95,12 +96,20 @@ if (count($result) == 0) {
   $cod_motivo_egreso   =  $result['cod_motivo_egreso'];
   $motivo_egreso   =  $result['motivo_egreso'];
 
-  $img_link = $result['soporte_pago'];
-  if ($img_link) {
-    $img_ext =  imgExtension($img_link);
-    $img_src = 	'<img id="imgSoporte" src="' . $img_ext . '" onclick="openModalSoporte(\'' . $img_link . '\')" width="22px" height="22px"  />';
+  $link_soporte = $result['soporte_pago'];
+  if ($link_soporte) {
+    $img_ext =  imgExtension($link_soporte);
+    $img_soporte = 	'<img id="imgSoporte" src="' . $img_ext . '" onclick="openModalSoporte(\'' . $link_soporte . '\')" width="22px" height="22px"  />';
   } else {
-    $img_src = 	'<img id="imgSoporte" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
+    $img_soporte = 	'<img id="imgSoporte" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
+  }
+
+  $link_calculo = $result['calculo_pago'];
+  if ($link_calculo) {
+    $img_ext =  imgExtension($link_calculo);
+    $img_calculo = 	'<img id="imgCalculo" src="' . $img_ext . '" onclick="openModalSoporte(\'' . $link_calculo . '\')" width="22px" height="22px"  />';
+  } else {
+    $img_calculo = 	'<img id="imgCalculo" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
   }
 }
 ?>
@@ -268,7 +277,15 @@ if (count($result) == 0) {
         <td class="etiqueta">Soporte de Liquidación:</td>
         <td>
         <?php 
-          echo $img_src . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$img_link.'\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
+          echo $img_soporte . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$link_soporte.'\', \'soportes_de_liquidacion\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
+        ?> 
+        </td>
+      </tr>
+      <tr>
+        <td class="etiqueta">Cálculo de Liquidación:</td>
+        <td>
+        <?php 
+          echo $img_soporte . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$link_soporte.'\', \'calculos_de_liquidacion\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
         ?> 
         </td>
       </tr>
@@ -388,9 +405,9 @@ if (count($result) == 0) {
         <table width="100%">
           <tr>
             <td width="100%">
-              <div id="contenedorImagen" align="center">
+              <!-- <div id="contenedorImagen" align="center">
                 <img id="fotografia_subir" class="fotografia" />
-              </div>
+              </div> -->
               <div align="center">
                 <input name="images" type="file" id="imagen_subir" value="Subir Imagen" /><br/><br/><br/><br/>
                 <span class="art-button-wrapper" id="botonSubir">
@@ -407,6 +424,7 @@ if (count($result) == 0) {
             </td>
           </tr>
         </table>   
+        <input type="hidden" name="folderS3" id="folderS3"/>
       </form>
       </div>
     </div>
@@ -591,13 +609,15 @@ if (count($result) == 0) {
 		$("#myModalSoporte").hide();
 	}
 
-  function openModalSubirSoporte(ficha, link) {	
-    if(link){
+  function openModalSubirSoporte(ficha, link, folder) {	
+/*     if(link){
       $("#fotografia_subir").attr("src", link);
       $("#fotografia_subir").show();
     }else{
       $("#fotografia_subir").hide();
-    }
+    } */
+    $("#imagen_subir").val('');
+    $("#folderS3").val(folder)
 		$("#myModalSubir").show();
 	}
 
@@ -609,9 +629,10 @@ if (count($result) == 0) {
     var soporte = document.getElementById('imagen_subir').files[0];
     if(soporte){
       var ficha = $("#codigo").val();
+      var folder = $("#folderS3").val();
       var config = [
         {
-          folder:  'soportes_de_liquidacion',
+          folder: folder,
           key: ficha
         }
       ]
@@ -644,7 +665,7 @@ if (count($result) == 0) {
             if(data.error == true){
               alert('Ha ocurrido un error.');
             }else{
-              uploadActuliazarS3(data.data.image[0]);
+              uploadActuliazarS3(data.data.image[0], folder);
             }
           },
           //si ha ocurrido un error
@@ -659,12 +680,13 @@ if (count($result) == 0) {
     }
   }
 
-  function uploadActuliazarS3(url) {
+  function uploadActuliazarS3(url, folder) {
     var ficha = $("#codigo").val();
     var usuario = $("#usuario").val();
     var parametros = {
       "link": url,
       "ficha": ficha,
+      "folder": folder,
       "usuario": usuario
     };
 
@@ -678,11 +700,19 @@ if (count($result) == 0) {
           $("#msgSubiendo").hide();
           alert('La imagen ha subido correctamente. Actualizando.');
           const img = getFileExtension(url);
-          $("#imgSoporte").attr("src", img);
-          $('#imgSoporte').unbind('click');
-          $("#imgSoporte").click(function () {
-            openModalSoporte(url);
-          });
+          if(folder == 'soportes_de_liquidacion'){
+            $("#imgSoporte").attr("src", img);
+            $('#imgSoporte').unbind('click');
+            $("#imgSoporte").click(function () {
+              openModalSoporte(url);
+            });
+          }else{
+            $("#imgCalculo").attr("src", img);
+            $('#imgCalculo').unbind('click');
+            $("#imgCalculo").click(function () {
+              openModalSoporte(url);
+            });
+          }
           cerrarModalSubir();
         },
         //si ha ocurrido un error
