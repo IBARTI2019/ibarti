@@ -37,6 +37,7 @@ $query = $bd->consultar($sql);
 $result = $bd->obtener_fila($query, 0);
 
 $img_soporte = 	'<img id="imgSoporte" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
+$img_calculo = 	'<img id="imgCalculo" src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 
 if (count($result) == 0) {
 
@@ -277,7 +278,7 @@ if (count($result) == 0) {
         <td class="etiqueta">Cálculo de Liquidación:</td>
         <td>
         <?php 
-          echo $img_soporte . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$link_soporte.'\', \'calculos_de_liquidacion\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
+          echo $img_calculo . ' - <a target="_blank" onClick="openModalSubirSoporte(\''.$codigo.'\', \''.$link_calculo.'\', \'calculos_de_liquidacion\')"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>';
         ?> 
         </td>
       </tr>
