@@ -44,11 +44,18 @@ $bd = new DataBase();
         <input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol'];?>"/>
         <input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
         <input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod'];?>"/></td>
-        <td width="4%" id="cont_img"><span class="art-button-wrapper">
-          <span class="art-button-l"> </span>
-          <span class="art-button-r"> </span>
-          <input type="button" value="Procesar" class="readon art-button" onclick="Procesar()">
-        </span></td>
+        <td width="4%" rowspan="2" id="cont_img">
+          <span class="art-button-wrapper">
+            <span class="art-button-l"> </span>
+            <span class="art-button-r"> </span>
+            <input type="button" value="Procesar" class="readon art-button" onclick="Procesar()">
+          </span>
+          <span class="art-button-wrapper">
+            <span class="art-button-l"> </span>
+            <span class="art-button-r"> </span>
+            <input type="button" value="Preparar" class="readon art-button" onclick="Preparar()">
+          </span>
+        </td>
       </tr>
 
       <tr>
@@ -95,11 +102,12 @@ $bd = new DataBase();
 
   new Autocomplete("stdName", function() {
     this.setValue = function(id) {
-            document.getElementById("stdID").value = id; // document.getElementsByName("stdID")[0].value = id;
-          }
-          if (this.isModified) this.setValue("");
-          if (this.value.length < 1) return ;
-          return "autocompletar/tb/trabajador.php?q="+this.text.value +"&filtro="+filtroValue+"&r_cliente="+r_cliente+"&r_rol="+r_rol+"&usuario="+usuario+""});
+      document.getElementById("stdID").value = id; // document.getElementsByName("stdID")[0].value = id;
+    }
+    if (this.isModified) this.setValue("");
+    if (this.value.length < 1) return ;
+    return "autocompletar/tb/trabajador.php?q="+this.text.value +"&filtro="+filtroValue+"&r_cliente="+r_cliente+"&r_rol="+r_rol+"&usuario="+usuario+"";
+  });
 
   function validarCorreoCliente(){
     if($('#cliente').val() != 'TODOS'){
@@ -145,47 +153,208 @@ function Add_Ub_puesto(valor, contenido, tamano){  // CARGAR  UBICACION DE CLIEN
 }
 
 function Procesar(){
-
- var cod_ficha = $('#stdID').val();
- var cliente = $('#cliente').val();
- var error        = 0;
- var errorMessage = ' ';
- if(error == 0){
-  var parametros = { "codigo":  cod_ficha, "cliente":cliente};
-
-  $.ajax({
-    data:  parametros,
-    url:   'ajax_rp/Add_fic_valid_vetado.php',
-    type:  'post',
-    success:  function (response) {
-      resp = JSON.parse(response);
-      if(resp.length > 0){
-       var mensaje = ' ';
-       resp.forEach((d,i)=>{
-        if(i==0){
-          mensaje += d.trabajador+' \n esta vetado para '+
-          d.cliente+' \n en las siguienetes ubicaciones: \n '+(i+1)+'.- '+d.ubicacion+'\n'; 
-        }else{
-          mensaje += (i+1)+'.- '+d.ubicacion+'\n';
+  var cod_ficha = $('#stdID').val();
+  var cliente = $('#cliente').val();
+  var error        = 0;
+  var errorMessage = ' ';
+  if(error == 0){
+    var parametros = { "codigo":  cod_ficha, "cliente":cliente};
+    $.ajax({
+      data:  parametros,
+      url:   'ajax_rp/Add_fic_valid_vetado.php',
+      type:  'post',
+      success:  function (response) {
+        resp = JSON.parse(response);
+        if(resp.length > 0){
+        var mensaje = ' ';
+        resp.forEach((d,i)=>{
+          if(i==0){
+            mensaje += d.trabajador+' \n esta vetado para '+
+            d.cliente+' \n en las siguienetes ubicaciones: \n '+(i+1)+'.- '+d.ubicacion+'\n'; 
+          }else{
+            mensaje += (i+1)+'.- '+d.ubicacion+'\n';
+          }
+        });
+        mensaje += '\n ¿Desea procesar el Reporte de todas formas?\n ';
+        if(confirm(mensaje)){
+          $('#procesar').click();
         }
-      });
-       mensaje += '\n ¿Desea procesar el Reporte de todas formas?\n ';
-       if(confirm(mensaje)){
+      }else{
         $('#procesar').click();
       }
-    }else{
-      $('#procesar').click();
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert(xhr.status);
+      alert(thrownError);}
+    });
+  }else{
+    alert(errorMessage);
+  }
+}
+
+function Preparar(){
+  var ficha = $('#stdID').val();
+  var client = $('#cliente').val();
+  var reporte = $('#reporte').val();
+  var ubic = $('#ubicacion').val();
+  var puest = $('#puesto').val();
+  var error        = 0;
+  var errorMessage = ' ';
+  if(error == 0){
+    var parametros = {
+      "trabajador": ficha, "cliente":client, 
+      "reporte": reporte,  "ubicacion": ubic, 
+      "puesto": puest
+    };
+
+    $.ajax({
+      data:  parametros,
+      url:   'ajax_rp/Add_fic_valid_vetado.php',
+      type:  'post',
+      success:  function (response) {
+        resp = JSON.parse(response);
+        if(resp.length > 0){
+          var mensaje = ' ';
+          resp.forEach((d,i)=>{
+          if(i==0){
+            mensaje += d.trabajador+' \n esta vetado para '+
+            d.cliente+' \n en las siguienetes ubicaciones: \n '+(i+1)+'.- '+d.ubicacion+'\n'; 
+          }else{
+            mensaje += (i+1)+'.- '+d.ubicacion+'\n';
+          }
+        });
+        mensaje += '\n ¿Desea preparar el reporte de todas formas?\n ';
+        if(confirm(mensaje)){
+          GenerarReporte(parametros);
+        }
+      }else{
+        GenerarReporte(parametros);
+      }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert(xhr.status);
+      alert(thrownError);}
+    });
+  }else{
+    alert(errorMessage);
+  }
+}
+
+function GenerarReporte(parametros){
+  $.ajax({
+    data:  parametros,
+    url:   'ajax_rp/GenerarReporte.php',
+    type:  'post',
+    success:  function (response) {
+      var resp = JSON.parse(response);
+      if(resp["error"] == true){
+        alert(resp["msg"]);
+      }else{
+        LeerReporte(resp["link"], resp["name"], parametros["trabajador"], parametros["reporte"])
+      }
+    }, 
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert(xhr.status);
+      alert(thrownError);
     }
-  },
-  error: function (xhr, ajaxOptions, thrownError) {
-    alert(xhr.status);
-    alert(thrownError);}
   });
-
-}else{
-  alert(errorMessage);
 }
 
+function subirDocumentToS3(documento, name, ficha, reporte) {
+  if(documento){
+    var folder = 'firmas'
+    var config = [
+      {
+        folder: folder,
+        key: name
+      }
+    ]
+    var formData = new FormData();
+    formData.append("images", documento);
+    formData.append("config", JSON.stringify(config));
+
+    //hacemos la petici�n ajax  
+    $.ajax({
+        url: 'http://194.163.161.64:9090/docs/upload/',
+        type: 'POST',
+        // Form data
+        //datos del formulario
+        data: formData,
+        //necesario para subir archivos via ajax
+        cache: false,
+        contentType: false,
+        processData: false,
+        //mientras enviamos el archivo
+        beforeSend: function () {
+          
+        },
+        //una vez finalizado correctamente
+        success: function (data) {
+          if(data.error == true){
+            alert('Ha ocurrido un error.');
+          }else{
+            actualizarReporte(data.data.image[0], ficha, reporte);
+          }
+        },
+        //si ha ocurrido un error
+        error: function () {
+          alert('Ha ocurrido un error.');
+        }
+    });
+  }else{
+    alert('Debe seleccionar el archivo de soporte')
+  }
 }
 
+function LeerReporte(link, name, ficha, reporte){
+  var parametros = {
+    "link": link,
+    "ficha": ficha
+  }
+  $.ajax({
+    data:  parametros,
+    url:   'ajax_rp/AddDocumentoPreparado.php',
+    type:  'GET',
+    responseType: 'application/octet-stream',
+    success:  function (response) {
+      // var resp =JSON.parse(response);
+      // debugger;
+      var blob = new Blob([response]);
+      var file = new File([blob], name, { lastModified: new Date().getTime(), type: 'application/pdf'});
+      subirDocumentToS3(file, name, ficha, reporte);
+    }, 
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert(xhr.status);
+      alert(thrownError);
+    }
+  });
+}
+
+function actualizarReporte(url, ficha, reporte) {
+    var usuario = $("#usuario").val();
+    var parametros = {
+      "link": url,
+      "ficha": ficha,
+      "reporte": reporte,
+      "usuario": usuario
+    };
+
+    $.ajax({
+        url: 'upload/firmas.php',
+        type: 'POST',
+        data: parametros,
+        beforeSend: function () {},
+        success: function (data) {
+          // $("#botonSubir").show();
+          // $("#msgSubiendo").hide();
+          alert('La imagen ha subido correctamente. Actualizando.');
+        },
+        //si ha ocurrido un error
+        error: function () {
+          // $("#botonSubir").show();
+          // $("#msgSubiendo").hide();
+          alert('Ha ocurrido un error.');  
+        }
+    });
+  }
 </script>
