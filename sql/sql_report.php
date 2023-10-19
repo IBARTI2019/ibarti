@@ -136,6 +136,15 @@ if ($_SESSION['r_cliente'] == "F") {
   $select_cl     = '<option value="">Seleccione...</option>';
 }
 
+$sql_precliente    = "SELECT preclientes.codigo, preclientes.nombre
+FROM preclientes WHERE preclientes.status = 'T'
+ORDER BY 2 ASC ";
+$select_precliente     = '<option value="TODOS">TODOS</option>';
+
+$sql_ruta_venta    = "SELECT ruta_de_ventas.codigo, ruta_de_ventas.descripcion
+FROM ruta_de_ventas WHERE ruta_de_ventas.status = 'T'
+ORDER BY 2 ASC ";
+
 $sql_cliente_ch    = "SELECT DISTINCT clientes.codigo, clientes.nombre
   		                    FROM clientes_ub_ch, clientes, clientes_ubicacion
                          WHERE clientes_ub_ch.cod_cl_ubicacion = clientes_ubicacion.codigo
