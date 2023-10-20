@@ -11,7 +11,7 @@ $sub_ruta           = $_POST['sub_ruta'];
 
 $where = "WHERE precliente_rutaventa.cod_precliente = preclientes.codigo 
 AND precliente_rutaventa.cod_subrutaventa = subruta_de_ventas.codigo 
-AND subruta_de_ventas.codigo = ruta_de_ventas.codigo ";
+AND subruta_de_ventas.cod_ruta = ruta_de_ventas.codigo ";
 
 if($precliente != "TODOS"){	
 	$where .= " AND preclientes.codigo = '$precliente' ";
