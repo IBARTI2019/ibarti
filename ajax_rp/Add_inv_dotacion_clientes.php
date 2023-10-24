@@ -46,7 +46,7 @@ $fecha_H    = conversion($_POST['fecha_hasta']);
 	}
 
 	if($only_active == "T"){
-		$where  .= " AND  clientes.status  = 'T' ";
+		$where  .= " AND  clientes.status  = 'T' AND clientes_ubicacion.status = 'T' ";
 	}
 
 	if($trabajador != NULL){

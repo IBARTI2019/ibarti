@@ -57,7 +57,7 @@ if(isset($reporte)){
 	}
 
 	if($only_active == "T"){
-		$where  .= " AND  clientes.status  = 'T' ";
+		$where  .= " AND  clientes.status  = 'T' AND clientes_ubicacion.status = 'T' ";
 	}
 
 	if($trabajador != NULL){
