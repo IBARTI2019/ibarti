@@ -5,6 +5,9 @@ $Nmenu   = '579';
 $mod     =  $_GET['mod'];
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report.php');
+require("autentificacion/aut_config.inc.php");
+require "" . Leng;
+
 $bd = new DataBase();
 $archivo = "reportes/rp_inv_dotacion_det_clientes.php?Nmenu=$Nmenu&mod=$mod";
 $titulo  = "DOTACION CLIENTES";
@@ -21,6 +24,7 @@ $titulo  = "DOTACION CLIENTES";
 		var cliente = document.getElementById("cliente").value;
 		var ubicacion = document.getElementById("ubicacion").value;
 		var anulado = document.getElementById("anulado").value;
+		var only_active = document.getElementById("only_active").value;
 		var trabajador = document.getElementById("stdID").value;
 
 		var error = 0;
@@ -45,6 +49,7 @@ $titulo  = "DOTACION CLIENTES";
 				"sub_linea": sub_linea,
 				"producto": producto,
 				"anulado": anulado,
+				"only_active": only_active,
 				"trabajador": trabajador,
 				"fecha_desde": fecha_desde,
 				"fecha_hasta": fecha_hasta,
@@ -128,7 +133,7 @@ $titulo  = "DOTACION CLIENTES";
 					} ?>
 				</select></td>
 
-			<td>Cliente:</td>
+			<td><?php echo $leng["cliente"]; ?>:</td>
 			<td><select name="cliente" id="cliente" onchange="llenar_ubicacion(this.value)" style="width:120px;">
 					<?php
 					echo $select_cl ;
@@ -149,9 +154,14 @@ $titulo  = "DOTACION CLIENTES";
 					<option value="TODOS">TODOS</option>
 					<option value="T">SI</option>
 					<option value="F">NO</option>
+				</select></td>
+			<td>Solo <?php echo $leng["cliente"]; ?>s activos:</td>
+			<td><select name="only_active" id="only_active" style="width:120px;">
+			
+					<option value="F">NO</option>
+					<option value="T">SI</option>
 
 				</select></td>
-			
 			<td colspan="3"><input id="stdName" type="text" size="35" disabled="disabled" />
 				<input type="hidden" name="trabajador" id="stdID" value="" /></td>
 
