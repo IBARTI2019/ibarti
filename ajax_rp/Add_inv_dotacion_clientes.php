@@ -10,6 +10,7 @@ $linea      = $_POST['linea'];
 $sub_linea  = $_POST['sub_linea'];
 $producto   = $_POST['producto'];
 $anulado    = $_POST['anulado'];
+$only_active    = $_POST['only_active'];
 $trabajador = $_POST['trabajador'];
 $cliente	= $_POST['cliente'];
 $ubicacion	= $_POST['ubicacion'];
@@ -42,6 +43,10 @@ $fecha_H    = conversion($_POST['fecha_hasta']);
 
 	if($anulado != "TODOS"){
 		$where  .= " AND  ajuste_alcance.anulado  = '$anulado' ";
+	}
+
+	if($only_active == "T"){
+		$where  .= " AND  clientes.status  = 'T' AND clientes_ubicacion.status = 'T' ";
 	}
 
 	if($trabajador != NULL){
