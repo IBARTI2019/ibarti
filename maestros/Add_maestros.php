@@ -129,7 +129,7 @@ if ($metodo == 'modificar') {
   <table width="80%" align="center">
     <tr>
       <td class="etiqueta">C&oacute;digo:</td>
-      <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo; ?> "  readonly/>
+      <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo; ?> "  <?php echo $readonly; ?>/>
         Activo: <input name="activo" type="checkbox" <?php echo statusCheck("$status"); ?> value="T" /> 
         <?php
         if ($tabla == 'cargos') {
