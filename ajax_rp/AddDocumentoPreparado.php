@@ -10,13 +10,11 @@ $result["ficha"] = $ficha;
 
 if (file_exists($link)) {
     // header('Content-Description: File Transfer');    
-    // header('Content-Type: application/pdf');
-    header('Content-Type: application/octet-stream');
+    header('Content-Type: application/pdf');
     // header("Content-Transfer-Encoding: Binary"); 
-    header("Content-disposition: attachment; filename=\"" . basename($link) . ".pdf\""); 
+    header("Content-disposition: 'attachment'; filename=\"" . basename($link) . ".pdf\""); 
     // header('Content-Length: '. filesize($link));
-    $result = readfile($link);
-    print_r($result);   
+    readfile($link);  
 } else {
     die("Error: File not found.");
 } 

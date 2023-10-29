@@ -245,13 +245,26 @@ function GenerarReporte(parametros){
     data:  parametros,
     url:   'ajax_rp/GenerarReporte.php',
     type:  'post',
+    cache: false,
+    xhr: function() {
+      const xhr = new XMLHttpRequest();
+      xhr.responseType= 'blob'
+      return xhr;
+    },
+    // xhrFields: {
+    //   responseType: 'blob'
+    // },
     success:  function (response) {
-      var resp = JSON.parse(response);
-      if(resp["error"] == true){
-        alert(resp["msg"]);
-      }else{
-        LeerReporte(resp["link"], resp["name"], parametros["trabajador"], parametros["reporte"])
-      }
+      // var resp = JSON.parse(response);
+      // if(resp["error"] == true){
+      //   alert(resp["msg"]);
+      // }else{
+      //   LeerReporte(resp["link"], resp["name"], parametros["trabajador"], parametros["reporte"])
+      // }
+
+      var blob = new Blob([response]);
+      // var file = new File([blob], name, { lastModified: new Date().getTime(), type: 'application/pdf'});
+      subirDocumentToS3(blob, '26-001875.pdf', parametros["trabajador"], parametros["reporte"]);
     }, 
     error: function (xhr, ajaxOptions, thrownError) {
       alert(xhr.status);
@@ -315,7 +328,12 @@ function LeerReporte(link, name, ficha, reporte){
     data:  parametros,
     url:   'ajax_rp/AddDocumentoPreparado.php',
     type:  'GET',
-    responseType: 'application/octet-stream',
+    cache: false,
+    contentType: false,
+    processData: false,
+    xhrFields: {
+      responseType: 'blob'
+    },
     success:  function (response) {
       // var resp =JSON.parse(response);
       // debugger;

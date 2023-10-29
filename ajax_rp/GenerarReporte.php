@@ -83,16 +83,18 @@ if(isset($_POST['trabajador'])){
 	$output = $dompdf->output();
 	$name = $reporte."-".$ficha.".pdf";
 	$link = "../documentosPreparados/".$name;
-	// return $dompdf->stream($name);
+	header('Content-Type: application/pdf');
+    header("Content-disposition: 'attachment'; filename=\"" . basename($link) . ".pdf\""); 
+	return $dompdf->stream($name);
 	// return $dompdf->stream($result02['descripcion'].".pdf", array('Attachment' => false));
 	// return  $dompdf->download($result02['descripcion'].".pdf");
-	file_put_contents($link, $output);
-	$resultData["name"] = $name;
-	$resultData["link"] = $link;
+	// file_put_contents($link, $output);
+    // header('Content-Length: '. filesize($link));
+    // readfile($link);  
 }else{
 	$resultData["error"] = true;
 	$resultData["msg"] = "Debe especificar al trabajador";
 }
-print_r(json_encode($resultData));
-return json_encode($resultData);
+// print_r(json_encode($resultData));
+// return json_encode($resultData);
 ?>
