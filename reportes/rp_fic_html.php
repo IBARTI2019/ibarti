@@ -55,9 +55,6 @@ $bd = new DataBase();
             <span class="art-button-r"> </span>
             <input type="button" value="Preparar" class="readon art-button" onclick="Preparar()">
           </span>
-          <div id="msgPreparando" style="display: none;">
-            <img src='imagenes/loading.gif'/>Preparando el documento, por favor espere...
-          </div>
         </td>
       </tr>
 
@@ -86,7 +83,11 @@ $bd = new DataBase();
     <td colspan="2"><span id="correo_cliente" hidden="hidden">¿Enviar a Correo de <?php echo $leng['cliente']?>?<input id="enviar_cliente" name="enviar_cliente" type="checkbox" style="width:auto"/></span></td>
     <td colspan="2"><span id="correo_ubicacion" hidden="hidden">¿Enviar a Correo de <?php echo $leng['ubicacion']?>?<input id="enviar_ubicacion" name="enviar_ubicacion" type="checkbox" style="width:auto"/></span></td>
   </tr>
-</table><hr /><!--<div id="listar">&nbsp;</div>-->
+</table>
+<div id="msgPreparando" style="display: none;">
+  <img src='imagenes/loading.gif'/>Preparando el documento, por favor espere...
+</div>
+<hr /><!--<div id="listar">&nbsp;</div>-->
 <div align="center"><br/>
   <span class="art-button-wrapper">
     <span class="art-button-l"> </span>
@@ -196,7 +197,7 @@ function Procesar(){
 }
 
 function Preparar(){
-  $("#botonPreparar").hide();
+  $("#btnPreparar").hide();
   $("#msgPreparando").show();
   var ficha = $('#stdID').val();
   var client = $('#cliente').val();
@@ -232,7 +233,7 @@ function Preparar(){
         if(confirm(mensaje)){
           GenerarReporte(parametros);
         }else{
-          $("#botonPreparar").show();
+          $("#btnPreparar").show();
           $("#msgPreparando").hide();
         }
       }else{
@@ -240,14 +241,14 @@ function Preparar(){
       }
     },
     error: function (xhr, ajaxOptions, thrownError) {
-      $("#botonPreparar").show();
+      $("#btnPreparar").show();
       $("#msgPreparando").hide();
       alert(xhr.status);
       alert(thrownError);
     }
     });
   }else{
-    $("#botonPreparar").show();
+    $("#btnPreparar").show();
     $("#msgPreparando").hide();
     alert(errorMessage);
   }
@@ -265,7 +266,7 @@ function GenerarReporte(parametros){
     error: function (xhr, ajaxOptions, thrownError) {
       var error = JSON.parse(xhr.responseText);
       alert(error["msg"]);
-      $("#botonPreparar").show();
+      $("#btnPreparar").show();
       $("#msgPreparando").hide();
     }
   });
@@ -303,7 +304,7 @@ function subirDocumentToS3(documento, name, ficha, reporte) {
         success: function (data) {
           if(data.error == true){
             alert('Ha ocurrido un error.');
-            $("#botonPreparar").show();
+            $("#btnPreparar").show();
             $("#msgPreparando").hide();
           }else{
             actualizarReporte(data.data.image[0], ficha, reporte);
@@ -312,7 +313,7 @@ function subirDocumentToS3(documento, name, ficha, reporte) {
         //si ha ocurrido un error
         error: function () {
           alert('Ha ocurrido un error.');
-          $("#botonPreparar").show();
+          $("#btnPreparar").show();
           $("#msgPreparando").hide();
         }
     });
@@ -336,13 +337,13 @@ function actualizarReporte(url, ficha, reporte) {
         data: parametros,
         beforeSend: function () {},
         success: function (data) {
-          $("#botonPreparar").show();
+          $("#btnPreparar").show();
           $("#msgPreparando").hide();
           alert('La imagen ha subido correctamente. Actualizando.');
         },
         //si ha ocurrido un error
         error: function () {
-          $("#botonPreparar").show();
+          $("#btnPreparar").show();
           $("#msgPreparando").hide();
           alert('Ha ocurrido un error.');  
         }
