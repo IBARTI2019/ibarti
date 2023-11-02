@@ -479,20 +479,21 @@ function cargar_planif_superv_det() {
 								result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("HH: mm") + " - " + moment(arg.event.end).format("HH: mm") + '<br>';
 								result += "<label>" + arg.event.title + "</label><br>";
 								result += arg.event.extendedProps.ubicacion + "<br>";
-								
-								var codigo_proyecto = arg.event.extendedProps.actividades[0].cod_proyecto;
-								var index = 1;
-								arg.event.extendedProps.actividades.forEach((act, i) => {
-									if ((i != 0) && (act.cod_proyecto != codigo_proyecto)) {
-										index = 1;
-										codigo_proyecto = act.cod_proyecto;
-										result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
-									} else if (i == 0) {
-										result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
-									}
-									result += "<span>" + index + ": " + act.actividad + "  (" + moment(act.fecha_inicio_act).format('HH:mm:ss') + " - " + moment(act.fecha_fin_act).format('HH:mm:ss') + ") </span><br>";
-									index++;
-								});
+								if(arg.event.extendedProps.actividades){
+									var codigo_proyecto = arg.event.extendedProps.actividades[0].cod_proyecto;
+									var index = 1;
+									arg.event.extendedProps.actividades.forEach((act, i) => {
+										if ((i != 0) && (act.cod_proyecto != codigo_proyecto)) {
+											index = 1;
+											codigo_proyecto = act.cod_proyecto;
+											result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+										} else if (i == 0) {
+											result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+										}
+										result += "<span>" + index + ": " + act.actividad + "  (" + moment(act.fecha_inicio_act).format('HH:mm:ss') + " - " + moment(act.fecha_fin_act).format('HH:mm:ss') + ") </span><br>";
+										index++;
+									});
+								}
 							}
 							result += "</div>";
 							
