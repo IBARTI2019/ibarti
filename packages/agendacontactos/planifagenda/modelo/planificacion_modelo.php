@@ -33,16 +33,16 @@ class Planificacion
 		}
 		return $this->datos;
 	}
-	function get_cliente_c($cliente)
+	function get_cliente_c($usuario)
 	{
 		$this->datos   = array();
-		$sql = "  SELECT clientes.codigo, 
+		$sql = "  SELECT preclientes.codigo, 
 		-- IF(COUNT(clientes_contratacion.codigo) = 0, 'S/P - ' , '') sc,
 		IF(COUNT(clientes_contratacion.codigo) = 0, '' , '') sc,
-		clientes.abrev, clientes.nombre cliente
-		FROM clientes LEFT JOIN clientes_contratacion ON clientes.codigo = clientes_contratacion.cod_cliente
-		WHERE clientes.`status` = 'T' 
-		GROUP BY clientes.codigo ORDER BY 2 ASC ";
+		preclientes.abrev, preclientes.nombre cliente
+		FROM preclientes LEFT JOIN clientes_contratacion ON preclientes.codigo = clientes_contratacion.cod_cliente
+		WHERE preclientes.`status` = 'T' 
+		GROUP BY preclientes.codigo ORDER BY 2 ASC ";
 
 		$query = $this->bd->consultar($sql);
 
@@ -241,7 +241,7 @@ class Planificacion
 		return $this->datos;
 	}
 
-	function get_actividades($proyecto, $ficha)
+	function get_actividades()
 	{
 		$this->datos  = array();
 		
@@ -633,42 +633,30 @@ class Planificacion
 		return $this->datos = $this->bd->obtener_fila($query);
 	}
 
-	function validar_fecha($fecha, $cliente, $apertura, $ubicacion, $cod_ficha, $cargo)
+	function validar_fecha($fecha, $cliente)
 	{
 		$this->datos  = array();
 		$this->datos["data"]  = array();
 		$this->datos["datacliente"]  = array();
-		$sql = "SELECT a.fecha_inicio dia_semana, a.cod_ubicacion, cu.descripcion ubicacion, a.fecha_inicio,
-		Sum(a.codigo) cantidad, MIN(a.hora) hora_entrada, MAX(a.hora) hora_salida
-		FROM agendas_contactos_fc_actividades  a, clientes_ubicacion cu, clientes f
-	   WHERE  a.`status`='T'  AND a.fecha_inicio = '$fecha'
-	   AND cu.codigo = '$ubicacion' AND f.codigo = '$cliente'
-		GROUP BY a.cod_cliente, a.cod_ubicacion,a.fecha_inicio";
+
+		$sql = "SELECT clientes.codigo, agendas_contactos_fc_actividades.codigo  cod_horario,
+		MIN(agendas_contactos_fc_actividades.hora) hora_entrada, MAX(agendas_contactos_fc_actividades.hora) hora_salida
+		FROM clientes , agendas_contactos_fc_actividades 
+		WHERE clientes.codigo =agendas_contactos_fc_actividades.cod_cliente AND clientes.codigo = '$cliente' ";
+		$this->datos["sql"] = $sql;
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query, 0)) {
-			$this->datos["datacliente"][] = $datos;
+			$this->datos["data"][] = $datos;
 		}
-		if (count($this->datos["datacliente"]) > 0) {
-			$sql = "SELECT clientes.codigo, agendas_contactos_fc_actividades.codigo  cod_horario,
-			MIN(agendas_contactos_fc_actividades.hora) hora_entrada, MAX(agendas_contactos_fc_actividades.hora) hora_salida
-			FROM clientes , agendas_contactos_fc_actividades 
-			WHERE clientes.codigo =agendas_contactos_fc_actividades.cod_cliente AND clientes.codigo = '$cliente' ";
-			$this->datos["sql"] = $sql;
-			$query = $this->bd->consultar($sql);
-			while ($datos = $this->bd->obtener_fila($query, 0)) {
-				$this->datos["data"][] = $datos;
-			}
-			if (count($this->datos["data"]) == 0) {
-				$this->datos["msg"] = "El turno de la ficha " . $cod_ficha . " no aplica la fecha " . $fecha . "";
-			} else {
-				if ($this->datos["data"][0]["cod_ficha"] === null) {
-					$this->datos["msg"] = "El turno de la ficha " . $cod_ficha . " no aplica la fecha " . $fecha . "";
-					$this->datos["data"] = [];
-				}
-			}
+		if (count($this->datos["data"]) == 0) {
+			$this->datos["msg"] = "El turno de la ficha " . $cod_ficha . " no aplica la fecha " . $fecha . "";
 		} else {
-			$this->datos["msg"] = "El cliente no aplica la fecha " . $fecha . " o el cargo del trabjador no es planificable en el mismo.";
+			if ($this->datos["data"][0]["cod_ficha"] === null) {
+				$this->datos["msg"] = "El turno de la ficha " . $cod_ficha . " no aplica la fecha " . $fecha . "";
+				$this->datos["data"] = [];
+			}
 		}
+
 		return $this->datos;
 	}
 

@@ -19,7 +19,6 @@ var hoy = new Date();
 
 $(function () {
 	Cons_planificacion_inicio();
-	onChangeAp(3693);
 });
 
 function Habilitar_supervision() {
@@ -96,6 +95,7 @@ function Cons_planificacion_inicio() {
 				$("#Cont_planificacion").html(response);
 				setTimeout(function () {
 					Ocultar_all();
+					cargar_planif_superv_det();
 				}, 1);
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -156,12 +156,12 @@ function validarIngreso(apertura, cliente, ubic, actividades, fecha, hora_inicio
 	}
 }
 
-function validarFecha(fecha, cliente, apertura, ubicacion, cod_ficha, callback) {
+function validarFecha(fecha, cliente, callback) {
 	var error = 0;
 	var errorMessage = ' ';
 	
 	if (error == 0) {
-		var parametros = { fecha, cliente, apertura, ubicacion, cod_ficha, cargo };
+		var parametros = { fecha, cliente };
 		$.ajax({
 			data: parametros,
 			url: 'packages/agendacontactos/planifagenda/views/validarFecha.php',
@@ -281,8 +281,8 @@ function verificar_cl(cl, modal) {
 	}
 }
 
-function cargar_actividades(proyecto, ficha, callback) {
-	var parametros = { proyecto, ficha };
+function cargar_actividades(callback) {
+	var parametros = { };
 	$.ajax({
 		data: parametros,
 		url: 'packages/agendacontactos/planifagenda/views/Add_actividades.php',
@@ -413,17 +413,14 @@ function cantidad_trab_sin_planificar(cliente, apertura) {
 	});
 }
 
-function cargar_planif_superv_det(apertura) {
+function cargar_planif_superv_det() {
 	
 	if (calendar) {
 		calendarSuperv.destroy();
 		calendar.destroy();
 	}
-	
-	//region = $("#planf_region").val();
-	apertura = 3693;
-	
-	var parametros = { "codigo": apertura, "cliente": cliente, "usuario": usuario, "ubic": ubicacion, "cargo": cargo };
+	var usuario = $("#usuario").val();
+	var parametros = {"usuario": usuario };
 	$.ajax({
 		data: parametros,
 		url: 'packages/agendacontactos/planifagenda/views/Add_planif_det.php',
@@ -432,25 +429,23 @@ function cargar_planif_superv_det(apertura) {
 			$("#cont_planif_det").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
 		},
 		success: function (response) {
-			
+		
 			var resp = JSON.parse(response);
-		    
 			$("#cont_planif_det").html(resp["html"]);
-			var fechas = resp["fechas"];
 			
-			cantidad_trab_sin_planificar(cliente, apertura);
 			var containerEx = document.getElementById('external-events-list');
 			
+			res_eventos = d3.nest()
+			.key((d) => d.codigo)
+			.entries(resp["data"]);
+
 			calendarSuperv = new FullCalendar.Draggable(containerEx, {
 				itemSelector: '.fc-event',
 				eventData: function (eventEl) {
 					return {
 						title: eventEl.innerText.trim(),
 						extendedProps: {
-							codigo: "",
-							cod_ficha: eventEl.getAttribute('cod_ficha'),
-							cedula: eventEl.getAttribute('cedula')
-							
+							codigo: "",	
 						},
 						allDay: false,
 						stick: true
@@ -460,6 +455,15 @@ function cargar_planif_superv_det(apertura) {
 				droppable: false
 			});
             
+			if(res_eventos.length > 0){
+				var fechas = {
+					fecha_inicio: res_eventos[0].fecha_inicio
+				}
+			}else{
+				var fechas = {
+					fecha_inicio: moment().startOf('month').format('YYYY-MM-DD')
+				}
+			}
 			var calendarEl = document.getElementById('calendar');
 			calendar = new FullCalendar.Calendar(calendarEl, {
 				initialView: typeCalendar,
@@ -586,10 +590,10 @@ function cargar_planif_superv_det(apertura) {
 				navLinks: true,
 				dayMaxEvents: true,
 				locale: 'es',
-				validRange: {
-					start: fechas.fecha_inicio,
-					end: moment(fechas.fecha_fin).add(1, 'days').format('YYYY-MM-DD')
-				},
+				// validRange: {
+				// 	start: fechas.fecha_inicio,
+				// 	end: moment(fechas.fecha_fin).add(1, 'days').format('YYYY-MM-DD')
+				// },
 				allDaySlot: true,
 				slotEventOverlap: true,
 				dateClick: function (info) {
@@ -628,52 +632,26 @@ function cargar_planif_superv_det(apertura) {
 				},
 				eventAllow: function (dropInfo, draggedEvent) {
 					metodo = "agregar";
-					modalActividad();
+					// modalActividad();
 					return moment(dropInfo.start).isSameOrAfter(moment(hoy).format("YYYY-MM-DD")) && ((draggedEvent.start && moment(draggedEvent.start).isSameOrAfter(moment(hoy).format("YYYY-MM-DD")) || (draggedEvent.start === null))) && moment(draggedEvent.start).format("YYYY-MM-DD") != moment(dropInfo.start).format("YYYY-MM-DD");
 				},
 				editable: true,
 				nowIndicator: false,
 				height: 'auto',
 				drop: function (arg) {
-					var cod_ficha = arg.draggedEl.getAttribute('cod_ficha');
-					
+					var precliente = arg.draggedEl.getAttribute('cod_ficha');
 					isafter = moment(arg.dateStr).isSameOrAfter(moment(hoy).format("YYYY-MM-DD"));
-					alert("POlicia B");
-				
+					console.log('arg.dateStr: ', arg.dateStr);
 					if (isafter) {
-						//region = $("#planf_region").val();
-						
-						validarFecha(moment(arg.date).format("YYYY-MM-DD"), cliente, apertura, ubicacion, cod_ficha, (fechas) => {
-							if (fechas.data.length >0) {
-								$("#planf_ubicacionRP").html("");
-								$("#planf_ubicacionRP").append('<option value="">Seleccione</option>');
-								var hora_entrada = fechas.data[0].hora_entrada;
-								var hora_salida = fechas.data[0].hora_salida;
-								$("#planf_horaRP").prop("min", hora_entrada);
-								$("#planf_hora_finRP").prop("min", hora_entrada);
-								$("#planf_hora_finRP").prop("max", hora_salida);
-								$("#dias_habilesRP").html(fechas.data[0].dias_habiles);
-								fechas.data.forEach((f) => {
-									if (f.hora_entrada < hora_entrada) {
-										hora_entrada = f.hora_entrada;
-										$("#planf_horaRP").prop("min", hora_entrada);
-										$("#planf_hora_finRP").prop("min", hora_entrada);
-									}
-									if (f.hora_salida > hora_salida) {
-										hora_salida = f.hora_salida;
-										$("#planf_hora_finRP").prop("max", hora_salida);
-									}
-								});
-								fechas.datacliente.forEach((f) => {
-									$("#planf_ubicacionRP").append('<option value=' + f.cod_ubicacion + '>' + f.ubicacion + ' (' + hora_entrada + ' - ' + hora_salida + ')</option>');
-								});
-								metodo = "agregar";
-								modalActividad();
-							} else {
-								toastr.error(fechas.msg);
-								eventActual.remove();
-							}
-						});
+						$("#planf_ubicacionRP").html("");
+						$("#planf_ubicacionRP").append('<option value="">Seleccione</option>');
+						// var hora_entrada = fechas.data[0].hora_entrada;
+						// var hora_salida = fechas.data[0].hora_salida;
+						// fechas.datacliente.forEach((f) => {
+						// 	$("#planf_ubicacionRP").append('<option value=' + f.cod_ubicacion + '>' + f.ubicacion + ' (' + hora_entrada + ' - ' + hora_salida + ')</option>');
+						// });
+						metodo = "agregar";
+						modalActividad();
 						$("#guardarActividad").show();
 					} else {
 						toastr.info("No es posible planificar actividades sobre fechas pasadas.");
@@ -682,9 +660,6 @@ function cargar_planif_superv_det(apertura) {
 				dayMaxEvents: true,
 				dayHeaderFormat: { weekday: 'short' },
 			});
-			res_eventos = d3.nest()
-				.key((d) => d.codigo)
-				.entries(resp["data"]);
 				
 			res_eventos.forEach(d => {
 			    
@@ -710,12 +685,12 @@ function cargar_planif_superv_det(apertura) {
 	});
 }
 
-function cargar_planif_superv_trab_det(ficha) {
+function cargar_planif_superv_trab_det() {
 	
 	if (calendarTrab) {
 		calendarTrab.destroy();
 	}
-	var parametros = { "codigo": apertura, "ubic": ubicacion, "ficha": ficha, "cargo": cargo, "usuario": usuario };
+	var parametros = {"usuario": usuario };
 	$.ajax({
 		data: parametros,
 		url: 'packages/agendacontactos/planifagenda/views/Add_planif_trab_det.php',
@@ -1096,25 +1071,25 @@ function parse_act_html(acts) {
 }
 function modalActividad() {
 
-cargar_actividades(null, eventActual.extendedProps.cod_ficha, (acts) => {
+	cargar_actividades((acts) => {
 		parse_act_html(acts);
 	});
 	$("#planf_ubicacionRP").attr("disabled", false);
 	$("#planf_proyectoRP").attr("disabled", false);
-	$("#planf_fechaRP").html(moment(eventActual.start).format('YYYY-MM-DD'));
-	$("#cedulaRP").html(eventActual.extendedProps.cod_ficha + " - " + eventActual.extendedProps.cedula);
+	// $("#planf_fechaRP").html(moment(eventActual.start).format('YYYY-MM-DD'));
+	// $("#cedulaRP").html(eventActual.extendedProps.cod_ficha + " - " + eventActual.extendedProps.cedula);
 	$("#planf_actividadRP").html("");
-	$("#planf_horaRP").val(moment(eventActual.start).format("HH:mm:00"));
+	// $("#planf_horaRP").val(moment(eventActual.start).format("HH:mm:00"));
 	$("#planf_hora_finRP").val("");
 	$('#modalRP').show();
 	
-	cargar_planif_superv_trab_det(eventActual.extendedProps.cod_ficha);
+	cargar_planif_superv_trab_det();
 	
 }
 
 function editarActividad(event) {
 	//region = $("#planf_region").val();
-	validarFecha(moment(event.start).format("YYYY-MM-DD"), cliente, apertura, ubicacion, event.extendedProps.cod_ficha, (fechas) => {
+	validarFecha(moment(event.start).format("YYYY-MM-DD"), cliente, (fechas) => {
 		if (fechas.data.length > 0) {
 			$("#planf_ubicacionRP").html("");
 			var hora_entrada = fechas.data[0].hora_entrada;
@@ -1154,7 +1129,7 @@ function editarActividad(event) {
 				});
 				updateFecFin(event);
 			});
-			cargar_planif_superv_trab_det(event.extendedProps.cod_ficha);
+			cargar_planif_superv_trab_det();
 		} else {
 			toastr.error(fechas.msg);
 		}
@@ -1258,7 +1233,7 @@ function actualizarEvento(arg) {
 	if (isafter) {
 		//region = $("#planf_region").val();
 		
-		validarFecha(moment(arg.event.start).format("YYYY-MM-DD"), cliente, apertura, ubicacion, arg.oldEvent.extendedProps.cod_ficha, (fechas) => {
+		validarFecha(moment(arg.event.start).format("YYYY-MM-DD"), cliente, (fechas) => {
 			if (fechas.data.length > 0) {
 				var parametros = {
 					"codigo": arg.oldEvent.id, "fecha_inicio": moment(arg.event.start).format("YYYY-MM-DD HH:mm:00"), "fecha_fin": moment(arg.event.end).format("YYYY-MM-DD HH:mm:00"),

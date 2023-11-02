@@ -2,13 +2,13 @@
 require "../modelo/planificacion_modelo.php";
 require "../../../../" . Leng;
 
-$titulo ='';
+$titulo ='Agenda de Contactos';
 $plan   = new Planificacion;
 $cliente  =  $plan->get_cliente();
 $valor= "calendario";
 ?>
 <div align="center" class="etiqueta_title" ><?php echo $titulo; ?> </div>
-<hr />
+
 <form action="" method="post" name="add_planificacion" id="add_planificacion">
   <table width="100%" align="center" >
     <tr>
