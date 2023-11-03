@@ -1036,8 +1036,9 @@ AND codigo <> '$cod_ciudad' ORDER BY descripcion ASC ";
 						<?php } ?>
 					</select><br /><span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
 				<td class="etiqueta"><?php echo $leng["ubicacion"]; ?>:</td>
-				<td id="cl_ubicacion"><select name="ubicacion" style="width:200px">
 				<?php echo 'cod: '.$cod_ubicacion; echo 'ubi: '.$ubicacion;?>
+				<td id="cl_ubicacion"><select name="ubicacion" style="width:200px">
+			
 					<option value="<?php echo $cod_ubicacion; ?>"><?php echo $ubicacion; ?></option>
 						<?php $sql = " SELECT clientes_ubicacion.codigo, clientes_ubicacion.descripcion
 				FROM clientes_ubicacion
