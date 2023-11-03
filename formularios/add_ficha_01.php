@@ -433,10 +433,10 @@ if ($metodo == 'modificar' or $metodo == 'consultar') {
 				ficha.campo04
 			FROM
 				ficha
-			LEFT JOIN ficha_dosis_covid19 ON ficha.cod_dosis_covid19 = ficha_dosis_covid19.codigo
-			LEFT JOIN ficha_historial_covid19 ON ficha_dosis_covid19.codigo = ficha_historial_covid19.cod_dosis
 			LEFT JOIN clientes ON ficha.cod_cliente = clientes.codigo
 			LEFT JOIN clientes_ubicacion ON ficha.cod_ubicacion = clientes_ubicacion.codigo
+			LEFT JOIN ficha_dosis_covid19 ON ficha.cod_dosis_covid19 = ficha_dosis_covid19.codigo
+			LEFT JOIN ficha_historial_covid19 ON ficha_dosis_covid19.codigo = ficha_historial_covid19.cod_dosis
 			AND ficha_historial_covid19.cod_ficha = ficha.cod_ficha,
 			ficha_n_contracto
 			LEFT JOIN ficha_historial ON ficha_historial.cod_ficha = '$codigo'
@@ -1035,7 +1035,7 @@ AND codigo <> '$cod_ciudad' ORDER BY descripcion ASC ";
 							<option value="<?php echo $datos[0]; ?>"><?php echo $datos[1]; ?></option>
 						<?php } ?>
 					</select><br /><span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
-				<td class="etiqueta"><?php echo $leng["ubicacion"]; ?>: 				<?php echo 'cod: '.$cod_ubicacion; echo 'ubi: '.$ubicacion;?></td>
+				<td class="etiqueta"><?php echo $leng["ubicacion"]; ?>: </td>
 				<td id="cl_ubicacion"><select name="ubicacion" style="width:200px">
 			
 					<option value="<?php echo $cod_ubicacion; ?>"><?php echo $ubicacion; ?></option>
