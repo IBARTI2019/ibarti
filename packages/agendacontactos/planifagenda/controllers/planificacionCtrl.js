@@ -136,6 +136,7 @@ function ac_apertura_planif(parametros, callback) {
 function validarIngreso(apertura, cliente, ubic, actividades, fecha, hora_inicio, hora_fin, cod_ficha, callback) {
 	var error = 0;
 	var errorMessage = ' ';
+
 	if (error == 0) {
 		var parametros = { apertura, cliente, ubic, actividades, fecha, hora_inicio, hora_fin, cod_ficha };
 		$.ajax({
@@ -301,20 +302,41 @@ function cargar_actividades(callback) {
 		}
 	});
 }
-
-function cargar_ubicaciones() {
-	//var parametros = { "cliente": cliente, "region": region, "cargo": cargo };
-	var parametros = { "cliente": cliente, "cargo": cargo };
+function cargar_ubicacionesC() {
+	
+	var cliente =$("#planf_clienteRP").html();
+	alert(cliente);
+	var parametros = { "cliente": cliente};
 	$.ajax({
 		data: parametros,
 		url: 'packages/agendacontactos/planifagenda/views/Add_planif_ap_ubic.php',
 		type: 'post',
 		beforeSend: function () {
-			$("#planf_ubicacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+			c('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
 		},
 		success: function (response) {
-			Habilitar_ubicacion();
-			$("#planf_ubicacion").html(response);
+			//Habilitar_ubicacion();
+			$("#planf_ubicacionRP").html(response);
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			alert(xhr.status);
+			alert(thrownError);
+		}
+	});
+}
+function cargar_ubicaciones(auxcliente) {
+	
+	var parametros = { "cliente": auxcliente};
+	$.ajax({
+		data: parametros,
+		url: 'packages/agendacontactos/planifagenda/views/Add_planif_ap_ubic.php',
+		type: 'post',
+		beforeSend: function () {
+			$("#planf_ubicacionRP").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+		},
+		success: function (response) {
+			//Habilitar_ubicacion();
+			$("#planf_ubicacionRP").html(response);
 		},
 		error: function (xhr, ajaxOptions, thrownError) {
 			alert(xhr.status);
@@ -473,24 +495,25 @@ function cargar_planif_superv_det() {
 						editable: true,
 						selectable: true,
 						eventContent: function (arg) {
-							var result = "<label>En Proceso</label>";
+							var result = "<label>En 1</label>";
 							
 							if (arg.event.id) {
-								result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("HH: mm") + " - " + moment(arg.event.end).format("HH: mm") + '<br>';
-								result += "<label>" + arg.event.title + "</label><br>";
-								result += arg.event.extendedProps.ubicacion + "<br>";
+								result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("YYYY-MM-DD") + "-" + moment(arg.event.end).format("YYYY-MM-DD") + '<br>';
+								result += "<label>" +  arg.event.extendedProps.cedula  + "</label><br>";
+								result += arg.event.extendedProps.ubicacion +"<br>";
 								if(arg.event.extendedProps.actividades){
-									var codigo_proyecto = arg.event.extendedProps.actividades[0].cod_proyecto;
+									var codigo_proyecto = arg.event.extendedProps.actividades[0].codigo;
 									var index = 1;
 									arg.event.extendedProps.actividades.forEach((act, i) => {
-										if ((i != 0) && (act.cod_proyecto != codigo_proyecto)) {
+										if ((i != 0) && (act.codigo != codigo_proyecto)) {
 											index = 1;
-											codigo_proyecto = act.cod_proyecto;
-											result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+											codigo_proyecto = act.codigo;
+											result += "<label>" + act.codigo + " (" + act.descripcion+ ")</label><br>";
 										} else if (i == 0) {
-											result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+											result += "<label>" + act.codigo + " (" + act.descripcion+ ")</label><br>";
 										}
-										result += "<span>" + index + ": " + act.actividad + "  (" + moment(act.fecha_inicio_act).format('HH:mm:ss') + " - " + moment(act.fecha_fin_act).format('HH:mm:ss') + ") </span><br>";
+										result += "<span>" + index + ": " + act.hora_inicio +"-" + act.hora_fin+ "</span><br>";
+								
 										index++;
 									});
 								}
@@ -508,20 +531,20 @@ function cargar_planif_superv_det() {
 						eventContent: function (arg) {
 							var result = "<label>En Proceso</label>";
 							if (arg.event.id) {
-								result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("HH: mm") + " - " + moment(arg.event.end).format("HH: mm") + ' - ';
-								result += "<label>" + arg.event.title + "</label> <br>";
+								result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("YYYY-MM-DD") + " - " + moment(arg.event.end).format("YYYY-MM-DD") + ' - ';
+								result += "<label>" + arg.event.extendedProps.cedula  + "</label> <br>";
 								result += arg.event.extendedProps.ubicacion + " <br> ";
-								var codigo_proyecto = arg.event.extendedProps.actividades[0].cod_proyecto;
+								var codigo_proyecto = arg.event.extendedProps.actividades[0].codigo;
 								var index = 1;
 								arg.event.extendedProps.actividades.forEach((act, i) => {
-									if ((i != 0) && (act.cod_proyecto != codigo_proyecto)) {
+									if ((i != 0) && (act.codigo != codigo_proyecto)) {
 										index = 1;
-										codigo_proyecto = act.cod_proyecto;
-										result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+										codigo_proyecto = act.codigo;
+										result += "<label>" + act.codigo + " (" + act.descripcion + ")</label><br>";
 									} else if (i == 0) {
-										result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+										result += "<label>" + act.codigo + " (" + act.descripcion + ")</label><br>";
 									}
-									result += "<span>" + index + ": " + act.actividad + "</span><br>";
+									result += "<span>" + index + ": " + act.hora_inicio +"-" + act.hora_fin+ "</span><br>";
 									index++;
 								});
 							}
@@ -533,27 +556,28 @@ function cargar_planif_superv_det() {
 					},
 					dayGridMonth: { // name of view
 						titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' },
-						showNonCurrentDates: true,
+						showNonCurrentDates:true ,
 						editable: true,
 						selectable: true,
 						eventContent: function (arg) {
 							var result = "<label>En Proceso</label>";
 							
 							if (arg.event.id) {
-								result = "<div class='fc-event-main'>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("HH: mm") + " - " + moment(arg.event.end).format("HH: mm") + '<br>';
+								result = "<div class='fc-event-main'>(" + arg.event.extendedProps.actividades[0].descripcion+ ") " + moment(arg.event.start).format("YYYY-MM-DD") + " - " + moment(arg.event.end).format("YYYY-MM-DD") + '<br>';
 								result += "<label>" + arg.event.title + "</label><br>";
-								result += arg.event.extendedProps.cod_ficha + "<br>";
-								var codigo_proyecto = arg.event.extendedProps.cod_ficha;
+								result += arg.event.extendedProps.cedula + "<br>";
+								var codigo_proyecto = arg.event.extendedProps.actividades[0].codigo;
 								var index = 1;
 								arg.event.extendedProps.actividades.forEach((act, i) => {
-									if ((i != 0) && (act.cod_proyecto != cod_ficha)) {
+									if ((i != 0) && (act.codigo != codigo_proyecto)) {
 										index = 1;
-										codigo_proyecto = act.cod_proyecto;
-										result += "<label>" + act.cod_proyecto + " (" + act.cod_proyecto + ")</label><br>";
+										codigo_proyecto = act.codigo;
+										result += "<label>" + act.codigo + " (" + act.descripcion + ")</label><br>";
 									} else if (i == 0) {
-										result += "<label>" + act.cod_proyecto + " (" + act.cod_proyecto + ")</label><br>";
+										result += "<label>" + act.codigo + " (" + act.descripcion+ ")</label><br>";
 									}
-									result += "<span>" + index + ": " + "ojo 1" + "</span><br>";
+									result += "<span>" + index + ": " + act.hora_inicio +"-" + act.hora_fin+ "</span><br>";
+								
 									index++;
 								});
 							}
@@ -599,7 +623,7 @@ function cargar_planif_superv_det() {
 				slotEventOverlap: true,
 				dateClick: function (info) {
 					metodo = "agregar";
-					alert("OJO clivk data click");
+					
 					modalActividad();
 					
 				},
@@ -613,7 +637,7 @@ function cargar_planif_superv_det() {
 					} else {
 						$("#guardarActividad").hide();
 					}
-					alert("Papa");
+					
 					editarActividad(eventActual);
 					
 				},
@@ -625,7 +649,7 @@ function cargar_planif_superv_det() {
 				eventDrop: function (arg) {
 				    
 					actualizarEvento(arg);
-					alert("Policia Ejemplo");
+					
 				},
 				selectMirror: true,
 				select: function (arg) {
@@ -641,6 +665,7 @@ function cargar_planif_superv_det() {
 				height: 'auto',
 				drop: function (arg) {
 					var precliente = arg.draggedEl.getAttribute('cod_ficha');
+					var nombrecliente= arg.draggedEl.getAttribute('cedula');
 					isafter = moment(arg.dateStr).isSameOrAfter(moment(hoy).format("YYYY-MM-DD"));
 					console.log('arg.dateStr: ', arg.dateStr);
 					if (isafter) {
@@ -652,7 +677,7 @@ function cargar_planif_superv_det() {
 						// 	$("#planf_ubicacionRP").append('<option value=' + f.cod_ubicacion + '>' + f.ubicacion + ' (' + hora_entrada + ' - ' + hora_salida + ')</option>');
 						// });
 						metodo = "agregar";
-						modalActividad();
+						modalActividad(arg.dateStr,precliente,nombrecliente);
 						$("#guardarActividad").show();
 					} else {
 						toastr.info("No es posible planificar actividades sobre fechas pasadas.");
@@ -666,14 +691,19 @@ function cargar_planif_superv_det() {
 			    
 				calendar.addEvent({
 					id: d.key,
-					title: d.values[0].codigo + " (" + d.values[0].codigo + ")",
+					title: d.values[0].codigo + " (" + d.values[0].descripcion+ ")",
 					start: d.values[0].fecha_inicio,
 					end: d.values[0].fecha_fin,
 					extendedProps: {
 						codigo: d.key,
-						cod_ficha: d.values[0].codigo,
-						cedula: d.values[0].codigo,
-						completado: (d.values[0].status =='T')
+						cod_ficha: d.values[0].cod_cliente,
+						cedula: d.values[0].nombre,
+						cod_ubicacion: d.values[0].cod_ubicacion,
+						ubicacion : d.values[0].ubicacion,
+						hora_inicio:d.values[0].hora_inicio,
+						hora_fin:d.values[0].hora_fin,
+						actividades: d.values,
+						completado: (d.values[0].codigo >0)
 					},
 				});
 			});
@@ -691,6 +721,7 @@ function cargar_planif_superv_trab_det() {
 	if (calendarTrab) {
 		calendarTrab.destroy();
 	}
+	
 	var parametros = {"usuario": usuario };
 	$.ajax({
 		data: parametros,
@@ -706,20 +737,20 @@ function cargar_planif_superv_trab_det() {
 					views: {
 						listMonth: {
 							eventContent: function (arg) {
-								var result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("HH: mm") + " - " + moment(arg.event.end).format("HH: mm") + '<br>';
+								var result = "<div>(" + arg.event.extendedProps.cod_ficha + ") " + moment(arg.event.start).format("HH: mm") + " - " + moment(arg.event.end).format("HH: mm") + '<br>';
 								result += arg.event.title + "<br>";
-								result += arg.event.extendedProps.cliente + " - " + arg.event.extendedProps.ubicacion + "<br>";
+								result += arg.event.extendedProps.cod_ficha + " - " + arg.event.extendedProps.cedula + "<br>";
 								var codigo_proyecto = arg.event.extendedProps.actividades[0].cod_proyecto;
 								var index = 1;
 								arg.event.extendedProps.actividades.forEach((act, i) => {
 									if ((i != 0) && (act.cod_proyecto != codigo_proyecto)) {
 										index = 1;
 										codigo_proyecto = act.cod_proyecto;
-										result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+										result += "<label>" + act.cod_proyecto + " (" + act.descripcion + ")</label><br>";
 									} else if (i == 0) {
-										result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+										result += "<label>" + act.cod_proyecto + " (" + act.descripcion + ")</label><br>";
 									}
-									result += "<span>" + index + ": " + act.actividad + "  (" + moment(act.fecha_inicio_act).format('HH:mm:ss') + " - " + moment(act.fecha_fin_act).format('HH:mm:ss') + ") </span><br>";
+									result += "<span>" + index + ": " + act.codigo + "  (" + moment(act.fecha_inicio).format('HH:mm:ss') + " - " + moment(act.fecha_fin).format('HH:mm:ss') + ") </span><br>";
 									index++;
 								});
 								result += "</div>";
@@ -916,21 +947,25 @@ function saveActividad() {
 	props = eventActual.extendedProps;
 	var error = 0;
 	var errorMessage = "";
-	if (!ubicacion) {
+	var ubicacion = $("#planf_ubicacionRP").val();
+	var cliente = $("#planf_clienteRP").html();
+	
+	if (ubicacion ==0) {
 		error++;
 		errorMessage += "La ubicación es obligatoria";
 	}
 
 	if (actividades.length == 0) {
 		error++;
-		errorMessage += "Debe agregar actividades al evento";
+		errorMessage += "Debe seleccionar una Actividad";
 	}
 	var hora_inicio = $("#planf_horaRP").val();
 	var hora_fin = $("#planf_hora_finRP").val();
 	var fechaQuery = moment(eventActual.start).format("YYYY-MM-DD");
 	var fecha_inicio = fechaQuery + " " + hora_inicio;
 	var fecha_fin = fechaQuery + " " + hora_fin;
-
+    
+	
 	if (!fecha_inicio) {
 		error++;
 		errorMessage += "La fecha inicial es obligatoria";
@@ -943,9 +978,8 @@ function saveActividad() {
 					$("#guardar_actividad").attr("disabled", false);
 				} else {
 					var parametros = {
-						"codigo": props.codigo, "fecha_inicio": fecha_inicio, "fecha_fin": fecha_fin,
-						"cliente": cliente, "ubicacion": ubicacion, "ficha": props.cod_ficha, 'apertura': apertura,
-						"actividades": actividades, "metodo": metodo, "usuario": usuario
+						"codigo": props.codigo, "fecha_inicio": fecha_inicio, "fecha_fin": fecha_fin, "hora_inicio": hora_inicio, "hora_fin": hora_fin,
+						"cliente": cliente, "ubicacion": ubicacion,"actividades": actividades, "metodo": metodo, "usuario": usuario
 					}
 					$.ajax({
 						data: parametros,
@@ -959,7 +993,7 @@ function saveActividad() {
 								toastr.success('Actualizacion Exitosa!..');
 								$('#modalRP').hide();
 								typeCalendar = calendar.view.type;
-								cargar_planif_superv_det(apertura);
+								cargar_planif_superv_det();
 							}
 							$("#guardar_actividad").attr("disabled", false);
 						},
@@ -988,10 +1022,10 @@ function saveActividad() {
 					} else {
 						eventActual.setStart(fecha_inicio);
 						eventActual.setEnd(fecha_fin);
-						toastr.success('Actualizacion Exitosa!..');
+						toastr.success('Actualizacion  Exitosa!..');
 						$('#modalRP').hide();
 						typeCalendar = calendar.view.type;
-						cargar_planif_superv_det(apertura);
+						cargar_planif_superv_det();
 					}
 					$("#guardar_actividad").attr("disabled", false);
 				},
@@ -1003,6 +1037,7 @@ function saveActividad() {
 			});
 		}
 	} else {
+		
 		toastr.warning(errorMessage);
 		$("#guardar_actividad").attr("disabled", false);
 	}
@@ -1035,25 +1070,24 @@ function mostarOcultarActividades(proyecto, valor) {
 
 function parse_act_html(acts) {
 	data = d3.nest()
-		.key((d) => d.codigo)
+		.key((d) => d.cod_proyecto)
 		.entries(acts);
 	var proyectos_html = "";
 	var actividades_html = "";
-    
-	const existe = (element) => eventActual.extendedProps.actividades.findIndex((el) => el.codigo === element.codigo) != -1;
-	
-	const event = (element) => element.estatu === 'T';
+
+	const existe = (element) => eventActual.extendedProps.actividades.findIndex((el) => el.cod_actividad === element.codigo) != -1;
+
+	const event = (element) => element.estatu=== 'T';
 	data.forEach(d => {
 		var checked = "";
-		
 		if (d.values.some(event)) {
-			checked = 'checked enabled="disabled"';
+			checked = 'checked disabled="disabled"';
 		} else if (metodo === "modificar") {
 			if (d.values.some(existe)) {
 				checked = 'checked';
 			}
 		}
-		proyectos_html += '<input type="checkbox" id="proyecto' + d.key + '"' + checked + ' onclick="mostarOcultarActividades(' + d.key + ', this.checked)">' + d.values[0].descripcion;
+		proyectos_html += '<input type="checkbox" id="proyecto' + d.key + '"' + checked + ' onclick="mostarOcultarActividades(' + d.key + ', this.checked)">' + d.values[0].proyecto_descripcion;
 		if (checked === "") {
 			actividades_html += '<div id="panel' + d.key + '" hidden="hidden">';
 		} else {
@@ -1061,7 +1095,7 @@ function parse_act_html(acts) {
 		}
 		d.values.forEach(act => {
 			checked = act.estatu === 'T' ? 'checked disabled="disabled"' : "";
-			actividades_html += '(' + d.values[0].codigo + ') ' + act.descripcion + ' <input type="checkbox" name="actividades[]" value="' + act.descrpcion + '" ' + checked + ' id="actividad' + act.descripcion+ '" minutos="' + act.codigo + '" proyecto="' + act.codigo+ '" onchange="updateFecFin(null)" style="width:auto"> ' + act.codigo+ ' min.<br>';
+			actividades_html += '(' + d.values[0].proyecto_descripcion + ') ' + act.descripcion + ' <input type="checkbox" name="actividades[]" value="' + act.cod_actividad + '" ' + checked + ' id="actividad' + act.cod_actividad + '" minutos="' + act.minutos + '" proyecto="' + act.cod_proyecto + '" onchange="updateFecFin(null)" style="width:auto"> ' + act.minutos + ' min.<br>';
 		});
 		actividades_html += '</div>';
 	});
@@ -1070,15 +1104,21 @@ function parse_act_html(acts) {
 	$("#planf_actividadRP").html(actividades_html);
 	updateFecFin(eventActual);
 }
-function modalActividad() {
-
-	cargar_actividades((acts) => {
+function modalActividad(fechaaux,cod_cliente,nombrec) {
+	
+    console.log(nombrec);
+	cargar_ubicaciones(cod_cliente);
+    cargar_actividades((acts) => {
 		parse_act_html(acts);
 	});
-	$("#planf_ubicacionRP").attr("disabled", false);
+	
+	$("#planf_ubicacionRP").attr("enabled", true);
 	$("#planf_proyectoRP").attr("disabled", false);
-	// $("#planf_fechaRP").html(moment(eventActual.start).format('YYYY-MM-DD'));
-	// $("#cedulaRP").html(eventActual.extendedProps.cod_ficha + " - " + eventActual.extendedProps.cedula);
+	$("#planf_fechaRP").html(fechaaux);
+	$("#cedulaRP").html(cod_cliente);
+	$("#planf_clienteRP").html(cod_cliente);
+	$("#planf_nombreRP").html(nombrec);
+	
 	$("#planf_actividadRP").html("");
 	// $("#planf_horaRP").val(moment(eventActual.start).format("HH:mm:00"));
 	$("#planf_hora_finRP").val("");
@@ -1090,47 +1130,67 @@ function modalActividad() {
 
 function editarActividad(event) {
 	//region = $("#planf_region").val();
+	var cliente =event.extendedProps.cod_ficha;
+	var nombrec = event.extendedProps.cedula;
+	var horai= event.extendedProps.hora_inicio;
+	var horaf =event.extendedProps.hora_fin;
+	
 	validarFecha(moment(event.start).format("YYYY-MM-DD"), cliente, (fechas) => {
 		if (fechas.data.length > 0) {
+			
 			$("#planf_ubicacionRP").html("");
-			var hora_entrada = fechas.data[0].hora_entrada;
-			var hora_salida = fechas.data[0].hora_salida;
+			var hora_entrada = fechas.data[0].hora_entrada ;
+			
+			var hora_salida = fechas.data[0].hora_salida + 2;
 			$("#planf_horaRP").prop("min", hora_entrada);
 			$("#planf_hora_finRP").prop("min", hora_entrada);
 			$("#planf_hora_finRP").prop("max", hora_salida);
 			fechas.data.forEach((f) => {
-				if (f.hora_entrada < hora_entrada) {
+				if (f.hora_entrada <= hora_entrada) {
 					var hora_entrada = f.hora_entrada;
 					$("#planf_horaRP").prop("min", hora_entrada);
 					$("#planf_hora_finRP").prop("min", hora_entrada);
 				}
-				if (f.hora_salida > hora_salida) {
+				if (f.hora_salida >= hora_salida) {
 					var hora_salida = fechas[0].hora_salida;
 					$("#planf_hora_finRP").prop("max", hora_salida);
 				}
 			});
-			fechas.datacliente.forEach((f) => {
-				$("#planf_ubicacionRP").append('<option value=' + f.cod_ubicacion + '>' + f.ubicacion + '</option>');
-			});
+		
 			$("#planf_fechaRP").html(moment(event.start).format('YYYY-MM-DD'));
-			$("#planf_ubicacionRP").val(event.extendedProps.cod_ubicacion);
+			  
+			fechas.datacliente.forEach((f) => {
+				$("#planf_ubicacionRP").append('<option value=' + event.extendedProps.cod_ubicacion+ '>' + event.extendedProps.ubicacion+ '</option>');
+					fechas.dataubicacion.forEach((u) => {
+				  
+						$("#planf_ubicacionRP").append('<option value=' + u.cod_nuevo+ '>' + u.descripcion_nueva+ '</option>');
+                     })
+			});
+			
 			$("#planf_horaRP").val(moment(event.start).format("HH:mm:00"));
+			
 			$("#cedulaRP").html(event.extendedProps.cod_ficha + " - " + event.extendedProps.cedula);
-			$("#dias_habilesRP").html(fechas.data[0].dias_habiles);
+			$("#dias_habilesRP").html(fechas.data[0].hora_entrada);
 			if (moment(moment(event.start).format("YYYY-MM-DD")).isSameOrAfter(moment(hoy).format("YYYY-MM-DD"))) {
 				$("#guardar_actividad").show();
 			} else {
 				$("#guardar_actividad").hide();
 			}
-			cargar_actividades(null, event.extendedProps.cod_ficha, (acts) => {
+			$("#planf_clienteRP").html(cliente);
+			$("#planf_nombreRP").html(nombrec);
+			
+			
+			cargar_actividades((acts) => {
 				parse_act_html(acts);
 				$('#modalRP').show();
 				event.extendedProps.actividades.forEach(act => {
-					$("#actividad" + act.codigo).prop("checked", true);
+					$("#actividad" + act.cod_actividad).prop("checked", true);
 				});
 				updateFecFin(event);
 			});
-			cargar_planif_superv_trab_det();
+			
+			
+			cargar_planif_superv_det();
 		} else {
 			toastr.error(fechas.msg);
 		}
@@ -1253,7 +1313,7 @@ function actualizarEvento(arg) {
 							toastr.success('Actualizacion Exitosa!..');
 							$('#modalRP').hide();
 							typeCalendar = calendar.view.type;
-							cargar_planif_superv_det(apertura);
+							cargar_planif_superv_det();
 						}
 					},
 					error: function (xhr, ajaxOptions, thrownError) {

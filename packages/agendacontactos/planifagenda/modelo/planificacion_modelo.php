@@ -36,13 +36,13 @@ class Planificacion
 	function get_cliente_c($usuario)
 	{
 		$this->datos   = array();
-		$sql = "  SELECT preclientes.codigo, 
+		$sql = "  SELECT clientes.codigo, 
 		-- IF(COUNT(clientes_contratacion.codigo) = 0, 'S/P - ' , '') sc,
 		IF(COUNT(clientes_contratacion.codigo) = 0, '' , '') sc,
-		preclientes.abrev, preclientes.nombre cliente
-		FROM preclientes LEFT JOIN clientes_contratacion ON preclientes.codigo = clientes_contratacion.cod_cliente
-		WHERE preclientes.`status` = 'T' 
-		GROUP BY preclientes.codigo ORDER BY 2 ASC ";
+		clientes.abrev, clientes.nombre cliente
+		FROM clientes LEFT JOIN clientes_contratacion ON clientes.codigo = clientes_contratacion.cod_cliente
+		WHERE clientes.`status` = 'T'
+		GROUP BY clientes.codigo ORDER BY 2 ASC ";
 
 		$query = $this->bd->consultar($sql);
 
@@ -210,14 +210,10 @@ class Planificacion
 
 	function get_planif_ap_ubic($cliente)
 	{
+		
 		$this->datos  = array();
-		$sql = "SELECT b.cod_ubicacion, c.descripcion
-		FROM  clientes_supervision b , clientes_ubicacion c
-		WHERE b.cod_ubicacion = c.codigo
-		AND c.cod_cliente = '$cliente'
-		AND c.`status` = 'T'
-		GROUP BY b.cod_ubicacion ORDER BY c.descripcion DESC ";
-
+		$sql = "SELECT codigo,descripcion
+		FROM  clientes_ubicacion where cod_cliente='$cliente'";
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query)) {
 			$this->datos[] = $datos;
@@ -245,8 +241,7 @@ class Planificacion
 	{
 		$this->datos  = array();
 		
-		$sql = "SELECT  codigo, descripcion, status estatu
-		FROM  formas_de_contactos ORDER BY formas_de_contactos.codigo ASC";
+		$sql = "SELECT formas_de_contactos.codigo cod_proyecto, formas_de_contactos.descripcion proyecto_descripcion,fc_actividades.codigo cod_actividad ,  fc_actividades.descripcion descripcion,fc_actividades.codigo  minutos, formas_de_contactos.status estatu FROM  formas_de_contactos, fc_actividades where formas_de_contactos.codigo=fc_actividades.cod_formacontacto ORDER BY formas_de_contactos.codigo asc";
 
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query)) {
@@ -293,7 +288,7 @@ class Planificacion
 	function get_planif_det()
 	{
 		$this->datos   = array();
-		$sql = "SELECT * FROM `agendas_contactos_fc` INNER JOIN `agendas_contactos_fc_actividades` ON  agendas_contactos_fc.codigo=agendas_contactos_fc_actividades.cod_agenda";
+		$sql = "SELECT DISTINCT a.codigo as codigo,b.descripcion as descripcion ,c.codigo as cod_cliente,c.nombre, a.fecha_inicio,a.fecha_fin,a.hora as hora_inicio,a.hora_fin as hora_fin ,e.codigo as cod_ubicacion,e.descripcion as ubicacion FROM agendas_contactos_fc_actividades as a, fc_actividades as b ,clientes as c,formas_de_contactos as d,clientes_ubicacion as e where a.cod_cliente=c.codigo and a.cod_actividad=b.codigo and e.codigo=a.cod_ubicacion";
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query)) {
 			$this->datos[] = $datos;
@@ -638,26 +633,42 @@ class Planificacion
 		$this->datos  = array();
 		$this->datos["data"]  = array();
 		$this->datos["datacliente"]  = array();
-
-		$sql = "SELECT clientes.codigo, agendas_contactos_fc_actividades.codigo  cod_horario,
+        $this->datos["dataubicacion"]  = array();
+		$sql = "SELECT clientes.codigo , agendas_contactos_fc_actividades.codigo  cod_horario,clientes_ubicacion.codigo as cod_ubicacion,clientes_ubicacion.descripcion as ubicacion,
 		MIN(agendas_contactos_fc_actividades.hora) hora_entrada, MAX(agendas_contactos_fc_actividades.hora) hora_salida
-		FROM clientes , agendas_contactos_fc_actividades 
-		WHERE clientes.codigo =agendas_contactos_fc_actividades.cod_cliente AND clientes.codigo = '$cliente' ";
+		FROM clientes , agendas_contactos_fc_actividades,clientes_ubicacion
+		WHERE clientes.codigo =agendas_contactos_fc_actividades.cod_cliente AND clientes.codigo=clientes_ubicacion.cod_cliente and clientes.codigo = '$cliente' ";
 		$this->datos["sql"] = $sql;
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query, 0)) {
-			$this->datos["data"][] = $datos;
+			$this->datos["datacliente"][] = $datos;
 		}
-		if (count($this->datos["data"]) == 0) {
-			$this->datos["msg"] = "El turno de la ficha " . $cod_ficha . " no aplica la fecha " . $fecha . "";
-		} else {
-			if ($this->datos["data"][0]["cod_ficha"] === null) {
-				$this->datos["msg"] = "El turno de la ficha " . $cod_ficha . " no aplica la fecha " . $fecha . "";
-				$this->datos["data"] = [];
+		if (count($this->datos["datacliente"]) > 0) {
+			$sql= "SELECT codigo as cod_nuevo,descripcion as descripcion_nueva
+			FROM  clientes_ubicacion where cod_cliente='$cliente'";
+			$this->datos["sql"] = $sql;
+			$query = $this->bd->consultar($sql);
+			while ($datos = $this->bd->obtener_fila($query, 0)) {
+				$this->datos["dataubicacion"][] = $datos;
 			}
+			$sql = "SELECT clientes.codigo , agendas_contactos_fc_actividades.codigo  cod_horario,clientes_ubicacion.codigo as cod_ubicacion,clientes_ubicacion.descripcion as ubicacion,
+			MIN(agendas_contactos_fc_actividades.hora) hora_entrada, MAX(agendas_contactos_fc_actividades.hora) hora_salida
+			FROM clientes , agendas_contactos_fc_actividades,clientes_ubicacion
+			WHERE clientes.codigo =agendas_contactos_fc_actividades.cod_cliente AND clientes.codigo=clientes_ubicacion.cod_cliente and clientes.codigo = '$cliente' ";
+			$this->datos["sql"] = $sql;
+			$query = $this->bd->consultar($sql);
+			while ($datos = $this->bd->obtener_fila($query, 0)) {
+				$this->datos["data"][] = $datos;
+			}
+			if (count($this->datos["data"]) == 0) {
+				$this->datos["msg"] = "El turno del cliente" . $cliente . " no aplica la fecha " . $fecha . "";
+			} 
+		} else {
+			$this->datos["msg"] = "El cliente no aplica la fecha " . $fecha . "  planificable en el mismo.";
 		}
-
 		return $this->datos;
+		
+		
 	}
 
 	function validar_ingreso($apertura, $cliente, $ubic, $actividades, $fecha, $hora_inicio, $hora_fin, $ficha)
@@ -667,52 +678,40 @@ class Planificacion
 		$result["data"] = [];
 		$horas = array();
 		$this->datos  = array();
-		$sql = "SELECT MIN(h.hora_entrada) hora_inicio, MAX(h.hora_salida) hora_fin
-		FROM clientes_supervision_ap  a,turno  t,horarios  h, dias_habiles, dias_habiles_det, dias_tipo, clientes_ubicacion cu
-		WHERE a.cod_turno = t.codigo AND t.cod_horario = h.codigo AND t.cod_dia_habil = dias_habiles.codigo
-		AND dias_habiles_det.cod_dias_habiles = dias_habiles.codigo   
-		AND ((dias_habiles_det.cod_dias_tipo = dias_tipo.dia AND Dia_semana(a.fecha)= dias_tipo.descripcion) 
-		OR (dias_habiles_det.cod_dias_tipo = dias_tipo.dia AND dias_tipo.tipo = 'D') 
-		OR (dias_habiles_det.cod_dias_tipo = dias_tipo.dia AND DATE_FORMAT(a.fecha,'%d') = dias_tipo.descripcion))
-		AND a.cod_ubicacion = cu.codigo AND a.cod_cliente = '$cliente' AND a.cod_ubicacion = '$ubic'
-		AND a.cod_planif_cl = $apertura AND a.`status`='T'  AND a.fecha = '$fecha'
-		HAVING (hora_inicio <= '$hora_inicio' AND hora_fin >= '$hora_fin') OR (hora_inicio = hora_fin)";
+		$sql = "select * from agendas_contactos_fc where cod_cliente='$cliente'";
 		$result["sql"] = $sql;
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query, 0)) {
 			$this->datos[] = $datos;
 		}
 		if (count($this->datos) > 0) {
-			$sql2 = " SELECT p.cod_ubicacion
-				FROM planif_clientes_superv_trab p, planif_clientes_superv_trab_det pd
-				WHERE p.codigo = pd.cod_planif_cl_trab 
-				AND ((p.cod_ficha = '$ficha'
-				AND p.cod_planif_cl = $apertura) OR 
-				(p.cod_ubicacion = '$ubic'
-				AND p.cod_planif_cl = $apertura))
+			$sql2 = " SELECT *
+				FROM agendas_contactos_fc_actividades
+				WHERE agendas_contactos_fc_actividades.cod_cliente= '$cliente' and 
+				agendas_contactos_fc_actividades.cod_ubicacion='$ubic'
 				";
 			$i = 0;
 			foreach ($actividades as $key => $value) {
 				if ($i == 0) {
-					$sql2 .= " AND ((pd.cod_proyecto = " . $value['cod_proyecto'] . " AND  pd.cod_actividad = " . $value['codigo'] . ")";
+					$sql2 .= " AND ((cod_actividad = " . $value['codigo'] . " AND  cod_actividad = " . $value['codigo'] . ")";
 				} else {
-					$sql2 .= " OR (pd.cod_proyecto = " . $value['cod_proyecto'] . " AND pd.cod_actividad = " . $value['codigo'] . ")";
+					$sql2 .= " OR (codigo = " . $value['cod_actividad'] . " AND cod_actividad = " . $value['codigo'] . ")";
 				}
 				$i++;
 			};
-			$sql2 .= ") AND DATE_FORMAT(pd.fecha_inicio,'%Y-%m-%d') = '$fecha'
+			$sql2 .= ") AND DATE_FORMAT(fecha_inicio,'%Y-%m-%d') = '$fecha'
 			AND (
 				(
-					TIME(pd.fecha_inicio) >= '$hora_inicio' 
-					AND TIME(pd.fecha_inicio) <= '$hora_fin'
-					AND TIME(pd.fecha_fin) > '$hora_inicio'
-					AND (TIME(pd.fecha_fin) >= '$hora_fin' OR TIME(pd.fecha_fin) < '$hora_fin')
+					TIME(fecha_inicio) >= '$hora_inicio' 
+					AND TIME(fecha_inicio) <= '$hora_fin'
+					AND TIME(fecha_fin) > '$hora_inicio'
+					AND (TIME(fecha_fin) >= '$hora_fin' OR TIME(fecha_fin) < '$hora_fin')
 				)
 				OR (
-					TIME(pd.fecha_inicio) <= '$hora_inicio' 
-					AND TIME(pd.fecha_inicio) <= '$hora_fin'
-					AND TIME(pd.fecha_fin) > '$hora_inicio'
-					AND TIME(pd.fecha_fin) <= '$hora_fin'
+					TIME(fecha_inicio) <= '$hora_inicio' 
+					AND TIME(fecha_inicio) <= '$hora_fin'
+					AND TIME(fecha_fin) > '$hora_inicio'
+					AND TIME(fecha_fin) <= '$hora_fin'
 				)
 			)";
 			$result["sql2"] = $sql2;
@@ -722,7 +721,7 @@ class Planificacion
 			}
 			if (count($horas) > 0) {
 				$result["error"] = true;
-				$result["msg"] = "Ya existe planificacion en este rango de horas para esta ficha o ubicación.";
+				$result["msg"] = "Ya existe planificacion en este rango de horas para este cliente y ubicación.";
 				$result["data"] = $horas;
 				return $result;
 			} else {

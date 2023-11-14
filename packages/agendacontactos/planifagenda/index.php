@@ -87,25 +87,36 @@ if (isset($_SESSION['usuario_cod'])) {
 		<div class="modal-body">
 			<div id="modal_contenido">
 				<table width="90%" align="center">
+				   <tr>
+						<td class="etiqueta"><span>Codigo:</span></td>
+						<td id="planf_clienteRP" name="planf_clienteRP"></td>
+						
+					</tr>
+					<tr>
+						<td class="etiqueta"><span>Cliente:</span></td>
+						<td id="planf_nombreRP" name="planf_nombreRP"></td>
+						
+					</tr>
 					<tr>
 						<td class="etiqueta"><span>Fecha:</span></td>
 						<td id="planf_fechaRP"></td>
 						
 					</tr>
 					<tr>
-						<td class="etiqueta"><span>Ubicacion:</span> </td>
-						<td><select id="planf_ubicacionRP" required style="width:200px">
-								<option value="">Seleccione</option>
-							</select></td>
-					</tr> 
+					<td class="etiqueta"><span>Ubicacion:</span> </td>
+					<td><select id="planf_ubicacionRP" name="planf_ubicacionRP"  style="width:250px" >
+					
+                   </select></td>
+					</tr>
+					 
 					<tr>
 						<td class="etiqueta"><span id="hora_texto">Hora de Inicio:</span> </td>
-						<td><input type="time" name="hora" id="planf_horaRP" step="30" onchange="updateFecFin()"></td>
+						<td><input type="time" name="planf_horaRP" id="planf_horaRP" step="30" onchange="updateFecFin()" ></td>
 					</tr>
 					<tr>
 					<tr>
 						<td class="etiqueta"><span id="hora_texto">Hora de Fin:</span> </td>
-						<td><input type="time" name="hora_fin" id="planf_hora_finRP" step="30" readonly="readonly"></td>
+						<td><input type="time" name="planf_hora_fin" id="planf_hora_finRP" step="30" ></td>
 					</tr>
 					<tr>
 						<td class="etiqueta"><span id="proyecto_texto">Formas de Contactos:</span> </td>
@@ -113,7 +124,7 @@ if (isset($_SESSION['usuario_cod'])) {
 					</tr>
 					<tr>
 						<td class="etiqueta"><span id="actividad_texto">Actividades:</span> </td>
-						<td id="planf_actividadRP"></td>
+						<td id="planf_actividadRP" name="planf_actividadRP"></td>
 					</tr>
 				</table>
 				<div align="center" id="guardarActividad"><span class="art-button-wrapper">

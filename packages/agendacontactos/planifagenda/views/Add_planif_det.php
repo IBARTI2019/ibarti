@@ -31,7 +31,7 @@ if (isset($_POST['usuario'])) {
 	<div id="external-events-list">';
 
 	foreach ($supervisores as  $datos) {
-		$result['html'] .= '<div class="fc-event fc-h-event fc-daygrid-event " cod_ficha="' . $datos[0] . '" cedula="' . $datos[0] . '">
+		$result['html'] .= '<div class="fc-event fc-h-event fc-daygrid-event " cod_ficha="' . $datos[0] . '" cedula="' . $datos[3] . '">
 		<div class="fc-event-main">' . $datos[0] . ' - ' . $datos[1] . '<br>' . $datos[2] . '<br>' . $datos[3] . '</div>
 		</div>';
 	}
