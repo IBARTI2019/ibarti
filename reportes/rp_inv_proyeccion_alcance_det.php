@@ -88,7 +88,7 @@ SUM(
 				clientes_ub_alcance.vencimiento = 'T',
 				DATE_ADD( DATE_FORMAT( IFNULL( ajuste_alcance.fecha, '0001-01-01' ), '%Y-%m-%d' ), INTERVAL clientes_ub_alcance.dias DAY ) < DATE_ADD( '$fecha_D', INTERVAL $d_proyeccion DAY ),
 				DATE_ADD( DATE_FORMAT( IFNULL( ajuste_alcance.fecha, '0001-01-01' ), '%Y-%m-%d' ), INTERVAL control.dias_proyeccion DAY ) < DATE_ADD( '$fecha_D', INTERVAL $d_proyeccion DAY ) 
-			) = 1
+			) = 0
 		),
 		0 
 	) 
@@ -126,7 +126,7 @@ cod_linea,
 cod_sub_linea 
 HAVING
 ( vencido = 1 ) 
-OR ( vencido = 0 AND cantidad < alcance )
+OR ( vencido = 0 AND cantidad < alcance AND cantidad > 0 ) 
 UNION
 SELECT
 	'SIN DOTAR' fecha,
