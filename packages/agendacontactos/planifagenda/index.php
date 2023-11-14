@@ -111,7 +111,7 @@ if (isset($_SESSION['usuario_cod'])) {
 					 
 					<tr>
 						<td class="etiqueta"><span id="hora_texto">Hora de Inicio:</span> </td>
-						<td><input type="time" name="planf_horaRP" id="planf_horaRP" step="30" onchange="updateFecFin()" ></td>
+						<td><input type="time" name="planf_horaRP" id="planf_horaRP" step="30"  ></td>
 					</tr>
 					<tr>
 					<tr>

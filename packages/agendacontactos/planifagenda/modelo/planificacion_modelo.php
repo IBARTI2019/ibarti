@@ -627,6 +627,16 @@ class Planificacion
 		$query = $this->bd->consultar($sql);
 		return $this->datos = $this->bd->obtener_fila($query);
 	}
+	function validar_formato($cliente, $ubicacion)
+	{
+		$this->datos  = array();
+		$sql = "SELECT TIME_FORMAT(agendas_contactos_fc_actividades.hora,'%H %i %s') hora_entrada, TIME_FORMAT(agendas_contactos_fc_actividades.hora_fin,'%H %i %s') hora_salida FROM clientes , agendas_contactos_fc_actividades,clientes_ubicacion
+		WHERE clientes.codigo =agendas_contactos_fc_actividades.cod_cliente AND clientes.codigo=clientes_ubicacion.cod_cliente and clientes.codigo = '$cliente'
+		and clientes_ubicacion.codigo='$ubicacion'";
+		$query = $this->bd->consultar($sql);
+		return $this->datos = $this->bd->obtener_fila($query);
+				
+	}
 
 	function validar_fecha($fecha, $cliente)
 	{

@@ -181,6 +181,32 @@ function validarFecha(fecha, cliente, callback) {
 	}
 }
 
+function FormatoFecha(cliente,ubicacion) {
+	var error = 0;
+	var errorMessage = ' ';
+	
+	if (error == 0) {
+		var parametros = { cliente,ubicacion};
+		$.ajax({
+			data: parametros,
+			url: 'packages/agendacontactos/planifagenda/views/validar_formatof.php',
+			type: 'post',
+			success: function (response) {
+				var resp = JSON.parse(response);
+				$("#planf_horaRP").html(resp['hora_entrada']);
+				$("#planf_hora_finRP").html(resp['hora_salida']);
+				
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+	} else {
+		alert(errorMessage);
+	}
+}
+
 function cl_apertura() {
 	var parametros = { "ubic": ubicacion, "cargo": cargo };
 	$.ajax({
@@ -1102,7 +1128,7 @@ function parse_act_html(acts) {
 
 	$("#planf_proyectoRP").html(proyectos_html);
 	$("#planf_actividadRP").html(actividades_html);
-	updateFecFin(eventActual);
+	//updateFecFin(eventActual);
 }
 function modalActividad(fechaaux,cod_cliente,nombrec) {
 	
@@ -1132,8 +1158,7 @@ function editarActividad(event) {
 	//region = $("#planf_region").val();
 	var cliente =event.extendedProps.cod_ficha;
 	var nombrec = event.extendedProps.cedula;
-	var horai= event.extendedProps.hora_inicio;
-	var horaf =event.extendedProps.hora_fin;
+	var cod_ubicacion= event.extendedProps.cod_ubicacion;
 	
 	validarFecha(moment(event.start).format("YYYY-MM-DD"), cliente, (fechas) => {
 		if (fechas.data.length > 0) {
@@ -1167,7 +1192,7 @@ function editarActividad(event) {
                      })
 			});
 			
-			$("#planf_horaRP").val(moment(event.start).format("HH:mm:00"));
+			//$("#planf_horaRP").val(moment(event.start).format("HH:mm:00"));
 			
 			$("#cedulaRP").html(event.extendedProps.cod_ficha + " - " + event.extendedProps.cedula);
 			$("#dias_habilesRP").html(fechas.data[0].hora_entrada);
@@ -1179,14 +1204,14 @@ function editarActividad(event) {
 			$("#planf_clienteRP").html(cliente);
 			$("#planf_nombreRP").html(nombrec);
 			
-			
+			FormatoFecha(cliente,cod_ubicacion);
 			cargar_actividades((acts) => {
 				parse_act_html(acts);
 				$('#modalRP').show();
 				event.extendedProps.actividades.forEach(act => {
 					$("#actividad" + act.cod_actividad).prop("checked", true);
 				});
-				updateFecFin(event);
+				
 			});
 			
 			
