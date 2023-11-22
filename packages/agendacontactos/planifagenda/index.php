@@ -7,18 +7,31 @@
 <script src='libs/fullcalendar/lib/locales/es.js'></script>
 
 <style>
+	#wrap {
+		width: 100%;
+	}
+
+	#calendar-wrap {
+		width: 65%;
+		min-height: 400px;
+		display: inline; 
+		float:left;
+		margin: 0px 0px 30px 30px;
+	}
+
 	#supervisor-wrap {
-		width: 19vw;
+		width: 25%;
 		left: 0px;
-		position: absolute;
 		height: 470px;
+		display: inline; 
+		float:left;
 	}
 
 	#external-events {
 		padding: 0 10px;
 		left: 0px;
 		top: 0px;
-		width: 230px;
+		width: 90%;
 		border: 1px solid #ccc;
 		background: #eee;
 		text-align: left;
@@ -45,14 +58,9 @@
 		margin: 0;
 		vertical-align: middle;
 	}
-
-	#calendar-wrap {
-		margin-left: 250px;
-		min-height: 400px;
-	}
-
+	
 	#calendar {
-		max-width: 1100px;
+		width: 100%;
 		margin: 0 auto;
 	}
 </style>
@@ -88,12 +96,12 @@ if (isset($_SESSION['usuario_cod'])) {
 			<div id="modal_contenido">
 				<table width="90%" align="center">
 				   <tr>
-						<td class="etiqueta"><span>Codigo:</span></td>
+						<td class="etiqueta"><span>Código:</span></td>
 						<td id="planf_clienteRP" name="planf_clienteRP"></td>
 						
 					</tr>
 					<tr>
-						<td class="etiqueta"><span>Cliente:</span></td>
+						<td class="etiqueta"><span><?php echo $leng['precliente']; ?>:</span></td>
 						<td id="planf_nombreRP" name="planf_nombreRP"></td>
 						
 					</tr>
@@ -103,20 +111,20 @@ if (isset($_SESSION['usuario_cod'])) {
 						
 					</tr>
 					<tr>
-					<td class="etiqueta"><span>Ubicacion:</span> </td>
-					<td><select id="planf_ubicacionRP" name="planf_ubicacionRP"  style="width:250px" >
-					
-                   </select></td>
+					<!--<td class="etiqueta"><span>Ubicacion:</span> </td>
+					<td>
+						<select id="planf_ubicacionRP" name="planf_ubicacionRP"  style="width:250px" ></select>
+					</td> -->
 					</tr>
 					 
 					<tr>
 						<td class="etiqueta"><span id="hora_texto">Hora de Inicio:</span> </td>
-						<td><input type="time" name="planf_horaRP" id="planf_horaRP" step="30"  ></td>
+						<td><input type="time" name="planf_horaRP" id="planf_horaRP"></td>
 					</tr>
 					<tr>
 					<tr>
 						<td class="etiqueta"><span id="hora_texto">Hora de Fin:</span> </td>
-						<td><input type="time" name="planf_hora_fin" id="planf_hora_finRP" step="30" ></td>
+						<td><input type="time" name="planf_hora_fin" id="planf_hora_finRP"></td>
 					</tr>
 					<tr>
 						<td class="etiqueta"><span id="proyecto_texto">Formas de Contactos:</span> </td>

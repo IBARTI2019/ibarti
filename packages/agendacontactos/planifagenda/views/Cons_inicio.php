@@ -54,7 +54,7 @@ $valor= "calendario";
   <div id="cont_planif_det"></div>
   <!-- class="tabla_sistema" -->
   <div align="center">
-    <span class="art-button-wrapper">
+   <!--  <span class="art-button-wrapper">
       <span class="art-button-l"> </span>
       <span class="art-button-r"> </span>
       <input type="reset" id="limpiar" value="Restablecer" class="readon art-button" />
@@ -68,7 +68,7 @@ $valor= "calendario";
       <span class="art-button-l"> </span>
       <span class="art-button-r"> </span>
       <input type="button" value="clientes sin Agendar" onClick="trab_sin_planificar()" class="readon art-button" />
-    </span>
+    </span> -->
     <input name="metodo" id="h_metodo" type="hidden" value="<?php echo $metodo; ?>" />
   </div>
 </form>

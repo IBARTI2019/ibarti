@@ -16,7 +16,7 @@ if (isset($_POST['usuario'])) {
 
 	// $fechas = $plan->get_fechas_apertura($apertura, $ubicacion, $cargo);
     
-	$supervisores = $plan->get_cliente_c($usuario);
+	$preclientes = $plan->get_preclientes($usuario);
 	// $result['html'] = '</br></br><div align="center" class="etiqueta_title">Detalle Agenda</div>
 	// <div align="right"><span class="etiqueta">Ultima Modificación: </span> ' . $mod["fecha"] . ' (' . $mod["us_mod"] . ')</div>
 	// <div align="right"><span class="etiqueta">Nro. de clientes sin Agenda: <h6 id="cantidad_sin_planif"></h6></div>
@@ -26,13 +26,13 @@ if (isset($_POST['usuario'])) {
 	<div id="supervisor-wrap" class="scroll">
 	<div id="external-events">
 	<input type="text"id="filtro" value="" placeholder="Filtro" style="width:200px"/>
-	<h4>Clientes:</h4>
+	<h4>'.$leng['precliente'].':</h4>
 
 	<div id="external-events-list">';
 
-	foreach ($supervisores as  $datos) {
-		$result['html'] .= '<div class="fc-event fc-h-event fc-daygrid-event " cod_ficha="' . $datos[0] . '" cedula="' . $datos[3] . '">
-		<div class="fc-event-main">' . $datos[0] . ' - ' . $datos[1] . '<br>' . $datos[2] . '<br>' . $datos[3] . '</div>
+	foreach ($preclientes as  $datos) {
+		$result['html'] .= '<div class="fc-event fc-h-event fc-daygrid-event " codigo="' . $datos[0] . '" cedula="' . $datos[1] . '">
+		<div class="fc-event-main">' . $datos[0] . '<br>' . $datos[1] . '<br>' . $datos[2] . '</div>
 		</div>';
 	}
 

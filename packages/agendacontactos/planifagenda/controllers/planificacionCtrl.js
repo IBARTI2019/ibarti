@@ -13,7 +13,7 @@ var eventActual = null;
 var fecha_fin = null;
 var actividades = [];
 var metodo = "agregar";
-var typeCalendar = "timeGridWeek";
+var typeCalendar = "dayGridMonth";
 var isafter = true;
 var hoy = new Date();
 
@@ -133,12 +133,12 @@ function ac_apertura_planif(parametros, callback) {
 	});
 }
 
-function validarIngreso(apertura, cliente, ubic, actividades, fecha, hora_inicio, hora_fin, cod_ficha, callback) {
+function validarIngreso(apertura, cliente, ubic, actividades, fecha, hora_inicio, hora_fin, codigo, callback) {
 	var error = 0;
 	var errorMessage = ' ';
 
 	if (error == 0) {
-		var parametros = { apertura, cliente, ubic, actividades, fecha, hora_inicio, hora_fin, cod_ficha };
+		var parametros = { apertura, cliente, ubic, actividades, fecha, hora_inicio, hora_fin, codigo };
 		$.ajax({
 			data: parametros,
 			url: 'packages/agendacontactos/planifagenda/views/validarIngreso.php',
@@ -181,31 +181,6 @@ function validarFecha(fecha, cliente, callback) {
 	}
 }
 
-function FormatoFecha(cliente,ubicacion) {
-	var error = 0;
-	var errorMessage = ' ';
-	
-	if (error == 0) {
-		var parametros = { cliente,ubicacion};
-		$.ajax({
-			data: parametros,
-			url: 'packages/agendacontactos/planifagenda/views/validar_formatof.php',
-			type: 'post',
-			success: function (response) {
-				var resp = JSON.parse(response);
-				$("#planf_horaRP").html(resp['hora_entrada']);
-				$("#planf_hora_finRP").html(resp['hora_salida']);
-				
-			},
-			error: function (xhr, ajaxOptions, thrownError) {
-				alert(xhr.status);
-				alert(thrownError);
-			}
-		});
-	} else {
-		alert(errorMessage);
-	}
-}
 
 function cl_apertura() {
 	var parametros = { "ubic": ubicacion, "cargo": cargo };
@@ -317,7 +292,7 @@ function cargar_actividades(callback) {
 		success: function (response) {
 			$("#planf_actividadRP").html(response);
 			var resp = JSON.parse(response);
-			//updateFecFin(eventActual);
+			updateActividades(eventActual);
 			if (typeof callback == "function") {
 				callback(resp);
 			}
@@ -328,6 +303,7 @@ function cargar_actividades(callback) {
 		}
 	});
 }
+
 function cargar_ubicacionesC() {
 	
 	var cliente =$("#planf_clienteRP").html();
@@ -380,13 +356,9 @@ function cargar_planif_superv(ubic, c) {
 	$("#cont_planif_det").html("");
 	
 	if (ap !== '' ) {
-				apertura = ap;
-				cargar_planif_superv_det(apertura);
+		apertura = ap;
+		cargar_planif_superv_det(apertura);
 	}
-		
-	
-	
-
 }
 
 function cargar_supervision_det(cliente, ubic, cargo) {
@@ -477,7 +449,6 @@ function cargar_planif_superv_det() {
 			$("#cont_planif_det").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
 		},
 		success: function (response) {
-		
 			var resp = JSON.parse(response);
 			$("#cont_planif_det").html(resp["html"]);
 			
@@ -515,12 +486,14 @@ function cargar_planif_superv_det() {
 			var calendarEl = document.getElementById('calendar');
 			calendar = new FullCalendar.Calendar(calendarEl, {
 				initialView: typeCalendar,
-				headerToolbar: { center: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth' },
+				headerToolbar: { center: 'dayGridMonth' },
+				// headerToolbar: { center: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth' },
 				views: {
 					listMonth: {
 						editable: true,
 						selectable: true,
 						eventContent: function (arg) {
+							console.log('eventContent: ', arg);
 							var result = "<label>En 1</label>";
 							
 							if (arg.event.id) {
@@ -551,93 +524,94 @@ function cargar_planif_superv_det() {
 							}
 						},
 					},
-					timeGridDay: {
-						editable: true,
-						slotDuration: '00:05:00',
-						eventContent: function (arg) {
-							var result = "<label>En Proceso</label>";
-							if (arg.event.id) {
-								result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("YYYY-MM-DD") + " - " + moment(arg.event.end).format("YYYY-MM-DD") + ' - ';
-								result += "<label>" + arg.event.extendedProps.cedula  + "</label> <br>";
-								result += arg.event.extendedProps.ubicacion + " <br> ";
-								var codigo_proyecto = arg.event.extendedProps.actividades[0].codigo;
-								var index = 1;
-								arg.event.extendedProps.actividades.forEach((act, i) => {
-									if ((i != 0) && (act.codigo != codigo_proyecto)) {
-										index = 1;
-										codigo_proyecto = act.codigo;
-										result += "<label>" + act.codigo + " (" + act.descripcion + ")</label><br>";
-									} else if (i == 0) {
-										result += "<label>" + act.codigo + " (" + act.descripcion + ")</label><br>";
-									}
-									result += "<span>" + index + ": " + act.hora_inicio +"-" + act.hora_fin+ "</span><br>";
-									index++;
-								});
-							}
-							result += "</div>";
-							return {
-								html: result
-							}
-						},
-					},
-					dayGridMonth: { // name of view
-						titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' },
-						showNonCurrentDates:true ,
-						editable: true,
-						selectable: true,
-						eventContent: function (arg) {
-							var result = "<label>En Proceso</label>";
+					// timeGridDay: {
+					// 	editable: true,
+					// 	slotDuration: '00:05:00',
+					// 	eventContent: function (arg) {
+					// 		var result = "<label>En Proceso</label>";
+					// 		if (arg.event.id) {
+					// 			result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("YYYY-MM-DD") + " - " + moment(arg.event.end).format("YYYY-MM-DD") + ' - ';
+					// 			result += "<label>" + arg.event.extendedProps.cedula  + "</label> <br>";
+					// 			result += arg.event.extendedProps.ubicacion + " <br> ";
+					// 			var codigo_proyecto = arg.event.extendedProps.actividades[0].codigo;
+					// 			var index = 1;
+					// 			arg.event.extendedProps.actividades.forEach((act, i) => {
+					// 				if ((i != 0) && (act.codigo != codigo_proyecto)) {
+					// 					index = 1;
+					// 					codigo_proyecto = act.codigo;
+					// 					result += "<label>" + act.codigo + " (" + act.descripcion + ")</label><br>";
+					// 				} else if (i == 0) {
+					// 					result += "<label>" + act.codigo + " (" + act.descripcion + ")</label><br>";
+					// 				}
+					// 				result += "<span>" + index + ": " + act.hora_inicio +"-" + act.hora_fin+ "</span><br>";
+					// 				index++;
+					// 			});
+					// 		}
+					// 		result += "</div>";
+					// 		return {
+					// 			html: result
+					// 		}
+					// 	},
+					// },
+					// dayGridMonth: { // name of view
+					// 	titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' },
+					// 	showNonCurrentDates:true ,
+					// 	editable: true,
+					// 	selectable: true,
+					// 	eventContent: function (arg) {
+					// 		var result = "<label>En Proceso</label>";
 							
-							if (arg.event.id) {
-								result = "<div class='fc-event-main'>(" + arg.event.extendedProps.actividades[0].descripcion+ ") " + moment(arg.event.start).format("YYYY-MM-DD") + " - " + moment(arg.event.end).format("YYYY-MM-DD") + '<br>';
-								result += "<label>" + arg.event.title + "</label><br>";
-								result += arg.event.extendedProps.cedula + "<br>";
-								var codigo_proyecto = arg.event.extendedProps.actividades[0].codigo;
-								var index = 1;
-								arg.event.extendedProps.actividades.forEach((act, i) => {
-									if ((i != 0) && (act.codigo != codigo_proyecto)) {
-										index = 1;
-										codigo_proyecto = act.codigo;
-										result += "<label>" + act.codigo + " (" + act.descripcion + ")</label><br>";
-									} else if (i == 0) {
-										result += "<label>" + act.codigo + " (" + act.descripcion+ ")</label><br>";
-									}
-									result += "<span>" + index + ": " + act.hora_inicio +"-" + act.hora_fin+ "</span><br>";
+					// 		if (arg.event.id) {
+					// 			result = "<div class='fc-event-main'>(" + arg.event.extendedProps.actividades[0].descripcion+ ") " + moment(arg.event.start).format("YYYY-MM-DD") + " - " + moment(arg.event.end).format("YYYY-MM-DD") + '<br>';
+					// 			result += "<label>" + arg.event.title + "</label><br>";
+					// 			result += arg.event.extendedProps.cedula + "<br>";
+					// 			var codigo_proyecto = arg.event.extendedProps.actividades[0].codigo;
+					// 			var index = 1;
+					// 			arg.event.extendedProps.actividades.forEach((act, i) => {
+					// 				if ((i != 0) && (act.codigo != codigo_proyecto)) {
+					// 					index = 1;
+					// 					codigo_proyecto = act.codigo;
+					// 					result += "<label>" + act.codigo + " (" + act.descripcion + ")</label><br>";
+					// 				} else if (i == 0) {
+					// 					result += "<label>" + act.codigo + " (" + act.descripcion+ ")</label><br>";
+					// 				}
+					// 				result += "<span>" + index + ": " + act.hora_inicio +"-" + act.hora_fin+ "</span><br>";
 								
-									index++;
-								});
-							}
-							result += "</div>";
-							return {
-								html: result
-							}
-						},
-					},
-					timeGridWeek: {
-						showNonCurrentDates: false,
-						editable: true,
-						selectable: true,
-						eventContent: function (arg) {
-							var result = "<label>ojo 4</label>";
+					// 				index++;
+					// 			});
+					// 		}
+					// 		result += "</div>";
+					// 		return {
+					// 			html: result
+					// 		}
+					// 	},
+					// },
+					// timeGridWeek: {
+					// 	showNonCurrentDates: false,
+					// 	editable: true,
+					// 	selectable: true,
+					// 	eventContent: function (arg) {
+					// 		var result = "<label>ojo 4</label>";
 							
-							if (arg.event.id) {
-								result = "<div>(" + arg.event.extendedProps.codigo + ") " + arg.event.extendedProps.codigo + " ";
-								result += "<label>" + arg.event.title + "</label>"
-							}
-							result += "</div>";
-							return {
-								html: result
-							}
-						},
-					},
+					// 		if (arg.event.id) {
+					// 			result = "<div>(" + arg.event.extendedProps.codigo + ") " + arg.event.extendedProps.codigo + " ";
+					// 			result += "<label>" + arg.event.title + "</label>"
+					// 		}
+					// 		result += "</div>";
+					// 		return {
+					// 			html: result
+					// 		}
+					// 	},
+					// },
 				},
 				eventDidMount: function (info) {
 					eventActual = info.event;
 					if (!isafter) {
+						cancelarActividad();
 						eventActual.remove();
 					}
 				},
-				initialDate: fechas.fecha_inicio,
+				// initialDate: fechas.fecha_inicio,
 				navLinks: true,
 				dayMaxEvents: true,
 				locale: 'es',
@@ -647,13 +621,14 @@ function cargar_planif_superv_det() {
 				// },
 				allDaySlot: true,
 				slotEventOverlap: true,
-				dateClick: function (info) {
-					metodo = "agregar";
+				// dateClick: function (info) {
+				// 	metodo = "agregar";
 					
-					modalActividad();
+				// 	modalActividad();
 					
-				},
+				// },
 				eventClick: function (arg) {
+					console.log('eventClick: ', arg);
 					eventActual = arg.event;
 					metodo = "modificar";
 					
@@ -668,32 +643,29 @@ function cargar_planif_superv_det() {
 					
 				},
 				eventResize: function (arg) {
-					
+					cpnsole.log('eventResize: ', arg);
 					actualizarEvento(arg);
-
 				},
 				eventDrop: function (arg) {
-				    
-					actualizarEvento(arg);
-					
+				    console.log('eventDrop: ', arg);
+					actualizarEvento(arg);	
 				},
 				selectMirror: true,
 				select: function (arg) {
+					console.log('select: ', arg);
 					//("arg.start ", arg.start);
 				},
 				eventAllow: function (dropInfo, draggedEvent) {
-					metodo = "agregar";
-					// modalActividad();
 					return moment(dropInfo.start).isSameOrAfter(moment(hoy).format("YYYY-MM-DD")) && ((draggedEvent.start && moment(draggedEvent.start).isSameOrAfter(moment(hoy).format("YYYY-MM-DD")) || (draggedEvent.start === null))) && moment(draggedEvent.start).format("YYYY-MM-DD") != moment(dropInfo.start).format("YYYY-MM-DD");
 				},
 				editable: true,
 				nowIndicator: false,
 				height: 'auto',
 				drop: function (arg) {
-					var precliente = arg.draggedEl.getAttribute('cod_ficha');
-					var nombrecliente= arg.draggedEl.getAttribute('cedula');
+					console.log('drop', arg, 'arg.dateStr: ', arg.dateStr);
+					var precliente = arg.draggedEl.getAttribute('codigo');
+					var nombrecliente = arg.draggedEl.getAttribute('cedula');
 					isafter = moment(arg.dateStr).isSameOrAfter(moment(hoy).format("YYYY-MM-DD"));
-					console.log('arg.dateStr: ', arg.dateStr);
 					if (isafter) {
 						$("#planf_ubicacionRP").html("");
 						$("#planf_ubicacionRP").append('<option value="">Seleccione</option>');
@@ -714,7 +686,6 @@ function cargar_planif_superv_det() {
 			});
 				
 			res_eventos.forEach(d => {
-			    
 				calendar.addEvent({
 					id: d.key,
 					title: d.values[0].codigo + " (" + d.values[0].descripcion+ ")",
@@ -722,7 +693,7 @@ function cargar_planif_superv_det() {
 					end: d.values[0].fecha_fin,
 					extendedProps: {
 						codigo: d.key,
-						cod_ficha: d.values[0].cod_cliente,
+						codigo: d.values[0].cod_cliente,
 						cedula: d.values[0].nombre,
 						cod_ubicacion: d.values[0].cod_ubicacion,
 						ubicacion : d.values[0].ubicacion,
@@ -763,9 +734,9 @@ function cargar_planif_superv_trab_det() {
 					views: {
 						listMonth: {
 							eventContent: function (arg) {
-								var result = "<div>(" + arg.event.extendedProps.cod_ficha + ") " + moment(arg.event.start).format("HH: mm") + " - " + moment(arg.event.end).format("HH: mm") + '<br>';
+								var result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("HH: mm") + " - " + moment(arg.event.end).format("HH: mm") + '<br>';
 								result += arg.event.title + "<br>";
-								result += arg.event.extendedProps.cod_ficha + " - " + arg.event.extendedProps.cedula + "<br>";
+								result += arg.event.extendedProps.codigo + " - " + arg.event.extendedProps.cedula + "<br>";
 								var codigo_proyecto = arg.event.extendedProps.actividades[0].cod_proyecto;
 								var index = 1;
 								arg.event.extendedProps.actividades.forEach((act, i) => {
@@ -816,7 +787,7 @@ function cargar_planif_superv_trab_det() {
 						end: d.values[0].fecha_fin,
 						extendedProps: {
 							codigo: d.key,
-							cod_ficha: d.values[0].cod_ficha,
+							codigo: d.values[0].codigo,
 							cedula: d.values[0].cedula,
 							trabajador: d.values[0].trabajador,
 							proyecto: d.values[0].proyecto,
@@ -967,7 +938,7 @@ function B_planif_trab() {
 	});
 }
 
-// Planificacion de trabajo detalle por trabajador  Agregar Modificar Eliminar
+// Agregar Modificar Eliminar
 function saveActividad() {
 	$("#guardar_actividad").attr("disabled", true);
 	props = eventActual.extendedProps;
@@ -976,29 +947,31 @@ function saveActividad() {
 	var ubicacion = $("#planf_ubicacionRP").val();
 	var cliente = $("#planf_clienteRP").html();
 	
-	if (ubicacion ==0) {
+	if (ubicacion == 0) {
 		error++;
 		errorMessage += "La ubicación es obligatoria";
 	}
 
 	if (actividades.length == 0) {
 		error++;
-		errorMessage += "Debe seleccionar una Actividad";
+		errorMessage += "Debe seleccionar al menos una actividad";
 	}
+
 	var hora_inicio = $("#planf_horaRP").val();
 	var hora_fin = $("#planf_hora_finRP").val();
 	var fechaQuery = moment(eventActual.start).format("YYYY-MM-DD");
 	var fecha_inicio = fechaQuery + " " + hora_inicio;
 	var fecha_fin = fechaQuery + " " + hora_fin;
     
-	
+	console.log('saveActividad: ', fecha_inicio, cliente, actividades, fechaQuery, hora_inicio, hora_fin, props.codigo);
+
 	if (!fecha_inicio) {
 		error++;
 		errorMessage += "La fecha inicial es obligatoria";
 	}
 	if (error == 0) {
 		if (metodo == "agregar") {
-			validarIngreso(apertura, cliente, ubicacion, actividades, fechaQuery, hora_inicio, hora_fin, props.cod_ficha, (valid) => {
+			validarIngreso(apertura, cliente, ubicacion, actividades, fechaQuery, hora_inicio, hora_fin, props.codigo, (valid) => {
 				if (valid.error) {
 					toastr.error(valid.msg);
 					$("#guardar_actividad").attr("disabled", false);
@@ -1034,7 +1007,7 @@ function saveActividad() {
 		} else {
 			var parametros = {
 				"codigo": props.codigo, "fecha_inicio": fecha_inicio, "fecha_fin": fecha_fin,
-				"cliente": cliente, "ubicacion": ubicacion, "ficha": props.cod_ficha, 'apertura': apertura,
+				"cliente": cliente, "ubicacion": ubicacion, "ficha": props.codigo, 'apertura': apertura,
 				"actividades": actividades, "metodo": metodo, "usuario": usuario
 			};
 			$.ajax({
@@ -1100,40 +1073,43 @@ function parse_act_html(acts) {
 		.entries(acts);
 	var proyectos_html = "";
 	var actividades_html = "";
-
+	console.log('parse_act_html: ', data, eventActual, metodo);
 	const existe = (element) => eventActual.extendedProps.actividades.findIndex((el) => el.cod_actividad === element.codigo) != -1;
 
-	const event = (element) => element.estatu=== 'T';
 	data.forEach(d => {
 		var checked = "";
-		if (d.values.some(event)) {
-			checked = 'checked disabled="disabled"';
-		} else if (metodo === "modificar") {
+		if (metodo === "modificar" && eventActual) {
 			if (d.values.some(existe)) {
 				checked = 'checked';
 			}
 		}
 		proyectos_html += '<input type="checkbox" id="proyecto' + d.key + '"' + checked + ' onclick="mostarOcultarActividades(' + d.key + ', this.checked)">' + d.values[0].proyecto_descripcion;
-		if (checked === "") {
+		console.log('forEach checked: ', checked);
+		if (checked == "") {
 			actividades_html += '<div id="panel' + d.key + '" hidden="hidden">';
 		} else {
 			actividades_html += '<div id="panel' + d.key + '">';
 		}
+		
 		d.values.forEach(act => {
-			checked = act.estatu === 'T' ? 'checked disabled="disabled"' : "";
-			actividades_html += '(' + d.values[0].proyecto_descripcion + ') ' + act.descripcion + ' <input type="checkbox" name="actividades[]" value="' + act.cod_actividad + '" ' + checked + ' id="actividad' + act.cod_actividad + '" minutos="' + act.minutos + '" proyecto="' + act.cod_proyecto + '" onchange="updateFecFin(null)" style="width:auto"> ' + act.minutos + ' min.<br>';
+			checked = ""
+			if(eventActual){
+				checked = act.estatu = 'T' ? "" : 'checked disabled="disabled"' ;
+			}
+			actividades_html += '(' + d.values[0].proyecto_descripcion + ') ' + act.descripcion + ' <input type="checkbox" name="actividades[]" value="' + act.cod_actividad + '" ' + checked + ' id="actividad' + act.cod_actividad + '" proyecto="' + act.cod_proyecto + '" onchange="updateActividades(null)" style="width:auto"><br>';
 		});
 		actividades_html += '</div>';
 	});
 
 	$("#planf_proyectoRP").html(proyectos_html);
 	$("#planf_actividadRP").html(actividades_html);
-	//updateFecFin(eventActual);
+	updateActividades(eventActual);
 }
+
 function modalActividad(fechaaux,cod_cliente,nombrec) {
 	
-    console.log(nombrec);
-	cargar_ubicaciones(cod_cliente);
+    console.log('modalActividad: ', nombrec, fechaaux);
+	// cargar_ubicaciones(cod_cliente);
     cargar_actividades((acts) => {
 		parse_act_html(acts);
 	});
@@ -1146,8 +1122,10 @@ function modalActividad(fechaaux,cod_cliente,nombrec) {
 	$("#planf_nombreRP").html(nombrec);
 	
 	$("#planf_actividadRP").html("");
-	// $("#planf_horaRP").val(moment(eventActual.start).format("HH:mm:00"));
-	$("#planf_hora_finRP").val("");
+	if(eventActual){
+		$("#planf_horaRP").val(moment(eventActual.start).format("HH:mm:00"));
+	}
+	// $("#planf_hora_finRP").val("");
 	$('#modalRP').show();
 	
 	cargar_planif_superv_trab_det();
@@ -1156,7 +1134,7 @@ function modalActividad(fechaaux,cod_cliente,nombrec) {
 
 function editarActividad(event) {
 	//region = $("#planf_region").val();
-	var cliente =event.extendedProps.cod_ficha;
+	var cliente =event.extendedProps.codigo;
 	var nombrec = event.extendedProps.cedula;
 	var cod_ubicacion= event.extendedProps.cod_ubicacion;
 	
@@ -1192,9 +1170,9 @@ function editarActividad(event) {
                      })
 			});
 			
-			//$("#planf_horaRP").val(moment(event.start).format("HH:mm:00"));
+			$("#planf_horaRP").val(moment(event.start).format("HH:mm:00"));
 			
-			$("#cedulaRP").html(event.extendedProps.cod_ficha + " - " + event.extendedProps.cedula);
+			$("#cedulaRP").html(event.extendedProps.codigo + " - " + event.extendedProps.cedula);
 			$("#dias_habilesRP").html(fechas.data[0].hora_entrada);
 			if (moment(moment(event.start).format("YYYY-MM-DD")).isSameOrAfter(moment(hoy).format("YYYY-MM-DD"))) {
 				$("#guardar_actividad").show();
@@ -1204,14 +1182,13 @@ function editarActividad(event) {
 			$("#planf_clienteRP").html(cliente);
 			$("#planf_nombreRP").html(nombrec);
 			
-			FormatoFecha(cliente,cod_ubicacion);
 			cargar_actividades((acts) => {
 				parse_act_html(acts);
 				$('#modalRP').show();
 				event.extendedProps.actividades.forEach(act => {
 					$("#actividad" + act.cod_actividad).prop("checked", true);
 				});
-				
+				updateActividades(event);
 			});
 			
 			
@@ -1221,44 +1198,6 @@ function editarActividad(event) {
 		}
 	});
 }
-
-function updateFecFin(event) {
-	if (event) {
-		evt = event;
-	} else {
-		evt = eventActual;
-	}
-	var minutos = 0;
-	var hora_inicio = $("#planf_horaRP").val();
-	var fecha_inicio_temp = null;
-	var fecha_fin_temp = null;
-	actividades = $('[name="actividades[]"]:checked').map(function () {
-		minutos += Number($("#actividad" + this.value).attr("minutos"));
-		if (hora_inicio) {
-			if (fecha_inicio_temp === null) {
-				fecha_inicio_temp = moment(evt.start);
-				fecha_inicio_temp = moment(fecha_inicio_temp.format('YYYY-MM-DD') + " " + hora_inicio).format('YYYY-MM-DD HH:mm:ss');
-			} else {
-				fecha_inicio_temp = moment(fecha_fin_temp).format('YYYY-MM-DD HH:mm:ss');
-			}
-			fecha_fin_temp = moment(fecha_inicio_temp).add($("#actividad" + this.value).attr("minutos") / 60, "hours").format('YYYY-MM-DD HH:mm:ss');
-		}
-		return {
-			'codigo': this.value, 'cod_proyecto': $("#actividad" + this.value).attr("proyecto"),
-			'fecha_inicio': fecha_inicio_temp, 'fecha_fin': fecha_fin_temp
-		};
-	}).get();
-	if (hora_inicio) {
-		var fec_start = moment(evt.start);
-		fec_start = fec_start.format('YYYY-MM-DD') + " " + hora_inicio;
-		fec_start = moment(fec_start);
-		fecha_inicio = fec_start.format('YYYY-MM-DD HH:mm:ss');
-		fecha_fin = fec_start.add(minutos / 60, "hours").format('YYYY-MM-DD HH:mm:ss');
-		hora_fin = fec_start.format('HH:mm:00');
-		$("#planf_hora_finRP").val(hora_fin);
-	}
-}
-
 
 function save_planif_apertura() {
 	var fec_inicio = $("#ap_fecha_inicio").val();
@@ -1324,7 +1263,7 @@ function actualizarEvento(arg) {
 				var parametros = {
 					"codigo": arg.oldEvent.id, "fecha_inicio": moment(arg.event.start).format("YYYY-MM-DD HH:mm:00"), "fecha_fin": moment(arg.event.end).format("YYYY-MM-DD HH:mm:00"),
 					"cliente": arg.oldEvent.extendedProps.cod_cliente, "ubicacion": arg.oldEvent.extendedProps.cod_ubicacion,
-					"ficha": arg.oldEvent.extendedProps.cod_ficha, 'apertura': apertura, "metodo": "modificar", "usuario": usuario
+					"ficha": arg.oldEvent.extendedProps.codigo, 'apertura': apertura, "metodo": "modificar", "usuario": usuario
 				};
 				$.ajax({
 					data: parametros,
@@ -1365,4 +1304,18 @@ function onChangeAp(ap) {
 	ubicacion = $('#planf_ubicacion').val();
 	cargo = $('#planf_cargo').val();
 	cargar_planif_superv(ubicacion, cargo);
+}
+
+function updateActividades(event) {
+	if (event) {
+		evt = event;
+	} else {
+		evt = eventActual;
+	}
+
+	actividades = $('[name="actividades[]"]:checked').map(function () {
+		return {
+			'codigo': this.value, 'cod_proyecto': $("#actividad" + this.value).attr("proyecto"),
+		};
+	}).get();
 }
