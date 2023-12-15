@@ -695,8 +695,6 @@ function cargar_planif_superv_det() {
 						codigo: d.key,
 						codigo: d.values[0].cod_cliente,
 						cedula: d.values[0].nombre,
-						cod_ubicacion: d.values[0].cod_ubicacion,
-						ubicacion : d.values[0].ubicacion,
 						hora_inicio:d.values[0].hora_inicio,
 						hora_fin:d.values[0].hora_fin,
 						actividades: d.values,

@@ -302,7 +302,7 @@ class Planificacion
 	function get_planif_det()
 	{
 		$this->datos   = array();
-		$sql = "SELECT DISTINCT a.codigo as codigo,b.descripcion as descripcion ,c.codigo as cod_cliente,c.nombre, a.fecha_inicio,a.fecha_fin,a.hora as hora_inicio,a.hora_fin as hora_fin ,e.codigo as cod_ubicacion,e.descripcion as ubicacion FROM agendas_contactos_fc_actividades as a, fc_actividades as b ,clientes as c,formas_de_contactos as d,clientes_ubicacion as e where a.cod_cliente=c.codigo and a.cod_actividad=b.codigo and e.codigo=a.cod_ubicacion";
+		$sql = "SELECT DISTINCT a.codigo as codigo,b.descripcion as descripcion ,c.codigo as cod_cliente,c.nombre, a.fecha_inicio,a.fecha_fin,a.hora as hora_inicio,a.hora_fin as hora_fin FROM agendas_contactos_fc_actividades as a, fc_actividades as b ,preclientes as c,formas_de_contactos as d where a.cod_cliente=c.codigo and a.cod_actividad=b.codigo; ";
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query)) {
 			$this->datos[] = $datos;
