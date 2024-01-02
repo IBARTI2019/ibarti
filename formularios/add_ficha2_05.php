@@ -2,23 +2,38 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript">
 function validarfechaegreso(fecha){
-
-let fechaactual = new Date(); 
-var anio = fechaactual.getFullYear();
-
-var dia = fechaactual.getDate();
-var _mes = fechaactual.getMonth(); //viene con valores de 0 al 11
-_mes = _mes + 1; //ahora lo tienes de 1 al 12
-if (_mes < 10) //ahora le agregas un 0 para el formato date
-{
-    var mes = "0" + _mes;
-} else {
-    var mes = _mes.toString;
+	var Hoy = new Date();//Fecha actual del sistema
+    var fechaactual= new Date(fecha);
+var AnyoFecha = fechaactual.getFullYear();
+var MesFecha = fechaactual.getMonth();
+var DiaFecha = fechaactual.getDate();
+ 
+var AnyoHoy = Hoy.getFullYear();
+var MesHoy = Hoy.getMonth();
+var DiaHoy = Hoy.getDate();
+ 
+if (AnyoFecha < AnyoHoy){
+    alert ("Error, La fecha de ingreso no debe ser mayor a la fecha actual");
+}
+else{
+    if (AnyoFecha == AnyoHoy && MesFecha < MesHoy){
+        alert ("La fecha introducida es anterior a Hoy");			
+    }
+    else{
+        if (AnyoFecha == AnyoHoy && MesFecha == MesHoy && DiaFecha < DiaHoy){
+            alert ("La fecha introducida es anterior a Hoy");
+        }
+        else{
+            if (AnyoFecha == AnyoHoy && MesFecha == MesHoy && DiaFecha == DiaHoy){
+                 alert ("Has introducido la fecha de Hoy");
+            }
+            else{
+                alert ("Error, La fecha de ingreso no debe ser mayor a la fecha actual");
+            }
+        }
+    }
 }
 
-var fecha_minimo = dia + '-' + mes + '-' + anio; // Nueva variable
-document.getElementById("fec_egreso").setAttribute('max', fecha_minimo);  
-fec_egreso.max = new Date().toISOString().split("T")[0]; 
 
 }
    
@@ -121,7 +136,7 @@ if (count($result) == 0) {
       <tr>
         <td class="etiqueta">Fecha de Egreso:</td>
         <td id="fecha01_5">
-          <input type="date" name="fec_egreso" size="15" id="fec_egreso" required="required"  onfocus="validarfechaegreso(this.value)" value="<?php echo $fec_egreso; ?> " placeholder="dd-mm-aaaa">
+          <input type="text" name="fec_egreso" size="15" id="fec_egreso" required="required"  onchange="validarfechaegreso(this.value)" value="<?php echo $fec_egreso; ?> " placeholder="dd-mm-aaaa">
       </tr>
       <tr>
         <td class="etiqueta">Fecha Sistema de Egreso:</td>
@@ -372,7 +387,7 @@ if (count($result) == 0) {
     }
   }
 
-  /*  $('#fec_egreso').datepicker({
+   $('#fec_egreso').datepicker({
 
     minDate: $('#fec_min').val(),
     dateFormat: "dd-mm-yy",
@@ -387,7 +402,7 @@ if (count($result) == 0) {
     // Nombres de los meses en formato corto 
     monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"],
 
-  });*/
+  });
 
 
   function transformar_fecha(valor) {
