@@ -1,7 +1,6 @@
 <?php
 // El archivo
 // Establecer un ancho y alto máximo
-
 $dst_w = $_POST["dst_w"];
 $dst_h = $_POST["dst_h"];
 $dst_image2 = $_POST["imgDST"];

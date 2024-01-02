@@ -774,17 +774,23 @@ AND codigo <> '$cod_ciudad' ORDER BY descripcion ASC ";
 					<?php
                     $filename = "imagenes/fotos/$cedula.jpg";
 					$filenamepng = "imagenes/fotos/$cedula.png";
-                   
-					if (file_exists($filename)) {
-						echo '<img id="foto" src="' . $filename . '?nocache='.time().'" width="110px" height="130px" />';
-					} else {
-						if (file_exists($filenamepng)) {
-							echo '<img id="foto" src="' . $filenamepng . '?nocache='.time().'" width="110px" height="130px" />';
+                    if (file_exists($filename) && file_exists($filenamepng)){
+						unlink($filename);
+						echo '<img id="foto" src="' . $filenamepng. '?nocache='.time().'" width="110px" height="130px" />';
+				
+				    } else {
+                      if (file_exists($filename)) {
+						echo '<img id="foto" src="' . $filename. '?nocache='.time().'" width="110px" height="130px" />';
+					   } else {
+						  if (file_exists($filenamepng)) {
+						echo '<img id="foto" src="' . $filenamepng. '?nocache='.time().'" width="110px" height="130px" />';
 						} else {
-							echo '<img id="foto" src="imagenes/img_no_disp.png" width="110px" height="130px"/>';
-						} 
-					} 
+							echo '<iemg id="foto" src="imagenes/img_no_disp.png" width="110px" height="130px"/>';
+						}				
 					
+					}
+
+				  }
 					?>
 				</td>
 			</tr>

@@ -23,10 +23,15 @@ $dst_w  = "200";
 $dst_h  = "240";  
 $imgDST = "imagenes/fotos/";
 $img_src = "imagenes/temp/$usuario.jpg";
+$filename = "imagenes/fotos/$ci.png";
+if (file_exists($filename)){
+        unlink($filename);
+};
 
 }elseif (( $tipo == "02")  && ( $exti == "jpg")) {
   $imgDST = "imagenes/cedula/";
   $img_src = "imagenes/temp/$usuario.jpg";
+ 
 $dst_w  = "410";
 $dst_h  = "280";
   }
@@ -35,7 +40,10 @@ $dst_h  = "280";
     $dst_h  = "240";  
     $imgDST = "imagenes/fotos/";
     $img_src = "imagenes/temp/$usuario.png";
-    
+    $filename = "imagenes/fotos/$ci.jpg";
+		if (file_exists($filename)){
+						unlink($filename);
+    };
     }elseif (( $tipo == "02") && ( $exti == "png")){
       $imgDST = "imagenes/cedula/";
       $img_src = "imagenes/temp/$usuario.png";
@@ -112,16 +120,18 @@ $dst_h  = "280";
   function SaveImg(){
   var Contenedor = "Contenedor01";
   var ext      = document.getElementById('ext').value;
+  var img_nomb  = document.getElementById('img_nomb').value;
   if (ext=="jpg") {
     var valor   = "jQueryUpLoadyPHP/includes/red_img.php"; 
   }
   if (ext=="png") {
-    var valor   = "jQueryUpLoadyPHP/includes/red_imgpng.php"; 
-  }
+    var valor   = "jQueryUpLoadyPHP/includes/red_imgpng.php";
+    
+  } 
  
   
   
-  var img_nomb  = document.getElementById('img_nomb').value;
+ 
   
   var img_nomb_dst  = document.getElementById('img_nomb_dst').value;
   var imgURL  = document.getElementById('imgURL').value;
