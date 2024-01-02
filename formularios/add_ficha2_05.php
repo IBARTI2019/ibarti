@@ -1,5 +1,31 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript">
+function validarfechaegreso(fecha){
+
+let fechaactual = new Date(); 
+var anio = fechaactual.getFullYear();
+
+var dia = fechaactual.getDate();
+var _mes = fechaactual.getMonth(); //viene con valores de 0 al 11
+_mes = _mes + 1; //ahora lo tienes de 1 al 12
+if (_mes < 10) //ahora le agregas un 0 para el formato date
+{
+    var mes = "0" + _mes;
+} else {
+    var mes = _mes.toString;
+}
+
+var fecha_minimo = dia + '-' + mes + '-' + anio; // Nueva variable
+document.getElementById("fec_egreso").setAttribute('max', fecha_minimo);  
+fec_egreso.max = new Date().toISOString().split("T")[0]; 
+
+}
+   
+
+
+</script>
+
 <?php
 // require_once('autentificacion/aut_verifica_menu.php');
 $archivo  = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=4&metodo=modificar";
@@ -95,11 +121,7 @@ if (count($result) == 0) {
       <tr>
         <td class="etiqueta">Fecha de Egreso:</td>
         <td id="fecha01_5">
-          <!--<input type="text" name="fec_egreso" size="15" value="<?php //echo $fec_egreso;
-                                                                    ?>" readonly="readonly" /><br />
-            <span class="textfieldRequiredMsg">La Fecha Es Requerida.</span>
-            <span class="textfieldInvalidFormatMsg">El Formato Es Invalido</span></td>-->
-          <input type="text" name="fec_egreso" size="15" id="fec_egreso" required="required" value="<?php echo $fec_egreso; ?>" placeholder="DD-MM-YYYY">
+          <input type="date" name="fec_egreso" size="15" id="fec_egreso" required="required"  onfocus="validarfechaegreso(this.value)" value="<?php echo $fec_egreso; ?> " placeholder="dd-mm-aaaa">
       </tr>
       <tr>
         <td class="etiqueta">Fecha Sistema de Egreso:</td>
@@ -350,7 +372,7 @@ if (count($result) == 0) {
     }
   }
 
-  $('#fec_egreso').datepicker({
+  /*  $('#fec_egreso').datepicker({
 
     minDate: $('#fec_min').val(),
     dateFormat: "dd-mm-yy",
@@ -365,7 +387,7 @@ if (count($result) == 0) {
     // Nombres de los meses en formato corto 
     monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"],
 
-  });
+  });*/
 
 
   function transformar_fecha(valor) {
@@ -398,8 +420,8 @@ if (count($result) == 0) {
     isRequired: false
   });
 
-  //	var fecha01_5 = new Spry.Widget.ValidationTextField("fecha01_5", "date", {format:"dd-mm-yyyy", hint:"DD-MM-AAAA", 
-  //		validateOn:["blur", "change"], useCharacterMasking:true});
+  //var fecha01_5 = new Spry.Widget.ValidationTextField("fecha01_5", "date", {format:"dd-mm-yyyy", hint:"DD-MM-AAAA", 
+  validateOn:["blur", "change"], useCharacterMasking:true});
   var fecha02_5 = new Spry.Widget.ValidationTextField("fecha02_5", "date", {
     format: "dd-mm-yyyy",
     hint: "DD-MM-AAAA",

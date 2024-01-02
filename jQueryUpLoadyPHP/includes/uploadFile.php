@@ -61,7 +61,7 @@ if($pasaImgSize == true)
 
 	// Verificamos Tamaño y extensiones
 	// $extension[$num]=='jpg' || $extension[$num]=='png')
-	if(in_array($tipo, $fileType) && $tamanio>0 && $tamanio<=maxUpload && $extension[$num]=='jpg')
+	if(in_array($tipo, $fileType) && $tamanio>0 && $tamanio<=maxUpload && ($extension[$num]=='jpg' || $extension[$num]=='png'))
 	{
 		// Intentamos copiar el archivo
 		if(is_uploaded_file($_FILES['userfile']['tmp_name']))

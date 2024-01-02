@@ -123,7 +123,41 @@
 
 	var map;
 	var marker;
+function validarfechaingreso(fecha){
+	var Hoy = new Date();//Fecha actual del sistema
+    var fechaactual= new Date(fecha);
+var AnyoFecha = fechaactual.getFullYear();
+var MesFecha = fechaactual.getMonth();
+var DiaFecha = fechaactual.getDate();
+ 
+var AnyoHoy = Hoy.getFullYear();
+var MesHoy = Hoy.getMonth();
+var DiaHoy = Hoy.getDate();
+ 
+if (AnyoFecha < AnyoHoy){
+    alert ("Error, La fecha de ingreso no debe ser mayor a la fecha actual");
+}
+else{
+    if (AnyoFecha == AnyoHoy && MesFecha < MesHoy){
+        alert ("La fecha introducida es anterior a Hoy");			
+    }
+    else{
+        if (AnyoFecha == AnyoHoy && MesFecha == MesHoy && DiaFecha < DiaHoy){
+            alert ("La fecha introducida es anterior a Hoy");
+        }
+        else{
+            if (AnyoFecha == AnyoHoy && MesFecha == MesHoy && DiaFecha == DiaHoy){
+                 alert ("Has introducido la fecha de Hoy");
+            }
+            else{
+                alert ("Error, La fecha de ingreso no debe ser mayor a la fecha actual");
+            }
+        }
+    }
+}
 
+    
+}
 	function closeModalMap() {
 		$("#myModalMap").hide();
 	}
@@ -738,14 +772,20 @@ AND codigo <> '$cod_ciudad' ORDER BY descripcion ASC ";
 				<td width="25%">&nbsp;</td>
 				<td width="10%" rowspan="16" align="left">
 					<?php
-
-					$filename = "imagenes/fotos/$cedula.jpg";
-
+                    $filename = "imagenes/fotos/$cedula.jpg";
+					$filenamepng = "imagenes/fotos/$cedula.png";
+                   
 					if (file_exists($filename)) {
 						echo '<img id="foto" src="' . $filename . '?nocache='.time().'" width="110px" height="130px" />';
 					} else {
-						echo '<img id="foto" src="imagenes/img_no_disp.png" width="110px" height="130px"/>';
-					} ?>
+						if (file_exists($filenamepng)) {
+							echo '<img id="foto" src="' . $filenamepng . '?nocache='.time().'" width="110px" height="130px" />';
+						} else {
+							echo '<img id="foto" src="imagenes/img_no_disp.png" width="110px" height="130px"/>';
+						} 
+					} 
+					
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -1098,7 +1138,7 @@ AND codigo <> '$cod_ciudad' ORDER BY descripcion ASC ";
 
 				<td class="etiqueta">Fecha de Ingreso:</td>
 				<td id="fecha06">
-					<input type="text" name="fec_ingreso" value="<?php echo $fec_ingreso; ?>" /><br />
+					<input type="text" name="fec_ingreso" onchange="validarfechaingreso(this.value)" value="<?php echo $fec_ingreso; ?>"   /><br />
 					<span class="textfieldRequiredMsg">La Fecha Es Requerida.</span>
 					<span class="textfieldInvalidFormatMsg">El Formato Es Invalido</span>
 				</td>
