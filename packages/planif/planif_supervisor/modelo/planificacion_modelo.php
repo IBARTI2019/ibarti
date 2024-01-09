@@ -647,7 +647,7 @@ class Planificacion
 		AND v_ficha.cod_cargo = cargos.codigo
 		AND cargos.planificable = 'T'
 		AND v_ficha.cod_ficha NOT IN (SELECT planif_clientes_superv_trab.cod_ficha FROM planif_clientes_superv_trab
-		WHERE planif_clientes_superv_trab.cod_planif_cl = '$apertura' AND  planif_clientes_superv_trab.cod_cliente = $cliente)";
+		WHERE planif_clientes_superv_trab.cod_planif_cl = $apertura AND  planif_clientes_superv_trab.cod_cliente = '$cliente')";
 		$query = $this->bd->consultar($sql);
 		return $this->datos = $this->bd->obtener_fila($query);
 	}
