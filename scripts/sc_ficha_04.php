@@ -1,7 +1,7 @@
 <?php
 include_once('../funciones/funciones.php');
 require("../autentificacion/aut_config.inc.php");
-require_once("../".class_bd);
+require_once("../".class_bdI);
 $bd = new DataBase();
 $tabla    = 'ficha';
 

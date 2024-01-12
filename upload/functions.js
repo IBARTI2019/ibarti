@@ -123,6 +123,7 @@ function subirImagenS3(directorio) {
     var doc = $("#doc").val();
     var nombre = ci + "_" + doc;
     console.log(formData);
+    
     var message = "";
     //hacemos la petici�n ajax  
     $.ajax({
@@ -142,6 +143,7 @@ function subirImagenS3(directorio) {
         },
         //una vez finalizado correctamente
         success: function (data) {
+            console.log(`OJo${data.data.image[0]}`);
             uploadActulizarS3(data.data.image[0]);
         },
         //si ha ocurrido un error
@@ -196,7 +198,7 @@ function uploadActulizarS3(url) {
     var ficha = $("#ficha").val();
     var ci = $("#ci").val();
     var doc = $("#doc").val();
-
+    
     var parametros = {
         "link": url,
         "ficha": ficha,

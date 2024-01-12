@@ -1,6 +1,6 @@
 <?php 
 require("../autentificacion/aut_config.inc.php");
-require_once("../".class_bd);
+require_once("../bd/class_mysqli.php");
 $bd = new DataBase();
 
 $link     = $_POST["link"]; 
@@ -19,7 +19,8 @@ if(isset($_POST["borrar"])){
 	$check = "N";
 }
 
-$sql = " INSERT INTO ficha_documentos (cod_documento, cod_ficha, link, checks, cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod )
+
+$sql = "INSERT INTO ficha_documentos (cod_documento, cod_ficha, link, checks, cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod )
 	VALUES( '$doc', '$ficha', '$link', 'S', '$usuario', CURRENT_DATE, '$usuario', CURRENT_DATE ) 
 	ON DUPLICATE KEY UPDATE link = '$link',
 	checks = '$check',
@@ -27,5 +28,5 @@ $sql = " INSERT INTO ficha_documentos (cod_documento, cod_ficha, link, checks, c
 	fec_us_mod = CURRENT_DATE;";
 
 $query = $bd->consultar($sql);
-	
+
 ?>

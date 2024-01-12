@@ -16,13 +16,13 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				<td width="20%" class="etiqueta">Documentos:</td>
 				<td width="10%" class="etiqueta">Check:</td>
 				<td width="18%" class="etiqueta">observación:</td>
-				<td width="16%" class="etiqueta">Descargar - Subir</td>
+				<td width="16%" class="etiqueta">Carpeta Doc</td>
 				<td width="22%" class="etiqueta">Vencimiento - Fecha</td>
 				<td width="8%" class="etiqueta">Fec. Ult. Mod.</td>
 			</tr>
 			<?php
 
-				$sql = " SELECT
+				$sql = "SELECT DISTINCT
 					ficha_documentos.cod_documento,
 					ficha_documentos.`checks`,
 					ficha_documentos.`link`,
@@ -32,7 +32,8 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 					ficha_documentos.fec_us_mod,
 					documentos.descripcion,
 					control.url_doc,
-					documentos.orden 
+					documentos.orden
+					
 				FROM
 					documentos,
 					ficha_documentos,
@@ -40,8 +41,8 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				WHERE
 					ficha_documentos.cod_ficha = '$codigo' 
 					AND ficha_documentos.cod_documento = documentos.codigo 
-					AND documentos.`status` = 'T' UNION
-				SELECT
+					AND documentos.`status` = 'T' UNION DISTINCT
+				SELECT 
 					documentos.codigo AS cod_documento,
 					'N' AS `checks`,
 					'' AS `link`,
@@ -68,6 +69,7 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 						AND ficha_documentos.cod_documento = documentos.codigo 
 						AND documentos.`status` = 'T' 
 					) 
+				group by cod_documento
 				ORDER BY
 					orden ASC";
 
@@ -87,6 +89,8 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
 				$subir = "Vinculo('inicio.php?area=formularios/add_imagenes_doc&ficha=$cod_ficha&ci=$cedula&doc=$cod_documento')";
+				$carpeta = "Vinculo('inicio.php?area=formularios/add_ficha2_0401&ficha=$cod_ficha&ci=$cedula&doc=$cod_documento&nombre=$descripcion')";
+				
 				// 	<td>oookoko  xxx </td>
 				//
 				echo '
@@ -96,8 +100,8 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 						                            ' . CheckX($checks, 'S') . '/>NO <input type = "radio" name="documento' . $cod_documento . '"
 													value = "N" style="width:auto" disabled="disabled" ' . CheckX($checks, 'N') . '/><input type="hidden"                                                     name="documento_old' . $cod_documento . '" value = "' . $checks . '"/></td>
 						<td><textarea name="observ_doc' . $cod_documento . '" cols="20" rows="1">' . $observacion . '</textarea></td>
-						<td>' . $img_src . ' - <a target="_blank" onClick="' . $subir . '">
-						<img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>'. $borrarDoc . '
+						<td>  <a target="_blank" - <a target="_blank" onClick="' . $carpeta . '">
+						<img class="ImgLink" src="imagenes/carpeta.png" width="22px" height="22px" />
 						</td>
 						
 						<td class="texto">SI <input type = "radio" name="vencimiento' . $cod_documento . '"  value = "S" style="width:auto"
@@ -107,7 +111,7 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 											    id="fecha_venc' . $cod_documento . '"  value="' . $venc_fecha . '"/><input type="hidden" "
 													name="fecha_venc_old' . $cod_documento . '" value = "' . $venc_fecha . '"/>
 						</td>
-
+                        
 					<td class="texto">' . $fec_us_mod . '</td>
 					</tr>';
 			} ?>
@@ -190,7 +194,7 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 	}
 
 	function BorrarDocumento(codigoDoc) {
-		if (confirm("¿Esta seguro de eliminar la imagen de este documento?")) {	
+		if (confirm("¿Esta seguro de eliminar la imagen de este documento ?")) {	
 			var codigo = $("#codigo").val();
 			var usuario = $("#usuario").val();
 			var parametros = {
