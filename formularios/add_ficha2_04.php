@@ -15,63 +15,61 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 			<tr>
 				<td width="20%" class="etiqueta">Documentos:</td>
 				<td width="10%" class="etiqueta">Check:</td>
-				<td width="18%" class="etiqueta">observación:</td>
+				<td width="18%" class="etiqueta">Observación:</td>
 				<td width="16%" class="etiqueta">Carpeta Doc</td>
 				<td width="22%" class="etiqueta">Vencimiento - Fecha</td>
 				<td width="8%" class="etiqueta">Fec. Ult. Mod.</td>
 			</tr>
 			<?php
-
-				$sql = "SELECT DISTINCT
-					ficha_documentos.cod_documento,
-					ficha_documentos.`checks`,
-					ficha_documentos.`link`,
-					ficha_documentos.observacion,
-					ficha_documentos.vencimiento,
-					ficha_documentos.venc_fecha,
-					ficha_documentos.fec_us_mod,
-					documentos.descripcion,
-					control.url_doc,
-					documentos.orden
-					
+                $sql="SELECT
+				ficha_documentos.cod_documento,
+				ficha_documentos.`checks`,
+				ficha_documentos.`link`,
+				ficha_documentos.observacion,
+				ficha_documentos.vencimiento,
+				ficha_documentos.venc_fecha,
+				ficha_documentos.fec_us_mod,
+				documentos.descripcion,
+				control.url_doc,
+				documentos.orden 
+			FROM
+				documentos,
+				ficha_documentos,
+				control 
+			WHERE
+				ficha_documentos.cod_ficha = '$codigo' 
+				AND ficha_documentos.cod_documento = documentos.codigo 
+				AND documentos.`status` = 'T' UNION
+			SELECT
+				documentos.codigo AS cod_documento,
+				'N' AS `checks`,
+				'' AS `link`,
+				'' AS observacion,
+				'N' AS vencimiento,
+				'' AS venc_fecha,
+				'' AS fec_us_mod,
+				documentos.descripcion,
+				control.url_doc,
+				documentos.orden 
+			FROM
+				documentos,
+				control 
+			WHERE
+				documentos.`status` = 'T' 
+				AND documentos.codigo NOT IN (
+				SELECT
+					ficha_documentos.cod_documento 
 				FROM
 					documentos,
-					ficha_documentos,
-					control 
+					ficha_documentos 
 				WHERE
 					ficha_documentos.cod_ficha = '$codigo' 
 					AND ficha_documentos.cod_documento = documentos.codigo 
-					AND documentos.`status` = 'T' UNION DISTINCT
-				SELECT 
-					documentos.codigo AS cod_documento,
-					'N' AS `checks`,
-					'' AS `link`,
-					'' AS observacion,
-					'N' AS vencimiento,
-					'' AS venc_fecha,
-					'' AS fec_us_mod,
-					documentos.descripcion,
-					control.url_doc,
-					documentos.orden 
-				FROM
-					documentos,
-					control 
-				WHERE
-					documentos.`status` = 'T' 
-					AND documentos.codigo NOT IN (
-					SELECT
-						ficha_documentos.cod_documento 
-					FROM
-						documentos,
-						ficha_documentos 
-					WHERE
-						ficha_documentos.cod_ficha = '$codigo' 
-						AND ficha_documentos.cod_documento = documentos.codigo 
-						AND documentos.`status` = 'T' 
-					) 
-				group by cod_documento
-				ORDER BY
-					orden ASC";
+					AND documentos.`status` = 'T' 
+				) 
+			ORDER BY
+				orden ASC";
+				
 
 			$query = $bd->consultar($sql);
 
@@ -83,7 +81,7 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 					$img_ext =  imgExtension($img_src);
 					$img_src = 	'<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\')" width="22px" height="22px"  />';
 					if($admin_rrhh == 'T'){
-						$borrarDoc = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$cod_documento.'\')"/>';
+						$borrarDoc = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$cod_documento.'\',\''.$link.'\')"/>';
 					}
 				} else {
 					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
@@ -129,7 +127,7 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 			<span class="art-button-wrapper">
 				<span class="art-button-l"> </span>
 				<span class="art-button-r"> </span>
-				<input type="button" id="volver04" value="Volver" onClick="history.back(-1);" class="readon art-button" />
+				<input type="button" id="volver04" value="Volver" onClick="history.back();" class="readon art-button" />
 			</span>
 			<input name="metodo" type="hidden" value="<?php echo $metodo; ?>" />
 			<input name="proced" type="hidden" value="<?php echo $proced; ?>" />
@@ -193,12 +191,12 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 		$(".messages").html(message);
 	}
 
-	function BorrarDocumento(codigoDoc) {
-		if (confirm("¿Esta seguro de eliminar la imagen de este documento ?")) {	
+	function BorrarDocumento(codigoDoc,links) {
+		if (confirm(links)) {	
 			var codigo = $("#codigo").val();
 			var usuario = $("#usuario").val();
 			var parametros = {
-				"link": "",
+				"link":links,
 				"ficha": codigo,
 				"doc": codigoDoc,
 				"borrar": true,

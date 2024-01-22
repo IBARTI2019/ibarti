@@ -73,7 +73,7 @@ $add_doc = '<a href="inicio.php?area=formularios/add_imagenes_doc&ficha='.$ficha
 				} else {
 					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
-				$eliminar = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$cod_documento.'\')"/>';
+				$eliminar = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$ficha.'\',\''.$cod_documento.'\',\''.$link.'\')"/>';
 				$subir = "Vinculo('inicio.php?area=formularios/add_imagenes_doc&ficha=$cod_ficha&ci=$cedula&doc=$cod_documento')";
 				
 				// 	<td>oookoko  xxx </td>
@@ -112,7 +112,7 @@ $add_doc = '<a href="inicio.php?area=formularios/add_imagenes_doc&ficha='.$ficha
 			<span class="art-button-wrapper">
 				<span class="art-button-l"> </span>
 				<span class="art-button-r"> </span>
-				<input type="button" id="volver04" value="Volver" onClick="history.back(-1);" class="readon art-button" />
+				<input type="button" id="volver04" value="Atraz" onClick="history.back();" class="readon art-button" />
 			</span>
 			<input name="metodo" type="hidden" value="<?php echo $metodo; ?>" />
 			<input name="proced" type="hidden" value="<?php echo $proced; ?>" />
@@ -176,13 +176,13 @@ $add_doc = '<a href="inicio.php?area=formularios/add_imagenes_doc&ficha='.$ficha
 		$(".messages").html(message);
 	}
 
-	function BorrarDocumento(codigoDoc) {
+	function BorrarDocumento(ficha,codigoDoc,links) {
 		if (confirm("¿Esta seguro de eliminar la imagen de este documento ?")) {	
 			var codigo = $("#codigo").val();
 			var usuario = $("#usuario").val();
 			var parametros = {
-				"link": "",
-				"ficha": codigo,
+				"link": links,
+				"ficha": ficha,
 				"doc": codigoDoc,
 				"borrar": true,
 				"usuario": usuario
