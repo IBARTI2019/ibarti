@@ -21,6 +21,7 @@ if(isset($_POST['proced'])){
 	$query = $bd->consultar($sql);
 		while($datos=$bd->obtener_fila($query,0)){
 		extract($datos);
+		echo $_POST['documento'];
 		$doc             = $_POST['documento'.$cod_doc.''];
 		$doc_old         = $_POST['documento_old'.$cod_doc.''];
 		$observ          = $_POST['observ_doc'.$cod_doc.''];
@@ -33,7 +34,7 @@ if(isset($_POST['proced'])){
 		 $sql02    = "$SELECT $proced('$metodo', '$codigo', '$cod_doc', '$doc_old',
 									                '$doc', '$observ', '$vencimiento', '$fecha_venc',
 																	'$fecha_venc_old',   '$usuario')";
-			echo $sql02;
+			// echo $sql02;
 		 $query02  = $bd->consultar($sql02);
 		}
 }
