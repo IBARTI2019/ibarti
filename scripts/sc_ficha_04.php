@@ -21,6 +21,7 @@ if(isset($_POST['proced'])){
 									checks = 'S'
 							WHERE cod_ficha      = $codigo
 								AND cod_documento  = '".$_POST['documento'][$index]."';";
+								echo $sql02;
 			$query02  = $bd->consultar($sql02);
 		}
 	}else{
@@ -47,5 +48,5 @@ if(isset($_POST['proced'])){
 		} 
 	}
 }
-require_once('../funciones/sc_direccionar.php');
+// require_once('../funciones/sc_direccionar.php');
 ?>
