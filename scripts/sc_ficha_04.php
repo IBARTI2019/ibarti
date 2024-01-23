@@ -33,9 +33,9 @@ if(isset($_POST['proced'])){
 		 $sql02    = "$SELECT $proced('$metodo', '$codigo', '$cod_doc', '$doc_old',
 									                '$doc', '$observ', '$vencimiento', '$fecha_venc',
 																	'$fecha_venc_old',   '$usuario')";
-			// echo $sql02;
+			echo $sql02 + "\n";
 		 $query02  = $bd->consultar($sql02);
 		}
 }
-require_once('../funciones/sc_direccionar.php');
+// require_once('../funciones/sc_direccionar.php');
 ?>
