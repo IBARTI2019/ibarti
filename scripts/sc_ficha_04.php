@@ -19,9 +19,9 @@ if(isset($_POST['proced'])){
 		for($index = 0; $index < count($_POST['documento']); $index++) {
 			$sql02    = "  	UPDATE ficha_documentos SET 
 									checks = 'S'
-							WHERE cod_ficha      = $codigo
+							WHERE cod_ficha      = '$codigo'
 								AND cod_documento  = '".$_POST['documento'][$index]."';";
-								echo $sql02;
+
 			$query02  = $bd->consultar($sql02);
 		}
 	}else{
@@ -48,5 +48,5 @@ if(isset($_POST['proced'])){
 		} 
 	}
 }
-// require_once('../funciones/sc_direccionar.php');
+require_once('../funciones/sc_direccionar.php');
 ?>
