@@ -16,25 +16,30 @@ $href     = $_POST['href'];
 
 if(isset($_POST['proced'])){
 	if(isset($_POST['eventual'])){
-		$NOT_IN = "(";
-		for($index = 0; $index < count($_POST['documento']); $index++) {
-			$sql02    = "  	UPDATE ficha_documentos SET 
-									checks = 'S'
-							WHERE cod_ficha      = '$codigo'
-								AND cod_documento  = '".$_POST['documento'][$index]."';";
+		if(count($_POST['documento']) > 0){
+			$NOT_IN = "(";
+			for($index = 0; $index < count($_POST['documento']); $index++) {
+				$sql02    = "  	UPDATE ficha_documentos SET 
+										checks = 'S'
+								WHERE cod_ficha      = '$codigo'
+									AND cod_documento  = '".$_POST['documento'][$index]."';";
 
-			$query02  = $bd->consultar($sql02);
-			if($NOT_IN == "("){
-				$NOT_IN .= "'".$_POST['documento'][$index]."'";
-			}else{
-				$NOT_IN .= ", '".$_POST['documento'][$index]."'";
+				$query02  = $bd->consultar($sql02);
+				if($NOT_IN == "("){
+					$NOT_IN .= "'".$_POST['documento'][$index]."'";
+				}else{
+					$NOT_IN .= ", '".$_POST['documento'][$index]."'";
+				}
 			}
+			$sql02    = "  	UPDATE ficha_documentos SET 
+									checks = 'N'
+							WHERE cod_ficha      = '$codigo'
+								AND cod_documento NOT IN ".$NOT_IN.");";
+			$query02  = $bd->consultar($sql02);
+		}else{
+			$sql02    = "UPDATE ficha_documentos SET checks = 'N' WHERE cod_ficha = '$codigo');";
+			$query02  = $bd->consultar($sql02);
 		}
-		$sql02    = "  	UPDATE ficha_documentos SET 
-								checks = 'N'
-						WHERE cod_ficha      = '$codigo'
-							AND cod_documento NOT IN ".$NOT_IN.");";
-		echo $sql02;
 	}else{
 		$sql = "SELECT documentos.codigo AS cod_doc FROM documentos
 		WHERE documentos.`status` = 'T'
@@ -59,5 +64,5 @@ if(isset($_POST['proced'])){
 		} 
 	}
 }
-// require_once('../funciones/sc_direccionar.php');
+require_once('../funciones/sc_direccionar.php');
 ?>
