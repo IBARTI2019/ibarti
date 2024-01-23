@@ -30,6 +30,7 @@ if(isset($_POST['proced'])){
 								checks = 'N'
 						WHERE cod_ficha      = '$codigo'
 							AND cod_documento NOT IN $NOT_IN);";
+		echo $sql02;
 	}else{
 		$sql = "SELECT documentos.codigo AS cod_doc FROM documentos
 		WHERE documentos.`status` = 'T'
@@ -54,5 +55,5 @@ if(isset($_POST['proced'])){
 		} 
 	}
 }
-require_once('../funciones/sc_direccionar.php');
+// require_once('../funciones/sc_direccionar.php');
 ?>
