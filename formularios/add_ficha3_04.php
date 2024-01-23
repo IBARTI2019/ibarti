@@ -47,6 +47,7 @@
                 </span>
 		<input name="metodo" type="hidden"  value="<?php echo $metodo;?>" />
         <input name="proced" type="hidden"  value="<?php echo $proced;?>" />
+        <input name="eventual" type="hidden"  value="true" />
 		<input name="codigo" type="hidden"  value="<?php echo $codigo;?>" />
         <input name="usuario" type="hidden"  value="<?php echo $usuario;?>" />
 	    <input name="href" type="hidden" value="../inicio.php?area=<?php echo $archivo ?>"/>		 
