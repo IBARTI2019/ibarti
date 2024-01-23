@@ -37,7 +37,7 @@ if(isset($_POST['proced'])){
 								AND cod_documento NOT IN ".$NOT_IN.");";
 			$query02  = $bd->consultar($sql02);
 		}else{
-			$sql02    = "UPDATE ficha_documentos SET checks = 'N' WHERE cod_ficha = '$codigo');";
+			$sql02    = "UPDATE ficha_documentos SET checks = 'N' WHERE cod_ficha = '$codigo';";
 			$query02  = $bd->consultar($sql02);
 		}
 	}else{
