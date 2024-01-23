@@ -16,7 +16,7 @@ $href     = $_POST['href'];
 
 if(isset($_POST['proced'])){
 	if(isset($_POST['eventual'])){
-		if(count($_POST['documento']) > 0){
+		if(isset($_POST['documento'])){
 			$NOT_IN = "(";
 			for($index = 0; $index < count($_POST['documento']); $index++) {
 				$sql02    = "  	UPDATE ficha_documentos SET 
