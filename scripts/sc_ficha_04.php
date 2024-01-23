@@ -29,7 +29,7 @@ if(isset($_POST['proced'])){
 		$sql02    = "  	UPDATE ficha_documentos SET 
 								checks = 'N'
 						WHERE cod_ficha      = '$codigo'
-							AND cod_documento NOT IN $NOT_IN);";
+							AND cod_documento NOT IN ".$NOT_IN.");";
 		echo $sql02;
 	}else{
 		$sql = "SELECT documentos.codigo AS cod_doc FROM documentos
