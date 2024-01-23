@@ -24,7 +24,7 @@ if(isset($_POST['proced'])){
 								AND cod_documento  = '".$_POST['documento'][$index]."';";
 
 			$query02  = $bd->consultar($sql02);
-			$NOT_IN += "'".$_POST['documento'][$index]."',";
+			$NOT_IN .= "'".$_POST['documento'][$index]."',";
 		}
 		$sql02    = "  	UPDATE ficha_documentos SET 
 								checks = 'N'
