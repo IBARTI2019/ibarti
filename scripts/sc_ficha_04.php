@@ -16,6 +16,7 @@ $href     = $_POST['href'];
 
 if(isset($_POST['proced'])){
 	if(isset($_POST['eventual'])){
+		$NOT_IN = "(";
 		for($index = 0; $index < count($_POST['documento']); $index++) {
 			$sql02    = "  	UPDATE ficha_documentos SET 
 									checks = 'S'
@@ -23,7 +24,12 @@ if(isset($_POST['proced'])){
 								AND cod_documento  = '".$_POST['documento'][$index]."';";
 
 			$query02  = $bd->consultar($sql02);
+			$NOT_IN += "'".$_POST['documento'][$index]."',";
 		}
+		$sql02    = "  	UPDATE ficha_documentos SET 
+								checks = 'N'
+						WHERE cod_ficha      = '$codigo'
+							AND cod_documento NOT IN $NOT_IN);";
 	}else{
 		$sql = "SELECT documentos.codigo AS cod_doc FROM documentos
 		WHERE documentos.`status` = 'T'
