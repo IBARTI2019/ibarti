@@ -554,12 +554,12 @@ if ($cod_status == $apto) {
 			<td class="etiqueta">Status: </td>
 			<td id="select10"><select name="status" style="width:200px">
 					<option value="<?php echo $cod_status; ?>"><?php echo $status; ?></option>
-					<?php /* 	$sql_ing = " SELECT codigo, descripcion FROM preing_status WHERE status = 'T' ORDER BY 2 ASC ";
+					<?php 	$sql_ing = " SELECT codigo, descripcion FROM preing_status WHERE status = 'T' ORDER BY 2 ASC ";
 		            $query = $bd->consultar($sql);
             		while($datos=$bd->obtener_fila($query,0)){
 		  ?>
           <option value="<?php echo $datos[0];?>"><?php echo utf8_decode($datos[1]);?></option>
-          <?php } */ ?>
+          <?php } ?>
 				</select><br />
 				<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span>
 			</td>
