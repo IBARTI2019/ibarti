@@ -555,7 +555,7 @@ if ($cod_status == $apto) {
 			<td id="select10"><select name="status" style="width:200px">
 					<option value="<?php echo $cod_status; ?>"><?php echo $status; ?></option>
 					<?php 	$sql_ing = " SELECT codigo, descripcion FROM preing_status WHERE status = 'T' ORDER BY 2 ASC ";
-		            $query = $bd->consultar($sql);
+		            $query = $bd->consultar($sql_ing);
             		while($datos=$bd->obtener_fila($query,0)){
 		  ?>
           <option value="<?php echo $datos[0];?>"><?php echo utf8_decode($datos[1]);?></option>
