@@ -77,7 +77,7 @@ $sql01 =	"SELECT clientes_ub_alcance.cod_sub_linea cod_producto, prod_sub_lineas
 	function BorrarAlcance(auto, metodo) {
 		if (confirm("� Esta Seguro Eliminar Este Registro ")) {
 			var cod_ubic = document.getElementById("codigo_ubic").value;
-            var cod_producto = document.getElementById("codigo_producto" + auto + "").value;
+            var cod_producto = document.getElementById("stdID" + auto + "").value;
             
 			var cantidad = document.getElementById("cantidad" + auto + "").value;
 			var dias = document.getElementById("dias" + auto + "").value;
