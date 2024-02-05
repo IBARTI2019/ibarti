@@ -13,6 +13,7 @@ $codigo      = htmlentities($_POST['codigo']);
 $orden       = $_POST['orden'];
 $clasif      = $_POST["clasif"];
 $tipo        = $_POST["tipo"];
+$agrupacion        = $_POST["agrupacion"];
 $descripcion = htmlentities($_POST["descripcion"]);			
 $activo      = statusbd($_POST['activo']);
 $valor       = $_POST["valor"];
@@ -26,7 +27,7 @@ $cantidad = $_POST['cantidad'];
 	if(isset($_POST['proced'])){
 
 	$sql    = "$SELECT $proced('$metodo', '$codigo', '$orden', '$clasif', 
-	                           '$tipo', '$descripcion', '$usuario', '$activo',$dias_vencimiento, $v_maximo)";						 		
+	                           '$tipo', '$agrupacion', '$descripcion', '$usuario', '$activo',$dias_vencimiento, $v_maximo)";						 		
 
 
 	$query = $bd->consultar($sql);	
