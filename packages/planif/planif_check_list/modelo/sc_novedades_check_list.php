@@ -48,10 +48,11 @@ if(isset($_POST['proced'])){
 			foreach($check_list as $valorX){
 				if(isset($_POST["check_list_valor_".$valorX.""])){	 			
 					$cod_valor    = $_POST["cod_valor_".$valorX.""]; 
+					$cod_agrupacion    = $_POST["cod_agrupacion_".$valorX.""]; 
 					$valor        = $_POST["check_list_valor_".$valorX.""];
 					$observacion  = htmlentities($_POST["observacion_".$valorX.""]); 
 
-					$sql    = "$SELECT $proced2('agregar', '$codigo','$valorX',  '$valor',
+					$sql    = "$SELECT $proced2('agregar', '$codigo','$valorX', '$cod_agrupacion', '$valor',
 					'$observacion')";			
 					$result[$cod_valor] = $sql;				  
 					$query = $bd->consultar($sql);

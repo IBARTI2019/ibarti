@@ -39,7 +39,7 @@ if ($metodo == 'modificar') {
                     nov_check_list.fec_us_ing,  nov_check_list.fec_us_mod,
 					nov_check_list.cod_us_mod,
                     CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre) AS us_mod
-               FROM nov_check_list LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo ,
+               FROM nov_check_list LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo,
 			        nov_clasif , nov_tipo, clientes , clientes_ubicacion ,
 					ficha ,  nov_status
               WHERE nov_check_list.codigo         = '$codigo'
@@ -431,7 +431,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 			<?php if ($metodo == "modificar") { // echo statusCheck("$activo");
 				$sql   = "  SELECT nov_check_list_det.cod_check_list,
                            nov_check_list_det.cod_novedades, novedades.descripcion AS novedad,
-                           nov_check_list_det.cod_valor, nov_check_list_det.observacion
+                           nov_check_list_det.cod_valor, nov_check_list_det.observacion, novedades.cod_nov_agrupacion
                       FROM nov_check_list_det , novedades
                      WHERE nov_check_list_det.cod_check_list = '$codigo'
                        AND nov_check_list_det.cod_novedades = novedades.codigo ";
@@ -452,6 +452,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
     <tr>
       <td><textarea disabled="disabled" cols="60" rows="1">' . $datos[2] . '</textarea>
 	      <input type="hidden" name="cod_valor_' . $cod_nov . '" value="' . $datos[0] . '" />
+		  <input type="hidden" name="cod_agrupacion_' . $cod_nov . '" value="' . $datos[5] . '" />
 		  <input type="hidden" name="check_list[]" value="' . $cod_nov . '" /></td>
 	  <td>';
 					while ($datos02 = $bd->obtener_fila($query02, 0)) {

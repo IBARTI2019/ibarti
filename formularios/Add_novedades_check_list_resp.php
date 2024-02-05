@@ -434,7 +434,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 			<?php if ($metodo == "modificar") { // echo statusCheck("$activo");
 				$sql   = "  SELECT nov_check_list_det.cod_check_list,
                            nov_check_list_det.cod_novedades, novedades.descripcion AS novedad,
-                           nov_check_list_det.cod_valor, nov_check_list_det.observacion
+                           nov_check_list_det.cod_valor, nov_check_list_det.observacion, novedades.cod_nov_agrupacion,
                       FROM nov_check_list_det , novedades
                      WHERE nov_check_list_det.cod_check_list = '$codigo'
                        AND nov_check_list_det.cod_novedades = novedades.codigo ";
@@ -456,6 +456,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
     <tr>
       <td><textarea disabled="disabled" cols="55"  rows="1">' . $datos[2] . '</textarea>
 	      <input type="hidden" name="cod_valor_' . $cod_nov . '" value="' . $datos[0] . '" />
+		  <input type="hidden" name="cod_agrupacion_' . $cod_nov  . '" value="' . $datos[5] . '" />
 		  <input type="hidden" name="check_list[]" value="' . $cod_nov . '" /></td>
  <td>';
 					while ($datos02 = $bd->obtener_fila($query02, 0)) {

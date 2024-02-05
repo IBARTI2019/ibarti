@@ -64,10 +64,11 @@ $metodo         = $_POST['metodo'];
 				if(isset($_POST["check_list_valor_".$valorX.""])){	 			
 	
 				$cod_valor    = $_POST["cod_valor_".$valorX.""]; 
+				$cod_agrupacion    = $_POST["cod_agrupacion_".$valorX.""]; 
 				$valor        = $_POST["check_list_valor_".$valorX.""];
 				$observacion  = htmlentities($_POST["observacion_".$valorX.""]); 
 	
- 				 $sql    = "$SELECT $proced2('$metodo', '$codigo','$valorX',  '$valor',
+ 				 $sql    = "$SELECT $proced2('$metodo', '$codigo', '$valorX', '$cod_agrupacion', '$valor',
 											 '$observacion')";				  
 				 $query = $bd->consultar($sql);
 				 
@@ -87,10 +88,11 @@ $metodo         = $_POST['metodo'];
 				if(isset($_POST["check_list_valor_".$valorX.""])){	 			
 	
 				$cod_valor    = $_POST["cod_valor_".$valorX.""]; 
+				$cod_agrupacion    = $_POST["cod_agrupacion_".$valorX.""]; 
 				$valor        = $_POST["check_list_valor_".$valorX.""];
 				$observacion  = htmlentities($_POST["observacion_".$valorX.""]); 
 	
- 				 $sql    = "$SELECT $proced2('$metodo', '$codigo','$valorX',  '$valor',
+ 				 $sql    = "$SELECT $proced2('$metodo', '$codigo','$valorX', '$cod_agrupacion', '$valor',
 											 '$observacion')";							  
 				 $query = $bd->consultar($sql);
 				 

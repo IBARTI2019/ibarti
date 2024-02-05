@@ -181,7 +181,8 @@ $fec_us_mod    = '';
 				
 				$sql   = " SELECT
 							novedades.codigo,
-							novedades.descripcion 
+							novedades.descripcion,
+							novedades.cod_nov_agrupacion
 						FROM
 							nov_planif_actividad,
 							novedades 
@@ -209,7 +210,7 @@ $fec_us_mod    = '';
 					while ($datos02 = $bd->obtener_fila($query02, 0)) {
 						echo ' ' . $datos02[1] . ' <input type = "radio"  name="check_list_valor_' . $cod_c . '" value ="' . $datos02[0] . '" style="width:auto" title="' . $datos02[2] . '" />';
 					}
-					echo '<input type="hidden" name="cod_valor_' . $cod_c . '" value="' . $datos[0] . '" /><input type="hidden" name="check_list[]" value="' . $datos[0] . '" /> </td>
+					echo '<input type="hidden" name="cod_agrupacion_' . $cod_nov  . '" value="' . $datos[2] . '" /><input type="hidden" name="cod_valor_' . $cod_c . '" value="' . $datos[0] . '" /><input type="hidden" name="check_list[]" value="' . $datos[0] . '" /> </td>
 				<td><textarea  name="observacion_' . $datos[0] . '" cols="50" rows="1"></textarea>
 				</tr>';
 				}
