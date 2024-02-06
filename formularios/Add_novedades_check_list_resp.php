@@ -434,7 +434,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 			<?php if ($metodo == "modificar") { // echo statusCheck("$activo");
 				$sql   = "  SELECT nov_check_list_det.cod_check_list,
                            nov_check_list_det.cod_novedades, novedades.descripcion AS novedad,
-                           nov_check_list_det.cod_valor, nov_check_list_det.observacion, novedades.cod_nov_agrupacion,
+                           nov_check_list_det.cod_valor, nov_check_list_det.observacion, novedades.cod_nov_agrupacion
                       FROM nov_check_list_det , novedades
                      WHERE nov_check_list_det.cod_check_list = '$codigo'
                        AND nov_check_list_det.cod_novedades = novedades.codigo ";
