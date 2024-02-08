@@ -32,7 +32,7 @@ if($trabajador != NULL){
 }
 
 if($rol != "TODOS"){
-	$where .= " AND ficha.cod_rol = '$rol' ";
+	$where .= " AND trab_roles.cod_rol = '$rol' ";
 }
 
 if($cliente != "TODOS"){
