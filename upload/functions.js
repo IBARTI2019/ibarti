@@ -203,7 +203,8 @@ function uploadActulizarS3(url) {
         "link": url,
         "ficha": ficha,
         "ci": ci,
-        "doc": doc
+        "doc": doc,
+        "metodo":'agregar'
     };
 
     $.ajax({
@@ -218,7 +219,7 @@ function uploadActulizarS3(url) {
         },
         //una vez finalizado correctamente
         success: function (data) {
-            message = $("<span class='success'>La imagen ha subido correctamente. Actualizando</span>");
+            message = $("<span class='success'>La imagen ha sido guardada con exitos...</span>");
             showMessage(message);
             window.history.go(-1);
         },

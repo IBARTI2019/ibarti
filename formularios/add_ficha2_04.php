@@ -17,11 +17,11 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				<td width="10%" class="etiqueta">Check:</td>
 				<td width="18%" class="etiqueta">Observación:</td>
 				<td width="16%" class="etiqueta">Carpeta Doc</td>
-				<td width="22%" class="etiqueta">Vencimiento - Fecha</td>
+				<td width="30%" class="etiqueta">Vencimiento - Fecha</td>
 				<td width="8%" class="etiqueta">Fec. Ult. Mod.</td>
 			</tr>
 			<?php
-                $sql="SELECT
+                $sql="SELECT 
 				ficha_documentos.cod_documento,
 				ficha_documentos.`checks`,
 				ficha_documentos.`link`,
@@ -32,15 +32,17 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				documentos.descripcion,
 				control.url_doc,
 				documentos.orden 
-			FROM
+				FROM
 				documentos,
 				ficha_documentos,
 				control 
-			WHERE
+				WHERE
 				ficha_documentos.cod_ficha = '$codigo' 
 				AND ficha_documentos.cod_documento = documentos.codigo 
-				AND documentos.`status` = 'T' UNION
-			SELECT
+				AND documentos.`status` = 'T' 
+				GROUP by descripcion
+				UNION
+				SELECT
 				documentos.codigo AS cod_documento,
 				'N' AS `checks`,
 				'' AS `link`,
@@ -51,10 +53,10 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				documentos.descripcion,
 				control.url_doc,
 				documentos.orden 
-			FROM
+				FROM
 				documentos,
 				control 
-			WHERE
+				WHERE
 				documentos.`status` = 'T' 
 				AND documentos.codigo NOT IN (
 				SELECT
@@ -67,14 +69,18 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 					AND ficha_documentos.cod_documento = documentos.codigo 
 					AND documentos.`status` = 'T' 
 				) 
-			ORDER BY
-				orden ASC";
+				
+				ORDER BY
+				orden ASC;";
 				
 
 			$query = $bd->consultar($sql);
 
 			while ($datos = $bd->obtener_fila($query, 0)) {
 				extract($datos);
+				$sql2="SELECT count(*) as cantidad FROM `ficha_documentos` WHERE cod_documento='$cod_documento' and cod_ficha='$codigo'";
+				$query2 = $bd->consultar($sql2);
+				$datos2=$bd->obtener_fila($query2, 0);
 				$img_src = $link;
 				$borrarDoc = "";
 				if ($img_src) {
@@ -99,7 +105,9 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 													value = "N" style="width:auto" disabled="disabled" ' . CheckX($checks, 'N') . '/><input type="hidden"                                                     name="documento_old' . $cod_documento . '" value = "' . $checks . '"/></td>
 						<td><textarea name="observ_doc' . $cod_documento . '" cols="20" rows="1">' . $observacion . '</textarea></td>
 						<td>  <a target="_blank" - <a target="_blank" onClick="' . $carpeta . '">
+						
 						<img class="ImgLink" src="imagenes/carpeta.png" width="22px" height="22px" />
+						'. $datos2[cantidad].'
 						</td>
 						
 						<td class="texto">SI <input type = "radio" name="vencimiento' . $cod_documento . '"  value = "S" style="width:auto"
