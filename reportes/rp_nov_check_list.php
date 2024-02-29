@@ -29,6 +29,7 @@ if ($_SESSION['r_cliente'] == "F") {
 		var codigo = $("#codigo").val();
 		var clasif = $("#clasif").val();
 		var tipo = $("#tipo").val();
+		var agrupacion = $("#agrupacion").val();
 		var cliente = $("#cliente").val();
 		var ubicacion = $("#ubicacion").val();
 		var status = $("#status").val();
@@ -61,6 +62,7 @@ if ($_SESSION['r_cliente'] == "F") {
 				"codigo": codigo,
 				"clasif": clasif,
 				"tipo": tipo,
+				"agrupacion": agrupacion,
 				"cliente": cliente,
 				"ubicacion": ubicacion,
 				"status": status,
@@ -157,6 +159,15 @@ if ($_SESSION['r_cliente'] == "F") {
 			<td colspan="2">&nbsp;</td>
 		</tr>
 		<tr>
+			<td>Agrupacion:</td>
+			<td><select name="agrupacion" id="agrupacion" style="width:120px;">
+					<option value="TODOS">TODOS</option>
+					<?php
+					$query01 = $bd->consultar($sql_nov_agrupacion);
+					while ($row01 = $bd->obtener_fila($query01, 0)) {
+						echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
+					} ?>
+				</select></td>
 			<td>Código:</td>
 			<td><input style="width:120px;" name="codigo" id="codigo" type="text" /></td>
 			<td>Filtro <?php echo $leng['trab'] ?>.:</td>
@@ -172,7 +183,7 @@ if ($_SESSION['r_cliente'] == "F") {
 			</td>
 
 			<td><?php echo $leng['trabajador'] ?>:</td>
-			<td colspan="3"><input id="stdName" type="text" style="width:300px" disabled="disabled" />
+			<td><input id="stdName" type="text" style="width:120px" disabled="disabled" />
 				<input type="hidden" name="trabajador" id="stdID" value="" />
 			</td>
 

@@ -18,6 +18,7 @@ $fecha_H         = conversion($_POST['fecha_hasta']);
 $clasif          = $_POST['clasif'];
 $codigo          = $_POST['codigo'];
 $tipo            = $_POST['tipo'];
+$agrupacion      = $_POST['agrupacion'];
 $cliente         = $_POST['cliente'];
 $ubicacion       = $_POST['ubicacion'];
 $status          = $_POST['status'];
@@ -65,6 +66,12 @@ if (isset($reporte)) {
 		$where .= " AND nov_tipo.codigo = '$tipo' ";
 		$where2 .= " AND nov_tipo.codigo = '$tipo' ";
 	}
+
+	if ($agrupacion != "TODOS") {
+		$where .= " AND nov_agrupacion.codigo = '$agrupacion' ";
+		$where2 .= " AND nov_agrupacion.codigo = '$agrupacion' ";
+	}
+
 	if ($status != "TODOS") {
 		$where  .= " AND nov_status.codigo = '$status' ";
 		$where2  .= " AND nov_status.codigo = '$status' ";
@@ -93,9 +100,10 @@ if (isset($reporte)) {
 						 nov_valores.abrev, nov_check_list_det.valor,
 						 nov_check_list_det.valor_max,  nov_valores.factor,
 					     nov_check_list_det.observacion, nov_check_list.fec_us_mod,
-						 nov_status.descripcion AS nov_status
-                    FROM nov_check_list , nov_check_list_det, novedades,
-				         nov_clasif , nov_tipo, nov_valores, clientes ,
+						 nov_status.descripcion AS nov_status,
+					   IF(ISNULL(nov_agrupacion.descripcion),'N/A',nov_agrupacion.descripcion) agrupacion
+                    FROM nov_check_list , nov_check_list_det LEFT JOIN nov_agrupacion ON nov_check_list_det.cod_nov_agrupacion = nov_agrupacion.codigo, 
+						 novedades, nov_clasif , nov_tipo, nov_valores, clientes ,
 					 	 clientes_ubicacion , ficha , nov_status
                   $where
               ORDER BY 3 ASC  ";
@@ -107,8 +115,8 @@ if (isset($reporte)) {
 					  nov_check_list.repuesta,
 				Sum(nov_check_list_det.valor) AS check_list_valor, Sum(nov_check_list_det.valor_max) AS valor_max,
                 nov_check_list.fec_us_mod, nov_status.descripcion AS nov_status
-           FROM nov_check_list , nov_check_list_det, nov_clasif ,  nov_tipo,
-		        clientes , clientes_ubicacion , ficha , nov_status
+           FROM nov_check_list , nov_check_list_det LEFT JOIN nov_agrupacion ON nov_check_list_det.cod_nov_agrupacion = nov_agrupacion.codigo, 
+		   		nov_clasif ,  nov_tipo, clientes , clientes_ubicacion , ficha , nov_status
         $where2
        GROUP BY nov_check_list.codigo
       ORDER BY 3 ASC ";
@@ -119,19 +127,19 @@ if (isset($reporte)) {
 		header("Content-Disposition:  filename=\"$archivo.xls\";");
 
 		if ($detalle ==  "S") {
-
+			echo $sql;
 			$query01  = $bd->consultar($sql);
 
 			echo "<table border=1>
-	      <tr><th>Código </th><th>Fecha </th><th> Supervisor </th><th> " . $leng['cliente'] . " </th>
-	           <th> " . $leng['ubicacion'] . " </th><th> Clasificación </th><th> Tipo </th><th> CHECK LIST </th>
+	      <tr><th>".$sql." </th><th>Fecha </th><th> Supervisor </th><th> " . $leng['cliente'] . " </th>
+	           <th> " . $leng['ubicacion'] . " </th><th> Clasificación </th><th> Tipo </th><th> Agrupacion </th><th> CHECK LIST </th>
 			   <th> Abreviatura </th><th> Valor </th><th> Valor MAX</th><th> % Cumplimiento </th>
 			   <th> Factor </th><th> Observación </th><th> Fec. Ult. Modificación </th><th> Status </th></tr>";
 
 			while ($row01 = $bd->obtener_num($query01)) {
 				echo "<tr><td>" . $row01[0] . "</td><td>" . $row01[1] . "</td><td>" . $row01[2] . "</td><td>" . $row01[3] . "</td>
 		           <td>" . $row01[4] . "</td><td>" . $row01[5] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td>
-		           <td>" . $row01[8] . "</td><td>" . $row01[9] . "</td><td>" . $row01[10] . "</td>
+		           <td>" . $row01[15] . "</td><td>" . $row01[8] . "</td><td>" . $row01[9] . "</td><td>" . $row01[10] . "</td>
 				   <td>" . Redondear2d(($row01[9] * 100) / $row01[10]) . "</td>
 				   <td>" . $row01[11] . "</td><td>" . $row01[12] . "</td><td>" . $row01[13] . "</td><td>" . $row01[14] . "</td></tr>";
 			}
@@ -149,8 +157,7 @@ if (isset($reporte)) {
 
 			while ($row01 = $bd->obtener_num($query01)) {
 				echo "<tr><td>" . $row01[0] . "</td><td>" . $row01[1] . "</td><td>" . $row01[2] . "</td><td>" . $row01[3] . "</td>
-		           <td>" . $row01[4] . "</td><td>" . $row01[5] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td>
-		           <td>" . $row01[8] . "</td>
+		           <td>" . $row01[4] . "</td><td>" . $row01[5] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td> <td>" . $row01[8] . "</td>
 				   <td>" . $row01[9] . "</td><td>" . $row01[10] . "</td><td>" . Redondear2d(($row01[9] * 100) / $row01[10]) . "</td>
 				   <td>" . $row01[11] . "</td><td>" . $row01[12] . "</td></tr>";
 			}

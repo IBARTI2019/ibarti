@@ -191,6 +191,9 @@ $sql_nov_status = "SELECT nov_status.codigo, nov_status.descripcion
 $sql_nov_tipo = "SELECT nov_tipo.codigo, nov_tipo.descripcion
                       FROM nov_tipo ORDER BY 2 ASC ";
 
+$sql_nov_agrupacion = "SELECT nov_agrupacion.codigo, nov_agrupacion.descripcion
+                      FROM nov_agrupacion ORDER BY 2 ASC ";
+
 $sql_perfil = "SELECT men_perfiles.codigo, men_perfiles.descripcion
                  FROM men_perfiles ORDER BY 2 ASC";
 
