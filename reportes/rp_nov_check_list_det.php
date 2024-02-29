@@ -127,11 +127,10 @@ if (isset($reporte)) {
 		header("Content-Disposition:  filename=\"$archivo.xls\";");
 
 		if ($detalle ==  "S") {
-			echo $sql;
 			$query01  = $bd->consultar($sql);
 
 			echo "<table border=1>
-	      <tr><th>".$sql." </th><th>Fecha </th><th> Supervisor </th><th> " . $leng['cliente'] . " </th>
+	      <tr><th>Código </th><th>Fecha </th><th> Supervisor </th><th> " . $leng['cliente'] . " </th>
 	           <th> " . $leng['ubicacion'] . " </th><th> Clasificación </th><th> Tipo </th><th> Agrupacion </th><th> CHECK LIST </th>
 			   <th> Abreviatura </th><th> Valor </th><th> Valor MAX</th><th> % Cumplimiento </th>
 			   <th> Factor </th><th> Observación </th><th> Fec. Ult. Modificación </th><th> Status </th></tr>";
