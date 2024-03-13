@@ -34,7 +34,8 @@ AND p.cod_ficha = f.cod_ficha
 AND p.cod_cliente = cl.codigo
 AND p.cod_ubicacion = cu.codigo
 AND pd.cod_proyecto = pp.codigo 
-AND pd.cod_actividad = pa.codigo ";
+AND pd.cod_actividad = pa.codigo
+ AND pd.realizado='T'";
 
 
 if($region != "TODOS"){
@@ -69,16 +70,16 @@ if($region != "TODOS"){
 		$where   .= " AND pd.cod_actividad = '$actividad' ";
 	}
 
-$sql = "SELECT pd.codigo, DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') fecha, p.cod_ficha, CONCAT(f.apellidos, ' ', f.nombres) ap_nombre, 
-p.cod_cliente, cl.nombre cliente, p.cod_ubicacion, cu.descripcion ubicacion, 
-pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad,
+$sql = "SELECT pd.codigo, p.cod_ficha, CONCAT(f.apellidos, ' ', f.nombres) ap_nombre, p.cod_cliente, cl.nombre cliente, 
+p.cod_ubicacion, cu.descripcion ubicacion, DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') fecha, 
 TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
-pa.minutos, IF(pd.realizado='T','SI', 'NO') realizado
+pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad,
+count(pd.cod_actividad) as cantidad, IF(pd.realizado='T','SI', 'NO') realizado
 FROM planif_clientes_superv_trab p, planif_clientes_superv_trab_det pd, clientes cl, clientes_ubicacion cu, ficha f,
 planif_proyecto pp, planif_actividad pa
 $where
-group by 13
-ORDER BY 1,2,3,13,5,7,11 ASC";
+group by 3,7,13
+ORDER BY 1,2,9,4,6,8 ASC";
 
 	if($reporte== 'excel'){
 		echo "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />";
@@ -87,16 +88,15 @@ ORDER BY 1,2,3,13,5,7,11 ASC";
 
 		$query01  = $bd->consultar($sql);
 		echo "<table border=1>";
-		echo "<tr><th> Código </th><th> Fecha </th><th> ".$leng['ficha']." </th><th> ".$leng['trabajador']." </th>
-		<th> Cod. Cliente </th><th> ".$leng['cliente']." </th><th> Cod. Ubicación </th><th> ".$leng['ubicacion']." </th>
-		<th> Cod. Proyecto </th><th> Proyecto </th><th> Cod. Actividad </th><th> Actividad </th><th> Hora Inicio </th>
-		<th> Hora Fin </th><th> Minutos dedicados </th><th> Realizado </th>
+		echo "<tr><th> Código </th><th> Ficha </th><th> ".$leng['trabajador']." </th><th> Cod Cliente </th>
+		<th> ".$leng['cliente']." </th><th> Cod. Ubicacion </th><th>".$leng['ubicacion']."</th><th> Fecha </th>
+		<th> Cod. Proyecto </th><th> Proyecto </th><th> Cod Actividad </th>
+		<th> Actividad</th><th> Cantidad</th><th> Realizado </th>
 		</tr>";
 
 		while ($row01 = $bd->obtener_num($query01)){
 			echo "<tr><td> ".$row01[0]." </td><td>".$row01[1]."</td><td>".$row01[2]."</td><td>".$row01[3]."</td>
-			<td>".$row01[4]."</td><td>".$row01[5]."</td><td>".$row01[6]."</td><td>".$row01[7]."</td>
-			<td>".$row01[8]."</td><td>".$row01[9]."</td><td>".$row01[10]."</td><td>".$row01[11]."</td>
+			<td>".$row01[4]."</td><td>".$row01[5]."</td><td>".$row01[6]."</td><td>".$row01[7]."</td><td>".$row01[10]."</td><td>".$row01[11]."</td>
 			<td>".$row01[12]."</td><td>".$row01[13]."</td><td>".$row01[14]."</td><td>".$row01[15]."</td></tr>";
 		}
 		echo "</table>";
@@ -125,9 +125,7 @@ ORDER BY 1,2,3,13,5,7,11 ASC";
 		<th  class='etiqueta'>" . $leng['ubicacion'] . "</th>
 		<th  class='etiqueta'>Proyecto </th>
 		<th  class='etiqueta'>Actividad </th>
-		<th  class='etiqueta'>Hora Inicio </th>
-		<th  class='etiqueta'>Hora Fin </th>
-		<th  class='etiqueta'>Minutos</th>
+		<th  class='etiqueta'>Cantidad</th>
 		<th  class='etiqueta'>Realizado </th>
 		</tr>";
 
@@ -145,9 +143,7 @@ ORDER BY 1,2,3,13,5,7,11 ASC";
 			<td  >" . $datos["ubicacion"] . "</td>
 			<td  >" . $datos["proyecto"] . "</td>
 			<td  >" . $datos["actividad"] . "</td>
-			<td  >" . $datos["hora_inicio"] . "</td>
-			<td  >" . $datos["hora_fin"] . "</td>
-			<td  >" . $datos["minutos"] . "</td>
+			<td  >" . $datos["cantidad"] . "</td>
 			<td  >" . $datos["realizado"] . "</td></tr>";
 
 			$f++;

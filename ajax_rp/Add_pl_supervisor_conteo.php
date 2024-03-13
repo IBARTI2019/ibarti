@@ -22,7 +22,8 @@ AND p.cod_ficha = f.cod_ficha
 AND p.cod_cliente = cl.codigo
 AND p.cod_ubicacion = cu.codigo
 AND pd.cod_proyecto = pp.codigo 
-AND pd.cod_actividad = pa.codigo ";
+AND pd.cod_actividad = pa.codigo
+AND pd.realizado='T' ";
 
 
 if ($region != "TODOS") {
@@ -61,10 +62,11 @@ $sql = "SELECT pd.codigo, p.cod_ficha, CONCAT(f.apellidos, ' ', f.nombres) ap_no
 p.cod_ubicacion, cu.descripcion ubicacion, DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') fecha, 
 TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
 pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad,
-pa.minutos, IF(pd.realizado='T','SI', 'NO') realizado
+count(pd.cod_actividad) as cantidad, IF(pd.realizado='T','SI', 'NO') realizado
 FROM planif_clientes_superv_trab p, planif_clientes_superv_trab_det pd, clientes cl, clientes_ubicacion cu, ficha f,
 planif_proyecto pp, planif_actividad pa
 $where
+group by 3,7,11,13
 ORDER BY 1,2,9,4,6,8 ASC";
 
 ?><table width="100%" border="0" align="center">
@@ -77,9 +79,7 @@ ORDER BY 1,2,9,4,6,8 ASC";
 		<th  class="etiqueta"><?php echo $leng['ubicacion']?></th>
 		<th  class="etiqueta">Proyecto</th>
 		<th  class="etiqueta">Actividad </th>
-		<th  class="etiqueta">Hora Inicio </th>
-		<th  class="etiqueta">Hora Fin </th>
-		<th  class="etiqueta">Minutos</th>
+		<th  class="etiqueta">Cantidad</th>
 		<th  class="etiqueta">Realizado </th>
 	</tr>
 	<?php
@@ -103,9 +103,7 @@ ORDER BY 1,2,9,4,6,8 ASC";
 		<td class="texto">'.longitud($datos["ubicacion"]).'</td>
 		<td class="texto">'.longitud($datos["proyecto"]).'</td>
 		<td class="texto">'.longitud($datos["actividad"]).'</td>
-		<td class="texto">'.longitud($datos["hora_inicio"]).'</td>
-		<td class="texto">'.longitud($datos["hora_fin"]).'</td>
-		<td class="texto">'.longitud($datos["minutos"]).'</td>
+		<td class="texto">'.longitud($datos["cantidad"]).'</td>
 		<td class="texto">'.longitud($datos["realizado"]).'</td>
 		</tr>';
 	}; ?>
