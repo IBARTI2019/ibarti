@@ -27,8 +27,7 @@ $proced      = "p_usuario";
                      b.oesvica AS cl_principal, a.admin_kanban, a.admin_rrhh
 		            FROM men_usuarios a, control b, clientes c
                WHERE a.login = '$l'
-                 AND a.pass = '$password'
-                 AND a.status = 'T'
+                 AND a.pass = '$password' AND a.status = 'T'
                  AND b.oesvica =c.codigo  ";
 	 $query = $bd->consultar($sql);
    $datos = $bd->obtener_fila($query);
