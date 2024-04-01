@@ -1,4 +1,5 @@
 <?php
+error_reporting(-1);
 define("SPECIALCONSTANT", true);
 
 include_once "../../../funciones/funciones.php";
