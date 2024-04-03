@@ -35,7 +35,7 @@ control.control_uniforme_linea AS cod_uniforme_linea, pl.descripcion AS uniforme
 control.url_doc, control.rop_meses,control.dias_nov_notif,control.min_nov_notif, control.porc_min_aprob_encuesta_preing
 FROM control, paises, clientes, ficha_status,
 conceptos, conceptos AS r, conceptos AS cest, conceptos AS hora_ex_d, conceptos AS hora_ex_n,
-roles, cargos, turno, prod_lineas, prod_lineas pl, nov_clasif
+roles, cargos, turno, prod_lineas, prod_lineas pl
 WHERE control.cod_pais = paises.codigo
 AND control.oesvica = clientes.codigo
 AND control.ficha_activo = ficha_status.codigo
