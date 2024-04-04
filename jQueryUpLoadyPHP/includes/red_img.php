@@ -26,7 +26,7 @@ $jpeg_quality = 95;
 // Redimensionar
 
 // header('Content-type: image/jpeg');
-$img_r = imagecreatefromjpeg($src_image);
+// $img_r = imagecreatefromjpeg($src_image);
 // $dst_r = imagecreatetruecolor($dst_w, $dst_h);
 
 //imagecopyresampled($dst_r , $img_r , 0 , 0 , 0 ,0, $dst_w ,$dst_h , $src_w , $src_h );
