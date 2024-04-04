@@ -31,8 +31,9 @@ $img_r = imagecreatefromjpeg($src_image);
 
 //imagecopyresampled($dst_r , $img_r , 0 , 0 , 0 ,0, $dst_w ,$dst_h , $src_w , $src_h );
 // imagecopyresampled($dst_r , $img_r , 0 , 0 , $src_x , $src_y , $dst_w ,$dst_h ,$dst_w ,$dst_h );
-imagecopyresampled($dst_r , $img_r , 0 , 0 , $src_x , $src_y , $dst_w ,$dst_h , $src_w ,$src_h);
-if(imagejpeg($dst_r, $dst_image, $jpeg_quality) == true){
+// imagecopyresampled($dst_r , $img_r , 0 , 0 , $src_x , $src_y , $dst_w ,$dst_h , $src_w ,$src_h);
+// if(imagejpeg($dst_r, $dst_image, $jpeg_quality) == true){
+	if(true){
 	
 	$mensaje = " IMAGEN GUARDADA CON EXITO ";
 	}else{
