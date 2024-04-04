@@ -58,10 +58,11 @@ if (isset($_POST['cedula'])) {
         $query = $bd->consultar($sql);
         $datos = $bd->obtener_fila($query);
         $url_foto = "../../../imagenes/fotos/" . $cedula . ".jpg";
-        if (!file_exists($url_foto)) {
-            $result['error'] = true;
-            $result['mensaje'] = "La foto de " . $datos['ap_nombre'] . ", no esta cargada.";
-        } elseif ($datos['existe'] == 1) {
+        // if (!file_exists($url_foto)) {
+        //     $result['error'] = true;
+        //     $result['mensaje'] = "La foto de " . $datos['ap_nombre'] . ", no esta cargada.";
+        // } elseif ($datos['existe'] == 1) {
+        if ($datos['existe'] == 1) {
             $result['error'] = false;
         }
         if (count($result['tests'])) {
