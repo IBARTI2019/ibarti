@@ -46,7 +46,7 @@
 	 </tr>
 
      <tr>
-      <td class="etiqueta">Dia para vencimineto de Expedientes :</td>
+      <td class="etiqueta">Dias para Vencimiento de Expedientes:</td>
        <td id="input_2_04"><input type="text" name="expedientes_dias" maxlength="12" size="15" value="<?php echo $expedientes_dias;?>" />
 
         <span class="textfieldRequiredMsg">El Campo es Requerido.</span>

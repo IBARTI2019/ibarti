@@ -51,7 +51,7 @@ class Producto
     productos.descripcion, IFNULL(v_prod_ultimo_mov.mov_tipo , 'SIN MOVIMIENTO') AS mov_tipo,
     productos.status
     FROM productos LEFT JOIN v_prod_ultimo_mov ON productos.codigo = v_prod_ultimo_mov.cod_producto ,
-    prod_lineas , prod_sub_lineas , prod_tipos , control
+    prod_lineas , prod_sub_lineas , prod_tipos
     $where           
     ORDER BY productos.codigo ASC ";
 
