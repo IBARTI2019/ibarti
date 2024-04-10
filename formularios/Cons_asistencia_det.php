@@ -410,7 +410,7 @@ AND ficha.cod_ficha = trab_roles.cod_ficha
 AND asistencia.cod_cliente = clientes.codigo 
 AND asistencia.cod_ubicacion = clientes_ubicacion.codigo 
 AND asistencia.cod_concepto = conceptos.codigo 
-AND trab_roles.cod_rol = '$cod_rol' UNION
+AND trab_roles.cod_rol = '$cod_rol' AND '$fec_diaria' >= ficha.fec_ingreso UNION
 SELECT
 pctd.cod_ficha,
 f.cedula,
