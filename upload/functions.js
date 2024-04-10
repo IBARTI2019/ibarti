@@ -150,7 +150,7 @@ function subirImagenS3(directorio) {
         },
         //una vez finalizado correctamente
         success: function (data) {
-            uploadActulizarS3(data.data.image[0]);
+            uploadActualizarS3(data.data.image[0]);
         },
         //si ha ocurrido un error
         error: function () {
