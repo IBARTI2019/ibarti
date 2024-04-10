@@ -34,7 +34,7 @@ $cliente  =  $plan->get_cliente();
       <td width="9%" class="etiqueta">
         <span id="cargo_texto">Cargo:</span>
       </td>
-      <td width="21%"><span id="cargo_cont"><select id="planf_cargo" required onchange="cargar_planif_superv($('#planf_ubicacion').val(), this.value)" style="width:200px">
+      <td width="21%"><span id="cargo_cont"><select id="planf_cargo" required onchange="onChangeCargo(this.value)" style="width:200px">
             <option value="">Seleccione..</option>
           </select></span></td>
       <td width="9%" class="etiqueta"><span id="apertura_texto">Apertura:</span></td>

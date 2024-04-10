@@ -1306,3 +1306,9 @@ function onChangeAp(ap) {
 	cargo = $('#planf_cargo').val();
 	cargar_planif_superv(ubicacion, cargo);
 }
+
+
+function onChangeCargo(v_cargo){
+	cargar_planif_superv($('#planf_ubicacion').val(), v_cargo);
+	cl_apertura();
+}
