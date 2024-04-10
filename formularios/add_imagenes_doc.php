@@ -33,7 +33,7 @@ if(file_exists($img_src)){
 
 <form enctype="multipart/form-data" class="formulario">
 	<table width="100%">
-    	<tr><td width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>"></div>
+    	<tr><td width="100%"><div id="contenedorImagen"><img id="fotografia" name="images" class="fotografia" src="<?php echo $img_src?>"></div>
                       <input name="images" type="file" id="imagen"   value="Subir Imagen"/><br/>
                 <span class="art-button-wrapper" id="imgMostrar"  style="display:none">
                     <span class="art-button-l"> </span>

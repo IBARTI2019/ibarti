@@ -119,10 +119,18 @@ function subirImagenS3(directorio) {
     //informaci�n del formulario
 
     var formData = new FormData($(".formulario")[0]);
-    var ci = $("#ci").val();
+    var folder = $("#ficha").val();
     var doc = $("#doc").val();
-    var nombre = ci + "_" + doc;
-    console.log(formData);
+
+    var config = [
+      {
+        folder: folder,
+        key: doc
+      }
+    ]
+
+    formData.append("config", JSON.stringify(config));
+
     var message = "";
     //hacemos la petici�n ajax  
     $.ajax({
@@ -191,8 +199,8 @@ function subirImagenCliente(directorio) {
     });
 }
 
-function uploadActulizarS3(url) {
-    console.log('uploadActulizarS3: ', url)
+function uploadActualizarS3(url) {
+    console.log('uploadActualizarS3: ', url)
     var ficha = $("#ficha").val();
     var ci = $("#ci").val();
     var doc = $("#doc").val();
