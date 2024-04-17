@@ -27,12 +27,7 @@ $almacen    = $_POST['almacen'];
 			      AND productos.cod_talla = tallas.codigo
 			      AND productos.cod_sub_linea = prod_sub_lineas.codigo
 				  AND v_ficha.cod_ficha = prod_dotacion.cod_ficha 
-			      AND ajuste.referencia = prod_dotacion.codigo
-				AND ajuste_reng.cod_ajuste = ajuste.codigo
-				AND ajuste_reng.cod_almacen = prod_dotacion_det.cod_almacen
-				AND ajuste_reng.cod_producto = prod_dotacion_det.cod_producto
-				AND (ajuste.cod_tipo = 'DOT' OR ajuste.cod_tipo = 'ANU_DOT') 
-				AND ajuste_reng.cod_almacen = almacenes.codigo";
+			     ";
 
 	if($rol != "TODOS"){
 		$where .= " AND v_ficha.cod_rol = '$rol' ";
@@ -74,15 +69,37 @@ $almacen    = $_POST['almacen'];
                  v_ficha.cedula, v_ficha.nombres AS trabajador,
                  prod_dotacion.descripcion, prod_lineas.descripcion AS linea,
                  prod_sub_lineas.descripcion AS sub_linea, CONCAT(productos.descripcion,' (',tallas.descripcion,') ') AS producto,
-                 prod_dotacion_det.cantidad,clientes.nombre cliente, clientes_ubicacion.descripcion ubicacion, ajuste_reng.neto,
+                 prod_dotacion_det.cantidad,clientes.nombre cliente, clientes_ubicacion.descripcion ubicacion,
+				 (
+					SELECT
+						ajuste_reng.neto 
+					FROM
+						ajuste,
+						ajuste_reng 
+					WHERE
+						ajuste.referencia = prod_dotacion.codigo 
+						AND ( ajuste.cod_tipo = 'DOT' OR ajuste.cod_tipo = 'ANU_DOT' ) 
+						AND ajuste_reng.cod_ajuste = ajuste.codigo 
+						AND ajuste_reng.cod_almacen = prod_dotacion_det.cod_almacen 
+						AND ajuste_reng.cod_almacen = almacenes.codigo 
+						AND ajuste_reng.cod_producto = prod_dotacion_det.cod_producto
+				 ) neto,
                  Valores(prod_dotacion.anulado) anulado,
-				 ajuste_reng.cod_almacen,
-				almacenes.descripcion almacen
+				 prod_dotacion_det.cod_almacen,
+				almacenes.descripcion almacen,
+				(
+				SELECT
+					ajuste.codigo
+				FROM
+					ajuste
+				WHERE
+					ajuste.referencia = prod_dotacion.codigo 
+					AND ( ajuste.cod_tipo = 'DOT' OR ajuste.cod_tipo = 'ANU_DOT' ) 
+				) cod_ajuste
             FROM prod_dotacion , prod_dotacion_det , productos , prod_lineas ,
-                 prod_sub_lineas, v_ficha,clientes,clientes_ubicacion, ajuste,ajuste_reng,tallas,almacenes
+                 prod_sub_lineas, v_ficha,clientes,clientes_ubicacion,tallas,almacenes
           $where
-        GROUP BY prod_dotacion.codigo,ajuste.codigo,prod_dotacion_det.cod_producto
-HAVING MAX(ajuste.codigo)
+        GROUP BY prod_dotacion.codigo,cod_ajuste,prod_dotacion_det.cod_producto
 ORDER BY 2 ASC ";
 
 ?>
@@ -106,6 +123,7 @@ ORDER BY 2 ASC ";
 	</tr>
     <?php
 	$valor = 0;
+
    $query = $bd->consultar($sql);
 
 		while ($datos=$bd->obtener_fila($query,0)){
