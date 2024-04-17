@@ -1,4 +1,5 @@
 <?php 
+header("Access-Control-Allow-Origin: *");
 require("../autentificacion/aut_config.inc.php");
 require_once("../".class_bd);
 $bd = new DataBase();
