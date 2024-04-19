@@ -31,19 +31,14 @@ $almacen     = $_POST['almacen'];
 if(isset($reporte)){
 
 	$where = "  WHERE DATE_FORMAT(prod_dotacion.fec_dotacion, '%Y-%m-%d') BETWEEN  \"$fecha_D\" AND \"$fecha_H\"
-   	              AND prod_dotacion.codigo = prod_dotacion_det.cod_dotacion
-   	              AND prod_dotacion.cod_cliente = clientes.codigo
-   	              AND prod_dotacion.cod_ubicacion = clientes_ubicacion.codigo
-			      AND prod_dotacion_det.cod_producto = productos.item
-			      AND productos.cod_linea = prod_lineas.codigo
-			      AND productos.cod_sub_linea = prod_sub_lineas.codigo
-			      AND v_ficha.cod_ficha = prod_dotacion.cod_ficha 
-			      AND ajuste.referencia = prod_dotacion.codigo
-				AND ajuste_reng.cod_ajuste = ajuste.codigo
-				AND ajuste_reng.cod_almacen = prod_dotacion_det.cod_almacen
-				AND ajuste_reng.cod_producto = prod_dotacion_det.cod_producto 
-				AND (ajuste.cod_tipo = 'DOT' OR ajuste.cod_tipo = 'ANU_DOT')
-				AND ajuste_reng.cod_almacen = almacenes.codigo";
+					AND prod_dotacion.codigo = prod_dotacion_det.cod_dotacion
+					AND prod_dotacion.cod_cliente = clientes.codigo
+					AND prod_dotacion.cod_ubicacion = clientes_ubicacion.codigo
+				AND prod_dotacion_det.cod_producto = productos.item
+				AND productos.cod_linea = prod_lineas.codigo
+				AND productos.cod_talla = tallas.codigo
+				AND productos.cod_sub_linea = prod_sub_lineas.codigo
+				AND v_ficha.cod_ficha = prod_dotacion.cod_ficha ";
 
 	if($rol != "TODOS"){
 		$where .= " AND v_ficha.cod_rol = '$rol' ";
@@ -76,7 +71,7 @@ if(isset($reporte)){
 		$where  .= " AND clientes_ubicacion.codigo = '$ubicacion' ";
 	}
 	if($almacen != "TODOS" && $almacen != ""){
-		$where  .= " AND ajuste_reng.cod_almacen = '$almacen' ";
+		$where  .= " AND prod_dotacion_det.cod_almacen = '$almacen' ";
 	}
 	
  $sql = " SELECT DISTINCT prod_dotacion.codigo, prod_dotacion.fec_dotacion, prod_dotacion.fec_us_ing, v_ficha.rol, v_ficha.cod_ficha,
@@ -85,15 +80,35 @@ if(isset($reporte)){
                  prod_sub_lineas.descripcion AS sub_linea, CONCAT(productos.descripcion,' (',productos.cod_talla,') ') AS producto,
                  productos.item serial,
                  prod_dotacion_det.cantidad,clientes.nombre cliente, clientes_ubicacion.descripcion ubicacion,
-				 ajuste_reng.cod_almacen,	almacenes.descripcion almacen, 
-				 ajuste_reng.neto importe,Valores(prod_dotacion.anulado) anulado
+				 prod_dotacion_det.cod_almacen,	almacenes.descripcion almacen, 
+				 (
+					SELECT
+						ajuste_reng.neto 
+					FROM
+						ajuste,
+						ajuste_reng 
+					WHERE
+						ajuste.referencia = prod_dotacion.codigo 
+						AND ( ajuste.cod_tipo = 'DOT' OR ajuste.cod_tipo = 'ANU_DOT' ) 
+						AND ajuste_reng.cod_ajuste = ajuste.codigo 
+						AND ajuste_reng.cod_almacen = prod_dotacion_det.cod_almacen 
+						AND ajuste_reng.cod_almacen = almacenes.codigo 
+						AND ajuste_reng.cod_producto = prod_dotacion_det.cod_producto
+				 ) importe,Valores(prod_dotacion.anulado) anulado,
+				 (
+				SELECT
+					ajuste.codigo
+				FROM
+					ajuste
+				WHERE
+					ajuste.referencia = prod_dotacion.codigo 
+					AND ( ajuste.cod_tipo = 'DOT' OR ajuste.cod_tipo = 'ANU_DOT' ) 
+				) cod_ajuste
             FROM prod_dotacion , prod_dotacion_det , productos , prod_lineas ,
-                 prod_sub_lineas, v_ficha,clientes,clientes_ubicacion, ajuste,ajuste_reng,tallas,almacenes
+                 prod_sub_lineas, v_ficha,clientes,clientes_ubicacion, tallas,almacenes
           $where
-        GROUP BY prod_dotacion.codigo,ajuste.codigo,prod_dotacion_det.cod_producto
-HAVING MAX(ajuste.codigo)
+        GROUP BY prod_dotacion.codigo,cod_ajuste,prod_dotacion_det.cod_producto
 ORDER BY 2 ASC ";
-
 
 
 	if($reporte== 'excel'){
