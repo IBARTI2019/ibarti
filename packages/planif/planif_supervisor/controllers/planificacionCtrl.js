@@ -76,6 +76,7 @@ function Cons_planificacion_inicio() {
 	var errorMessage = ' ';
 	if (error == 0) {
 		var parametros = {};
+		parametros['usuario'] = $("#usuario").val();
 		$.ajax({
 			data: parametros,
 			url: 'packages/planif/planif_supervisor/views/Cons_inicio.php',
@@ -292,7 +293,8 @@ function cargar_actividades(proyecto, ficha, callback) {
 
 function cargar_ubicaciones() {
 	//var parametros = { "cliente": cliente, "region": region, "cargo": cargo };
-	var parametros = { "cliente": cliente, "cargo": cargo };
+	var parametros = { "cliente": cliente, "cargo": cargo};
+	parametros["usuario"] = $("#usuario").val();
 	$.ajax({
 		data: parametros,
 		url: 'packages/planif/planif_supervisor/views/Add_planif_ap_ubic.php',

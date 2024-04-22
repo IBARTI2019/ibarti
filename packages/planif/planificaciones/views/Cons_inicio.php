@@ -4,7 +4,7 @@ require "../../../../" . Leng;
 
 $titulo = $leng['planificacion'];
 $plan   = new Planificacion;
-$cliente  =  $plan->get_cliente();
+$cliente  =  $plan->get_cliente($_POST["usuario"]);
 ?>
 <div align="center" class="etiqueta_title"><?php echo $titulo; ?> </div>
 <hr />
