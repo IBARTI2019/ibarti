@@ -238,7 +238,7 @@ $fec_us_mod    = '';
 		<input type="hidden" value="<?php echo $cod_status; ?>" />
 		<input type="hidden" name="descripcion" value="" />
 		<input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol']; ?>" />
-		<input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente']; ?>" />
+		<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente']; ?>" />
 		<input type="hidden" name="usuario" id="usuario" value="<?php echo $us; ?>" />
 		<input type="hidden" name="stdID" id="stdID" value="<?php echo $us; ?>" />
 		<input type="hidden" name="trabajador" id="trabajador" value="<?php echo $cod_ficha; ?>" />

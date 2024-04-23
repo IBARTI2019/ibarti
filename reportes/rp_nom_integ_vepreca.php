@@ -147,7 +147,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
             <td>&nbsp; <input type="hidden" name="Nmenu" id="Nmenu" value="<?php echo $Nmenu;?>" />
             <input type="hidden" name="mod" id="mod" value="<?php echo $mod;?>" />
             <input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol'];?>"/>
-            <input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente'];?>"/>
+            <input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
             <input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod'];?>"/>   </td>
       </tr>
 </table><hr /><div id="listar">&nbsp;</div>
