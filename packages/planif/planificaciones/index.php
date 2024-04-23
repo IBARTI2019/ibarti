@@ -42,4 +42,5 @@ if(isset($_SESSION['usuario_cod'])){
 	</div>
 </div>
 <div id="Cont_planificacion"></div>
+<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
 <input name="usuario" id="usuario" type="hidden" value="<?php echo $us;?>" />

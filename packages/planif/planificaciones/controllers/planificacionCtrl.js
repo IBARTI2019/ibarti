@@ -47,6 +47,7 @@ function Cons_planificacion_inicio() {
 	if (error == 0) {
 		var parametros = {};
 		parametros['usuario'] = $("#usuario").val();
+		parametros['r_cliente'] = $("#r_cliente").val();
 		$.ajax({
 			data: parametros,
 			url: 'packages/planif/planificaciones/views/Cons_inicio.php',
@@ -186,6 +187,7 @@ function planif_contratacion() {
 function cargar_ubic() {
 	var parametros = { "codigo": contratacion, "cliente": cliente };
 	parametros["usuario"] = $("#usuario").val();
+	parametros["r_cliente"] = $("#r_cliente").val();
 	$.ajax({
 		data: parametros,
 		url: 'packages/planif/planificaciones/views/Add_planif_ap_ubic.php',

@@ -16,11 +16,11 @@ class Planificacion
 		$this->bd = new Database;
 	}
 
-	function get_cliente($usuario)
+	function get_cliente($usuario, $r_cliente)
 	{
 		$this->datos   = array();
 
-		if ($_SESSION['r_cliente'] == "F") {
+		if ($r_cliente == "F") {
 			$sql = "  SELECT clientes.codigo, 
 					-- IF(COUNT(clientes_contratacion.codigo) = 0, 'S/P - ' , '') sc,
 					IF(COUNT(clientes_contratacion.codigo) = 0, '' , '') sc,
@@ -218,10 +218,10 @@ class Planificacion
 		return $this->datos;
 	}
 
-	function get_planif_ap_ubic($cliente, $usuario)
+	function get_planif_ap_ubic($cliente, $usuario, $r_cliente)
 	{
 		$this->datos  = array();
-		if ($_SESSION['r_cliente'] == "F") {
+		if ($r_cliente == "F") {
 			$sql = "SELECT b.cod_ubicacion, c.descripcion
 			FROM  clientes_supervision b , clientes_ubicacion c
 			WHERE b.cod_ubicacion = c.codigo
