@@ -98,7 +98,7 @@ class Planificacion
 		return $this->datos;
 	}
 
-	public function get_cargos($cliente, $ubic)
+	public function get_cargos($cliente, $ubic, $usuario)
 	{
 		$this->datos   = array();
 		$sql = " SELECT cargos.codigo, cargos.descripcion FROM cargos
@@ -109,10 +109,16 @@ class Planificacion
 						c.descripcion
 					FROM
 						clientes_supervision a,
-						cargos c
+						cargos c,
+						men_usuarios,
+						planif_perfil_cargos
 					WHERE
 						a.cod_cliente = $cliente
 					AND a.cod_cargo = c.codigo
+					AND men_usuarios.codigo = '$usuario'
+					AND men_usuarios.cod_perfil = planif_perfil_cargos.cod_perfil
+					AND planif_perfil_cargos.cod_cargo = c.codigo
+					AND planif_perfil_cargos.`status` = 'T'
 					GROUP BY 1  ";
 			if ($ubic != '') {
 				$sql = " SELECT
@@ -120,10 +126,16 @@ class Planificacion
 						c.descripcion
 					FROM
 						clientes_supervision a,
-						cargos c
+						cargos c,
+						men_usuarios,
+						planif_perfil_cargos
 					WHERE
 						a.cod_ubicacion = $ubic
 					AND a.cod_cargo = c.codigo
+					AND men_usuarios.codigo = '$usuario'
+					AND men_usuarios.cod_perfil = planif_perfil_cargos.cod_perfil
+					AND planif_perfil_cargos.cod_cargo = c.codigo
+					AND planif_perfil_cargos.`status` = 'T'
 					GROUP BY 1  ";
 			}
 		}

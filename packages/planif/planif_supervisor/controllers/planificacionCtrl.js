@@ -214,6 +214,8 @@ function cargar_regiones() {
 
 function cargar_cargos(ubic) {
 	var parametros = { "cliente": cliente, "ubic": ubic };
+	parametros["usuario"] = $("#usuario").val();
+	
 	$.ajax({
 		data: parametros,
 		url: 'packages/planif/planif_supervisor/views/Add_planif_cargos.php',
