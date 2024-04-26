@@ -98,7 +98,8 @@ IF
 	DATE_ADD( DATE_FORMAT( max( `prod_dotacion`.`fec_dotacion` ), '%Y-%m-%d' ), INTERVAL clientes_ub_uniforme.dias DAY ) < DATE_ADD( '$fecha_D', INTERVAL $d_proyeccion DAY ),
 	DATE_ADD( DATE_FORMAT( max( `prod_dotacion`.`fec_dotacion` ), '%Y-%m-%d' ), INTERVAL control.dias_proyeccion DAY ) < DATE_ADD( '$fecha_D', INTERVAL $d_proyeccion DAY )
 ) vencido,
-prod_dotacion_det.cantidad cantidad_dot 
+prod_dotacion_det.cantidad cantidad_dot,
+ficha.sexo
 FROM
 clientes_ub_uniforme
 INNER JOIN control ON control.oesvica = control.oesvica
@@ -152,7 +153,8 @@ UNION
 	0 cantidad,
 	clientes_ub_uniforme.cantidad alcance,
 	1 vencido,
-	0 cantidad_dot 
+	0 cantidad_dot,
+	ficha.sexo
 FROM
 	clientes_ub_uniforme
 	INNER JOIN control ON control.oesvica = control.oesvica
@@ -200,6 +202,7 @@ fecha ASC, ap_nombre ASC, producto ASC
 			<th width="5%" class="etiqueta">Alc.</th>
 			<th width="5%" class="etiqueta">Dotar</th>
 			<th width="5%" class="etiqueta">Vencido</th>	
+			<th width="5%" class="etiqueta">Sexo</th>	
 	</tr>
     <?php
 	$valor = 0;
@@ -228,6 +231,7 @@ fecha ASC, ap_nombre ASC, producto ASC
 				  <td class="texto">'.$datos["alcance"].'</td>
 				  <td class="texto">'.($datos["alcance"] - $datos["cantidad"]).'</td>
 				  <td class="texto">'.$vencido. '</td>
+				  <td class="texto">'.$datos["sexo"].'</td>
            </tr>';
         };?>
     </table>
