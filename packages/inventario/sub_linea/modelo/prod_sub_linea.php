@@ -16,17 +16,17 @@ foreach($_POST as $nombre_campo => $valor){
 
 if(isset($_POST['proced'])){
 	try {
-		$sql = "SELECT descripcion FROM productos WHERE cod_sub_linea = '$codigo'";
-		$query = $bd->consultar($sql);
-		while ($datos= $bd->obtener_fila($query)) {
-			$productos[] = $datos;
-		}
-		if(count($productos) == 0){
+		// $sql = "SELECT descripcion FROM productos WHERE cod_sub_linea = '$codigo'";
+		// $query = $bd->consultar($sql);
+		// while ($datos= $bd->obtener_fila($query)) {
+		// 	$productos[] = $datos;
+		// }
+		// if(count($productos) == 0){
 		$sql    = "$SELECT $proced('$metodo', '$codigo','$linea', '$descripcion', '$usuario', '$activo','$color','$talla','$peso','$piecubico')";
-		}else{
-			$result['error'] = true;
-			$result['mensaje'] = "No es posible actualizar esta Sub Linea, debido a que ya existen productos en la misma";
-		}
+		// }else{
+		// 	$result['error'] = true;
+		// 	$result['mensaje'] = "No es posible actualizar esta Sub Linea, debido a que ya existen productos en la misma";
+		// }
 		$query   = $bd->consultar($sql);
 		$result['sql'] = $sql;
 
