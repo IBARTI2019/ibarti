@@ -14,14 +14,11 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 		<table width="98%" align="center">
 			<tr>
 				<td width="20%" class="etiqueta">Documentos:</td>
-				<td width="10%" class="etiqueta">Check:</td>
-				<td width="18%" class="etiqueta">Observación:</td>
 				<td width="16%" class="etiqueta">Carpeta Doc</td>
-				<td width="22%" class="etiqueta">Vencimiento - Fecha</td>
-				<td width="8%" class="etiqueta">Fec. Ult. Mod.</td>
+				
 			</tr>
 			<?php
-                $sql="SELECT
+                $sql="SELECT 
 				ficha_documentos.cod_documento,
 				ficha_documentos.`checks`,
 				ficha_documentos.`link`,
@@ -32,15 +29,17 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				documentos.descripcion,
 				control.url_doc,
 				documentos.orden 
-			FROM
+				FROM
 				documentos,
 				ficha_documentos,
 				control 
-			WHERE
+				WHERE
 				ficha_documentos.cod_ficha = '$codigo' 
 				AND ficha_documentos.cod_documento = documentos.codigo 
-				AND documentos.`status` = 'T' UNION
-			SELECT
+				AND documentos.`status` = 'T' 
+				GROUP by descripcion
+				UNION
+				SELECT
 				documentos.codigo AS cod_documento,
 				'N' AS `checks`,
 				'' AS `link`,
@@ -51,10 +50,10 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				documentos.descripcion,
 				control.url_doc,
 				documentos.orden 
-			FROM
+				FROM
 				documentos,
 				control 
-			WHERE
+				WHERE
 				documentos.`status` = 'T' 
 				AND documentos.codigo NOT IN (
 				SELECT
@@ -67,14 +66,18 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 					AND ficha_documentos.cod_documento = documentos.codigo 
 					AND documentos.`status` = 'T' 
 				) 
-			ORDER BY
-				orden ASC";
+				
+				ORDER BY
+				orden ASC;";
 				
 
 			$query = $bd->consultar($sql);
 
 			while ($datos = $bd->obtener_fila($query, 0)) {
 				extract($datos);
+				$sql2="SELECT count(*) as cantidad FROM `ficha_documentos` WHERE cod_documento='$cod_documento' and cod_ficha='$codigo'";
+				$query2 = $bd->consultar($sql2);
+				$datos2=$bd->obtener_fila($query2, 0);
 				$img_src = $link;
 				$borrarDoc = "";
 				if ($img_src) {
@@ -94,31 +97,16 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				echo '
 					<tr>
 						<td class="texto">' . longitudMax($descripcion) . '</td>
-						<td class="texto">SI <input type = "radio" name="documento' . $cod_documento . '"  value = "S" style="width:auto" disabled="disabled"
-						                            ' . CheckX($checks, 'S') . '/>NO <input type = "radio" name="documento' . $cod_documento . '"
-													value = "N" style="width:auto" disabled="disabled" ' . CheckX($checks, 'N') . '/><input type="hidden"                                                     name="documento_old' . $cod_documento . '" value = "' . $checks . '"/></td>
-						<td><textarea name="observ_doc' . $cod_documento . '" cols="20" rows="1">' . $observacion . '</textarea></td>
-						<td>  <a target="_blank" - <a target="_blank" onClick="' . $carpeta . '">
-						<img class="ImgLink" src="imagenes/carpeta.png" width="22px" height="22px" />
+						<td>  <a target="_blank" - <a target="_blank" title="Documentos:'. $datos2[cantidad].'" onClick="' . $carpeta . '">
+						<img class="ImgLink" src="' .imgcarpeta($datos2[cantidad]) . '"  width="22px" height="22px" />
 						</td>
 						
-						<td class="texto">SI <input type = "radio" name="vencimiento' . $cod_documento . '"  value = "S" style="width:auto"
-																				' . CheckX($vencimiento, 'S') . '/>NO <input type = "radio"
-																				name="vencimiento' . $cod_documento . '" value = "N" style="width:auto"
-													' . CheckX($vencimiento, 'N') . '/><input type="date" name="fecha_venc' . $cod_documento . '"
-											    id="fecha_venc' . $cod_documento . '"  value="' . $venc_fecha . '"/><input type="hidden" "
-													name="fecha_venc_old' . $cod_documento . '" value = "' . $venc_fecha . '"/>
-						</td>
-                        
-					<td class="texto">' . $fec_us_mod . '</td>
+					
 					</tr>';
 			} ?>
 		</table>
 		<div align="center"><span class="art-button-wrapper">
-				<span class="art-button-l"> </span>
-				<span class="art-button-r"> </span>
-				<input type="submit" name="salvar" id="salvar" value="Guardar" class="readon art-button" />
-			</span>&nbsp;
+				
 			<span class="art-button-wrapper">
 				<span class="art-button-l"> </span>
 				<span class="art-button-r"> </span>

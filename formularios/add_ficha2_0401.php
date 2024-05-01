@@ -5,9 +5,10 @@ $ci           = $_GET["ci"];
 $doc          = $_GET["doc"];
 $ficha        = $_GET["ficha"]; 
 $nombre =     $_GET["nombre"]; 
-$metodo = 'agregar';
+$metodo = 'modificar';
 $proced      = "p_fichas_04";
 $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar";
+
 $admin_rrhh	    = $_SESSION['admin_rrhh'];
 
 $add_doc = '<a href="inicio.php?area=formularios/add_imagenes_doc&ficha='.$ficha.'&ci='.$ci.'&doc='.$doc.'"><img src="imagenes/nuevo.bmp" alt="Agregar" title="Agregar Registro" width="22px" height="22px" border="null" class="imgLink"/></a>';
@@ -23,13 +24,13 @@ $add_doc = '<a href="inicio.php?area=formularios/add_imagenes_doc&ficha='.$ficha
 		
 		<table width="98%" align="center">
 			<tr>
-			<td width="20%" class="etiqueta">Nro Doc </td>
+			<td width="10%" class="etiqueta">Nro</td>
 			    <td width="10%" class="etiqueta">Titulo</td>
 				<td width="10%" class="etiqueta">Check</td>
 				<td width="18%" class="etiqueta">observación</td>
-				<td width="16%" class="etiqueta">Acciones</td>
 				<td width="22%" class="etiqueta">Venc- Fecha</td>
-				<td width="8%" class="etiqueta">Fec. Ult. Mod.</td>
+				<td width="16%" class="etiqueta">Fec. Ult. Mod.</td>
+				<td width="8%" class="etiqueta">Acciones</td>
 				<th width="8%" align="center"><?php echo $add_doc; ?></th>
 			</tr>
 			<?php
@@ -59,50 +60,57 @@ $add_doc = '<a href="inicio.php?area=formularios/add_imagenes_doc&ficha='.$ficha
 
 
 			$query = $bd->consultar($sql);
-
+            $i=0;
 			while ($datos = $bd->obtener_fila($query, 0)) {
+				$i++;
 				extract($datos);
 				$img_src = $link;
 				$borrarDoc = "";
 				if ($img_src) {
 					$img_ext =  imgExtension($img_src);
-					$img_src = 	'<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\')" width="22px" height="22px"  />';
+					$img_src = 	'<a target="_blank" href="' . $img_src . '"><img class="imgLink" src="' . $img_ext . '" width="22px" height="22px" /></a>';
+					//$img_src = 	'<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\')" width="22px" height="22px"  />';
 					if($admin_rrhh == 'T'){
-						$borrarDoc = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$cod_documento.'\')"/>';
+						$eliminar = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$ficha.'\',\''.$cod_documento.'\',\''.$link.'\')"/>';
 					}
 				} else {
 					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
-				$eliminar = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$ficha.'\',\''.$cod_documento.'\',\''.$link.'\')"/>';
+				$modificar= '<img src="imagenes/guardar.bmp" alt="Borrar" title="Modificar Documento" width="22" height="22" border="null" onclick="ModificarDocumento(\''.$ficha.'\',\''.$cod_documento.'\',\''.$link.'\','.$i.')"/>';
+				
 				$subir = "Vinculo('inicio.php?area=formularios/add_imagenes_doc&ficha=$cod_ficha&ci=$cedula&doc=$cod_documento')";
 				
 				// 	<td>oookoko  xxx </td>
 				//
 				echo '
 					<tr>
-					    <td>' . $img_src . ' </td>
+					    
+					    <td>' .$i. '' . $img_src . ' </td>
 						<td class="texto">' . longitudMax($descripcion) . '</td>
-						<td class="texto">SI <input type = "radio" name="documento' . $cod_documento . '"  value = "S" style="width:auto" disabled="disabled"
-						                            ' . CheckX($checks, 'S') . '/>NO <input type = "radio" name="documento' . $cod_documento . '"
-													value = "N" style="width:auto" disabled="disabled" ' . CheckX($checks, 'N') . '/><input type="hidden"                                                     name="documento_old' . $cod_documento . '" value = "' . $checks . '"/></td>
-						<td><textarea name="observ_doc' . $cod_documento . '" cols="20" rows="1">' . $observacion . '</textarea></td>
-						<td>' . $eliminar. ' </td>
-						<td class="texto">SI <input type = "radio" name="vencimiento' . $cod_documento . '"  value = "S" style="width:auto"
+						<td class="texto">SI <input type = "radio" name="documento' . $i . '"  value = "S" style="width:auto" disabled="disabled"
+						                            ' . CheckX($checks, 'S') . '/>NO <input type = "radio" name="documento' . $i . '"
+													value = "N" style="width:auto" disabled="disabled" ' . CheckX($checks, 'N') . '/><input type="hidden" name="documento_old' . $cod_documento . '" value = "' . $checks . '"/></td>
+						<td><textarea name="observ_doc' . $i . '" id="observ_docu' . $i . '" cols="20" rows="1">' . $observacion . '</textarea></td>
+						
+						<td class="texto">SI <input type = "radio" id="vencimiento' . $i . '" name="vencimiento' . $i . '"  value = "S" style="width:auto"
 																				' . CheckX($vencimiento, 'S') . '/>NO <input type = "radio"
-																				name="vencimiento' . $cod_documento . '" value = "N" style="width:auto"
-													' . CheckX($vencimiento, 'N') . '/><input type="date" name="fecha_venc' . $cod_documento . '"
-											    id="fecha_venc' . $cod_documento . '"  value="' . $venc_fecha . '"/><input type="hidden" "
-													name="fecha_venc_old' . $cod_documento . '" value = "' . $venc_fecha . '"/>
+																				name="vencimiento' . $i . '" value = "N" style="width:auto"
+													' . CheckX($vencimiento, 'N') . '/><input type="date" name="fecha_venc' . $i . '"
+											    id="fecha_venc' . $i . '"  value="' . $venc_fecha . '"/><input type="hidden" "
+													name="fecha_venc_old' . $i . '" value = "' . $venc_fecha . '"/>
 						</td>
 
 					<td class="texto">' . $fec_us_mod . '</td>
+					<td>' . $img_src. ' </td>
+					<td>' . $eliminar. ' </td>
+					<td>' . $modificar. ' </td>
 					</tr>';
 			} ?>
 		</table>
 		<div align="center"><span class="art-button-wrapper">
 				<span class="art-button-l"> </span>
 				<span class="art-button-r"> </span>
-				<input type="submit" name="salvar" id="salvar" value="Guardar" class="readon art-button" />
+				
 			</span>&nbsp;
 			<span class="art-button-wrapper">
 				<span class="art-button-l"> </span>
@@ -180,11 +188,47 @@ $add_doc = '<a href="inicio.php?area=formularios/add_imagenes_doc&ficha='.$ficha
 		if (confirm("¿Esta seguro de eliminar la imagen de este documento ?")) {	
 			var codigo = $("#codigo").val();
 			var usuario = $("#usuario").val();
+						
 			var parametros = {
 				"link": links,
 				"ficha": ficha,
 				"doc": codigoDoc,
-				"borrar": true,
+				"metodo": 'borrar',
+				"usuario": usuario
+			};
+
+			$.ajax({
+				url: 'upload/documentos.php',
+				type: 'POST',
+				data: parametros,
+				success: function (data) {
+					location.reload();
+				},
+				//si ha ocurrido un error
+				error: function () {
+					message = $("<span class='error'>Ha ocurrido un error.</span>");
+					showMessage(message);
+				}
+			});
+		}
+	}
+	function ModificarDocumento(ficha,codigoDoc,links,auto) {
+		if (confirm("¿Esta seguro de Modificar el Documento ?")) {	
+			var codigo = $("#codigo").val();
+			var usuario = $("#usuario").val();
+			
+			var observacionx = document.getElementById("observ_docu"+auto+"").value;
+		    var fecha_vencimiento = document.getElementById("fecha_venc"+auto+"").value;
+			var vencimiento = document.getElementById("vencimiento"+auto+"").value;
+			
+			var parametros = {
+				"link": links,
+				"ficha": ficha,
+				"doc": codigoDoc,
+				"metodo": 'modificar',
+				"observacion":observacionx,
+				"fecha_vencimiento":fecha_vencimiento,
+				"vencimiento":vencimiento,
 				"usuario": usuario
 			};
 
