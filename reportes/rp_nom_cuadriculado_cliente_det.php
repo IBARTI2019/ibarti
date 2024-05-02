@@ -202,4 +202,192 @@ if(isset($reporte)){
 		 echo "</table>";
 
 	}
+
+
+	if($reporte == 'pdf'){
+
+		require_once('../'.ConfigDomPdf);
+		$dompdf= new DOMPDF();
+
+		$query  = $bd->consultar($sql);
+
+		ob_start();
+
+		require('../'.PlantillaDOM.'/header_ibarti_2.php');
+		include('../'.pagDomPdf.'/paginacion_ibarti.php');
+
+		if($quincena=="01"){
+			echo "<br><div>
+			<table>
+			<tbody>
+				<tr style='background-color: #4CAF50;'>
+				<th width='10%'>".$leng['ficha']."</th>
+				<th width='15%'>".$leng['rol']." </th>
+				<th width='15%'>".$leng['ubicacion']."</th>
+				<th>01</th>
+				<th>02</th>
+				<th>03</th>
+				<th>04</th>
+				<th>05</th>
+				<th>06</th>
+				<th>07</th>
+				<th>08</th>
+				<th>09</th>
+				<th>10</th>
+				<th>11</th>
+				<th>12</th>
+				<th>13</th>
+				<th>14</th>
+				<th>15</th>
+				</tr>";
+
+			$f=0;
+			while ($row01 = $bd->obtener_num($query)){
+				if ($f%2==0){
+					echo "<tr>";
+				}else{
+					echo "<tr class='class= odd_row'>";
+				}
+				echo   "<td width='10%'>".$row01[0]."</td>
+						<td	width='20%'>".$row01[3]."</td>
+						<td width='20%'>".$row01[7]."</td>";
+
+				$sql_detalle = "SELECT
+						asistencia_apertura.fec_diaria,
+						conceptos.abrev 
+					FROM
+						asistencia,
+						asistencia_apertura,
+						conceptos 
+					WHERE
+						asistencia.cod_ficha = '$row01[0]' 
+						AND asistencia.cod_as_apertura = asistencia_apertura.codigo
+						AND asistencia.cod_ubicacion = $row01[6] 
+						AND asistencia.cod_concepto = conceptos.codigo 
+						AND asistencia_apertura.fec_diaria BETWEEN '$fecha_D' 
+						AND '$fecha_H'";
+
+				$detalle = array();
+				$query02 = $bd2->consultar($sql_detalle);
+				while ($row02 = $bd2->obtener_name($query02)){
+					$detalle[] = $row02;
+				}
+				for ($i=1; $i <= 15; $i++) { 
+					if($i < 10){
+						$day = '0'.$i;
+					}else{
+						$day = $i;
+					}
+					$found_key = '';
+					$fecha = $year1.'-'.$mes1.'-'.$day;
+					for ($j=0; $j < count($detalle); $j++) { 
+						if($detalle[$j]['fec_diaria'] == $fecha){
+							$found_key = $detalle[$j]['abrev'];
+							break;
+						}
+					}
+					if($found_key != ''){
+						echo "<td width='6%'>".$found_key."</td>";
+					}else{
+						echo "<td width='6%'></td>";
+					}
+				}
+				echo "</tr>";
+				$f++;
+			}
+
+			echo "</tbody>
+				</table>
+				</div>
+				</body>
+				</html>";
+
+		}elseif($quincena=="02"){
+			echo "<br><div>
+				<table>
+				<tbody>
+					<tr style='background-color: #4CAF50;'>
+					<th width='10%'>".$leng['ficha']."</th>
+					<th width='15%'>".$leng['rol']." </th>
+					<th width='15%'>".$leng['ubicacion']."</th>
+					<th>16</th>
+					<th>17</th>
+					<th>18</th>
+					<th>19</th>
+					<th>20</th>
+					<th>21</th>
+					<th>22</th>
+					<th>23</th>
+					<th>24</th>
+					<th>25</th>
+					<th>26</th>
+					<th>27</th>
+					<th>28</th>
+					<th>29</th>
+					<th>30</th>
+					<th>31</th>
+					</tr>";
+
+			$f=0;
+			while ($row01 = $bd->obtener_num($query)){
+				if ($f%2==0){
+					echo "<tr>";
+				}else{
+					echo "<tr class='class= odd_row'>";
+				}
+				echo   "<td width='10%'>".$row01[0]."</td>
+						<td	width='20%'>".$row01[3]."</td>
+						<td width='20%'>".$row01[7]."</td>";
+
+				$sql_detalle = "SELECT
+						asistencia_apertura.fec_diaria,
+						conceptos.abrev 
+					FROM
+						asistencia,
+						asistencia_apertura,
+						conceptos 
+					WHERE
+						asistencia.cod_ficha = '$row01[0]' 
+						AND asistencia.cod_as_apertura = asistencia_apertura.codigo
+						AND asistencia.cod_ubicacion = $row01[6] 
+						AND asistencia.cod_concepto = conceptos.codigo 
+						AND asistencia_apertura.fec_diaria BETWEEN '$fecha_D' 
+						AND '$fecha_H'";
+
+				$detalle = array();
+				$query02 = $bd2->consultar($sql_detalle);
+				while ($row02 = $bd2->obtener_name($query02)){
+					$detalle[] = $row02;
+				}
+				for ($day=16; $day <= 31; $day++) { 
+					$found_key = '';
+					$fecha = $year1.'-'.$mes1.'-'.$day;
+					for ($j=0; $j < count($detalle); $j++) { 
+						if($detalle[$j]['fec_diaria'] == $fecha){
+							$found_key = $detalle[$j]['abrev'];
+							break;
+						}
+					}
+					if($found_key != ''){
+						echo "<td width='6%'>".$found_key."</td>";
+					}else{
+						echo "<td width='6%'></td>";
+					}
+				}
+				echo "</tr>";
+				$f++;
+			}
+
+			echo "</tbody>
+				</table>
+				</div>
+				</body>
+				</html>";
+		}
+
+		$dompdf->load_html(ob_get_clean(),'UTF-8');
+		$dompdf->set_paper ('letter','landscape');
+		$dompdf->render();
+		$dompdf->stream($archivo, array('Attachment' => 0));
+	}
 }
