@@ -22,8 +22,8 @@ $cliente          = $_POST['cliente'];
 $ubicacion          = $_POST['ubicacion'];
 
 $reporte         = $_POST['reporte'];
-$archivo         = "rp_nom_cuadriculado_".$fecha."";
-$titulo          = " REPORTE CUADRICULADO ASISTENCIA ";
+$archivo         = "rp_nom_cuadriculado_clientes_".$fecha."";
+$titulo          = " REPORTE CUADRICULADO CLIENTES ASISTENCIA ";
 
 if(isset($reporte)){
 
