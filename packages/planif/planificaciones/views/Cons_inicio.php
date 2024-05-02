@@ -63,7 +63,7 @@ $cliente  =  $plan->get_cliente();
     <span class="art-button-wrapper">
       <span class="art-button-l"> </span>
       <span class="art-button-r"> </span>
-      <input type="button" id="volver" value="Servicios Trabajadores" onClick="B_reporte('F')" class="readon art-button" />
+      <input type="button" id="volver" value="Servicios  Trabajadores" onClick="B_reporte('F')" class="readon art-button" />
     </span>
     <span class="art-button-wrapper">
       <span class="art-button-l"> </span>
