@@ -140,7 +140,7 @@ if(isset($reporte)){
 						$day = $i;
 					}
 					$fecha = $year1.'-'.$mes1.'-'.$day;
-					$found_key = 0; // array_search($fecha, array_column($detalle, 'fec_diaria'));
+					$found_key = array_search($fecha, array_column($detalle, 'fec_diaria'));
 					if(($found_key != '' && $found_key != false) || ($found_key == 0 && gettype($found_key) == 'integer')){
 						echo "<td>".$detalle[$found_key]['abrev']."  </td>";
 					}else{
