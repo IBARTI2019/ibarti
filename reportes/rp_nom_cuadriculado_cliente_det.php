@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', '1');
-define("SPECIALCONSTANT",true);
-session_start();
 $Nmenu   = 544;
 require("../autentificacion/aut_config.inc.php");
 include_once('../'.Funcion);
@@ -140,10 +137,16 @@ if(isset($reporte)){
 					}else{
 						$day = $i;
 					}
+					$found_key = '';
 					$fecha = $year1.'-'.$mes1.'-'.$day;
-					$found_key = array_search($fecha, array_column($detalle, 'fec_diaria'));
-					if(($found_key != '' && $found_key != false) || ($found_key == 0 && gettype($found_key) == 'integer')){
-						echo "<td>".$detalle[$found_key]['abrev']."  </td>";
+					for ($j=0; $j < count($detalle); $j++) { 
+						if($detalle[$j]['fec_diaria'] == $fecha){
+							$found_key = $detalle[$j]['abrev'];
+							break;
+						}
+					}
+					if($found_key != ''){
+						echo "<td>".$found_key."</td>";
 					}else{
 						echo "<td></td>";
 					}
