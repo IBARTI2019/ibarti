@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 define("SPECIALCONSTANT",true);
 session_start();
 $Nmenu   = 544;
@@ -141,11 +144,11 @@ if(isset($reporte)){
 					}
 					$fecha = $year1.'-'.$mes1.'-'.$day;
 					$found_key = array_search($fecha, array_column($detalle, 'fec_diaria'));
-					// if(($found_key != '' && $found_key != false) || ($found_key == 0 && gettype($found_key) == 'integer')){
-					// 	echo "<td>".$detalle[$found_key]['abrev']."  </td>";
-					// }else{
+					if(($found_key != '' && $found_key != false) || ($found_key == 0 && gettype($found_key) == 'integer')){
+						echo "<td>".$detalle[$found_key]['abrev']."  </td>";
+					}else{
 						echo "<td></td>";
-					// }
+					}
 				}
 				echo "</tr>";
 			}
