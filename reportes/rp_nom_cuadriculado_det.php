@@ -127,6 +127,7 @@ if(isset($reporte)){
 
 echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
 	           <th> ".$leng['region']." </th><th> ".$leng['estado']."  </th><th> ".$leng['ciudad']."  </th><th> Nómina  </th>
+			   <th> ".$leng['cliente']."  </th><th> ".$leng['ubicacion']."   </th>
 	           <th> 01 </th><th> 02 </th><th> 03 </th><th> 04 </th>
 			   <th> 05 </th><th> 06 </th><th> 07 </th><th> 08 </th>
 			   <th> 09 </th><th> 10 </th><th> 11 </th><th> 12 </th>
@@ -144,13 +145,15 @@ echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nom
 				   <td>".$row01[16]."</td><td>".$row01[17]."</td>
 				   <td>".$row01[18]."</td><td>".$row01[19]."</td>
 				   <td>".$row01[20]."</td><td>".$row01[21]."</td>
-				   <td>".$row01[22]."</td></tr>";
+				   <td>".$row01[22]."</td><td>".$row01[23]."</td>
+				   <td>".$row01[24]."</td></tr>";
 		}
 
 		}elseif($quincena == "02"){
 
 echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
 	           <th> ".$leng['region']." </th><th> ".$leng['estado']."  </th><th> ".$leng['ciudad']."  </th><th> Nómina  </th>
+			   <th> ".$leng['cliente']."  </th><th> ".$leng['ubicacion']."   </th>
 	           <th> 16 </th><th> 17 </th><th> 18 </th><th> 19 </th>
 			   <th> 20 </th><th> 21 </th><th> 22 </th><th> 23 </th>
 			   <th> 24 </th><th> 25 </th><th> 26 </th><th> 27 </th>
@@ -168,7 +171,8 @@ echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nom
 				   <td>".$row01[16]."</td><td>".$row01[17]."</td>
 				   <td>".$row01[18]."</td><td>".$row01[19]."</td>
 				   <td>".$row01[20]."</td><td>".$row01[21]."</td>
-				   <td>".$row01[22]."</td><td>".$row01[23]."</td></tr>";
+				   <td>".$row01[22]."</td><td>".$row01[23]."</td>
+				   <td>".$row01[24]."</td><td>".$row01[25]."</td></tr>";
 			}
 		}
 
@@ -221,8 +225,6 @@ echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nom
             }
     echo   "<td width='10%'>".$row[0]."</td>
 		    <td width='20%'>".$row[2]."</td>
-		    <td>".$row[8]."</td>
-		    <td>".$row[9]."</td>
 		    <td>".$row[10]."</td>
 		    <td>".$row[11]."</td>
 		    <td>".$row[12]."</td>
@@ -235,7 +237,9 @@ echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nom
 		    <td>".$row[19]."</td>
 		    <td>".$row[20]."</td>
 		    <td>".$row[21]."</td>
-		    <td>".$row[22]."</td></tr>";
+		    <td>".$row[22]."</td>
+			<td>".$row[23]."</td>
+		    <td>".$row[24]."</td></tr>";
 
              $f++;
          }
@@ -282,8 +286,6 @@ echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nom
  echo   "<td>".$row[0]."</td>
 		    <td width='10%'>".$row[0]."</td>
 		    <td width='20%'>".$row[2]."</td>
-		    <td>".$row[8]."</td>
-		    <td>".$row[9]."</td>
 		    <td>".$row[10]."</td>
 		    <td>".$row[11]."</td>
 		    <td>".$row[12]."</td>
@@ -297,7 +299,9 @@ echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nom
 		    <td>".$row[20]."</td>
 		    <td>".$row[21]."</td>
 		    <td>".$row[22]."</td>
-		    <td>".$row[23]."</td></tr>";
+		    <td>".$row[23]."</td>
+			<td>".$row[24]."</td>
+		    <td>".$row[25]."</td></tr>";
 
              $f++;
          }
