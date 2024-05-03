@@ -168,7 +168,19 @@ function save_contratacion_det(fecha_inicio) {
 				data: parametros,
 				url: 'packages/cliente/cl_contratacion/modelo/contratacion_det.php',
 				type: 'post',
+				beforeSend: function(){
+					//Deshabilito el submit del form X
+					$('#close_act_cont').hide();
+					$('#contrato_ap').attr('disabled',true);
+					$('#cont_ap_form').hide();
+					//Cambio la imagen del boton Buscar X
+					$('#loading_save_cont').show();
+				},
 				success: function (response) {
+					$('#close_act_cont').show();
+					$('#loading_save_cont').hide();
+					$('#cont_ap_form').show();
+					$('#contrato_ap').attr('disabled',false);
 					var content = JSON.parse(response);
 					if (content.error) {
 						alert(content.mensaje);
@@ -180,6 +192,10 @@ function save_contratacion_det(fecha_inicio) {
 
 				},
 				error: function (xhr, ajaxOptions, thrownError) {
+					$('#close_act_cont').show();
+					$('#loading_save_cont').hide();
+					$('#cont_ap_form').show();
+					$('#contrato_ap').attr('disabled',false);
 					alert(xhr.status);
 					alert(thrownError);
 				}
