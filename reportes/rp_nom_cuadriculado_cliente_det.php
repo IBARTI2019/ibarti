@@ -222,8 +222,8 @@ if(isset($reporte)){
 			<tbody>
 				<tr style='background-color: #4CAF50;'>
 				<th width='10%'>".$leng['ficha']."</th>
-				<th width='15%'>".$leng['rol']." </th>
-				<th width='15%'>".$leng['ubicacion']."</th>
+				<th width='20%'> Nombres </th>
+				<th width='20%'>".$leng['ubicacion']."</th>
 				<th>01</th>
 				<th>02</th>
 				<th>03</th>
@@ -249,7 +249,7 @@ if(isset($reporte)){
 					echo "<tr class='class= odd_row'>";
 				}
 				echo   "<td width='10%'>".$row01[0]."</td>
-						<td	width='20%'>".$row01[3]."</td>
+						<td	width='20%'>".$row01[2]."</td>
 						<td width='20%'>".$row01[7]."</td>";
 
 				$sql_detalle = "SELECT
@@ -308,8 +308,8 @@ if(isset($reporte)){
 				<tbody>
 					<tr style='background-color: #4CAF50;'>
 					<th width='10%'>".$leng['ficha']."</th>
-					<th width='15%'>".$leng['rol']." </th>
-					<th width='15%'>".$leng['ubicacion']."</th>
+					<th width='20%'>Nombres</th>
+					<th width='20%'>".$leng['ubicacion']."</th>
 					<th>16</th>
 					<th>17</th>
 					<th>18</th>
@@ -336,7 +336,7 @@ if(isset($reporte)){
 					echo "<tr class='class= odd_row'>";
 				}
 				echo   "<td width='10%'>".$row01[0]."</td>
-						<td	width='20%'>".$row01[3]."</td>
+						<td	width='20%'>".$row01[2]."</td>
 						<td width='20%'>".$row01[7]."</td>";
 
 				$sql_detalle = "SELECT
