@@ -83,18 +83,20 @@ $almacen    = $_POST['almacen'];
 						AND ajuste_reng.cod_almacen = prod_dotacion_det.cod_almacen 
 						AND ajuste_reng.cod_almacen = almacenes.codigo 
 						AND ajuste_reng.cod_producto = prod_dotacion_det.cod_producto
+						ORDER BY ajuste.fecha DESC LIMIT 1
 				 ) neto,
                  Valores(prod_dotacion.anulado) anulado,
 				 prod_dotacion_det.cod_almacen,
 				almacenes.descripcion almacen,
 				(
-				SELECT
-					ajuste.codigo
-				FROM
-					ajuste
-				WHERE
-					ajuste.referencia = prod_dotacion.codigo 
-					AND ( ajuste.cod_tipo = 'DOT' OR ajuste.cod_tipo = 'ANU_DOT' ) 
+					SELECT
+						ajuste.codigo
+					FROM
+						ajuste
+					WHERE
+						ajuste.referencia = prod_dotacion.codigo 
+						AND ( ajuste.cod_tipo = 'DOT' OR ajuste.cod_tipo = 'ANU_DOT' ) 
+					ORDER BY ajuste.fecha DESC LIMIT 1
 				) cod_ajuste
             FROM prod_dotacion , prod_dotacion_det , productos , prod_lineas ,
                  prod_sub_lineas, v_ficha,clientes,clientes_ubicacion,tallas,almacenes
