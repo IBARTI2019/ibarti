@@ -2,6 +2,7 @@
 <script type="text/javascript" src="funciones/modal.js"></script>
 <script type="text/javascript" src="packages/planif/planificaciones/controllers/planificacionCtrl.js"></script>
 <script type="text/javascript" src="libs/planificacionRP.js"></script>
+<script type="text/javascript" src="libs/planificacionRPRESUMIDA.js"></script>
 <?php
 $Nmenu = '4403';
 if(isset($_SESSION['usuario_cod'])){
