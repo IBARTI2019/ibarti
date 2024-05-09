@@ -26,7 +26,7 @@ if(isset($reporte)){
   if($reporte== 'pdf'){
     
     ob_start();
-  // require('../../../../'.PlantillaDOM.'/packages_header.php');
+  require('../../../../'.PlantillaDOM.'/packages_header2.php');
 	// require('../../../../'.pagDomPdf.'/paginacion_ibarti.php');
 		
 echo "
@@ -58,12 +58,9 @@ echo "
       text-align:center;
       
     }
-    @page {
-      margin: 0cm 0cm;
-      font-family: Arial;
-  }
+    
   tr:last-of-type td:last-of-type {
-    width: 60px;
+    width: 50x;
     background-color: #ffffff;
     color: #505050;
     font-weight: bold;
@@ -78,7 +75,11 @@ echo "
       text-align: right;
   
   }
-
+  #footer {
+    text-align: right;
+    font-size: 12px;
+    margin-top: 20px;
+  }
   footer {
       position: fixed;
       bottom: 0px;
@@ -87,14 +88,23 @@ echo "
       text-align: center;
       line-height: 35px;
   }
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
   </style>
+ 
 </head>" ;
 echo "<body>";
+echo "<h1>Planificacion de servicio Resumen  <div id='footer'>
+Fecha:$fecha
+</div></h1>";
 echo  "<table border=1 >";
 echo $_POST['body_planif'];
 echo "</table>";
 echo "</body>";
-echo "</html>'";
+echo "</html>";
    
 		$dompdf= new DOMPDF();
     

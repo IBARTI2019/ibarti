@@ -1,0 +1,141 @@
+hr{
+    border:none;
+    margin: 0;
+    padding: 0;
+    page-break-after: always;
+}
+
+#dotacion td{
+    vertical-align: top;
+}
+
+div{
+display: block;
+border-bottom: 0.1pt solid #A5D6A7;
+}
+
+table{
+    text-align: justify;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+    vertical-align: middle;
+    padding:0 0.3cm 0.5cm 0.3cm;
+    border:none;
+    word-wrap: break-word;
+    table-layout: fixed;
+}
+
+table tr th{
+    font-size: 8px;
+    text-transform: capitalize;
+}
+
+td{
+    width: 50%;
+    padding-left: 5px;
+    word-wrap: break-word;
+}
+
+#header {
+    position: fixed;
+    font-size: 0.8em;
+    top: 0.5cm;
+    left: 1cm;
+    right: 1cm;
+    clear: both;
+}
+
+th, td {
+    padding: 4px;
+    text-align: left;
+    vertical-align: middle; 
+    border-color: inherit;
+}
+
+#td_foto {
+    border: 2px solid #1B5E20;
+    border-radius: 5px;
+    width: 95px;
+    height:100px;
+}
+
+#nombre_cabecera { 
+    font-style: italic;
+    font-size: 23px;
+    font-weight: bold;
+    text-decoration: underline;
+    color: #1B5E20;
+    text-align: left;
+    vertical-align:bottom;
+}
+
+#logo_cabecera {
+    width: 100px;
+}
+
+.cab {
+    text-align: left;
+    font-style: italic;
+    font-size: 19px;
+    vertical-align: middle;
+}
+
+#ficha_header {
+    text-align: right;
+    vertical-align: middle;
+    font-size: 24px;
+    color: #1B5E20; 
+}
+
+#titulo_header {
+    text-transform: uppercase;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 16px;
+    font-style: italic;
+    color: #1B5E20; 
+}
+
+.titulos {
+    text-transform: uppercase;
+    text-align: center;
+    font-style:oblique;
+    text-decoration: underline;
+    margin: 0;
+    padding: 0;
+    color: #1B5E20;
+}
+
+.etiqueta{
+        font-weight: bold;
+}
+
+.texto{
+
+}
+
+.odd_row{
+    background-color: #C8E6C9;
+}
+
+body {
+    margin: 0cm 2cm 1cm 1cm;
+    text-align: justify;
+}
+
+html{
+    margin: 0;
+}
+
+.nota{
+    font-weight: bold;
+    text-align: center;
+    font-style:oblique;
+    font-size: 11px;
+}
+
+.firma{
+    font-weight: bold;
+    font-size: 10px;
+}
