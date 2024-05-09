@@ -100,7 +100,7 @@ function rp_planif_trab_serv_create_cabeceraresumida(id_contenedor, callback, fo
 		
 	}
 
-	var tablas = divs.append('table').attr('id', (d) => "table" + d.key).attr('width', '100%').attr('class', 'tabla_planif tabla_planif2').attr('align', 'center');
+	var tablas = divs.append('table').attr('id', (d) => "table" + d.key).attr('width', '100%').attr('class', 'tabla_planif').attr('align', 'center');
 	var theads = tablas.append('thead').attr('id', (d) => "thead" + d.key);
 	var tbodys = tablas.append('tbody').attr("id", (d) => "tbody" + d.key);
 
@@ -147,7 +147,21 @@ function rp_planif_trab_serv_contratoresumida(tablas, callback) {
 		val_horarios = d3.map(ubic.values, (d) => d.key);
 		ubic.values.forEach((horario) => {
 			let arreglo_dia = res_fecha_cont_keys.map(() => 0);
-	
+			val_horarios.get(horario.key).values.forEach((cargo, i) => {
+				val_fechas = d3.map(cargo.values, (d) => d.key);
+
+				res_fecha_cont_keys.forEach((res, i) => {
+
+					if (val_fechas.has(res)) {
+						val_fechas.get(res).values.forEach((d) => {
+							cantidad += Number(d.cantidad);
+							arreglo_dia[i] += Number(d.cantidad);
+						});
+					}
+
+					cantidad = 0;
+				});
+			});
 			trb = d3.select("#thead" + ubic.key).append("tr").attr('id', (d) => 'tbody_contrato_' + ubic.key + '_' + horario.key + "_total").attr('class', 'color');
 			trb.append('td').attr('colspan', 3).text((d) => `TOTAL: ${val_horarios.get(horario.key).values[0].values[0].values[0].horario}`);
 			arreglo_dia.forEach((cantidad) => {
