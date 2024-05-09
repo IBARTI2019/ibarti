@@ -97,9 +97,6 @@ echo "
  
 </head>" ;
 echo "<body>";
-echo "<h1>Planificacion de servicio Resumen  <div id='footer'>
-Fecha:$fecha
-</div></h1>";
 echo  "<table border=1 >";
 echo $_POST['body_planif'];
 echo "</table>";
