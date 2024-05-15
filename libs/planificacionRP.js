@@ -1279,8 +1279,7 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, callback) {
 		d3.select('#t_reporte').append('thead').attr('id', 'thead');
 		d3.select('#t_reporte').append('tbody').attr('id', 'tbody');
 		d3.select('#thead').append('tr').attr('class', 'fondo00')
-			.html('<th width="15%" class="etiqueta">Fecha</th>' +
-				'<th width="15%" class="etiqueta">Region</th>' +
+			.html('<th width="15%" class="etiqueta">Region</th>' +
 				'<th width="15%" class="etiqueta">Estado</th>' +
 				'<th width="10%" class="etiqueta">Cod. Empresa</th>' +
 				'<th width="15%" class="etiqueta">Empresa</th>' +
@@ -1300,7 +1299,7 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, callback) {
 			d3.select('#body_' + d.key).selectAll('tr').data(d.values).enter().append('tr')
 				.attr('class', (e) => {
 					factor = 0, trab_neces = 0, trab_activos = 0, excepcion = 0, color = ''; cantidad = 0;
-					
+
 					if (data['excepcion'] !== undefined) {
 						if (map_res_excepcion.has(e.key)) {
 							excepcion = Number(map_res_excepcion.get(e.key).values[0].cantidad);
@@ -1352,8 +1351,7 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, callback) {
 					factor = Math.floor((trab_activos - excepcion) - trab_neces);
 					if (factor == 0) factor = 'OK';
 					
-					return '<td class="texto" id="center" >' + e.values[0].fecha + '</td><td class="texto" id="center" >' + e.values[0].region 
-					 + '</td><td class="texto" id="center" >' + e.values[0].estado
+					return '<td class="texto" id="center" >' + e.values[0].region + '</td><td class="texto" id="center" >' + e.values[0].estado
 					 + '</td><td class="texto" id="center" >' + e.values[0].cod_cliente + '</td><td class="texto" id="center" >' + e.values[0].cliente 
 					 + '</td><td class="texto" id="center" >' + e.values[0].cod_ubicacion + '</td><td class="texto" id="center" >' + e.values[0].ubicacion 
 					 + '</td><td class="texto" id="center" >' + cantidad + '</td><td class="texto" id="center" >' + trab_neces 
