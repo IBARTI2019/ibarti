@@ -1253,7 +1253,7 @@ function validarFondoTr(num) {
 
 /*SE USA PARA TRABAJADORES NECESARIOS PARA CUBRIR SERVICIOS (REPORTES OPERACIONALES)*/
 
-function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, cliente, ubicacion, callback) {
+function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, callback) {
 	if (d3.select('#' + id_contenedor).node()) {
 		limpiarContenedor('id_contenedor');
 
@@ -1299,9 +1299,17 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, cliente, ubi
 			d3.select('#body_' + d.key).selectAll('tr').data(d.values).enter().append('tr')
 				.attr('class', (e) => {
 					factor = 0, trab_neces = 0, trab_activos = 0, excepcion = 0, color = ''; cantidad = 0;
+					console.log('f: ', e.values);
+					let valorMax  = e.values.reduce((previous, current) => {
+						return Number(current.trab_neces) > Number(previous.trab_neces) ? current : previous;
+					});
+					e.values = [valorMax];
 					if (data['excepcion'] !== undefined) {
 						if (map_res_excepcion.has(e.key)) {
-							excepcion = Number(map_res_excepcion.get(e.key).values[0].cantidad);
+							let excMax = map_res_excepcion.get(e.key).values.find(exc => exc.fecha == valorMax.fecha);
+							if(excMax){
+								excepcion = Number(excMax.cantidad);
+							}
 						}
 					}
 					e.values.forEach((f, i) => {
@@ -1320,9 +1328,16 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, cliente, ubi
 					return color;
 				}).html((e) => {
 					factor = 0, trab_neces = 0, trab_activos = 0, excepcion = 0; cantidad = 0;
+					let valorMax  = e.values.reduce((previous, current) => {
+						return Number(current.trab_neces) > Number(previous.trab_neces) ? current : previous;
+					});
+					e.values = [valorMax];
 					if (data['excepcion'] !== undefined) {
 						if (map_res_excepcion.has(e.key)) {
-							excepcion = Number(map_res_excepcion.get(e.key).values[0].cantidad);
+							let excMax = map_res_excepcion.get(e.key).values.find(exc => exc.fecha == valorMax.fecha);
+							if(excMax){
+								excepcion = Number(excMax.cantidad);
+							}
 						}
 					}
 					e.values.forEach((f, i) => {
