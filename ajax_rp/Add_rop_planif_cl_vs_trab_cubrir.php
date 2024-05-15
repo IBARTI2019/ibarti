@@ -77,26 +77,20 @@ AND turno.factor = 'dis'
 $WHERE
 GROUP BY 1,3,5,7";*/
 
-$sql2 = "SELECT planif_clientes_trab_det.fecha, regiones.codigo cod_region,regiones.descripcion region, estados.codigo cod_estado,
+$sql2 = "SELECT regiones.codigo cod_region,regiones.descripcion region, estados.codigo cod_estado,
 estados.descripcion estado,clientes_ubicacion.cod_cliente,clientes.abrev cliente,clientes_ubicacion.codigo cod_ubicacion,
 clientes_ubicacion.descripcion ubicacion, SUM(turno.trab_cubrir) cantidad
 FROM planif_clientes_trab_det,turno,clientes_ubicacion,ficha,regiones,estados,clientes
 WHERE planif_clientes_trab_det.cod_turno = turno.codigo
-AND planif_clientes_trab_det.cod_ficha = ficha.cod_ficha";
-
-if($maximo == 'T'){
-	$sql2 .= " AND DATE_FORMAT(planif_clientes_trab_det.fecha, '%Y-%m') = DATE_FORMAT('$fecha_D', '%Y-%m') ";
-}else{
-	$sql2 .= " AND planif_clientes_trab_det.fecha = '$fecha_D' ";
-}
-
-$sql2 .= " AND planif_clientes_trab_det.cod_ubicacion = clientes_ubicacion.codigo
+AND planif_clientes_trab_det.cod_ficha = ficha.cod_ficha
+AND planif_clientes_trab_det.fecha = '$fecha_D' 
+AND planif_clientes_trab_det.cod_ubicacion = clientes_ubicacion.codigo
 AND clientes_ubicacion.cod_region = regiones.codigo
 AND clientes_ubicacion.cod_estado = estados.codigo
 AND clientes_ubicacion.cod_cliente = clientes.codigo
 AND turno.factor = 'dis'
 $WHERE
-GROUP BY 1,6,8";
+GROUP BY 5,7";
 
 $query2 = $bd->consultar($sql2);
 while($rows=$bd->obtener_name($query2)){
