@@ -481,7 +481,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		<span class="art-button-wrapper">
 			<span class="art-button-l"> </span>
 			<span class="art-button-r"> </span>
-			<input type="button" name="salvar" id="salvar" class="readon art-button" onclick="Guardar()" />
+			<input type="button" name="salvar" id="salvar" class="readon art-button" onclick="Guardar()" value="Guardar" />
 		</span>&nbsp;
 		<span class="art-button-wrapper">
 			<span class="art-button-l"> </span>
