@@ -8,10 +8,9 @@ require_once("../".class_bdI);
 require_once("../".Leng);
 $bd = new DataBase();
 
-$rol           = $_POST['rol'];
 $region        = $_POST['region'];
-$estado        = $_POST['estado'];
-$ciudad        = $_POST['ciudad'];
+$cliente        = $_POST['cliente'];
+$ubicacion        = $_POST['ubicacion'];
 $contrato      = $_POST['contrato'];
 $documento     = $_POST['documento'];
 $doc_check     = $_POST['doc_check'];
@@ -35,22 +34,21 @@ if(isset($reporte)){
 				 AND ficha.cod_estado = estados.codigo
 				 AND ficha.cod_ciudad = ciudades.codigo
 				 AND ficha.cod_contracto = contractos.codigo
-				 AND ficha.cod_ficha_status = ficha_status.codigo ";
+				 AND ficha.cod_ficha_status = ficha_status.codigo 
+				 AND ficha.cod_cliente = clientes.codigo
+				 AND ficha.cod_ubicacion = clientes_ubicacion.codigo"; 
 
-	if($rol != "TODOS"){
-		$where .= " AND roles.codigo = '$rol' ";
-	}
 
 	if($region != "TODOS"){
 		$where .= " AND regiones.codigo = '$region' ";
 	}
 
-	if($estado != "TODOS"){
-		$where .= " AND estados.codigo = '$estado' ";  // cambie AND asistencia.co_cont = '$contracto'
+	if($cliente != "TODOS"){
+		$where .= " AND ficha.cod_cliente = '$cliente' ";  // cambie AND asistencia.co_cont = '$contracto'
 	}
 
-	if($ciudad != "TODOS"){
-		$where  .= " AND ciudades.codigo = '$ciudad' ";
+	if($ubicacion != "TODOS"){
+		$where  .= " AND ficha.cod_ubicacion = '$ubicacion' ";
 	}
 
 	if($contrato != "TODOS"){
@@ -80,13 +78,14 @@ if(isset($reporte)){
         $sql = "SELECT roles.descripcion AS rol,
         				regiones.descripcion AS region ,
 		               estados.descripcion AS estado, ciudades.descripcion AS ciudad,
+					   clientes.nombre cliente, clientes_ubicacion.descripcion ubicacion,
                        ficha.cod_ficha, ficha.cedula,
 					   CONCAT(ficha.apellidos,' ', ficha.nombres) AS ap_nombre, contractos.descripcion AS contrato, ficha_documentos.cod_documento,  documentos.descripcion AS doc,
 						 StatusD(ficha_documentos.checks) checks, StatusD(ficha_documentos.vencimiento) vencimiento,
 						 if(ficha_documentos.vencimiento = 'N','SIN VENCIMIENTO',ficha_documentos.venc_fecha), ficha_status.descripcion AS `status`,
 						 ficha.fec_ingreso, ficha_documentos.venc_fecha
                   FROM ficha , trab_roles, ficha_documentos , documentos , roles, regiones, estados, ciudades,
-					   contractos, ficha_status
+					   contractos, ficha_status, clientes, clientes_ubicacion
                 $where
 			  ORDER BY 1, 5 ASC   ";
 
@@ -98,8 +97,8 @@ if(isset($reporte)){
 		$query01  = $bd->consultar($sql);
 		 echo "<table border=1>";
  	 echo "<tr><th> ".$leng['rol']." </th><th> ".$leng['region']." </th><th> ".$leng['estado']." </th><th> ".$leng['ciudad']." </th>
-	           <th> ".$leng['ficha']." </th><th> ".$leng['ci']." </th><th> ".$leng['trabajador']." </th> <th> ".$leng['contrato']."</th>
-			   <th> Cod. Documento </th><th> Documento </th><th> CHECKS </th> <th> VENCIMIENTO </th> <th> FECHA VENCIMIENTO </th><th> Status </th>
+	  		   <th> ".$leng['cliente']." </th><th> ".$leng['ubicacion']." </th><th> ".$leng['ficha']." </th><th> ".$leng['ci']." </th><th> ".$leng['trabajador']." </th> <th> ".$leng['contrato']."</th>
+			   <th> Cod. Documento </th><th> Documento </th><th> CHECKS </th> <th> VENCIMIENTO </th> <th> FECHA VENCIMIENTO </th><th> Estatus </th>
 			   <th> Fecha de Ingreso </th><th> Fecha de Vencimiento </th></tr>";
 
 		while ($row01 = $bd->obtener_num($query01)){
@@ -107,6 +106,7 @@ if(isset($reporte)){
 		           <td>'".$row01[4]."'</td><td>".$row01[5]."</td><td>".$row01[6]."</td><td>".$row01[7]."</td>
 				   <td>".$row01[8]."</td><td>".$row01[9]."</td><td>".$row01[10]."</td><td>".$row01[11]."</td>
 					 <td>".$row01[12]."</td><td>".$row01[13]."</td><td>".$row01[14]."</td><td>".$row01[15]."</td>
+					 <td>".$row01[16]."</td><td>".$row01[17]."</td>
 			   </tr>";
 		}
 		 echo "</table>";
@@ -145,11 +145,11 @@ if(isset($reporte)){
                 echo "<tr class='class= odd_row'>";
             }
     echo   "<td width='15%'>".$row[0]."</td>
-            <td width='14%'>".$row[4]."</td>
-            <td width='26%'>".$row[6]."</td>
-            <td width='27%'>".$row[9]."</td>
-            <td width='8%'>".$row[10]."</td>
-						<td width='8%'>".$row[11]."</td>";
+            <td width='14%'>".$row[6]."</td>
+            <td width='26%'>".$row[8]."</td>
+            <td width='27%'>".$row[11]."</td>
+            <td width='8%'>".$row[12]."</td>
+			<td width='8%'>".$row[13]."</td>";
 
              $f++;
          }
