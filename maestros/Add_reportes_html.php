@@ -83,7 +83,7 @@ if($metodo == 'modificar'){
           <?php }?>		  	  
         </select><br /><span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
       <td width="10%" class="etiqueta">Descripcion: </td>
-      <td width="12%" id="input03"><input type="text" name="descripcion" maxlength="60" style="width:120px" 
+      <td width="12%" id="input03"><input type="text" name="descripcion" maxlength="120" style="width:120px" 
                               value="<?php echo $descripcion;?>"/><br />
 		   <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
