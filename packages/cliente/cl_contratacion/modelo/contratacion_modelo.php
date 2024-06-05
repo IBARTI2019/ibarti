@@ -71,6 +71,29 @@ class Contratacion
 		}
 		return $this->cont_det;
 	}
+	public function get_cont_detcontrataccion($codcliente,$codubicacion)
+	{
+		$this->datos   = array();
+		$sql = " SELECT distinct a.codigo, a.cod_cliente,a.cod_contratacion,
+		a.cod_ubicacion, clientes_ubicacion.descripcion ubicacion,
+		a.cod_ub_puesto, clientes_ub_puesto.nombre  puesto,
+		a.cod_turno, turno.descripcion turno,
+		a.cod_cargo, cargos.descripcion cargo,
+		a.cantidad
+		FROM clientes_contratacion_ap a , clientes_ubicacion ,
+		clientes_ub_puesto, turno, cargos
+		WHERE a.cod_cliente = '$codcliente' AND a.cod_ubicacion='$codubicacion'
+		AND a.cod_ubicacion = clientes_ubicacion.codigo
+		AND a.cod_ub_puesto = clientes_ub_puesto.codigo
+		AND a.cod_turno = turno.codigo
+		AND a.cod_cargo = cargos.codigo ORDER BY 3,5 ASC";
+		$query = $this->bd->consultar($sql);
+
+		while ($datos = $this->bd->obtener_fila($query)) {
+			$this->cont_det[] = $datos;
+		}
+		return $this->cont_det;
+	}
 
 	public function get_ubicacion($cliente)
 	{
@@ -124,6 +147,18 @@ class Contratacion
 		return $this->datos;
 	}
 
+	public function get_planificaciones($ubic)
+	{
+		$this->datos   = array();
+		$sql = "SELECT DISTINCT b.codigo, CONCAT(b.fecha_inicio, '-',b.fecha_fin) AS info  FROM clientes_ub_puesto a,planif_clientes b
+		WHERE a.cod_cl_ubicacion = '$ubic' and b.cod_cliente=a.cod_cliente
+		ORDER BY 2 ASC  ";
+		$query = $this->bd->consultar($sql);
+		while ($datos = $this->bd->obtener_fila($query)) {
+			$this->datos[] = $datos;
+		}
+		return $this->datos;
+	}
 	public function verificar_cont_det($cliente, $contrat)
 	{
 		$this->datos   = array();

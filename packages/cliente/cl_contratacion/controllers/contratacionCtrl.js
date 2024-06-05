@@ -61,6 +61,66 @@ function Cons_contratacion(cod, metodo) {
 		alert(errorMessage);
 	}
 }
+function Cons_contratacionDETALLESX() {
+	var error = 0;
+	var errorMessage = ' ';
+	var metodo ='consultar';
+	var cod = $("#codigo").val();
+	
+	if (error == 0) {
+		var parametros = { "codigo": cod, "metodo": metodo };
+		$.ajax({
+			data: parametros,
+			url: 'packages/cliente/cl_contratacion/views/Add_formdetalles.php',
+			type: 'post',
+			success: function (response) {
+				$("#Cont_contratacion").html(response);
+				if (metodo == "modificar") {
+					console.log(metodo, cod);
+					CargarDetalleCont(cod);
+				}
+				if (metodo == "consultar") {
+					console.log(metodo, cod);
+					CargarDetalleContplani(cod);
+				}
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+	} else {
+		alert(errorMessage);
+	}
+}
+function Cons_contratacionDETALLESXY(cod, metodo) {
+	var error = 0;
+	var errorMessage = ' ';
+	
+	if (error == 0) {
+		var parametros = { "codigo": cod, "metodo": metodo };
+		$.ajax({
+			data: parametros,
+			url: 'packages/cliente/cl_contratacion/views/Add_formdetalles.php',
+			type: 'post',
+			success: function (response) {
+				$("#Cont_contratacion").html(response);
+				if (metodo == "consultar") {
+					console.log(metodo, cod);
+					CargarDetalleContplanif(cod);
+				}
+				
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+	} else {
+		alert(errorMessage);
+	}
+}
+
 
 function save_contratacion() {
 	var error = 0;
@@ -252,6 +312,25 @@ function CargarDetalleCont(cod_cont) {
 		}
 	});
 }
+function CargarDetalleContplanif(cod_ubic) {
+	var parametros = {
+		"ubicacion": cod_ubic, "cliente": cliente,
+		"usuario": usuario
+	};
+	$.ajax({
+		data: parametros,
+		url: 'packages/cliente/cl_contratacion/views/Add_form_contratacion_detplani.php',
+		type: 'post',
+		success: function (response) {
+			$("#Cont_detalleCont").html(response);
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			alert(xhr.status);
+			alert(thrownError);
+		}
+	});
+}
+
 function Cargar_puesto(codigo, contenedor) {
 	var parametros = { "codigo": codigo, "usuario": usuario };
 	$.ajax({
@@ -266,4 +345,22 @@ function Cargar_puesto(codigo, contenedor) {
 			alert(thrownError);
 		}
 	});
+	
+}
+
+function Cargar_planifi(codigo, contenedor) {
+	var parametros = { "codigo": codigo, "usuario": usuario };
+	$.ajax({
+		data: parametros,
+		url: 'packages/cliente/cl_contratacion/views/select_planificaciones.php',
+		type: 'post',
+		success: function (response) {
+			$("#" + contenedor + "").html(response);
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			alert(xhr.status);
+			alert(thrownError);
+		}
+	});
+	
 }

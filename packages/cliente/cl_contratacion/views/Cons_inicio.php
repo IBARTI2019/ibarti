@@ -5,6 +5,7 @@
   $cliente = $_POST['cliente'];
   $contratacion = new Contratacion;
   $matriz  =  $contratacion->get($cliente);
+  
 ?>
 
 <div align="center" class="etiqueta_title"> Consulta De <?php echo $titulo;?> </div> <hr />
@@ -13,7 +14,7 @@
     <th width="12%">Codigo</th>
     <th width="50%">Descripcion</th>
 		<th width="14%">Fecha Inicio</th>
-	<th width="14%" >Status</th>
+	<th width="14%" >Status </th>
     <th width="10%"><img src="imagenes/nuevo.bmp" alt="Agregar" onclick="Cons_contratacion('', 'agregar')" title="Agregar Registro" width="30px" height="30px" border="null"/></th>
   </tr>
   <?php
@@ -27,4 +28,10 @@
     }
   	?>
     </table>
+    <span class="art-button-wrapper">
+				 <span class="art-button-l"> </span>
+				 <span class="art-button-r"> </span>
+     <input name="codigo" id="codigo" type="hidden"  value="<?php echo $cliente;?>" />  
+		 <input type="button" id="" value="Detalles Contratacion" onclick="Cons_contratacionDETALLESX()" class="readon art-button" />
+		 </span>
 </div>
