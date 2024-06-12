@@ -9,6 +9,8 @@ $nov_clasif    =  $_POST['nov_clasif'];
 $nov_tipo      =  $_POST['nov_tipo'];	
 
 	$where = " WHERE novedades.`status` = 'T' ";
+	$from = "  FROM novedades LEFT JOIN nov_cl_ubicacion ON novedades.codigo = nov_cl_ubicacion.cod_novedad AND nov_cl_ubicacion.cod_cl_ubicacion = '$ubicacion' ";
+	$existe = " IFNULL(nov_cl_ubicacion.cod_cl_ubicacion, 'NO') AS existe ";
 
 	if($nov_clasif != "TODOS"){		
 		$where .= " AND novedades.cod_nov_clasif = '$nov_clasif' ";
@@ -18,12 +20,18 @@ $nov_tipo      =  $_POST['nov_tipo'];
 		$where .= " AND novedades.cod_nov_tipo = '$nov_tipo' ";  // cambie AND asistencia.co_cont = '$contracto'
 	}	
 
+	if($ubicacion == "TODOS" || $ubicacion == ""){		
+		$existe = " IF(ISNULL((SELECT codigo FROM clientes_ubicacion WHERE cod_cliente = '126' AND status = 'T' AND codigo NOT IN (SELECT cod_cl_ubicacion FROM nov_cl_ubicacion WHERE novedades.codigo = nov_cl_ubicacion.cod_novedad))), 'SI', 'NO') existe ";
+		$from = " ";
+	}else{
+		$existe = " IFNULL(nov_cl_ubicacion.cod_cl_ubicacion, 'NO') AS existe ";
+	}		
+
     $sql = "SELECT novedades.codigo, novedades.descripcion,
-	               IFNULL(nov_cl_ubicacion.cod_cl_ubicacion, 'NO') AS existe 
-              FROM novedades LEFT JOIN nov_cl_ubicacion ON novedades.codigo = nov_cl_ubicacion.cod_novedad 
-			                       AND nov_cl_ubicacion.cod_cl_ubicacion = '$ubicacion'
-            $where
-             ORDER BY 2 ASC ";
+	        	$existe
+				$from
+            	$where
+            GROUP BY novedades.codigo ORDER BY 2 ASC ";
 
    $query = $bd->consultar($sql);
     
@@ -51,7 +59,7 @@ $nov_tipo      =  $_POST['nov_tipo'];
 		
 		if ($valor == 0){
 			$fondo = 'fondo01';
-		$valor = 1;
+			$valor = 1;
 		}else{
 			$fondo = 'fondo02';
 			$valor = 0;
