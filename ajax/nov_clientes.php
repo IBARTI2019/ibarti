@@ -21,7 +21,7 @@ $nov_tipo      =  $_POST['nov_tipo'];
 	}	
 
 	if($ubicacion == "TODOS" || $ubicacion == ""){		
-		$existe = " IF(ISNULL((SELECT codigo FROM clientes_ubicacion WHERE cod_cliente = '126' AND status = 'T' AND codigo NOT IN (SELECT cod_cl_ubicacion FROM nov_cl_ubicacion WHERE novedades.codigo = nov_cl_ubicacion.cod_novedad))), 'SI', 'NO') existe ";
+		$existe = " IF(ISNULL((SELECT codigo FROM clientes_ubicacion WHERE cod_cliente = '126' AND status = 'T' AND codigo NOT IN (SELECT cod_cl_ubicacion FROM nov_cl_ubicacion WHERE novedades.codigo = nov_cl_ubicacion.cod_novedad) LIMIT 1 )), 'SI', 'NO') existe ";
 		$from = " FROM novedades  ";
 	}else{
 		$existe = " IFNULL(nov_cl_ubicacion.cod_cl_ubicacion, 'NO') AS existe ";
