@@ -96,7 +96,7 @@ function llenar_nov_tipo(clasificacion){
    <tr>
    <tr>
            <td class="etiqueta"><?php echo $leng['cliente']?>:</td>
-			<td><select name="cliente" id="cliente" style="width:200px;" onchange="Add_Cl_Ubic(this.value, 'contenido_ubic', 'F', '200')">
+			<td><select name="cliente" id="cliente" style="width:200px;" onchange="Add_Cl_Ubic(this.value, 'contenido_ubic', 'T', '200')">
 					    <option value="TODOS">TODOS</option>
 					<?php
 	   			$query01 = $bd->consultar($sql_cliente);
@@ -104,7 +104,7 @@ function llenar_nov_tipo(clasificacion){
 					 echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
 			   }?></select></td>
 			<td class="etiqueta"><?php echo $leng['ubicacion']?>: </td>
-			<td id="contenido_ubic"><select name="ubicacion" id="ubicacion" style="width:200px;">
+			<td id="contenido_ubic"><select name="ubicacion" id="ubicacion" style="width:200px;" onchange="Add_filtroX()">
 					                        <option value="TODOS">TODOS</option>
                                     </select></td>
 </tr>

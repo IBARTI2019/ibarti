@@ -43,7 +43,7 @@ if (isset($_POST['metodo'])) {
 						$codigo = $row03[0];
 		
 						$sql02 = " DELETE FROM nov_cl_ubicacion WHERE nov_cl_ubicacion.cod_cl_ubicacion = '$rowUbic[0]'
-																AND nov_cl_ubicacion.cod_novedad = '$codigo';";
+																AND nov_cl_ubicacion.cod_novedad = '$codigo';";				
 						$query02 = $bd->consultar($sql02);	
 					}
 
@@ -51,12 +51,12 @@ if (isset($_POST['metodo'])) {
 				
 						$sqlX = "INSERT INTO nov_cl_ubicacion (cod_cl_ubicacion, cod_novedad, fecha, usuario )			
 													VALUES ('$rowUbic[0]', '$valorX', '$date_time', '$usuario');";
-
 						$queryX = $bd->consultar($sqlX);			 
 					}
 				}	
 				break;	
 			}else{
+				$query = $bd->consultar($sql);
 				while($row03=$bd->obtener_fila($query,0)){
 					$codigo = $row03[0];
 	
@@ -69,10 +69,8 @@ if (isset($_POST['metodo'])) {
 			
 					$sqlX = "INSERT INTO nov_cl_ubicacion (cod_cl_ubicacion, cod_novedad, fecha, usuario )			
 												VALUES ('$ubicacion', '$valorX', '$date_time', '$usuario');";
-							
 					$queryX = $bd->consultar($sqlX);			 
 				}			
-				break;	
 			}		
 	}        
 }
