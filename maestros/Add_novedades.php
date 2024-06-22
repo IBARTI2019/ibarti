@@ -396,10 +396,10 @@ if ($metodo == 'modificar') {
 				}
 			}
 			update_table(tabla, arreglo_valores);
-			var v_maximo = $('#v_maximo').val();
-			if(cantidad > v_maximo){
-				$('#v_maximo').val(cantidad);
-			}
+			// var v_maximo = $('#v_maximo').val();
+			// if(cantidad > v_maximo){
+			// 	$('#v_maximo').val(cantidad);
+			// }
 		}
 	}
 
