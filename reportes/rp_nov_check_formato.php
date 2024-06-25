@@ -114,7 +114,7 @@ if($reporte == 'pdf'){
 				$salto ="<hr style='margin: 2px;page-break-after: none;'>";
 				$i=0;
 			}
-			echo $salto.'<span>'.$rows[0].'</span>:<span><img src="../imagenes/cuadro.jpg" border="2" width="16px"></img></span> ';
+			echo $salto.'<div><span>'.$rows[0].'</span>:<span><img src="../imagenes/cuadro.jpg" border="2" width="16px"></img></span></div> ';
 			//echo $salto.$rows[0].':'.chr(40).'  '.chr(41);
 			$salto='';
 			$i++;
