@@ -111,10 +111,10 @@ if($reporte == 'pdf'){
 		$salto = '';
 		while($rows = $bd2->obtener_num($query2)){
 			if($i==3){
-				$salto ="<hr style='margin: 4px;page-break-after: none;'>";
+				$salto ="<hr style='margin: 2px;page-break-after: none;'>";
 				$i=0;
 			}
-			echo $salto.'<span><span>'.$rows[0].'</span>:<span><img src="../imagenes/cuadro.jpg" border="2" width="16px"></img></span></span>';
+			echo $salto.'<span style="margin: 2px;"><span>'.$rows[0].'</span>:<span><img src="../imagenes/cuadro.jpg" border="2" width="16px"></img></span></span>';
 			//echo $salto.$rows[0].':'.chr(40).'  '.chr(41);
 			$salto='';
 			$i++;
