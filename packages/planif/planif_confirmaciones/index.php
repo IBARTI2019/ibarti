@@ -39,9 +39,11 @@ if (isset($_SESSION['usuario_cod'])) {
             echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
           } ?></select></td>
       <td class="etiqueta"><?php echo $leng["ubicacion"];?>: </td>
-      <td id="contenido_ubic"><select name="ubicacion" id="ubicacion" style="width:250px;">
+      <td id="contenido_ubic">
+        <select name="ubicacion" id="ubicacion" style="width:250px;">
           <option value="TODOS">TODOS</option>
-        </select></td>
+        </select>
+      </td>
     </tr>
     <tr>
       <td class="etiqueta">Filtro Trab.:</td>
@@ -53,6 +55,7 @@ if (isset($_SESSION['usuario_cod'])) {
           <option value="trabajador"> Trabajador </option>
           <option value="nombres"> Nombre </option>
           <option value="apellidos"> Apellido </option>
+          <option value="telefono"> Tel&eacute;fono </option>
         </select>
       </td>
       <td class="etiqueta">Trabajador:</td>
@@ -72,9 +75,8 @@ if (isset($_SESSION['usuario_cod'])) {
       <tr>
         <th><?php echo $leng["cliente"]; ?></th>
         <th><?php echo $leng["ubicacion"]; ?></th>
-        <th>Puesto</th>
         <th><?php echo $leng["ficha"]; ?></th>
-        <th><?php echo $leng["ci"]; ?></th>
+        <th>Telefonos</th>
         <th><?php echo $leng["trabajador"]; ?></th>
         <th><?php echo $leng["turno"]; ?></th>
         <th><?php echo $leng["horario"]; ?></th>

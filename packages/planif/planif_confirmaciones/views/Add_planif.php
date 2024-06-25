@@ -20,9 +20,8 @@ foreach ($result as  $datos) {
 
     echo '<td>' . $datos["cliente"] . '</td>
       <td>' . $datos["ubicacion"] . '</td>
-             <td>' . $datos["puesto"] . '</td>
        <td>' . $datos["ficha"] . '</td>
-       <td>' . $datos["cedula"] .' </td>
+       <td>' . $datos["celular"] .' <br>' .  $datos["telefono"] .' </td>
         <td>' . $datos["ap_nombre"] . '</td>
         <td>' . $datos["turno"] . '</td>
         <td>' . $datos["horario"] . '</td>

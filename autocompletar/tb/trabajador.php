@@ -22,6 +22,9 @@ switch ($filtro) {
 	case "apellidos":
 		$where  .= " WHERE LOCATE('$typing', v_ficha.apellidos) ";
 		break;
+	case "telefono":
+		$where  .= " WHERE LOCATE('$typing', v_ficha.celular) OR LOCATE('$typing', v_ficha.telefono) ";
+		break;
 	case "TODOS":
 		$where  .= " WHERE LOCATE('$typing', v_ficha.cod_ficha) OR LOCATE('$typing', v_ficha.ap_nombre) OR LOCATE('$typing', v_ficha.cedula) ";
 		break;
