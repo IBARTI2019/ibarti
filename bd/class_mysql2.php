@@ -10,7 +10,7 @@
 		  private $stmt; 
 		  private $cnn; //emsamblamos el string de conexion
           //constructor en el constructor colocamos los datos por defecto, a fin de recibir de manera opcional
-          function __construct($host='localhost', $bd='ibarti', $user='root', $pass='', $port='3306'){
+          function __construct($host='localhost', $bd='ib_demo', $user='root', $pass='yth86smg9ual1fcj', $port='3306'){
  //         function __construct($host='localhost', $bd='ib_ibarti2', $user='root', $pass='', $port='5432'){
 			       //asigno valores para ensamblar el string de conexion
                    $this->host=$host;
