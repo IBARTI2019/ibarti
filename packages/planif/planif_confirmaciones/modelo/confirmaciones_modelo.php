@@ -73,7 +73,7 @@ class Confirmaciones
                     horarios,
                     conceptos 
                 " . $where . " 
-                HAVING ((diff_min > 60 AND diff_min < 120 AND confirm = 'F') OR (diff_min > 15 AND diff_min < 60 AND confirm = 'T' AND in_transport = 'F') OR (confirm = 'T' AND in_transport = 'T'))
+                -- HAVING ((diff_min > 60 AND diff_min < 120 AND confirm = 'F') OR (diff_min > 15 AND diff_min < 60 AND confirm = 'T' AND in_transport = 'F') OR (confirm = 'T' AND in_transport = 'T'))
                 ORDER BY horarios.hora_entrada ASC";
 
         $query = $this->bd->consultar($sql);
