@@ -27,7 +27,6 @@ class Confirmaciones
             AND turno.cod_horario = horarios.codigo 
             AND horarios.cod_concepto = conceptos.codigo 
             AND conceptos.asist_perfecta = 'T' 
-            AND (a.confirm = 'F' OR a.in_transport = 'F')
         ";
 
         if ($cliente != 'TODOS' && $cliente != "" && $cliente != null) {
@@ -60,7 +59,10 @@ class Confirmaciones
                         MINUTE,
                         CURRENT_TIMESTAMP,
                     CONCAT( CURRENT_DATE, ' ', horarios.hora_entrada )) diff_min,
-                    a.confirm 
+                    a.confirm,
+                    a.in_transport,
+            		TIME(a.fec_confirm) fec_confirm,
+					TIME(a.fec_in_transport) fec_in_transport
                 FROM
                     planif_clientes_trab_det a,
                     clientes,
@@ -71,7 +73,7 @@ class Confirmaciones
                     horarios,
                     conceptos 
                 " . $where . " 
-                -- HAVING (diff_min > 30 AND diff_min < 300 AND confirm = 'T') OR (diff_min > 120 AND diff_min < 300 AND confirm = 'F')
+                HAVING ((diff_min > 60 AND diff_min < 120 AND confirm = 'F') OR (diff_min > 15 AND diff_min < 60 AND confirm = 'T' AND in_transport = 'F') OR (confirm = 'T' AND in_transport = 'T'))
                 ORDER BY horarios.hora_entrada ASC";
 
         $query = $this->bd->consultar($sql);
