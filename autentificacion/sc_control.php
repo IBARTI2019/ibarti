@@ -86,7 +86,7 @@ if (isset($_POST['proced'])) {
 								'$puerto_smtp', '$protocolo_smtp', '$cuenta_smtp','$password_smtp',$dias_nov_notif,
 								$min_nov_notif, $porc_min_aprob_encuesta_preing, 
 								$min_confirm, $max_confirm, $min_in_transport, $max_in_transport)";
-
+	echo $sql;
 	$query = $bd->consultar($sql);
 
 	$sql = "UPDATE nov_clasif SET control_mensajeria  = 'F'";
