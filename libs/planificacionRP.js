@@ -1415,7 +1415,7 @@ function rp_planif_serv_vs_contratacion_horario(data, id_contenedor, callback) {
 				}
 			}
 
-			res_horario.forEach((b) => {
+		/* 	res_horario.forEach((b) => {
 				sum_dia = 0;
 				color = '';
 				clases = '';
@@ -1438,7 +1438,7 @@ function rp_planif_serv_vs_contratacion_horario(data, id_contenedor, callback) {
 					})
 
 				}
-			});
+			}); */
 		});
 
 		if (typeof (callback) == 'function') callback();
