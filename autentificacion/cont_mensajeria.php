@@ -25,7 +25,7 @@
          echo '<table width="60%" align="center">';
 
          while ($row03 = $bd->obtener_fila($query, 0)) {
-            //	extract($row03);
+        	extract($row03);
             echo '
 				<tr>
 					<td class="etiqueta">' . $row03[1] . '</td>					
@@ -34,20 +34,21 @@
 			   </tr>';
          }
          echo '</tr></table>';   ?>
-	      <!--       	<td id="select_4_01" width="60%"><select name="nov_clasif_sms" style="width:200px">
-							         <option value="<?php // echo $cod_clasif_sms;
+		 <tr>
+	           	<td id="select_4_01" width="60%"><select  hidden="true" name="nov_clasif_sms" style="width:200px">
+							         <option value="<?php  echo $cod_clasif_sms;
                                              ?>"><?php echo $clasif_sms; ?></option>
-          <?php  /*	$sql = " SELECT codigo, descripcion FROM nov_clasif
-		                      WHERE status = 'T' AND codigo <> '$cod_clasif' ORDER BY 2 ASC ";
-		            $query = $bd->consultar($sql);
-            		while($datos=$bd->obtener_fila($query,0)){	*/ ?>
-          <option value="<?php // echo $datos[0];
+          <!-- <?php $sql = " SELECT codigo, descripcion FROM nov_clasif
+		                      WHERE status = 'T' AND codigo <> '$cod_clasif_sms' ORDER BY 2 ASC ";
+		            // $query = $bd->consultar($sql);
+            		// while($datos=$bd->obtener_fila($query,0)){ ?>
+          <option value="<?php  // echo $datos[0];
                            ?>"><?php // echo $datos[1];
                                  ?></option>
-          <?php //}
-            ?>
+          <?php// }
+            ?> -->
                              </select><br />
-        	<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>     -->
+        	<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td> 
 	   </tr>
 	   <tr>
 	      <td height="8" colspan="2" align="center">

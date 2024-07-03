@@ -49,7 +49,11 @@ $cuenta_smtp      = $_POST['cuenta_smtp'];
 $password_smtp      = $_POST['password_smtp'];
 
 $notificar      = $_POST['notificaciones'];
-$notificar_resp = $_POST['notificaciones_resp'];
+if(isset($_POST['notificaciones_resp'])){
+	$notificar_resp = $_POST['notificaciones_resp'];
+}else{
+	$notificar_resp = [];
+}
 $colores_notif = $_POST['colores'];
 $dias_nov_notif = $_POST['dias_nov'];
 $min_nov_notif = $_POST['min_nov'];
@@ -126,7 +130,7 @@ if (isset($_POST['proced'])) {
 			$query = $bd->consultar($sql);
 		}
 	}
-	
+
 	$sql = "SELECT codigo from nov_status";
 	$consulta = $bd->consultar($sql);
 
