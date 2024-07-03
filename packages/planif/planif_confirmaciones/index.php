@@ -44,6 +44,9 @@ if (isset($_SESSION['usuario_cod'])) {
           <option value="TODOS">TODOS</option>
         </select>
       </td>
+      <td>
+        <img class="imgLink" id="img_actualizar" src="imagenes/actualizar.png" border="0" onclick=" Add_filtroX()"  />
+      </td>
     </tr>
     <tr>
       <td class="etiqueta">Filtro Trab.:</td>
@@ -62,6 +65,7 @@ if (isset($_SESSION['usuario_cod'])) {
       <td><input id="stdName" type="text" style="width:380px" disabled="disabled" />
         <input type="hidden" name="trabajador" id="stdID" value="" onchange="Add_filtroX()" />
       </td>
+      <td></td>
     </tr>
     <tr>
     <tr>
