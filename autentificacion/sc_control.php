@@ -40,7 +40,11 @@ $url_doc        = $_POST['url_doc'];
 $rop_meses      = $_POST['rop_meses'];
 
 $mensajeria     = $_POST['mensajeria'];
+if(isset($_POST['clasif_mensajeria'])){
 $clasif_mensajeria     = $_POST['clasif_mensajeria'];
+}else{
+	$clasif_mensajeria  = [];
+}
 
 $host_smtp      = $_POST['host_smtp'];
 $puerto_smtp      = $_POST['puerto_smtp'];
