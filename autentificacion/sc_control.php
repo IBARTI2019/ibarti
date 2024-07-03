@@ -39,33 +39,17 @@ $nov_clasif_sms = $_POST['nov_clasif_sms'];
 $url_doc        = $_POST['url_doc'];
 $rop_meses      = $_POST['rop_meses'];
 
-if(isset($_POST['mensajeria'])){
 $mensajeria     = $_POST['mensajeria'];
-}else{
-	$mensajeria = [];
-}
-
-if(isset($_POST['clasif_mensajeria'])){
 $clasif_mensajeria     = $_POST['clasif_mensajeria'];
-}else{
-	$clasif_mensajeria  = [];
-}
 
 $host_smtp      = $_POST['host_smtp'];
 $puerto_smtp      = $_POST['puerto_smtp'];
 $protocolo_smtp      = $_POST['protocolo_smtp'];
 $cuenta_smtp      = $_POST['cuenta_smtp'];
 $password_smtp      = $_POST['password_smtp'];
-if(isset($_POST['notificaciones'])){
+
 $notificar      = $_POST['notificaciones'];
-}else{
-	$notificar      = [];
-}
-if(isset($_POST['notificaciones_resp'])){
-	$notificar_resp = $_POST['notificaciones_resp'];
-}else{
-	$notificar_resp = [];
-}
+$notificar_resp = $_POST['notificaciones_resp'];
 $colores_notif = $_POST['colores'];
 $dias_nov_notif = $_POST['dias_nov'];
 $min_nov_notif = $_POST['min_nov'];
@@ -95,6 +79,7 @@ if (isset($_POST['proced'])) {
 								$min_nov_notif, $porc_min_aprob_encuesta_preing, 
 								$min_confirm, $max_confirm, $min_in_transport, $max_in_transport)";
 
+								echo $sql;
 	$query = $bd->consultar($sql);
 
 	$sql = "UPDATE nov_clasif SET control_mensajeria  = 'F'";
@@ -134,13 +119,11 @@ if (isset($_POST['proced'])) {
 	$sql = "SELECT codigo from nov_status";
 	$consulta = $bd->consultar($sql);
 
-	if(isset($_POST['notificaciones_resp'])){
-		foreach ($notificar_resp as $h => $valorz) {
-			$sql = "UPDATE nov_status SET nov_status.control_notificaciones_res = 'T' WHERE nov_status.codigo = '$valorz'";
+	foreach ($notificar_resp as $h => $valorz) {
+		$sql = "UPDATE nov_status SET nov_status.control_notificaciones_res = 'T' WHERE nov_status.codigo = '$valorz'";
 
 
-			$query = $bd->consultar($sql);
-		}
+		$query = $bd->consultar($sql);
 	}
 
 	$sql = "SELECT codigo from nov_status";
