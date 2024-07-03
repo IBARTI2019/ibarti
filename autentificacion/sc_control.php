@@ -39,7 +39,12 @@ $nov_clasif_sms = $_POST['nov_clasif_sms'];
 $url_doc        = $_POST['url_doc'];
 $rop_meses      = $_POST['rop_meses'];
 
+if(isset($_POST['mensajeria'])){
 $mensajeria     = $_POST['mensajeria'];
+}else{
+	$mensajeria = [];
+}
+
 if(isset($_POST['clasif_mensajeria'])){
 $clasif_mensajeria     = $_POST['clasif_mensajeria'];
 }else{
