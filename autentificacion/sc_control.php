@@ -79,7 +79,6 @@ if (isset($_POST['proced'])) {
 								$min_nov_notif, $porc_min_aprob_encuesta_preing, 
 								$min_confirm, $max_confirm, $min_in_transport, $max_in_transport)";
 
-								echo $sql;
 	$query = $bd->consultar($sql);
 
 	$sql = "UPDATE nov_clasif SET control_mensajeria  = 'F'";
