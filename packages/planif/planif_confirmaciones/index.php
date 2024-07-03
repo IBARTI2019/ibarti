@@ -83,7 +83,6 @@ if (isset($_SESSION['usuario_cod'])) {
           <th>Hora entrada</th>
           <th>Hora de confirmacion</th>
           <th>Hora en transporte</th>
-          <th></th>
         </tr>
       </thead>
       <tbody id="planificacion">
