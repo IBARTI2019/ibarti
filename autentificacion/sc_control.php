@@ -122,7 +122,7 @@ if (isset($_POST['proced'])) {
 	$sql = "SELECT codigo from nov_status";
 	$consulta = $bd->consultar($sql);
 
-	if(isset($notificar_resp)){
+	if(isset($_POST['notificaciones_resp'])){
 		foreach ($notificar_resp as $h => $valorz) {
 			$sql = "UPDATE nov_status SET nov_status.control_notificaciones_res = 'T' WHERE nov_status.codigo = '$valorz'";
 
