@@ -70,26 +70,26 @@ if (isset($_SESSION['usuario_cod'])) {
       </td>
     </tr>
   </table>
-  <table width="90%" class="tabla_sistema">
-    <thead>
-      <tr>
-        <th><?php echo $leng["cliente"]; ?></th>
-        <th><?php echo $leng["ubicacion"]; ?></th>
-        <th><?php echo $leng["ficha"]; ?></th>
-        <th>Telefonos</th>
-        <th><?php echo $leng["trabajador"]; ?></th>
-        <th><?php echo $leng["turno"]; ?></th>
-        <th><?php echo $leng["horario"]; ?></th>
-        <th><?php echo $leng["concepto"]; ?></th>
-        <th>Hora entrada</th>
-        <th>Hora de confirmacion</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="planificacion">
+    <table width="90%" class="tabla_planif">
+      <thead>
+        <tr>
+          <th><?php echo $leng["ubicacion"]; ?></th>
+          <th><?php echo $leng["ficha"]; ?></th>
+          <th>Telefono</th>
+          <th><?php echo $leng["trabajador"]; ?></th>
+          <th><?php echo $leng["turno"]; ?></th>
+          <th><?php echo $leng["horario"]; ?></th>
+          <th><?php echo $leng["concepto"]; ?></th>
+          <th>Hora entrada</th>
+          <th>Hora de confirmacion</th>
+          <th>Hora en transporte</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="planificacion">
 
-    </tbody>
-  </table>
+      </tbody>
+    </table>
 </div>
 
 <input name=" usuario" id="usuario" type="hidden" value="<?php echo $us; ?>" />

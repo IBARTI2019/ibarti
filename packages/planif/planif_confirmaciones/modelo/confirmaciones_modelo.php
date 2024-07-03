@@ -47,7 +47,6 @@ class Confirmaciones
                     clientes_ubicacion.descripcion ubicacion,
                     a.cod_ficha ficha,
                     ficha.cedula,
-                    ficha.celular,
                     ficha.telefono,
                     CONCAT( ficha.apellidos, ' ', ficha.nombres ) ap_nombre,
                     turno.descripcion turno,
