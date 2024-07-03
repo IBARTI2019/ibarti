@@ -12,7 +12,7 @@ $disabled = "";
 
 foreach ($result as  $datos) {
     if( $datos["confirm"] == 'F' && $datos["in_transport"] == 'F'){
-        echo '<tr class="fondo03" style="color: white;">';
+        echo '<tr class="fondo03">';
     }else if( $datos["confirm"] == 'T' && $datos["in_transport"] == 'T'){
         echo '<tr class="fondo02">';
     }else{
