@@ -56,8 +56,11 @@ $puerto_smtp      = $_POST['puerto_smtp'];
 $protocolo_smtp      = $_POST['protocolo_smtp'];
 $cuenta_smtp      = $_POST['cuenta_smtp'];
 $password_smtp      = $_POST['password_smtp'];
-
+if(isset($_POST['notificaciones'])){
 $notificar      = $_POST['notificaciones'];
+}else{
+	$notificar      = [];
+}
 if(isset($_POST['notificaciones_resp'])){
 	$notificar_resp = $_POST['notificaciones_resp'];
 }else{
