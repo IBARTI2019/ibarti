@@ -201,7 +201,7 @@ $fec_us_mod    = '';
 								FROM nov_valores_det , nov_valores
 								WHERE nov_valores_det.cod_novedades = '$cod_c'
 								AND nov_valores_det.cod_valores = nov_valores.codigo
-							ORDER BY 1 ASC ";
+							ORDER BY 2 ASC ";
 					$query02 = $bd->consultar($sql02);
 
 					echo '<tr>
