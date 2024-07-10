@@ -26,10 +26,13 @@ function Add_filtroX() {
 
 function setRealizado(codigo) {
     if (codigo) {
-        if (confirm("Esta seguro de que desea marcar como realizada esta actividad (" + codigo + "), Esta operación es irreversible!.")) {
+        if (confirm("Esta seguro de que desea enviar el archivo (" + codigo + "), Esta operación es irreversible!.")) {
             var usuario = $("#usuario").val();
+            var archivo = $("#archivo").val();
+            
+            alert(archivo);
             var parametros = {
-                codigo, usuario
+                codigo, usuario,archivo
             };
             $.ajax({
                 data: parametros,
@@ -38,9 +41,9 @@ function setRealizado(codigo) {
                 success: function (response) {
                     var resp = JSON.parse(response);
                     if (resp.error) {
-                        toastr.error("A ocurrido un error al intentar marcar la actividad!..");
+                        toastr.error("A ocurrido un error al intentar enviar el archivo!..");
                     } else {
-                        toastr.success("Actividad Marcada con Exitoso!..");
+                        toastr.success("Archivo ennviado con Exitoso!..");
                         Add_filtroX();
                     }
                 },
@@ -52,6 +55,87 @@ function setRealizado(codigo) {
         }
     }
 }
+function showMessage(message) {
+    $(".messages").html("").show();
+    $(".messages").html(message);
+}
+function subirImagenS3marcaje(codigo) {
+    //informaci�n del formulario
+
+    var formData = new FormData($(".formulario")[0]);
+    var ci =$("#cod_det2").val();;
+    var doc = $("#archivo").val();
+    var usuario=$("#usuario").val();
+    var nombre = ci + "_" + doc;
+       
+    var message = "";
+    //hacemos la petici�n ajax  
+    $.ajax({
+        url: 'http://194.163.161.64:9090/docs/upload/',
+        type: 'POST',
+        // Form data
+        //datos del formulario
+        data: formData,
+        //necesario para subir archivos via ajax
+        cache: false,
+        contentType: false,
+        processData: false,
+        //mientras enviamos el archivo
+        beforeSend: function () {
+            message = $("<span class='before'>Subiendo la imagen, por favor espere...</span>");
+            showMessage(message)
+        },
+        //una vez finalizado correctamente
+        success: function (data) {
+            uploadActulizarS3marcaje(data.data.image[0],ci,doc,usuario);
+        },
+        //si ha ocurrido un error
+        error: function () {
+            message = $("<span class='error'>Ha ocurrido un error.</span>");
+            showMessage(message);
+        }
+    });
+}
+
+function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
+    
+    var ficha = cod;
+    var doc =archi;
+    var tusuario=xusuario
+    var parametros = {
+        "link": url,
+        "codigo": ficha,
+        "doc": doc,
+        "usuario": xusuario
+    };
+
+    $.ajax({
+        url: 'packages/planif/planif_marcaje/modelo/marcar.php',
+        type: 'POST',
+        data: parametros,
+        //        cache: false,
+        //      contentType: false,
+        //     processData: false,
+
+        beforeSend: function () {
+        },
+        //una vez finalizado correctamente
+        success: function (data) {
+            message = $("<span class='success'>La imagen ha sido guardada con exitos...</span>");
+            showMessage(message);
+            //window.history.go(-1);
+        },
+        //si ha ocurrido un error
+        error: function () {
+            message = $("<span class='error'>Ha ocurrido un error.</span>");
+            showMessage(message);
+        }
+    });
+
+    cerrarModalfile();
+    
+};
+
 
 function changeCliente(cliente) {
     Add_Cl_Ubic(cliente, 'contenido_ubic', 'T', '120');
@@ -153,10 +237,21 @@ function openModalObservaciones(codigo) {
     cargar_observaciones(codigo);
 }
 
+function openModalObservacionesdos(codigo,xficha,xcedula) {
+    $("#cod_det2").val(codigo);
+    $("#ficha").val(xficha);
+    $("#myModalO2").show();
+    
+}
+
+
 function cerrarModalObservaciones() {
     $("#myModalO").hide();
 }
 
+function cerrarModalfile() {
+    $("#myModalO2").hide();
+}
 function openModalParticipantes(codigo) {
     $("#cod_det").val(codigo);
     $("#myModalP").show();
