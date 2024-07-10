@@ -13,9 +13,11 @@ foreach ($_POST as $nombre_campo => $valor) {
 
 if (isset($codigo)) {
   try {
-    $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T', cod_us_marcaje = '$usuario' WHERE codigo = '$codigo'";
+    $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '$codigo'";
     $query = $bd->consultar($sql);
     $result['sql'] = $sql;
+    
+    
   } catch (Exception $e) {
     $error =  $e->getMessage();
     $result['error'] = true;
