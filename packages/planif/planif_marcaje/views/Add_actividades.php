@@ -36,7 +36,7 @@ foreach ($result as  $datos) {
         }
     } else {
         
-        echo '<td><img class="imgLink" id="m_observaciones" src="imagenes/nuevo.bmp" alt="Modificar Observaciones" title="Modificar Observaciones" onclick="openModalObservacionesdos(' . $datos["codigo"] . ',' .$ficha . ',' . $ci . ')" width="15px" height="15px"></td>
+        echo '<td><img class="imgLink" id="m_observaciones" src="imagenes/nuevo.bmp" alt="Cargar soporte" title="Cargar soporte" onclick="openModalObservacionesdos(' . $datos["codigo"] . ',' .$ficha . ',' . $ci . ')" width="15px" height="15px"></td>
          <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Observaciones" onclick="openModalObservaciones(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["observaciones"] . ')</td>';
         if ($datos["participantes"] == 'T') {
             echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Participantes" onclick="openModalParticipantes(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td></tr>';
