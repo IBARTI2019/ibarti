@@ -73,7 +73,7 @@ if(isset($_POST['trabajador'])){
 	if(isset($_POST['cliente']) AND (isset($_POST['enviar_cliente']) OR isset($_POST['enviar_ubicacion']))){
 		
 		if(isset($_POST['enviar_cliente'])){
-			$sql = "SELECT email FROM clientes_ubicacion WHERE codigo = '".$_POST['cliente']."' ";
+			$sql = "SELECT email FROM clientes WHERE codigo = '".$_POST['cliente']."' ";
 			$query = $bd->consultar($sql);
 			$result =$bd->obtener_fila($query,0);
 			$email =$result['email'];
