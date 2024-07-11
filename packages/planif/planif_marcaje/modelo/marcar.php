@@ -34,7 +34,7 @@ if (isset($codigo)) {
 
     //Formato de propiedades de la funcion enviar_mail_html($host,$puerto,$smtpSecure,$cuentaDeEnvio,$passwordCuentaDeEnvio,$nombre,$tema,$cuerpo,$cuerpoHtml,$cuentaDestino) 
     echo $host.",   ".$puerto.",   ".$protocolo.",   ".$cuenta.",   ".$password.",   ".'Comprobante'.",   ".'LEER'.",   "."".",   ". "<h1>TEST</h1>".",   ".$email;
-    enviar_mail_html($host,$puerto,$protocolo,$cuenta,$password,'Comprobante','LEER',"", "<h1>TEST</h1>",$email);
+    enviar_mail_html($host,$puerto,$protocolo,$cuenta,$password,'Comprobante','LEER',"", "TEST",$email, $link);
 
     $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '$codigo'";
     $query = $bd->consultar($sql);
