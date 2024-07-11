@@ -3,7 +3,7 @@ require("class.phpmailer.php");
 require("class.smtp.php");
 
 $result = array();
-function enviar_mail_html($host,$puerto,$smtpSecure,$cuentaDeEnvio,$passwordCuentaDeEnvio,$nombre,$tema,$cuerpo,$cuerpoHtml,$cuentaDestino) {
+function enviar_mail_html($host,$puerto,$smtpSecure,$cuentaDeEnvio,$passwordCuentaDeEnvio,$nombre,$tema,$cuerpo,$cuerpoHtml,$cuentaDestino, $link=null) {
 	$mail = new PHPMailer() ;
 
 	$mail->IsSMTP(); 
@@ -26,6 +26,13 @@ function enviar_mail_html($host,$puerto,$smtpSecure,$cuentaDeEnvio,$passwordCuen
 
 	$mail->Username = $cuentaDeEnvio;
 	$mail->Password = $passwordCuentaDeEnvio; 
+
+	if(isset($link)){
+		$fichero = file_get_contents($link);
+		$f = explode("/", $link);
+		$arch = $f[count($f)-1];
+		$mail->addStringAttachment($fichero, $arch);
+	}
 
 	if($mail->Send()){
 		$result['mensaje'] = "Enviado a ".$cuentaDestino;	
