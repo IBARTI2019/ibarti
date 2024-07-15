@@ -11,7 +11,9 @@ $result  =  $confirmaciones->get_planif($ficha, $cliente, $ubicacion);
 $disabled = "";
 
 foreach ($result as  $datos) {
-    echo '<tr><td style="background=\'red\' !important;">' . $datos["ubicacion"] . '</td>
+    echo '<tr>
+        <td>' . $datos["cliente"] . '</td>
+        <td>' . $datos["ubicacion"] . '</td>
         <td>' . $datos["ficha"] . '</td>
         <td>' .  $datos["telefono"] . '</td>
         <td>' . $datos["ap_nombre"] . '</td>

@@ -13,7 +13,7 @@ require "autentificacion/aut_config.inc.php";
 require Leng;
 if (isset($_SESSION['usuario_cod'])) {
   require_once('autentificacion/aut_verifica_menu.php');
-  require_once('sql/sql_report.php');
+  require_once('sql/sql_report_t.php');
   $us = $_SESSION['usuario_cod'];
 } else {
   $us = $_POST['usuario'];
@@ -77,6 +77,7 @@ if (isset($_SESSION['usuario_cod'])) {
     <table width="90%" class="tabla_planif">
       <thead>
         <tr>
+          <th><?php echo $leng["cliente"]; ?></th>
           <th><?php echo $leng["ubicacion"]; ?></th>
           <th><?php echo $leng["ficha"]; ?></th>
           <th>Telefono</th>

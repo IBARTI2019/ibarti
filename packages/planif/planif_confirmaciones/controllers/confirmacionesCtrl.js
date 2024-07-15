@@ -2,28 +2,25 @@ function Add_filtroX() {
     var ficha = $("#stdID").val();
     var cliente = $("#cliente").val();
     var ubicacion = $("#ubicacion").val();
-    if(cliente == 'TODOS' || cliente == ''){
-        toastr.error("Debe seleccionar un Cliente!..");
-    }else{
-        var parametros = {
-            cliente, ficha, ubicacion
-        };
-        $.ajax({
-            data: parametros,
-            url: 'packages/planif/planif_confirmaciones/views/Add_planif.php',
-            type: 'post',
-            beforeSend: function () {
-                $("#planificacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
-            },
-            success: function (response) {
-                $("#planificacion").html(response);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
-    }
+
+    var parametros = {
+        cliente, ficha, ubicacion
+    };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_confirmaciones/views/Add_planif.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#planificacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            $("#planificacion").html(response);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
 }
 
 function setConfirm(codigo, ap_nombre, in_transport) {
