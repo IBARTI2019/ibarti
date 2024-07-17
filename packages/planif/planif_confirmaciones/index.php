@@ -44,6 +44,17 @@ if (isset($_SESSION['usuario_cod'])) {
           <option value="TODOS">TODOS</option>
         </select>
       </td>
+      <td class="etiqueta"><?php echo $leng["horario"];?>: </td>
+      <td>
+        <select name="horario" id="horario" style="width:100px;">
+          <?php
+          echo $select_cl;
+          $query02 = $bd->consultar($sql_horario);
+          while ($row02 = $bd->obtener_fila($query02, 0)) {
+            echo '<option value="' . $row02[0] . '">' . $row02[1] . '</option>';
+          } ?>
+        </select>
+      </td>
       <td>
         <img class="imgLink" id="img_actualizar" src="imagenes/actualizar.png" border="0" onclick=" Add_filtroX()"  />
       </td>
@@ -62,7 +73,7 @@ if (isset($_SESSION['usuario_cod'])) {
         </select>
       </td>
       <td class="etiqueta">Trabajador:</td>
-      <td><input id="stdName" type="text" style="width:380px" disabled="disabled" />
+      <td colspan="3"><input id="stdName" type="text" style="width:380px" disabled="disabled" />
         <input type="hidden" name="trabajador" id="stdID" value="" onchange="Add_filtroX()" />
       </td>
       <td></td>

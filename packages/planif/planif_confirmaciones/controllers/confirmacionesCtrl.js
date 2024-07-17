@@ -2,9 +2,10 @@ function Add_filtroX() {
     var ficha = $("#stdID").val();
     var cliente = $("#cliente").val();
     var ubicacion = $("#ubicacion").val();
+    var horario = $("#horario").val();
 
     var parametros = {
-        cliente, ficha, ubicacion
+        cliente, ficha, ubicacion, horario
     };
     $.ajax({
         data: parametros,

@@ -15,7 +15,7 @@ class Confirmaciones
         $this->bd = new Database;
     }
 
-    function get_planif($ficha, $cliente, $ubicacion)
+    function get_planif($ficha, $cliente, $ubicacion, $horario)
     {
         $this->datos  = array();
         $where = " WHERE a.fecha = CURRENT_DATE 
@@ -39,6 +39,10 @@ class Confirmaciones
 
         if ($ficha != 'TODOS' && $ficha != "" && $ficha != null) {
             $where .= " AND ficha.cod_ficha = '$ficha'";
+        }
+
+        if ($horario != 'TODOS' && $horario != "" && $horario != null) {
+            $where .= " AND horarios.codigo = '$horario'";
         }
 
         $sql = "SELECT

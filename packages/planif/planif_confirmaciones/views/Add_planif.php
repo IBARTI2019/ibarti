@@ -7,7 +7,8 @@ $result = array();
 $ficha     = $_POST['ficha'];
 $cliente     = $_POST['cliente'];
 $ubicacion     = $_POST['ubicacion'];
-$result  =  $confirmaciones->get_planif($ficha, $cliente, $ubicacion);
+$horario     = $_POST['horario'];
+$result  =  $confirmaciones->get_planif($ficha, $cliente, $ubicacion, $horario);
 $disabled = "";
 
 foreach ($result as  $datos) {
