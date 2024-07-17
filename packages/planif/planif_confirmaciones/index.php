@@ -80,7 +80,7 @@ if (isset($_SESSION['usuario_cod'])) {
           <th><?php echo $leng["cliente"]; ?></th>
           <th><?php echo $leng["ubicacion"]; ?></th>
           <th><?php echo $leng["ficha"]; ?></th>
-          <th>Telefono</th>
+          <th>Tel&eacute;fono</th>
           <th><?php echo $leng["trabajador"]; ?></th>
           <th><?php echo $leng["turno"]; ?></th>
           <th><?php echo $leng["horario"]; ?></th>
