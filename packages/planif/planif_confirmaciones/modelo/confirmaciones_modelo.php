@@ -7,11 +7,13 @@ require_once("../../../../" . class_bdI);
 class Confirmaciones
 {
     private $datos;
+    private $data;
     private $bd;
 
     function __construct()
     {
         $this->datos   = array();
+        $this->data  = array("total" => 0, "confirm" => 0, "in_transport" => 0);
         $this->bd = new Database;
     }
 
@@ -85,5 +87,90 @@ class Confirmaciones
             $this->datos[] = $datos;
         }
         return $this->datos;
+    }
+
+    function get_estadistica($ficha, $cliente, $ubicacion, $horario)
+    {
+        $this->datos  = array();
+        $this->data  = array("total" => 0, "confirm" => 0, "in_transport" => 0);
+        $where = " WHERE a.fecha = CURRENT_DATE 
+            AND a.cod_cliente = clientes.codigo 
+            AND a.cod_ubicacion = clientes_ubicacion.codigo 
+            AND a.cod_puesto_trabajo = clientes_ub_puesto.codigo 
+            AND a.cod_ficha = ficha.cod_ficha 
+            AND a.cod_turno = turno.codigo 
+            AND turno.cod_horario = horarios.codigo 
+            AND horarios.cod_concepto = conceptos.codigo 
+            AND conceptos.asist_perfecta = 'T' 
+        ";
+
+        if ($cliente != 'TODOS' && $cliente != "" && $cliente != null) {
+            $where .= " AND a.cod_cliente = '$cliente'";
+        }
+
+        if ($ubicacion != 'TODOS' && $ubicacion != "" && $ubicacion != null) {
+            $where .= " AND a.cod_ubicacion = '$ubicacion'";
+        }
+
+        if ($ficha != 'TODOS' && $ficha != "" && $ficha != null) {
+            $where .= " AND ficha.cod_ficha = '$ficha'";
+        }
+
+        if ($horario != 'TODOS' && $horario != "" && $horario != null) {
+            $where .= " AND horarios.codigo = '$horario'";
+        }
+
+        $sql = "SELECT
+                    COUNT(a.codigo) total
+                FROM
+                    planif_clientes_trab_det a,
+                    clientes,
+                    clientes_ubicacion,
+                    clientes_ub_puesto,
+                    ficha,
+                    turno,
+                    horarios,
+                    conceptos 
+                " . $where . ";";
+
+        $query = $this->bd->consultar($sql);
+        $this->datos = $this->bd->obtener_fila($query, 0);
+        $this->data["total"] = $this->datos["total"];
+
+        $sql2 = "SELECT
+                COUNT(a.codigo) total
+            FROM
+                planif_clientes_trab_det a,
+                clientes,
+                clientes_ubicacion,
+                clientes_ub_puesto,
+                ficha,
+                turno,
+                horarios,
+                conceptos 
+            " . $where . " AND a.confirm = 'T';";
+
+        $query2 = $this->bd->consultar($sql2);
+        $this->datos = $this->bd->obtener_fila($query2, 0);
+        $this->data["confirm"] = $this->datos["total"];
+
+        $sql3 = "SELECT
+                COUNT(a.codigo) total
+            FROM
+                planif_clientes_trab_det a,
+                clientes,
+                clientes_ubicacion,
+                clientes_ub_puesto,
+                ficha,
+                turno,
+                horarios,
+                conceptos 
+            " . $where . " AND a.in_transport = 'T';";
+
+        $query3 = $this->bd->consultar($sql3);
+        $this->datos = $this->bd->obtener_fila($query3, 0);
+        $this->data["in_transport"] = $this->datos["total"];
+
+        return $this->data;
     }
 }

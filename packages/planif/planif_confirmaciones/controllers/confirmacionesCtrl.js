@@ -7,6 +7,7 @@ function Add_filtroX() {
     var parametros = {
         cliente, ficha, ubicacion, horario
     };
+    Add_Estadistica();
     $.ajax({
         data: parametros,
         url: 'packages/planif/planif_confirmaciones/views/Add_planif.php',
@@ -16,6 +17,32 @@ function Add_filtroX() {
         },
         success: function (response) {
             $("#planificacion").html(response);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
+
+function Add_Estadistica() {
+    var ficha = $("#stdID").val();
+    var cliente = $("#cliente").val();
+    var ubicacion = $("#ubicacion").val();
+    var horario = $("#horario").val();
+
+    var parametros = {
+        cliente, ficha, ubicacion, horario
+    };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_confirmaciones/views/Add_planif_estadistica.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#estadistica").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            $("#estadistica").html(response);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.status);

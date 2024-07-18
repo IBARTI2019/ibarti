@@ -9,6 +9,7 @@ $cliente     = $_POST['cliente'];
 $ubicacion     = $_POST['ubicacion'];
 $horario     = $_POST['horario'];
 $result  =  $confirmaciones->get_planif($ficha, $cliente, $ubicacion, $horario);
+$estadistica  =  $confirmaciones->get_estadistica($ficha, $cliente, $ubicacion, $horario);
 $disabled = "";
 
 foreach ($result as  $datos) {

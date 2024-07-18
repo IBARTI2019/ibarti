@@ -24,7 +24,7 @@ if (isset($_SESSION['usuario_cod'])) {
   <span class="etiqueta_title" id="title_confirmaciones">Confirmaciones</span>
   <table width="90%" align="center">
     <tr>
-      <td height="8" colspan="4" align="center">
+      <td height="8" colspan="7" align="center">
         <hr>
       </td>
     </tr>
@@ -80,11 +80,17 @@ if (isset($_SESSION['usuario_cod'])) {
     </tr>
     <tr>
     <tr>
-      <td height="8" colspan="4" align="center">
+      <td height="8" colspan="7" align="center">
         <hr>
       </td>
     </tr>
+    <tr>
+      <td height="8" colspan="7" align="right">
+        <div id="estadistica" align="right"> </div>
+      </td>
+    </tr>
   </table>
+
     <table width="90%" class="tabla_planif">
       <thead>
         <tr>
