@@ -1,4 +1,18 @@
+
+var ajaxTimeController = setInterval(()=>{ refresh();}, 30000);
+
+$(function() {
+    Add_filtroX();
+});
+
+
 function Add_filtroX() {
+    clearInterval(ajaxTimeController);
+    refresh();
+    ajaxTimeController = setInterval(()=>{ refresh();}, 30000);
+}
+
+function refresh() {
     var ficha = $("#stdID").val();
     var cliente = $("#cliente").val();
     var ubicacion = $("#ubicacion").val();
