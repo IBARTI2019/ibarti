@@ -33,6 +33,7 @@ $zona       = $ubicacion->get_zona($ubic['cod_zona']);
   <button class="tablinks" onclick="openTap(3)">Capta Huellas</button>
   <button class="tablinks" onclick="openTap(4)">Alcance</button>
   <button class="tablinks" onclick="openTap(5)">Uniforme</button>
+  <button class="tablinks" onclick="openTap(6)">Confirmaciones</button>
 </div>
 <div class="tabcontent" id="tab_cont01">
   <?php include('p_ubic.php'); ?>
@@ -60,6 +61,12 @@ $zona       = $ubicacion->get_zona($ubic['cod_zona']);
 <div class="tabcontent" id="tab_cont06">
   <?php if ($metodo == "modificar") {
     include('p_ubic_uniforme.php');
+  }
+  ?>
+</div>
+<div class="tabcontent" id="tab_cont07">
+  <?php if ($metodo == "modificar") {
+    include('p_ubic_confirmaciones.php');
   }
   ?>
 </div>
