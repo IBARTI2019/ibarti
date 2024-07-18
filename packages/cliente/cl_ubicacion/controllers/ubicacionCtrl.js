@@ -152,6 +152,7 @@ function save_confirmaciones() {
 			url: 'packages/cliente/cl_ubicacion/modelo/confirmaciones.php',
 			type: 'post',
 			success: function (response) {
+				toastr.success("Actualizacion exitosa!..");
 				Cons_ubicacion_inicio();
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
