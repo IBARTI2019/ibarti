@@ -1,6 +1,10 @@
 <?php 
 $Nmenu = '006';
 require_once('autentificacion/aut_verifica_menu.php');
+require_once('sql/sql_report.php');
+define("SPECIALCONSTANT", true);
+require("autentificacion/aut_config.inc.php");
+require Leng;
 
 $archivo = "control";
 $metodo  = "modificar";

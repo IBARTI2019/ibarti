@@ -15,6 +15,34 @@ class Planificacion
 		$this->bd = new Database;
 	}
 
+	function get_confirmaciones_esp(){
+		$sql = " SELECT
+					turno_cl_ubicacion.codigo,
+					clientes_ubicacion.cod_cliente,
+					clientes.nombre cliente,
+					turno_cl_ubicacion.cod_cl_ubicacion cod_ubicacion,
+					clientes_ubicacion.descripcion ubicacion,
+					turno_cl_ubicacion.cod_turno,
+					turno.descripcion turno,
+					turno_cl_ubicacion.hora_entrada 
+				FROM
+					turno_cl_ubicacion,
+					clientes,
+					clientes_ubicacion,
+					turno 
+				WHERE
+					turno_cl_ubicacion.cod_cl_ubicacion = clientes_ubicacion.codigo 
+					AND turno_cl_ubicacion.cod_turno = turno.codigo 
+					AND clientes_ubicacion.cod_cliente = clientes.codigo";
+	
+		$query = $this->bd->consultar($sql);
+
+		while ($datos = $this->bd->obtener_fila($query)) {
+			$this->datos[] = $datos;
+		}
+		return $this->datos;
+	}
+
 	function get_cliente($usuario, $r_cliente)
 	{
 		if ($r_cliente == "F") {

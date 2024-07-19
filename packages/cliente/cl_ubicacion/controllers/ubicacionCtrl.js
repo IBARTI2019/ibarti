@@ -131,40 +131,6 @@ function save_ubic() {
 	}
 }
 
-function save_confirmaciones() {
-	var error = 0;
-	var errorMessage = ' ';
-	var codigo = $("#cod_ubic_confirmaciones").val();
-	var min_confirm = $("#min_confirm").val();
-	var max_confirm = $("#max_confirm").val();
-	var min_in_transport = $("#min_in_transport").val();
-	var max_in_transport = $("#max_in_transport").val();
-
-	if (error == 0) {
-		var parametros = {
-			"codigo": codigo, "min_confirm": min_confirm,
-			"max_confirm": max_confirm, "min_in_transport": min_in_transport,
-			"max_in_transport": max_in_transport
-		};
-		console.log(parametros);
-		$.ajax({
-			data: parametros,
-			url: 'packages/cliente/cl_ubicacion/modelo/confirmaciones.php',
-			type: 'post',
-			success: function (response) {
-				toastr.success("Actualizacion exitosa!..");
-				Cons_ubicacion_inicio();
-			},
-			error: function (xhr, ajaxOptions, thrownError) {
-				alert(xhr.status);
-				alert(thrownError);
-			}
-		});
-	} else {
-		alert(errorMessage);
-	}
-}
-
 function Borrar_ubic(cod) {
 	var usuario = $("#usuario").val();
 	var parametros = {
