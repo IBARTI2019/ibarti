@@ -17,22 +17,22 @@ class Planificacion
 
 	function get_confirmaciones_esp(){
 		$sql = " SELECT
-					turno_cl_ubicacion.codigo,
+					horario_cl_ubicacion.codigo,
 					clientes_ubicacion.cod_cliente,
 					clientes.nombre cliente,
-					turno_cl_ubicacion.cod_cl_ubicacion cod_ubicacion,
+					horario_cl_ubicacion.cod_cl_ubicacion cod_ubicacion,
 					clientes_ubicacion.descripcion ubicacion,
-					turno_cl_ubicacion.cod_turno,
-					turno.descripcion turno,
-					turno_cl_ubicacion.hora_entrada 
+					horario_cl_ubicacion.cod_horario,
+					horarios.nombre horario,
+					horario_cl_ubicacion.hora_entrada 
 				FROM
-					turno_cl_ubicacion,
+					horario_cl_ubicacion,
 					clientes,
 					clientes_ubicacion,
-					turno 
+					horarios
 				WHERE
-					turno_cl_ubicacion.cod_cl_ubicacion = clientes_ubicacion.codigo 
-					AND turno_cl_ubicacion.cod_turno = turno.codigo 
+					horario_cl_ubicacion.cod_cl_ubicacion = clientes_ubicacion.codigo 
+					AND horario_cl_ubicacion.cod_horario = horarios.codigo 
 					AND clientes_ubicacion.cod_cliente = clientes.codigo";
 	
 		$query = $this->bd->consultar($sql);

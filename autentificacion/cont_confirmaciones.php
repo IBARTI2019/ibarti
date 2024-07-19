@@ -75,12 +75,12 @@ $bd = new DataBase();
         <option value="TODOS">TODOS</option>
       </select>
     </td>
-    <td class="etiqueta"><?php echo $leng['turno']?>:</td>
+    <td class="etiqueta"><?php echo $leng['horario']?>:</td>
     <td>
-      <select name="turno" id="turno_conf" style="width:120px;">
+      <select name="horario" id="horario_conf" style="width:120px;">
         <option value="TODOS">TODOS</option>
         <?php
-        $query01 = $bd->consultar($sql_turno);
+        $query01 = $bd->consultar($sql_horario);
         while($row01=$bd->obtener_fila($query01,0)){
           echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
         }
@@ -124,17 +124,17 @@ $bd = new DataBase();
   
   function resetData(){
     $("#ubicacion").val("TODOS");
-    $("#turno_conf").val("TODOS");
+    $("#horario_conf").val("TODOS");
     $("#hora_entrada_conf").val("");
   }
 
   function addConfEsp() {
     var ubicacion = $("#ubicacion").val();
-    var turno = $("#turno_conf").val();
+    var horario = $("#horario_conf").val();
     var hora_entrada = $("#hora_entrada_conf").val();
     var usuario = $("#usuario").val();
-    if(ubicacion != "TODOS" && ubicacion != "" && turno != "TODOS" && turno != "" && hora_entrada != "" ){
-      var parametros = { "ubicacion": ubicacion, "turno": turno, "hora_entrada": hora_entrada, "usuario": usuario };
+    if(ubicacion != "TODOS" && ubicacion != "" && horario != "TODOS" && horario != "" && hora_entrada != "" ){
+      var parametros = { "ubicacion": ubicacion, "horario": horario, "hora_entrada": hora_entrada, "usuario": usuario };
       $.ajax({
         data: parametros,
         url: 'packages/planif/planificaciones/modelo/confirmaciones_esp.php',

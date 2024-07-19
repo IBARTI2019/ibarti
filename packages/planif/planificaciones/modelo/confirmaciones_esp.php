@@ -10,11 +10,11 @@ $result = array();
   }
 try {
     if($codigo == ""){
-      $sql = "INSERT INTO turno_cl_ubicacion (cod_cl_ubicacion, cod_turno, hora_entrada, usuario) VALUES ('$ubicacion','$turno', '$hora_entrada', '$usuario')";
+      $sql = "INSERT INTO horario_cl_ubicacion (cod_cl_ubicacion, cod_horario, hora_entrada, usuario) VALUES ('$ubicacion','$horario', '$hora_entrada', '$usuario')";
       $query = $bd->consultar($sql);
     }else{
-      $sql = "UPDATE turno_cl_ubicacion SET hora_entrada = '$hora_entrada', usuario = '$usuario'
-              WHERE cod_cl_ubicacion = '$ubicacion', cod_turno = '$turno';";
+      $sql = "UPDATE horario_cl_ubicacion SET hora_entrada = '$hora_entrada', usuario = '$usuario'
+              WHERE cod_cl_ubicacion = '$ubicacion', cod_horario = '$horario';";
      $query = $bd->consultar($sql);
     }
   $result['sql'] = $sql;

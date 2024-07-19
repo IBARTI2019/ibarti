@@ -9,7 +9,7 @@ $result = array();
     eval($variables);
   }
 try {
-  $sql = "DELETE FROM turno_cl_ubicacion WHERE codigo = $codigo;";
+  $sql = "DELETE FROM horario_cl_ubicacion WHERE codigo = $codigo;";
   $query = $bd->consultar($sql);
 
   $result['sql'] = $sql;
@@ -17,7 +17,7 @@ try {
      $error =  $e->getMessage();
      $result['error'] = true;
      $result['mensaje'] = $error;
-     $bd->log_error("Aplicacion", "sc_planificacion.php",  "$usuario", "$error", "$sql");
+     $bd->log_error("Aplicacion", "sc_horario_cl_ubicacion.php",  "$usuario", "$error", "$sql");
  }
 
 	print_r(json_encode($result));
