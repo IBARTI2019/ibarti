@@ -100,7 +100,6 @@ if (isset($_SESSION['usuario_cod'])) {
           <th>Tel&eacute;fono</th>
           <th><?php echo $leng["trabajador"]; ?></th>
           <th><?php echo $leng["turno"]; ?></th>
-          <th><?php echo $leng["horario"]; ?></th>
           <th><?php echo $leng["concepto"]; ?></th>
           <th>Hora entrada</th>
           <th>Hora de confirmacion</th>

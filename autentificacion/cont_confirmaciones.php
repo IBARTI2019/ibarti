@@ -98,6 +98,7 @@ $bd = new DataBase();
 </table>
 <table class="tabla_sistema" width="80%" border="0" align="center" id="confirmaciones_especificas">
 </table>
+<input name="usuario" type="hidden" value="<?php echo $usuario; ?>" />
 
 <script>
   $(function () {
