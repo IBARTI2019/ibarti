@@ -27,7 +27,7 @@ function refresh(auto) {
         url: 'packages/planif/planif_confirmaciones/views/Add_planif.php',
         type: 'post',
         beforeSend: function () {
-            if(!auto){
+            if(!auto || auto == undefined){
                 $("#planificacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
             }
         },
