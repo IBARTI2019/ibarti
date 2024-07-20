@@ -1,4 +1,5 @@
 <?php
+require_once('sql/sql_report_t.php');
 $bd = new DataBase();
 ?>
 <table width="80%" align="center">
@@ -59,7 +60,7 @@ $bd = new DataBase();
   </tr>
     <td class="etiqueta"><?php echo $leng['cliente']?>:</td>
     <td>
-      <select name="cliente" id="cliente" style="width:120px;" onchange="Add_ajax01(this.value, 'ajax/Add_cl_ubicacion.php', 'selectUbic')">
+      <select name="cliente" id="cliente" style="width:120px;" onchange="Add_ajax01(this.value, 'ajax/Add_cl_ubicacion_simple.php', 'selectUbic')">
         <option value="TODOS">TODOS</option>
         <?php
         $query01 = $bd->consultar($sql_cliente);
