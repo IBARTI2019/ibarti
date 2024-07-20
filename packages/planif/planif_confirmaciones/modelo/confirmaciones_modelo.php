@@ -59,11 +59,16 @@ class Confirmaciones
                     horarios.nombre horario,
                     conceptos.abrev concepto,
                     a.fecha,
-                    horarios.hora_entrada,
-                    TIMESTAMPDIFF(
-                        MINUTE,
-                        CURRENT_TIMESTAMP,
-                    CONCAT( CURRENT_DATE, ' ', horarios.hora_entrada )) diff_min,
+                    IFNULL(
+                        (SELECT hora_entrada FROM horario_cl_ubicacion
+                            WHERE horario_cl_ubicacion.cod_cl_ubicacion = clientes_ubicacion.codigo 
+                            AND horario_cl_ubicacion.cod_horario = horarios.codigo), 
+                        horarios.hora_entrada
+                    ) hora_entrada,
+                    -- TIMESTAMPDIFF(
+                    --    MINUTE,
+                    --    CURRENT_TIMESTAMP,
+                    -- CONCAT( CURRENT_DATE, ' ', horarios.hora_entrada )) diff_min,
                     a.confirm,
                     a.in_transport,
             		TIME(a.fec_confirm) fec_confirm,

@@ -89,7 +89,7 @@ $bd = new DataBase();
     </td>
     <td class="etiqueta">Hora de entrada: </td>
     <td>
-      <input type="time" name="hora" id="hora_entrada_conf" step="30">
+      <input type="time" name="hora" id="hora_entrada_conf">
     </td>
     <td>
       <img class="imgLink" src="imagenes\ico_agregar.ico" alt="Agregar" title="Agregar"  width="15px" height="15px" onclick="addConfEsp()">
