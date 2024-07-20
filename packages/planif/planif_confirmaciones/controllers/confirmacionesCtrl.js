@@ -9,10 +9,10 @@ $(function() {
 function Add_filtroX() {
     clearInterval(ajaxTimeController);
     refresh();
-    ajaxTimeController = setInterval(()=>{ refresh();}, 30000);
+    ajaxTimeController = setInterval(()=>{ refresh(true);}, 30000);
 }
 
-function refresh() {
+function refresh(auto) {
     var ficha = $("#stdID").val();
     var cliente = $("#cliente").val();
     var ubicacion = $("#ubicacion").val();
@@ -27,7 +27,9 @@ function refresh() {
         url: 'packages/planif/planif_confirmaciones/views/Add_planif.php',
         type: 'post',
         beforeSend: function () {
-            $("#planificacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+            if(!auto){
+                $("#planificacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+            }
         },
         success: function (response) {
             $("#planificacion").html(response);
