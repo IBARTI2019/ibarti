@@ -11,13 +11,25 @@
 $Nmenu = '4409';
 require "autentificacion/aut_config.inc.php";
 require Leng;
+require_once('autentificacion/aut_verifica_menu.php');
+require_once('sql/sql_report_t.php');
 if (isset($_SESSION['usuario_cod'])) {
-  require_once('autentificacion/aut_verifica_menu.php');
-  require_once('sql/sql_report_t.php');
   $us = $_SESSION['usuario_cod'];
 } else {
   $us = $_POST['usuario'];
 }
+
+$sql_horario = "SELECT
+                  horarios.codigo,
+                  horarios.nombre 
+                FROM
+                  horarios,
+                  conceptos 
+                WHERE
+                  horarios.`status` = 'T' 
+                  AND horarios.cod_concepto = conceptos.codigo 
+                  AND conceptos.asist_perfecta = 'T' 
+                ORDER BY 2 ASC;";
 ?>
 <div id="Cont_confirmaciones">
 
