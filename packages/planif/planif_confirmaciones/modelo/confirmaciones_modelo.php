@@ -85,7 +85,7 @@ class Confirmaciones
                 " . $where . " 
                 -- HAVING diff_min >= 0
                 -- HAVING ((diff_min > 60 AND diff_min < 120 AND confirm = 'F') OR (diff_min > 15 AND diff_min < 60 AND confirm = 'T' AND in_transport = 'F') OR (confirm = 'T' AND in_transport = 'T'))
-                ORDER BY horarios.hora_entrada ASC";
+                ORDER BY hora_entrada ASC";
 
         $query = $this->bd->consultar($sql);
         while ($datos = $this->bd->obtener_fila($query)) {
