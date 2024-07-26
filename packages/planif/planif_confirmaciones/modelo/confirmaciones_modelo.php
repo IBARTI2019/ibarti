@@ -43,7 +43,7 @@ class Confirmaciones
             $where .= " AND ficha.cod_ficha = '$ficha'";
         }
 
-        if(isset($horarios)){
+        if($horarios != "" && $horarios != null){
             if(!in_array("TODOS", $horarios)){
                 $i = 0;
                 foreach ($horarios as $value) {
@@ -132,7 +132,7 @@ class Confirmaciones
             $where .= " AND ficha.cod_ficha = '$ficha'";
         }
 
-        if(isset($horarios)){
+        if($horarios != "" && $horarios != null){
             if(!in_array("TODOS", $horarios)){
                 $i = 0;
                 foreach ($horarios as $value) {
