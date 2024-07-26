@@ -14,7 +14,10 @@ $porcentaje_transporte = round((($data["in_transport"] * 100) / $data["total"]),
 echo '<table>
 <tr align="left">
     <td align="left">
-        <b> Asistencia: '.$data["confirm"].'/'.$data["total"].'</b>
+        <b> Asistencia: </b>
+    </td>
+    <td align="left">
+        <b> '.$data["confirm"].'/'.$data["total"].'</b>
     </td>
     <td align="left">
         <b>  -  '. $porcentaje_asistenia .'% </b>
@@ -22,7 +25,10 @@ echo '<table>
 </tr>
 <tr align="left">
     <td align="left">
-        <b> Transporte: '.$data["in_transport"].'/'.$data["total"].'</b>
+        <b> Transporte: </b>
+    </td>
+    <td align="left">
+        <b> '.$data["in_transport"].'/'.$data["total"].'</b>
     </td>
     <td align="left">
         <b>  -  '. $porcentaje_transporte .'% </b>
