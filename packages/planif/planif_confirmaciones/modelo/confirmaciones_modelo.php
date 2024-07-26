@@ -43,17 +43,19 @@ class Confirmaciones
             $where .= " AND ficha.cod_ficha = '$ficha'";
         }
 
-        if(!in_array("TODOS", $horarios)){
-            $i = 0;
-            foreach ($horarios as $value) {
-                if ($i == 0) {
-                    $where .= " AND ((horarios.codigo  = " . $value . ") ";
-                } else {
-                    $where .= " OR (horarios.codigo = " . $value .")";
-                }
-                $i++;
-            };
-            $where .= ") ";
+        if(isset($horarios)){
+            if(!in_array("TODOS", $horarios)){
+                $i = 0;
+                foreach ($horarios as $value) {
+                    if ($i == 0) {
+                        $where .= " AND ((horarios.codigo  = " . $value . ") ";
+                    } else {
+                        $where .= " OR (horarios.codigo = " . $value .")";
+                    }
+                    $i++;
+                };
+                $where .= ") ";
+            }
         }
 
         $sql = "SELECT
@@ -103,7 +105,7 @@ class Confirmaciones
         return $this->datos;
     }
 
-    function get_estadistica($ficha, $cliente, $ubicacion, $horario)
+    function get_estadistica($ficha, $cliente, $ubicacion, $horarios)
     {
         $this->datos  = array();
         $this->data  = array("total" => 0, "confirm" => 0, "in_transport" => 0);
@@ -130,17 +132,19 @@ class Confirmaciones
             $where .= " AND ficha.cod_ficha = '$ficha'";
         }
 
-        if(!in_array("TODOS", $horarios)){
-            $i = 0;
-            foreach ($horarios as $value) {
-                if ($i == 0) {
-                    $where .= " AND ((horarios.codigo  = " . $value . ") ";
-                } else {
-                    $where .= " OR (horarios.codigo = " . $value .")";
-                }
-                $i++;
-            };
-            $where .= ") ";
+        if(isset($horarios)){
+            if(!in_array("TODOS", $horarios)){
+                $i = 0;
+                foreach ($horarios as $value) {
+                    if ($i == 0) {
+                        $where .= " AND ((horarios.codigo  = " . $value . ") ";
+                    } else {
+                        $where .= " OR (horarios.codigo = " . $value .")";
+                    }
+                    $i++;
+                };
+                $where .= ") ";
+            }
         }
 
         $sql = "SELECT
