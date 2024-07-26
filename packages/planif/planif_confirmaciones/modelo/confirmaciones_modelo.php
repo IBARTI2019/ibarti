@@ -130,8 +130,17 @@ class Confirmaciones
             $where .= " AND ficha.cod_ficha = '$ficha'";
         }
 
-        if ($horario != 'TODOS' && $horario != "" && $horario != null) {
-            $where .= " AND horarios.codigo = '$horario'";
+        if(!in_array("TODOS", $horarios)){
+            $i = 0;
+            foreach ($horarios as $value) {
+                if ($i == 0) {
+                    $where .= " AND ((horarios.codigo  = " . $value . ") ";
+                } else {
+                    $where .= " OR (horarios.codigo = " . $value .")";
+                }
+                $i++;
+            };
+            $where .= ") ";
         }
 
         $sql = "SELECT
