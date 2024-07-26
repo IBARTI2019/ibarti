@@ -58,7 +58,7 @@ $sql_horario = "SELECT
       </td>
       <td class="etiqueta"><?php echo $leng["horario"];?>: </td>
       <td>
-        <select name="horario" id="horario" multiple="multiple" style="width:240px;">
+        <select name="horario" id="horario" multiple="multiple" style="width:170px;">
           <?php
           echo $select_cl;
           $query02 = $bd->consultar($sql_horario);
