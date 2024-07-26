@@ -9,8 +9,8 @@ $cliente     = $_POST['cliente'];
 $ubicacion     = $_POST['ubicacion'];
 $horario     = $_POST['horario'];
 $data  =  $confirmaciones->get_estadistica($ficha, $cliente, $ubicacion, $horario);
-$porcentaje_asistenia = round((($data["confirm"] * 100) / $data["total"]), 2);
-$porcentaje_transporte = round((($data["in_transport"] * 100) / $data["total"]), 2);
+$porcentaje_asistenia = round((($data["confirm"] * 100) / $data["total"]));
+$porcentaje_transporte = round((($data["in_transport"] * 100) / $data["total"]));
 echo '<table>
 <tr align="left">
     <td align="left">
