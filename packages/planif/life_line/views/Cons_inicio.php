@@ -12,7 +12,7 @@ $cliente  =  $plan->get_cliente($_POST["usuario"], $_POST["r_cliente"]);
   <table width="100%" align="center">
     <tr>
       <td width="10%"  class="etiqueta"><?php echo $leng['cliente'] ?>:</td>
-      <td ><select id="planf_cliente" style="width:300px" required onchange="Add_Cl_Ubic(this.value, 'contenido_ubic', 'T', '300')">
+      <td ><select id="planf_cliente" style="width:300px" required onchange="Add_Cl_Ubic(this.value, 'contenido_ubic', 'LL', '300')">
           <option value="">Seleccione</option>
           <?php
           foreach ($cliente as  $datos) {
