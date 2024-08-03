@@ -224,11 +224,11 @@ class Grafica {
                     }
                 }else if(index == (data.length - 1)){
                     const simulateToken = moment(this.fechaActual + " " + horaFinMayor, format)
-                    const simulateNow   = moment(this.fechaActual + " 24:00", format)
+                    const simulateNow   = moment(this.fechaActual + " 24:59", format)
                     if(simulateNow.isAfter(simulateToken)){
                         var dataA = [];
                         dataA.push({x:this.fechaActual + " " + horaFinMayor,y:-1});
-                        dataA.push({x:this.fechaActual + " 24:00",y:-1});
+                        dataA.push({x:this.fechaActual + " 24:59",y:-1});
                         this.datos.push({
                             data: dataA,      
                             fill: false,
@@ -283,7 +283,7 @@ class Grafica {
                               // Luxon format string
                               minUnit: 'minute',
                               min: this.fechaActual + " 00:00",
-                              max: this.fechaActual + " 24:00"
+                              max: this.fechaActual + " 24:59"
                             },
                             distribution: 'linear'
                           }],
