@@ -8,6 +8,7 @@ var chartColors = ['rgb(255, 99, 132)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)'
     'rgb(54, 162, 235)', 'rgb(153, 102, 255)', 'rgb(201, 203, 207)'
 ];
 var graph;
+var ubicSelect = "";
 //Se geneara automaticamente al cargar el script
 $(function () {
     iniciar();
@@ -17,7 +18,7 @@ function Add_filtroX() {
     var usuario = $("#usuario").val();
     var ubicacion = $("#ubicacion").val();
     var error = 0,
-        errorMessage = ' ';
+    errorMessage = ' ';
     if (error == 0 && ubicacion != "TODOS" && ubicacion != "") {
         var parametros = {
             "ubicacion": ubicacion,
@@ -35,10 +36,11 @@ function Add_filtroX() {
                     $('#sin_data').hide();
                     $('#grafica').show();
                     $('#division').show();
-                    if (graph) {
+                    if (graph && ubicSelect == ubicacion) {
                     //     console.log('actualizar');
                         graph = g.actualizarLifeLine(graph, resp, true)
                     } else {
+                        ubicSelect = ubicacion;
                         graph = g.LifeLine('chart-area', resp);
                     }
 
@@ -55,8 +57,6 @@ function Add_filtroX() {
             }
         });
 
-    } else {
-        alert(errorMessage);
     }
 }
 

@@ -141,6 +141,53 @@ class Grafica {
             var y = 0;
             for (let index = 0; index < data.length; index++) {
                 const element = data[index];
+                const format = 'DD-MM-YYYY HH:mm'; 
+                var horaFinMayor = element.hora_fin;
+                if(index > 0){
+                    var dataFilter = data.filter(d => {
+                        return (
+                            (
+                                moment(this.fechaActual + " " + element.hora_fin, format).isAfter(
+                                moment(this.fechaActual + " " + d.hora_inicio, format)) 
+                            )
+                            || 
+                            (
+                                moment(this.fechaActual + " " + d.hora_fin, format).isAfter(
+                                moment(this.fechaActual + " " + element.hora_fin, format)) &&
+                                moment(this.fechaActual + " " + element.hora_inicio, format).isAfter(
+                                moment(this.fechaActual + " " + d.hora_inicio, format))
+                            )
+                        );
+                    });
+
+                    var d = dataFilter.reduce((previous, current) => {
+                        return moment(this.fechaActual + " " + previous.hora_fin, format).isAfter(
+                            moment(this.fechaActual + " " + current.hora_fin, format))
+                            ? previous : current; 
+                    });
+                    horaFinMayor = d.hora_fin;
+                }
+                
+                if(index == 0){
+                    const simulateToken = moment(this.fechaActual + " 00:00", format)
+                    const simulateNow   = moment(this.fechaActual + " " + element.hora_inicio, format)
+                    if(simulateNow.isAfter(simulateToken)){
+                        var dataA = [];
+                        dataA.push({x:this.fechaActual + " 00:00",y:-1});
+                        dataA.push({x:this.fechaActual + " " + element.hora_inicio,y:-1});
+                        this.datos.push({
+                            data: dataA,      
+                            fill: false,
+                            label: 'Sin Actividad',
+                            backgroundColor: '#CB3234',
+                            borderColor: '#CB3234',
+                            pointRadius: 5,
+                            spanGaps: false,
+                            cubicInterpolationMode: 'monotone',
+                        });
+                    }
+                }
+
                 var dataA = [];
                 this.codigos.push(element.cod_actividad);
                 y = this.codigos.findIndex((d) => d == element.cod_actividad);
@@ -156,7 +203,46 @@ class Grafica {
                     spanGaps: false,
                     cubicInterpolationMode: 'monotone',
                 });
+
+                if(index < (data.length - 1)){
+                    const simulateToken = moment(this.fechaActual + " " + horaFinMayor, format)
+                    const simulateNow   = moment(this.fechaActual + " " + data[(index+1)].hora_inicio, format)
+                    if(simulateNow.isAfter(simulateToken)){
+                        var dataA = [];
+                        dataA.push({x:this.fechaActual + " " + horaFinMayor,y:-1});
+                        dataA.push({x:this.fechaActual + " " + data[(index+1)].hora_inicio,y:-1});
+                        this.datos.push({
+                            data: dataA,      
+                            fill: false,
+                            label: 'Sin Actividad',
+                            backgroundColor: '#CB3234',
+                            borderColor: '#CB3234',
+                            pointRadius: 5,
+                            spanGaps: false,
+                            cubicInterpolationMode: 'monotone',
+                        });
+                    }
+                }else if(index == (data.length - 1)){
+                    const simulateToken = moment(this.fechaActual + " " + horaFinMayor, format)
+                    const simulateNow   = moment(this.fechaActual + " 24:00", format)
+                    if(simulateNow.isAfter(simulateToken)){
+                        var dataA = [];
+                        dataA.push({x:this.fechaActual + " " + horaFinMayor,y:-1});
+                        dataA.push({x:this.fechaActual + " 24:00",y:-1});
+                        this.datos.push({
+                            data: dataA,      
+                            fill: false,
+                            label: 'Sin Actividad',
+                            backgroundColor: '#CB3234',
+                            borderColor: '#CB3234',
+                            pointRadius: 5,
+                            spanGaps: false,
+                            cubicInterpolationMode: 'monotone',
+                        });
+                    }
+                }
             }
+
         
             const DATA_COUNT = 24;
             for (let i = 0; i < DATA_COUNT; ++i) {
@@ -205,7 +291,7 @@ class Grafica {
                             display: false,
                             ticks: {
                                 suggestedMin: -1,
-                                suggestedMax: this.datos.length * 1.2,
+                                suggestedMax: this.datos.length,
                             }
                         }]
                     },

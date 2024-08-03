@@ -72,7 +72,8 @@ class LifeLine
 				WHERE
 					planif_life_line.cod_ubicacion = clientes_ubicacion.codigo
 					AND planif_life_line.cod_actividad = planif_life_line_actividades.codigo  
-					AND planif_life_line.cod_ubicacion = $ubic;";
+					AND planif_life_line.cod_ubicacion = $ubic
+				ORDER BY planif_life_line.hora_inicio ASC;";
 
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query)) {
