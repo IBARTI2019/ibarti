@@ -14,6 +14,12 @@ class Grafica {
         //configuracion barra
         this.barra = null;
         this.configBarra = {};
+
+        //configuracion linea
+        this.linea = null;
+        this.configLinea = {};
+        this.fechaActual = moment(new Date()).format("YYYY-MM-DD")
+
         if (colores) {
             this.chartColors = colores;
         } else {
@@ -104,7 +110,6 @@ class Grafica {
         obj.data.datasets.forEach((dataset) => {
             dataset.data.pop();
         });
-        console.log(obj.width)
         obj.type=dona?'doughnut':'pie';
         obj.data.labels.pop();
         obj.data.datasets[0].data = this.datos;
@@ -125,5 +130,171 @@ class Grafica {
             this.labels.push(d.titulo);
             this.codigos.push(d.codigo);
         });
+    }
+
+    LifeLine(id_contenedor, data) {
+        this.datos = [];
+        this.labels = [];
+        this.codigos = [];
+        
+        if (data.length > 0) {
+            var y = 0;
+            for (let index = 0; index < data.length; index++) {
+                const element = data[index];
+                var dataA = [];
+                this.codigos.push(element.cod_actividad);
+                y = this.codigos.findIndex((d) => d == element.cod_actividad);
+                dataA.push({x:this.fechaActual + " " + element.hora_inicio,y:y});
+                dataA.push({x:this.fechaActual + " " + element.hora_fin,y:y});
+                this.datos.push({
+                    data: dataA,      
+                    fill: false,
+                    label: element.actividad,
+                    backgroundColor: element.color,
+                    borderColor: element.color,
+                    pointRadius: 5,
+                    spanGaps: false,
+                    cubicInterpolationMode: 'monotone',
+                });
+            }
+        
+            const DATA_COUNT = 24;
+            for (let i = 0; i < DATA_COUNT; ++i) {
+                if(i > 9){
+                    this.labels.push(this.fechaActual + " " +i+":30");
+                }else{
+                    this.labels.push(this.fechaActual + " " +'0'+i+":30");
+                }
+            }
+            var dataGroup = Object.groupBy(data, ({ cod_actividad }) => cod_actividad);
+            this.configLinea = {
+                type: 'line',
+                data: {
+                    datasets: this.datos,
+                    labels: this.labels
+                },
+                options: {
+                    spanGaps: true,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 10,
+                            top: 20,
+                            bottom: 0
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                    },
+                    tooltips: {
+                        // enabled: false,
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            distribution: 'linear',
+                            time: {
+                              // Luxon format string
+                              minUnit: 'minute',
+                              min: this.fechaActual + " 00:00",
+                              max: this.fechaActual + " 24:00"
+                            },
+                            distribution: 'linear'
+                          }],
+                          yAxes: [{
+                            display: false,
+                            ticks: {
+                                suggestedMin: -1,
+                                suggestedMax: this.datos.length * 1.2,
+                            }
+                        }]
+                    },
+                    fill: false,
+                    responsive: true,
+                    legend: {
+                        labels: {
+                            generateLabels: chart => Object.keys(dataGroup).map((l, i) => ({
+                                datasetIndex: i,
+                                text: dataGroup[l][0].actividad,
+                                fillStyle: dataGroup[l][0].color,
+                                strokeStyle: dataGroup[l][0].backgroundColor,
+                                hidden: chart.getDatasetMeta(this.datos.findIndex(ds => ds.label == dataGroup[l][0].actividad)).hidden,
+                            })),
+                        },
+                        onClick: function (e, legendItem) {
+                            var index = legendItem.datasetIndex;
+                            let ci = this.chart;
+                            ci.data.datasets.forEach((ds, i) => {
+                                if(ds.label == legendItem.text){
+                                    var meta = ci.getDatasetMeta(i);
+                                    meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+                                }
+                            })
+                            ci.update();
+                         }
+                    }
+                }
+            };
+
+            this.ctx = document.getElementById(id_contenedor).getContext('2d');
+            this.linea = new Chart(this.ctx, this.configLinea);
+            // this.linea.codigos = this.codigos;
+        }
+        return this.linea;
+    }
+
+    actualizarLifeLine(obj, data) {
+        this.datos = [];
+        this.codigos = [];
+        var y = 0;
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            var dataA = [];
+            this.codigos.push(element.cod_actividad);
+            y = this.codigos.findIndex((d) => d == element.cod_actividad);
+            dataA.push({x:this.fechaActual + " " + element.hora_inicio,y:y});
+            dataA.push({x:this.fechaActual + " " + element.hora_fin,y:y});
+            this.datos.push({
+                data: dataA,      
+                fill: false,
+                label: element.actividad,
+                backgroundColor: element.color,
+                borderColor: element.color,
+                pointRadius: 5,
+                spanGaps: false,
+                cubicInterpolationMode: 'monotone',
+            });
+        }
+        var dataGroup = Object.groupBy(data, ({ cod_actividad }) => cod_actividad);
+
+        obj.data.datasets.forEach((dataset) => {
+            dataset.data.pop();
+        });
+
+        obj.data.datasets = this.datos;
+        obj.options.legend = {
+            labels: {
+                generateLabels: chart => Object.keys(dataGroup).map((l, i) => ({
+                    datasetIndex: i,
+                    text: dataGroup[l][0].actividad,
+                    fillStyle: dataGroup[l][0].color,
+                    strokeStyle: dataGroup[l][0].backgroundColor,
+                    hidden: chart.getDatasetMeta(this.datos.findIndex(ds => ds.label == dataGroup[l][0].actividad)).hidden,
+                })),
+            },
+            onClick: function (e, legendItem) {
+                var index = legendItem.datasetIndex;
+                let ci = this.chart;
+                ci.data.datasets.forEach((ds, i) => {
+                    if(ds.label == legendItem.text){
+                        var meta = ci.getDatasetMeta(i);
+                        meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+                    }
+                })
+                ci.update();
+             }
+        };
+        obj.update();
+        return obj;
     }
 }
