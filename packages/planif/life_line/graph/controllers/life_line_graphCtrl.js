@@ -16,7 +16,7 @@ $(function () {
 
 function Add_filtroX() {
     var usuario = $("#usuario").val();
-    var ubicacion = 277; //$("#ubicacion").val();
+    var ubicacion = $("#ubicacion").val(); //277;
     var error = 0,
     errorMessage = ' ';
     if (error == 0 && ubicacion != "TODOS" && ubicacion != "") {
@@ -71,7 +71,7 @@ function iniciar() {
             type: 'POST',
             success: function (response) {
                 $("#Cont_graph").html(response);
-                Add_filtroX();
+                // Add_filtroX();
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
