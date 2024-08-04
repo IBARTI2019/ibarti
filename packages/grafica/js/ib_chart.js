@@ -136,7 +136,9 @@ class Grafica {
         this.datos = [];
         this.labels = [];
         this.codigos = [];
-        
+        const pointRadius = 2;
+        const colorNA = '#CB3234';
+
         if (data.length > 0) {
             var y = 0;
             for (let index = 0; index < data.length; index++) {
@@ -179,9 +181,9 @@ class Grafica {
                             data: dataA,      
                             fill: false,
                             label: 'Sin Actividad',
-                            backgroundColor: '#CB3234',
-                            borderColor: '#CB3234',
-                            pointRadius: 5,
+                            backgroundColor:  colorNA,
+                            borderColor:  colorNA,
+                            pointRadius: pointRadius,
                             spanGaps: false,
                             cubicInterpolationMode: 'monotone',
                         });
@@ -199,7 +201,7 @@ class Grafica {
                     label: element.actividad,
                     backgroundColor: element.color,
                     borderColor: element.color,
-                    pointRadius: 5,
+                    pointRadius: pointRadius,
                     spanGaps: false,
                     cubicInterpolationMode: 'monotone',
                 });
@@ -215,9 +217,9 @@ class Grafica {
                             data: dataA,      
                             fill: false,
                             label: 'Sin Actividad',
-                            backgroundColor: '#CB3234',
-                            borderColor: '#CB3234',
-                            pointRadius: 5,
+                            backgroundColor:  colorNA,
+                            borderColor:  colorNA,
+                            pointRadius: pointRadius,
                             spanGaps: false,
                             cubicInterpolationMode: 'monotone',
                         });
@@ -233,9 +235,9 @@ class Grafica {
                             data: dataA,      
                             fill: false,
                             label: 'Sin Actividad',
-                            backgroundColor: '#CB3234',
-                            borderColor: '#CB3234',
-                            pointRadius: 5,
+                            backgroundColor:  colorNA,
+                            borderColor:  colorNA,
+                            pointRadius: pointRadius,
                             spanGaps: false,
                             cubicInterpolationMode: 'monotone',
                         });
@@ -278,14 +280,16 @@ class Grafica {
                     scales: {
                         xAxes: [{
                             type: 'time',
+                            distribution: 'series',
                             distribution: 'linear',
                             time: {
                               // Luxon format string
-                              minUnit: 'minute',
+                            //   minUnit: 'minute',
                               min: this.fechaActual + " 00:00",
-                              max: this.fechaActual + " 24:00"
+                              max: this.fechaActual + " 24:00",
+                              unit: 'minute'
                             },
-                            distribution: 'linear'
+                            parser: "HH:mm"
                           }],
                           yAxes: [{
                             display: false,
@@ -346,7 +350,7 @@ class Grafica {
                 label: element.actividad,
                 backgroundColor: element.color,
                 borderColor: element.color,
-                pointRadius: 5,
+                pointRadius: pointRadius,
                 spanGaps: false,
                 cubicInterpolationMode: 'monotone',
             });

@@ -16,7 +16,7 @@ $(function () {
 
 function Add_filtroX() {
     var usuario = $("#usuario").val();
-    var ubicacion = $("#ubicacion").val();
+    var ubicacion = 277; //$("#ubicacion").val();
     var error = 0,
     errorMessage = ' ';
     if (error == 0 && ubicacion != "TODOS" && ubicacion != "") {
@@ -29,7 +29,6 @@ function Add_filtroX() {
             url: 'packages/planif/life_line/graph/modelo/getData.php',
             type: 'post',
             success: function (response) {
-                console.log(response);
                 var resp = JSON.parse(response);
                 if (resp.length > 0) {
                     $('.brs').show();
@@ -37,7 +36,6 @@ function Add_filtroX() {
                     $('#grafica').show();
                     $('#division').show();
                     if (graph && ubicSelect == ubicacion) {
-                    //     console.log('actualizar');
                         graph = g.actualizarLifeLine(graph, resp, true)
                     } else {
                         ubicSelect = ubicacion;
@@ -73,7 +71,7 @@ function iniciar() {
             type: 'POST',
             success: function (response) {
                 $("#Cont_graph").html(response);
-                // Add_filtroX();
+                Add_filtroX();
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
