@@ -255,6 +255,7 @@ class Grafica {
                 }
             }
             var dataGroup = Object.groupBy(data, ({ cod_actividad }) => cod_actividad);
+            var maxL =  (Object.keys(dataGroup).map((k) => k).length) - 0.5;
             this.configLinea = {
                 type: 'line',
                 data: {
@@ -277,10 +278,12 @@ class Grafica {
                     tooltips: {
                         // enabled: false,
                     },
+
+                    // offset: true,
                     scales: {
                         xAxes: [{
                             type: 'time',
-                            distribution: 'series',
+                            // distribution: 'series',
                             distribution: 'linear',
                             time: {
                               // Luxon format string
@@ -294,8 +297,8 @@ class Grafica {
                           yAxes: [{
                             display: false,
                             ticks: {
-                                suggestedMin: -1,
-                                suggestedMax: this.datos.length,
+                                suggestedMin: -1.5,
+                                suggestedMax: maxL,
                             }
                         }]
                     },
