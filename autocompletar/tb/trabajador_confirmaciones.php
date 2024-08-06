@@ -30,7 +30,7 @@ switch ($filtro) {
 		break;
 }
 
-$sql = "SELECT v_ficha.cod_ficha, v_ficha.cedula,  v_ficha.ap_nombre FROM v_ficha $where AND ( AND v_ficha.cod_cargo != 'ARLAT'
+$sql = "SELECT v_ficha.cod_ficha, v_ficha.cedula,  v_ficha.ap_nombre FROM v_ficha $where AND (v_ficha.cod_cargo != 'ARLAT'
             AND	v_ficha.cod_cargo != '063') ORDER BY 3 ASC";
 $query = $bd->consultar($sql);
 
