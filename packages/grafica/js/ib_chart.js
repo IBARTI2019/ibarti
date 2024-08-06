@@ -277,7 +277,18 @@ class Grafica {
                         intersect: false,
                     },
                     tooltips: {
-                        // enabled: false,
+                        callbacks: {
+                            label: (tooltipItem, data) => {
+                                console.log(tooltipItem);
+                                var fecha_desde = moment(data.datasets[tooltipItem.datasetIndex].data[0].x);
+                                var fecha_hasta = moment(data.datasets[tooltipItem.datasetIndex].data[1].x)
+                                var rango_minutos = fecha_hasta.diff(fecha_desde, 'minutes');
+                                return `${fecha_desde.format("HH:mm")} - ${fecha_hasta.format("HH:mm")} (${Math.floor(rango_minutos / 60)} hrs, con ${("0" + rango_minutos % 60).slice(-2)} min)`;
+                            },
+                            title: (tooltipItem, data) => {
+                                return data.datasets[tooltipItem[0].datasetIndex].label;
+                            },
+                        }
                     },
 
                     // offset: true,
