@@ -29,8 +29,7 @@ class Confirmaciones
             AND turno.cod_horario = horarios.codigo 
             AND horarios.cod_concepto = conceptos.codigo 
             AND conceptos.asist_perfecta = 'T' 
-            AND ficha.cod_cargo != 'ARLAT'
-            AND	ficha.cod_cargo != '063'
+            AND ficha.cod_cargo NOT IN ('ARLAT', '063', 'CES', '071', '100', 'ASLL') 
         ";
 
         if ($cliente != 'TODOS' && $cliente != "" && $cliente != null) {
@@ -120,8 +119,7 @@ class Confirmaciones
             AND turno.cod_horario = horarios.codigo 
             AND horarios.cod_concepto = conceptos.codigo 
             AND conceptos.asist_perfecta = 'T' 
-            AND ficha.cod_cargo != 'ARLAT'
-            AND	ficha.cod_cargo != '063'
+            AND ficha.cod_cargo NOT IN ('ARLAT', '063', 'CES', '071', '100', 'ASLL')
         ";
 
         if ($cliente != 'TODOS' && $cliente != "" && $cliente != null) {

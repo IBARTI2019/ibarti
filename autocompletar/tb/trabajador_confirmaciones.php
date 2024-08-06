@@ -30,8 +30,8 @@ switch ($filtro) {
 		break;
 }
 
-$sql = "SELECT v_ficha.cod_ficha, v_ficha.cedula,  v_ficha.ap_nombre FROM v_ficha $where AND (v_ficha.cod_cargo != 'ARLAT'
-            AND	v_ficha.cod_cargo != '063') ORDER BY 3 ASC";
+$sql = "SELECT v_ficha.cod_ficha, v_ficha.cedula,  v_ficha.ap_nombre FROM v_ficha $where AND (
+	v_ficha.cod_cargo NOT IN ('ARLAT', '063', 'CES', '071', '100', 'ASLL')) ORDER BY 3 ASC";
 $query = $bd->consultar($sql);
 
 while ($datos = $bd->obtener_fila($query, 0)) {
