@@ -26,12 +26,11 @@ switch ($filtro) {
 		$where  .= " WHERE LOCATE(REPLACE(REPLACE('".$typing."', '-', ''), ' ', ''), REPLACE(REPLACE(v_ficha.telefono , '-', ''), ' ', ''))";
 		break;
 	case "TODOS":
-		$where  .= " WHERE LOCATE('$typing', v_ficha.cod_ficha) OR LOCATE('$typing', v_ficha.ap_nombre) OR LOCATE('$typing', v_ficha.cedula) ";
+		$where  .= " WHERE (LOCATE('$typing', v_ficha.cod_ficha) OR LOCATE('$typing', v_ficha.ap_nombre) OR LOCATE('$typing', v_ficha.cedula)) ";
 		break;
 }
 
-$sql = "SELECT v_ficha.cod_ficha, v_ficha.cedula,  v_ficha.ap_nombre FROM v_ficha $where AND (
-	v_ficha.cod_cargo NOT IN ('ARLAT', '063', 'CES', '071', '100', 'ASLL')) ORDER BY 3 ASC";
+$sql = "SELECT v_ficha.cod_ficha, v_ficha.cedula,  v_ficha.ap_nombre FROM v_ficha $where AND v_ficha.cod_cargo NOT IN ('ARLAT', '063', 'CES', '071', '100', 'ASLL') ORDER BY 3 ASC";
 $query = $bd->consultar($sql);
 
 while ($datos = $bd->obtener_fila($query, 0)) {
