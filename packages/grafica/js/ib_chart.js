@@ -264,6 +264,7 @@ class Grafica {
                     labels: this.labels
                 },
                 options: {
+                    locale: 'es_VE',
                     spanGaps: true,
                     layout: {
                         padding: {
@@ -279,7 +280,6 @@ class Grafica {
                     tooltips: {
                         callbacks: {
                             label: (tooltipItem, data) => {
-                                console.log(tooltipItem);
                                 var fecha_desde = moment(data.datasets[tooltipItem.datasetIndex].data[0].x);
                                 var fecha_hasta = moment(data.datasets[tooltipItem.datasetIndex].data[1].x)
                                 var rango_minutos = fecha_hasta.diff(fecha_desde, 'minutes');
