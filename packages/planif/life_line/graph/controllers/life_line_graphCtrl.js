@@ -16,7 +16,7 @@ $(function () {
 
 function Add_filtroX() {
     var usuario = $("#usuario").val();
-    var ubicacion = $("#ubicacion").val(); //277;
+    var ubicacion =$("#ubicacion").val(); //378;
     var error = 0,
     errorMessage = ' ';
     if (error == 0 && ubicacion != "TODOS" && ubicacion != "") {
@@ -34,19 +34,18 @@ function Add_filtroX() {
                     $('.brs').show();
                     $('#sin_data').hide();
                     $('#grafica').show();
-                    $('#division').show();
                     if (graph && ubicSelect == ubicacion) {
                         graph = g.actualizarLifeLine(graph, resp, true)
                     } else {
                         ubicSelect = ubicacion;
                         graph = g.LifeLine('chart-area', resp);
                     }
-
+                    $("#ttc").html(`${Math.floor(graph.ttc / 60)} hrs, con ${("0"+graph.ttc % 60).slice(-2)} min`);
+                    $("#mtc").html(`${Math.floor(graph.mtc.time / 60)} hrs, con ${("0"+graph.mtc.time % 60).slice(-2)} min  (${moment(graph.mtc.d.data[0].x).format("HH:mm")} - ${moment(graph.mtc.d.data[1].x).format("HH:mm")})`);
                 } else {
                     $('.brs').hide();
                     $('#sin_data').show();
                     $('#grafica').hide();
-                    $('#division').hide();
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -78,70 +77,6 @@ function iniciar() {
                 alert(thrownError);
             }
         }, () => {});
-
-    } else {
-        alert(errorMessage);
-    }
-}
-
-function novStatusDet(status, titulo) {
-    var usuario = $("#usuario").val();
-    var error = 0;
-    var errorMessage = ' ';
-    if (error == 0) {
-        var parametros = {
-            "fec_desde": fec_desde,
-            "fec_hasta": fec_hasta,
-            "status": status
-        };
-        $.ajax({
-            data: parametros,
-            url: 'packages/grafica/novedades/modelo/getGraficaStatusDet.php',
-            type: 'post',
-            success: function (response) {
-                var resp = JSON.parse(response);
-                if (resp.length > 5) {
-                    g2.addEventCrearGrafica(JSON.parse(response), status, 'grafica', 'nov1', 'grafica', 'nov2', 'barra', 450, false, 'top', 'col-xs-6', 'Status: ' + titulo, false);
-                } else {
-                    g2.addEventCrearGrafica(JSON.parse(response), status, 'grafica', 'nov1', 'grafica', 'nov2', 'torta', 450, true, 'top', 'col-xs-6', 'Status: ' + titulo, false, true);
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
-
-    } else {
-        alert(errorMessage);
-    }
-}
-
-function novStatusDet_inic(status, titulo) {
-    var error = 0;
-    var errorMessage = ' ';
-    if (error == 0) {
-        var parametros = {
-            "fec_desde": fec_desde,
-            "fec_hasta": fec_hasta,
-            "status": status
-        };
-        $.ajax({
-            data: parametros,
-            url: 'packages/grafica/novedades/modelo/getGraficaStatusDet.php',
-            type: 'post',
-            success: function (response) {
-                var resp = JSON.parse(response);
-                if (resp.length > 5) {
-                    g2.crearGraficaBarra(resp, 450, 'grafica', 'nov2', false, false, 'top', 'col-xs-6', 'Status: ' + titulo);
-                } else
-                    g2.crearGraficaTorta(resp, 450, 'grafica', 'nov2', true, true, 'top', 'col-xs-6', 'Status: ' + titulo);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
 
     } else {
         alert(errorMessage);

@@ -138,7 +138,8 @@ class Grafica {
         this.codigos = [];
         const pointRadius = 2;
         const colorNA = '#CB3234';
-
+        var ttc = 0; //Total tiempo critico
+        var mtc = null; //Maximo tiempo critico
         if (data.length > 0) {
             var y = 0;
             for (let index = 0; index < data.length; index++) {
@@ -333,7 +334,32 @@ class Grafica {
             this.linea = new Chart(this.ctx, this.configLinea);
             // this.linea.codigos = this.codigos;
         }
-        return this.linea;
+
+        ttc = this.datos.filter(d => d.label == 'Sin Actividad').map(d => {
+            const fecha_desde = moment(d.data[0].x);
+            const fecha_hasta = moment(d.data[1].x);
+            return fecha_hasta.diff(fecha_desde, 'minutes');
+        }).reduce((valorAnterior, valorActual) => {
+            return valorAnterior + valorActual;
+        }, 0);
+
+        mtc = this.datos.filter(d => d.label == 'Sin Actividad').reduce((previous, current) => {
+            var fecha_desde_previous = moment(previous.data[0].x);
+            var fecha_hasta_previus =  moment(previous.data[1].x)
+            var rango_previous = fecha_hasta_previus.diff(fecha_desde_previous, 'minutes');
+        
+            var fecha_desde_current = moment(current.data[0].x);
+            var fecha_hasta_current =  moment(current.data[1].x)
+            var rango_current = fecha_hasta_current.diff(fecha_desde_current, 'minutes');
+            return rango_previous > rango_current ? previous : current; 
+        });
+        var time_mtc = 0;
+        if(mtc){
+                const fecha_desde_mtc = moment(mtc.data[0].x);
+                const fecha_hasta_mtc = moment(mtc.data[1].x);
+                time_mtc = fecha_hasta_mtc.diff(fecha_desde_mtc, 'minutes');
+        }
+        return {graph: this.linea, ttc: ttc, mtc: {d: mtc, time: time_mtc}};
     }
 
     actualizarLifeLine(obj, data) {

@@ -39,9 +39,15 @@ $cliente  =  $graph->get_cliente($_POST["usuario"], $_POST["r_cliente"]);
 	<div id="grafica">
 		<canvas id="chart-area"></canvas>
 	</div>
-	<div style="display: none;" class="barra_vertical" id="division"></div>
-	<div id="grafica2">
-		<canvas id="chart-area2"></canvas>
+	<div id="estadisticas">
+		<table>
+			<tr>
+				<td  class="etiqueta">Total tiempo critico: <span id="ttc"></span></td>
+			</tr>
+			<tr>
+				<td  class="etiqueta">Maximo tiempo critico: <span id="mtc"></span></td>
+			</tr>
+		</table>
 	</div>
 	<br class="brs">
 	<br>
