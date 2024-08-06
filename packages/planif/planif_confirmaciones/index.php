@@ -134,7 +134,7 @@ $sql_horario = "SELECT
     }
     if (this.isModified) this.setValue("");
     if (this.value.length < 1) return;
-    return "autocompletar/tb/trabajador.php?q=" + this.text.value + "&filtro=" + filtroValue + ""
+    return "autocompletar/tb/trabajador_confirmaciones.php?q=" + this.text.value + "&filtro=" + filtroValue + ""
   });
   var time01 = new Spry.Widget.ValidationTextField("time01", "time", {format:"HH:mm:ss", hint:'HH:mm:ss', useCharacterMasking:true, validateOn:["change"],isRequired:true});
 </script>
