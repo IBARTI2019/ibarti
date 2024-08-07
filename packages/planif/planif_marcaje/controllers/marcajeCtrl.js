@@ -6,6 +6,7 @@ function Add_filtroX() {
         var parametros = {
             cliente, ficha, ubicacion
         };
+       
         $.ajax({
             data: parametros,
             url: 'packages/planif/planif_marcaje/views/Add_actividades.php',
@@ -26,10 +27,12 @@ function Add_filtroX() {
 
 function setRealizado(codigo) {
     if (codigo) {
-        if (confirm("Esta seguro de que desea marcar como realizada esta actividad (" + codigo + "), Esta operación es irreversible!.")) {
+        if (confirm("Esta seguro de que desea enviar el archivo (" + codigo + "), Esta operación es irreversible!.")) {
             var usuario = $("#usuario").val();
+            var archivo = $("#archivo").val();
+            
             var parametros = {
-                codigo, usuario
+                codigo, usuario,archivo
             };
             $.ajax({
                 data: parametros,
@@ -38,9 +41,9 @@ function setRealizado(codigo) {
                 success: function (response) {
                     var resp = JSON.parse(response);
                     if (resp.error) {
-                        toastr.error("A ocurrido un error al intentar marcar la actividad!..");
+                        toastr.error("A ocurrido un error al intentar enviar el archivo!..");
                     } else {
-                        toastr.success("Actividad Marcada con Exitoso!..");
+                        toastr.success("Archivo ennviado con Exitoso!..");
                         Add_filtroX();
                     }
                 },
@@ -52,6 +55,116 @@ function setRealizado(codigo) {
         }
     }
 }
+function showMessage(message) {
+    $(".messages").html("").show();
+    $(".messages").html(message);
+}
+
+function subirImagenS3marcaje(codigo) {
+    //informaci�n del formulario
+
+    var formData = new FormData($(".formulario")[0]);
+    var folder =$("#stdID").val();;
+    var doc = $("#cod_det2").val();
+    var usuario=$("#usuario").val();
+    var nombre = ci + "_" + doc;
+    var config = [
+        {
+          folder: folder,
+          key: doc
+        }
+      ]
+    
+      formData.append("config", JSON.stringify(config));
+    var message = "";
+    //hacemos la petici�n ajax  
+    $.ajax({
+        url: 'http://194.163.161.64:9090/docs/upload_marcaje/',
+        type: 'POST',
+        // Form data
+        //datos del formulario
+        data: formData,
+        //necesario para subir archivos via ajax
+        cache: false,
+        contentType: false,
+        processData: false,
+        //mientras enviamos el archivo
+        beforeSend: function () {
+            message = $("<span class='before'>Subiendo la imagen, por favor espere...</span>");
+            showMessage(message)
+        },
+        //una vez finalizado correctamente
+        
+        success: function (data) {
+            uploadActulizarS3marcaje(data.data.image[0],folder,doc,usuario);
+        },
+        //si ha ocurrido un error
+        error: function () {
+            message = $("<span class='error'>Ha ocurrido un error.</span>");
+            showMessage(message);
+        }
+    });
+}
+
+function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
+    
+    var ficha = cod;
+    
+    var cod_ficha =$("#stdID").val();;
+    var cod_cliente=$("#cliente").val();
+    var cod_ubicacion=$("#ubicacion").val();
+    var marcados=document.some_form['marcado'];
+    var lista=[];
+    if (marcados.length >0 ){
+	    for(i=0;i<marcados.length;i++){
+		    if(marcados[i].checked){
+                 lista.push(i);
+		    }
+        }
+    } 
+    let vectorJSON = JSON.stringify(lista);
+    var doc =archi;
+    var tusuario=xusuario
+    var parametros = {
+        "link": url,
+        "codigo": doc,
+        "doc": doc,
+        "usuario": xusuario,
+        "vector" : vectorJSON,
+        "cod_ficha":cod_ficha,
+        "cod_cliente":cod_cliente,
+        "cod_ubicacion":cod_ubicacion
+    };
+    
+    $.ajax({
+        url: 'packages/planif/planif_marcaje/modelo/marcar.php',
+        type: 'POST',
+        data: parametros,
+        //        cache: false,
+        //      contentType: false,
+        //     processData: false,
+
+        beforeSend: function () {
+        },
+        //una vez finalizado correctamente
+        success: function (data) {
+            message = $("<span class='success'>La imagen ha sido guardada con exitos...</span>");
+            showMessage(message);
+            Add_filtroX();
+        },
+        //si ha ocurrido un error
+        error: function () {
+            message = $("<span class='error'>Ha ocurrido un error.</span>");
+            showMessage(message);
+        }
+    });
+
+    cerrarModalfile();
+   
+        
+    
+};
+
 
 function changeCliente(cliente) {
     Add_Cl_Ubic(cliente, 'contenido_ubic', 'T', '120');
@@ -153,10 +266,21 @@ function openModalObservaciones(codigo) {
     cargar_observaciones(codigo);
 }
 
+function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion) {
+    $("#cod_det2").val(codigo);
+    $("#vector").val(xcliente);  
+    $("#myModalO2").show();
+    cargar_actividades(xficha,xcliente,xubicacion);
+}
+
+
 function cerrarModalObservaciones() {
     $("#myModalO").hide();
 }
 
+function cerrarModalfile() {
+    $("#myModalO2").hide();
+}
 function openModalParticipantes(codigo) {
     $("#cod_det").val(codigo);
     $("#myModalP").show();
@@ -202,6 +326,32 @@ function cargar_observaciones(codigo) {
         },
         success: function (response) {
             $("#observaciones").html(response);
+            
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
+
+function cargar_actividades(ficha,cliente,ubicacion) {
+    
+    var parametros = {
+        auxficha:ficha,auxcliente:cliente,auxubicacion:ubicacion
+    };
+    
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_marcaje/views/cargar_actividadesNO.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#actividadesNO").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            
+             $("#actividadesNO").html(response);
+            
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.status);

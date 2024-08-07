@@ -122,7 +122,6 @@ function subirImagenS3(directorio) {
     var ci = $("#ci").val();
     var doc = $("#doc").val();
     var nombre = ci + "_" + doc;
-    console.log(formData);
     
     var message = "";
     //hacemos la petici�n ajax  
@@ -148,11 +147,12 @@ function subirImagenS3(directorio) {
         },
         //si ha ocurrido un error
         error: function () {
-            message = $("<span class='error'>Ha ocurrido un error.</span>");
+            message = $("<span class='error'>Ha ocurrido un ojo error.</span>");
             showMessage(message);
         }
     });
 }
+
 
 function subirImagenCliente(directorio) {
     //informaci�n del formulario
@@ -225,14 +225,14 @@ function uploadActulizarS3(url) {
         },
         //si ha ocurrido un error
         error: function () {
-            message = $("<span class='error'>Ha ocurrido un error.</span>");
+            message = $("<span class='error'>Ha ocurrido un poli error.</span>");
             showMessage(message);
         }
     });
 
-    //	  	window.location.href="inicio.php?area=formularios/add_imagenes_doc2&ci="+ci+"&ficha="+ficha+"&doc="+doc+"&img="+img+"&ext="+ext+"";
+    //window.location.href="inicio.php?area=formularios/add_imagenes_doc2&ci="+ci+"&ficha="+ficha+"&doc="+doc+"&img="+img+"&ext="+ext+"";
 
-    //	 window.history.go(-1);
+     //window.history.go(-1);
 };
 
 function uploadActulizar(url) {
@@ -326,3 +326,23 @@ function uploadActualizarCliente(url) {
 
     //	 window.history.go(-1);
 };
+function cargar_actividadesNO(codigo) {
+    var parametros = {
+        codigo
+    };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_marcaje/views/Add_actividades.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#observaciones").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            $("#observaciones").html(response);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
