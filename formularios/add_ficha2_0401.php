@@ -1,6 +1,7 @@
 
 <?php
 //	require_once('autentificacion/aut_verifica_menu.php');
+require_once('formularios/mostrar_imagen.php');
 $ci           = $_GET["ci"]; 
 $doc          = $_GET["doc"];
 $ficha        = $_GET["ficha"]; 
@@ -68,7 +69,26 @@ $add_doc = '<a href="inicio.php?area=formularios/add_imagenes_doc&ficha='.$ficha
 				$borrarDoc = "";
 				if ($img_src) {
 					$img_ext =  imgExtension($img_src);
-					$img_src = 	'<a target="_blank" href="' . $img_src . '"><img class="imgLink" src="' . $img_ext . '" width="22px" height="22px" /></a>';
+					$info = pathinfo($img_ext);
+                    $extension = $info["extension"];
+					switch ($extension) {
+						case 'pdf':
+							$img_src = 	'<a target="_blank" href="' . $img_src . '"><img class="imgLink" src="' . $img_ext . '" width="22px" height="22px" /></a>';
+				
+						  break;
+					    case 'png':
+							$img_src = 	'<a target="_blank" href="formularios/mostrar_imagen.php?imagen='.$img_src.'"><img class="imgLink" src="' . $img_ext . '" width="22px" height="22px" /></a>';
+				
+							break;
+						case 'jpeg':
+							$img_src = 	'<a target="_blank" href="formularios/mostrar_imagen.php?imagen='.$img_src.'"><img class="imgLink" src="' . $img_ext . '" width="22px" height="22px" /></a>';
+				
+				           break;
+						case 'gif':   	
+						$img_src = 	'<a target="_blank" href="' . $img_src . '"><img class="imgLink" src="' . $img_ext . '" width="22px" height="22px" /></a>';
+				
+						break;
+					  }
 					//$img_src = 	'<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\')" width="22px" height="22px"  />';
 					if($admin_rrhh == 'T'){
 						$eliminar = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$ficha.'\',\''.$cod_documento.'\',\''.$link.'\')"/>';
