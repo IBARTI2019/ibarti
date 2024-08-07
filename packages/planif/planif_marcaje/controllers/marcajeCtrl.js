@@ -6,6 +6,7 @@ function Add_filtroX() {
         var parametros = {
             cliente, ficha, ubicacion
         };
+       
         $.ajax({
             data: parametros,
             url: 'packages/planif/planif_marcaje/views/Add_actividades.php',
@@ -108,13 +109,38 @@ function subirImagenS3marcaje(codigo) {
 function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
     
     var ficha = cod;
+<<<<<<< Updated upstream
+=======
+    
+    var cod_ficha =$("#stdID").val();;
+    var cod_cliente=$("#cliente").val();
+    var cod_ubicacion=$("#ubicacion").val();
+    var marcados=document.some_form['marcado'];
+    var lista=[];
+	
+	for(i=0;i<marcados.length;i++){
+		if(marcados[i].checked){
+            lista.push(i);
+		}
+     
+	}
+    let vectorJSON = JSON.stringify(lista);
+>>>>>>> Stashed changes
     var doc =archi;
     var tusuario=xusuario
     var parametros = {
         "link": url,
         "codigo": doc,
         "doc": doc,
+<<<<<<< Updated upstream
         "usuario": xusuario
+=======
+        "usuario": xusuario,
+        "vector" : vectorJSON,
+        "cod_ficha":cod_ficha,
+        "cod_cliente":cod_cliente,
+        "cod_ubicacion":cod_ubicacion
+>>>>>>> Stashed changes
     };
     
     $.ajax({
@@ -131,7 +157,11 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
         success: function (data) {
             message = $("<span class='success'>La imagen ha sido guardada con exitos...</span>");
             showMessage(message);
+<<<<<<< Updated upstream
             //window.history.go(-1);
+=======
+            Add_filtroX();
+>>>>>>> Stashed changes
         },
         //si ha ocurrido un error
         error: function () {
@@ -247,11 +277,19 @@ function openModalObservaciones(codigo) {
     cargar_observaciones(codigo);
 }
 
+<<<<<<< Updated upstream
 function openModalObservacionesdos(codigo,xficha,xcedula) {
     $("#cod_det2").val(codigo);
     $("#ficha").val(xficha);
     $("#myModalO2").show();
     
+=======
+function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion) {
+    $("#cod_det2").val(codigo);
+    $("#vector").val(xcliente);  
+    $("#myModalO2").show();
+    cargar_actividades(xficha,xcliente,xubicacion);
+>>>>>>> Stashed changes
 }
 
 
@@ -307,6 +345,32 @@ function cargar_observaciones(codigo) {
         },
         success: function (response) {
             $("#observaciones").html(response);
+            
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
+
+function cargar_actividades(ficha,cliente,ubicacion) {
+    
+    var parametros = {
+        auxficha:ficha,auxcliente:cliente,auxubicacion:ubicacion
+    };
+    
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_marcaje/views/cargar_actividadesNO.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#actividadesNO").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            
+             $("#actividadesNO").html(response);
+            
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.status);

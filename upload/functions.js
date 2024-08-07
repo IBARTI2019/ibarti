@@ -326,3 +326,23 @@ function uploadActualizarCliente(url) {
 
     //	 window.history.go(-1);
 };
+function cargar_actividadesNO(codigo) {
+    var parametros = {
+        codigo
+    };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_marcaje/views/Add_actividades.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#observaciones").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            $("#observaciones").html(response);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}

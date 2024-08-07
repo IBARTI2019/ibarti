@@ -9,13 +9,20 @@
 </style>
 <?php
 $Nmenu = '4406';
+<<<<<<< Updated upstream
 $img_src = "imagenes/img-no-disponible.png"; 
+=======
+
+$img_src = ""; 
+>>>>>>> Stashed changes
 if (isset($_SESSION['usuario_cod'])) {
-  require_once('autentificacion/aut_verifica_menu.php');
-  require_once('sql/sql_report.php');
-  $us = $_SESSION['usuario_cod'];
+    require_once('autentificacion/aut_verifica_menu.php');
+    require_once('sql/sql_report.php');
+    $us = $_SESSION['usuario_cod'];
+        
 } else {
   $us = $_POST['usuario'];
+ 
 }
 ?>
 <div id="Cont_marcaje">
@@ -175,6 +182,7 @@ if (isset($_SESSION['usuario_cod'])) {
     </div>
   </div>
 </div>
+<<<<<<< Updated upstream
 <div id="myModalO2" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -216,6 +224,82 @@ if (isset($_SESSION['usuario_cod'])) {
 <input type="hidden" name="cod_det" id="cod_det" value="">
 
 <input name=" usuario" id="usuario" type="hidden" value="<?php echo $us; ?>" />
+=======
+<div id="myModalO2" class="modal" >
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="cerrarModalfile()">&times;</span>
+      <span>Cargar Archivos y Actividades No Obligatorias</span>
+    </div>
+   
+    <script type="text/javascript" src="upload/functions.js"></script>
+<link rel="stylesheet" href="jQueryUpLoadyPHP/css/estilos.css" type="text/css" />
+<link rel="stylesheet" href="upload/upload.css" type="text/css" />
+<div align="center" class="etiqueta_title"><?php echo $titulo;?> </div><hr />
+<div id="Contenedor01" class="mensaje"></div>
+<form name="some_form" enctype="multipart/form-data" class="formulario">
+<table width="100%">
+  <tr><td 
+      
+      width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>"></div>
+                      <input name="images" type="file" id="imagen"   value="Subir Imagen"/><br/>
+                
+                 <br/>
+   
+      </div>
+    </td></tr>     
+</table>
+<table width="100%" class="tabla_sistema">
+          <thead>
+            <tr>
+              <th>Codigo</th>
+              <th>Ubicacion</th>
+              <th>Proyecto</th>
+              <th>Actividad</th>
+              <th>Hora Inicio Hora Fin</th>
+              <th>Realziado</th>
+              <th>Marcar</th>
+              <th>Participantes</th>
+              <th>Observaciones</th>
+            </tr>
+          </thead>
+          <tbody id="actividadesNO">
+
+          </tbody>
+  </table>
+  <table width="100%">
+  <tr><td 
+       width="100%"><div align="center"  ><br/>
+                <span class="art-button-wrapper" id="imgMostrar"  style="display:none">
+                    <span class="art-button-l"> </span>
+                    <span class="art-button-r"> </span> 
+                      <input type="button" id="subir_img" value="Subir Archivo" class="readon art-button" 
+                             onClick="subirImagenS3marcaje()"  /></span>
+                <br/>
+                 <br/>
+   
+                   
+       
+    </div>
+    </td></tr>     
+</table>
+  
+        <input name="ficha" id="ficha" type="hidden"  value="<?php echo $ficha;?>" />
+        <input name="ci" id="ci" type="hidden"  value="<?php echo $ci;?>" />
+        <input name="cliente" id="cliente" type="hidden"  value="<?php echo $cliente;?>" />
+        <input name="ubicacion" id="ubicacion" type="hidden"  value="<?php echo $ubicacion;?>" />
+		    <input name="doc" id="doc" type="hidden"  value="<?php echo $doc;?>" />   
+        <input name="url_new" id="url_new" type="hidden"  value="<?php echo $url_new;?>" />   
+ </form>
+  </div>
+</div>
+
+<input type="hidden" name="cod_det2" id="cod_det2" value="">
+<input type="hidden" name="cod_det" id="cod_det" value="">
+<input type="hidden" name="vector" id="vector" value="">
+<input name="usuario" id="usuario" type="hidden" value="<?php echo $us; ?>" />
+
+>>>>>>> Stashed changes
 <script type="text/javascript">
   filtroValue = $("#paciFiltro").val();
   new Autocomplete("stdName", function() {
