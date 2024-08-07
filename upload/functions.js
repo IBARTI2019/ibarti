@@ -115,6 +115,47 @@ function subirImagen(directorio) {
     });
 }
 
+<<<<<<< Updated upstream
+=======
+function subirImagenS3(directorio) {
+    //informaci�n del formulario
+
+    var formData = new FormData($(".formulario")[0]);
+    var ci = $("#ci").val();
+    var doc = $("#doc").val();
+    var nombre = ci + "_" + doc;
+    
+    var message = "";
+    //hacemos la petici�n ajax  
+    $.ajax({
+        url: 'http://194.163.161.64:9090/docs/upload/',
+        type: 'POST',
+        // Form data
+        //datos del formulario
+        data: formData,
+        //necesario para subir archivos via ajax
+        cache: false,
+        contentType: false,
+        processData: false,
+        //mientras enviamos el archivo
+        beforeSend: function () {
+            message = $("<span class='before'>Subiendo la imagen, por favor espere...</span>");
+            showMessage(message)
+        },
+        //una vez finalizado correctamente
+        success: function (data) {
+            console.log(`OJo${data.data.image[0]}`);
+            uploadActulizarS3(data.data.image[0]);
+        },
+        //si ha ocurrido un error
+        error: function () {
+            message = $("<span class='error'>Ha ocurrido un ojo error.</span>");
+            showMessage(message);
+        }
+    });
+}
+>>>>>>> Stashed changes
+
 
 function subirImagenCliente(directorio) {
     //informaci�n del formulario
@@ -155,6 +196,51 @@ function subirImagenCliente(directorio) {
     });
 }
 
+<<<<<<< Updated upstream
+=======
+function uploadActulizarS3(url) {
+    console.log('uploadActulizarS3: ', url)
+    var ficha = $("#ficha").val();
+    var ci = $("#ci").val();
+    var doc = $("#doc").val();
+    
+    var parametros = {
+        "link": url,
+        "ficha": ficha,
+        "ci": ci,
+        "doc": doc,
+        "metodo":'agregar'
+    };
+
+    $.ajax({
+        url: 'upload/documentos.php',
+        type: 'POST',
+        data: parametros,
+        //        cache: false,
+        //      contentType: false,
+        //     processData: false,
+
+        beforeSend: function () {
+        },
+        //una vez finalizado correctamente
+        success: function (data) {
+            message = $("<span class='success'>La imagen ha sido guardada con exitos...</span>");
+            showMessage(message);
+            window.history.go(-1);
+        },
+        //si ha ocurrido un error
+        error: function () {
+            message = $("<span class='error'>Ha ocurrido un poli error.</span>");
+            showMessage(message);
+        }
+    });
+
+    //window.location.href="inicio.php?area=formularios/add_imagenes_doc2&ci="+ci+"&ficha="+ficha+"&doc="+doc+"&img="+img+"&ext="+ext+"";
+
+     //window.history.go(-1);
+};
+
+>>>>>>> Stashed changes
 function uploadActulizar(url) {
     var ficha = $("#ficha").val();
     var ci = $("#ci").val();
@@ -246,3 +332,23 @@ function uploadActualizarCliente(url) {
 
     //	 window.history.go(-1);
 };
+function cargar_actividadesNO(codigo) {
+    var parametros = {
+        codigo
+    };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_marcaje/views/Add_actividades.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#observaciones").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            $("#observaciones").html(response);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
