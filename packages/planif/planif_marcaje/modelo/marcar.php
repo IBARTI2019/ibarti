@@ -17,6 +17,11 @@ $vectorA = json_decode($vector, true);
 if (isset($codigo)) {
   
   try {
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
 
     $where = " WHERE
     p.codigo = pd.cod_planif_cl_trab
@@ -60,7 +65,12 @@ if (isset($codigo)) {
 
     $query2 = $bd->consultar($sql1);
    
+<<<<<<< HEAD
       
+=======
+   
+    
+>>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
     for ($i = 0; $i < count($vectorA); $i++) {
       $j=0;  
         foreach ($query2 as  $datos) {
@@ -77,12 +87,23 @@ if (isset($codigo)) {
      
     }  
     
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
     $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '$codigo'";
     $query = $bd->consultar($sql);
     $result['sql'] = $sql;
     
     
+<<<<<<< HEAD
     
+=======
+<<<<<<< Updated upstream
+=======
+    
+>>>>>>> Stashed changes
+>>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
   } catch (Exception $e) {
     $error =  $e->getMessage();
     $result['error'] = true;
