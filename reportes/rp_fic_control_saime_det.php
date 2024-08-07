@@ -31,14 +31,14 @@ if(isset($reporte)){
 
 	   $filename = "../imagenes/fotos/$codigo.jpg";
 	  if (file_exists($filename)) {
- 		  $img_f = '<img src="'.$filename.'"/>';
+ 		  $img_f = '<img src="'.$filename.'?nocache='.time().'"/>';
 		} else {
 		  $img_f = '<img src="../imagenes/foto.jpg"/>';
 		}
 
 	   $filename = "../imagenes/cedula/$codigo.jpg";
 	  if (file_exists($filename)) {
- 		  $img_c = '<img src="'.$filename.'"/>';
+ 		  $img_c = '<img src="'.$filename.'?nocache='.time().'"/>';
 		} else {
 		   $img_c = '<img src="../imagenes/cedula.jpg"/>';
 		}

@@ -7,9 +7,9 @@ $bd = new DataBase();
 $codigo        = $_POST['codigo']; 
 $cod_producto        = $_POST['cod_producto']; 
 
-     $sql    = "SELECT COUNT(clientes_ub_alcance.cod_producto) FROM clientes_ub_alcance
+     $sql    = "SELECT COUNT(clientes_ub_alcance.cod_sub_linea) FROM clientes_ub_alcance
                  WHERE clientes_ub_alcance.cod_cl_ubicacion = '$codigo'
-                 AND clientes_ub_alcance.cod_producto = '$cod_producto'
+                 AND clientes_ub_alcance.cod_sub_linea = '$cod_producto'
                  ";						  
 	 $query = $bd->consultar($sql);	 
 	 $datos=$bd->obtener_fila($query,0);	

@@ -12,7 +12,7 @@ if ($metodo == 'modificar') {
 	                novedades.descripcion,
                     novedades.cod_nov_clasif, nov_clasif.descripcion AS clasif,
                     novedades.cod_nov_tipo,  nov_tipo.descripcion AS tipo,                   
-                    novedades.`status` , novedades.orden, novedades.dias_vencimiento
+                    novedades.`status` , novedades.orden, novedades.dias_vencimiento, novedades.valor_maximo
                FROM novedades , nov_clasif, nov_tipo 
               WHERE novedades.cod_nov_clasif = nov_clasif.codigo	
                 AND novedades.cod_nov_tipo = nov_tipo.codigo 			    
@@ -29,7 +29,8 @@ if ($metodo == 'modificar') {
 	$cod_tipo       = $result["cod_nov_tipo"];
 	$tipo           = $result["tipo"];
 	$activo         = $result["status"];
-	$dias_v					= $result["dias_vencimiento"];
+	$dias_v			= $result["dias_vencimiento"];
+	$v_maximo       = $result["valor_maximo"];
 } else {
 
 	$titulo       = "AGREGAR DATOS BASICOS $titulo";
@@ -41,6 +42,7 @@ if ($metodo == 'modificar') {
 	$cod_tipo     = "";
 	$tipo         = " Seleccione... ";
 	$dias_v				= 0;
+	$v_maximo  = 1;
 	$activo       = 'T';
 }
 ?>
@@ -86,7 +88,7 @@ if ($metodo == 'modificar') {
 			</tr>
 			<tr>
 				<td class="etiqueta">Dias Vencimiento:</td>
-				<td class="etiqueta"><input type="number" name="dias_v" id="dias_v" min="1" id="dias_v" value="<?php echo $dias_v ?>"></td>
+				<td class="etiqueta"><input type="number" name="dias_v" id="dias_v" min="1" value="<?php echo $dias_v ?>"></td>
 			</tr>
 			<tr>
 				<td class="etiqueta">Clasificaci&oacute;n:</td>
@@ -123,6 +125,10 @@ if ($metodo == 'modificar') {
 					<span class="textareaRequiredMsg">El Campo es Requerido.</span>
 					<span class="textareaMinCharsMsg">Debe Escribir mas de 4 caracteres.</span>
 					<span class="textareaMaxCharsMsg">El maximo de caracteres permitidos es 300.</span></td>
+			</tr>
+			<tr>
+				<td class="etiqueta">Valor Máximo:</td>
+				<td class="etiqueta"><input type="number" name="v_maximo" id="v_maximo" min="1" value="<?php echo $v_maximo ?>"></td>
 			</tr>
 			<tr>
 				<td height="8" colspan="2" align="center">
@@ -356,8 +362,11 @@ if ($metodo == 'modificar') {
 					});
 				}
 			}
-
 			update_table(tabla, arreglo_valores);
+			var v_maximo = $('#v_maximo').val();
+			if(cantidad > v_maximo){
+				$('#v_maximo').val(cantidad);
+			}
 		}
 	}
 
@@ -434,6 +443,7 @@ if ($metodo == 'modificar') {
 		var href = $('#href').val();
 		var proced = $('#proced').val();
 		var dias_v = $('#dias_v').val();
+		var v_maximo = $('#v_maximo').val();
 		var usuario = $('#usuario').val();
 		var metodo = $('#metodo').val();
 		var array_valores = [];
@@ -457,6 +467,7 @@ if ($metodo == 'modificar') {
 				"href": href,
 				"proced": proced,
 				"dias_v": dias_v,
+				"v_maximo": v_maximo,
 				"usuario": usuario,
 				"metodo": metodo,
 				"valor": array_valores,

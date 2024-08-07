@@ -117,12 +117,12 @@ function save_producto(){
 		talla = "9999";
 	}
 	if(peso){
-		item= item + "-"+peso;
+		item= item + "-"+parseInt(peso);
 	}else{
 		peso = "";
 	}
 	if(piecubico){
-		item= item + "-"+piecubico;
+		item= item + "-"+parseInt(piecubico);
 	}else{
 		piecubico = "";
 	}

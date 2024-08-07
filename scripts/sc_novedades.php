@@ -8,11 +8,11 @@ $tabla_id = 'codigo';
 
 $codigo         = $_POST['codigo']; 
 $trabajador     = $_POST['trabajador'];
-$novedad        = htmlentities($_POST['novedad']); 
+$novedad        = $_POST['novedad'];
 $cliente        = $_POST['cliente'];
 $ubicacion      = $_POST['ubicacion'];
-$observacion    = htmlentities($_POST['observacion']); 
-$repuesta       = htmlentities($_POST['repuesta']); 
+$observacion    = $_POST['observacion']; 
+$repuesta       = $_POST['repuesta']; 
 $activo         = $_POST['status'];
 
 $campo01        = "";

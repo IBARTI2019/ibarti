@@ -13,7 +13,30 @@
   $reng       = $stock_ubic_alcance->get_aj_reng($codigo);
   if ($metodo == "agregar") {
   ?>
-   <table width="95%" align="center">
+    
+          <fieldset class="fieldset" id="datos_dotacion">
+							<legend>Configuracion Alcance: </legend>
+							<table width="100%" align="center" class="tabla_sistema">
+								<thead>
+									<tr>
+										<th>SubLinea</th>
+										<th>Cantidad</th>
+										<th>Ultima Dotación</th>
+									</tr>
+								</thead>
+								<tbody id="datos_dotacion_detalle">
+									<?php 
+									if($metodo == "agregar"){
+										while ($datos= $row02) {
+											echo "<tr><td>" .$datos[0]."</td><td>"  .$datos[0]. "</td><td>"  .$datos[0]. "</td></tr>";
+										}	
+									}
+									?>
+								</tbody>
+							</table>
+						</fieldset>
+       
+    <table width="95%" align="center">
      <tr>
        <td width="30%" class="etiqueta"><?php echo $leng['producto']; ?>
          <input type="hidden" name="producto" id="stdID" value="" /></td>
@@ -64,7 +87,18 @@
         if ($metodo == "agregar") {
           echo '<td><img class="imgLink" border="null" width="20px" height="20px" src="imagenes/actualizar.bmp"  id="update_renglon" onclick="Modificar_renglon(' . $datos["reng_num"] . ')" title="Modificar Registro />&nbsp; <img class="imgLink" border="null" width="20px" height="20px" src="imagenes/borrar.bmp" id="canc_renglon" onclick="Borrar_renglon(' . $datos["reng_num"] . ')" title="Borrar Registro" /></td></tr>';
         } else {
-          echo "<td></td></tr>";
+          if($metodo == "modificar"){
+            if($datos["ean"] == 'T'){
+              echo '<td><span class="art-button-wrapper">
+              <span class="art-button-l"> </span>
+              <span class="art-button-r"> </span>
+              <input type="button"  title="Ver Eans" onclick = verEans('.$datos["reng_num"].') class="readon art-button"  value="EANS" />
+              </span></td>';
+            }else{
+             echo '<td></td>';
+           }
+         }
+          echo "</tr>";
         }
       } ?>
    </tbody>

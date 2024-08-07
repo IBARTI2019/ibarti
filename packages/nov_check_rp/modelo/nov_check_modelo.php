@@ -27,6 +27,17 @@ class check_list
 		return $this->datos;	
     }
 
+	public Function obtener_clasif_evaluacion(){
+		$sql = "SELECT codigo,descripcion from nov_clasif where campo04 = 'P'
+		";
+		$query         = $this->bd->consultar($sql);
+		while ($datos= $this->bd->obtener_fila($query)) {
+			$this->datos[] = $datos;
+		}
+		return $this->datos;	
+    }
+
+
 
 }
 ?>

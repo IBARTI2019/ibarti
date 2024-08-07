@@ -25,6 +25,8 @@ $detalle        = $_POST['detalle'];
 if($cod_nov!=''){
 	$where  = "WHERE nov_procesos.cod_novedad = novedades.codigo
 	AND nov_procesos.codigo = '".$cod_nov."'
+	AND novedades.cod_nov_tipo = nov_tipo.codigo
+	AND nov_tipo.kanban != 'T'
 	AND novedades.cod_nov_clasif = nov_clasif.codigo
 	AND nov_clasif.campo04 = 'F'
 	AND nov_procesos.cod_cliente = clientes.codigo
@@ -37,6 +39,8 @@ if($cod_nov!=''){
 	
 	$where = " WHERE nov_procesos.fec_us_ing BETWEEN \"$fecha_D\" AND \"$fecha_H\"
                      AND nov_procesos.cod_novedad = novedades.codigo
+					 AND novedades.cod_nov_tipo = nov_tipo.codigo
+					 AND nov_tipo.kanban != 'T'
 					 AND novedades.cod_nov_clasif = nov_clasif.codigo
 					 AND nov_clasif.campo04 = 'F'
 					 AND nov_procesos.cod_cliente = clientes.codigo
@@ -77,7 +81,7 @@ if($cod_nov!=''){
 					   CONCAT(ficha.apellidos ,' ',ficha.nombres) AS trabajador ,
 					   nov_procesos.observacion,
                        nov_procesos.repuesta, nov_status.descripcion AS status
-                  FROM nov_procesos , novedades , nov_clasif,  clientes ,
+                  FROM nov_procesos , novedades , nov_tipo, nov_clasif,  clientes ,
 				       clientes_ubicacion , ficha , nov_status
                 $where
               ORDER BY 1 ASC";

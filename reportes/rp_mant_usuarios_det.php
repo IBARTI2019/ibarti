@@ -27,7 +27,7 @@ if(isset($reporte)){
 	}
 
 	if($status != "TODOS"){
-		$where .= " AND v_preingreso.cod_status = '$status' ";
+		$where .= " AND men_usuarios.status = '$status' ";
 	}
 	if($trabajador != NULL){
 		$where  .= " AND men_usuarios.`status` = '$trabajador' ";

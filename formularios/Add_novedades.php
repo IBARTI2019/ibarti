@@ -99,7 +99,7 @@ if(isset($_GET['metodo'])){
 }
 $href = "../inicio.php?area=formularios/Cons_$archivo&Nmenu=$Nmenu&mod=$mod";
 require_once('autentificacion/aut_verifica_menu.php');
-
+$kanban = false;
 $proced      = "p_nov_proc";
 $proced2     = "p_nov_proc_det";
 if($metodo == 'modificar'){
@@ -176,7 +176,28 @@ if($metodo == "agregar2"){
   $cod_cliente   = $_GET['cl'];
   $cod_ubicacion = $_GET['ubic'];
   $observacion  = $_GET['observ'];
+  if(isset($_GET['kanban'])){
+    $kanban  = $_GET['kanban'];
+  }
 
+  if($kanban == true){
+    $menuNov   = $_GET['menuNov'];
+    $modNov = $_GET['modNov'];
+    $checkList  = $_GET['checkList'];
+    $href = "../inicio.php?area=formularios/Add_novedades_check_list_resp&Nmenu=".$menuNov."&mod=".$modNov."&codigo=".$checkList."&metodo=modificar";
+    $sql_nov_novedad_ing = "SELECT novedades.codigo, novedades.descripcion
+                       FROM novedades , nov_perfiles, nov_clasif, nov_tipo
+                              WHERE novedades.`status` = 'T'
+                                AND novedades.cod_nov_clasif = nov_clasif.codigo
+                                AND novedades.cod_nov_tipo = nov_tipo.codigo
+                                AND nov_clasif.codigo = nov_perfiles.cod_nov_clasif
+                                AND nov_perfiles.cod_perfil = '" . $_SESSION['cod_perfil'] . "'
+                                AND nov_perfiles.ingreso = 'T'
+                                AND nov_clasif.campo04 = 'F'
+                                AND nov_tipo.kanban = 'T'
+                           ORDER BY 2 ASC";
+  }
+  
   $sql = " SELECT clientes.nombre AS cliente, clientes_ubicacion.descripcion AS ubicacion,
   ficha.cod_ficha, ficha.cedula, ficha.nombres AS trabajador
   FROM clientes , clientes_ubicacion , ficha
@@ -194,7 +215,7 @@ if($metodo == "agregar2"){
 
 }
 
-	if($metodo == "agregar3"){  // telefono movil
+if($metodo == "agregar3"){   
    $cod_ficha    = $_GET['codigo'];
    $cod_novedad  = $_GET['novedad'];
    $observacion  = $_GET['observ'];
@@ -263,7 +284,12 @@ if($metodo == "agregar2"){
     <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td class="etiqueta">Filtro:</td>
+  <?php
+      if($kanban != true){
+        ?>
+    <td class="etiqueta">
+      Filtro: 
+    </td>
     <td>
       <select id="paciFiltro" onchange="EstadoFiltro(this.value)" style="width:200px">
         <option value="">Seleccione...</option>
@@ -274,6 +300,7 @@ if($metodo == "agregar2"){
         <option value="nombres"> Nombre </option>
       </select><br />
       <span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
+      <?php } ?>
       <td class="etiqueta"><?php echo $leng["trabajador"];?>:</td>
       <td><input  id="stdName" type="text" style="width:300px" disabled="disabled"  value="<?php echo $trabajador; ?>" required/>
        <input type="hidden" name="trabajador" id="stdID" value="<?php echo $cod_ficha;?>" required/><br />

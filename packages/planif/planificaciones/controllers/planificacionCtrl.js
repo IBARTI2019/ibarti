@@ -108,7 +108,6 @@ function verificar_cl(cl) {
 
 function verificar_cont(cont) {
 	usuario = $("#usuario").val();
-
 	if (cont == '') {
 		Ocultar_ubicacion();
 		Ocultar_apertura();
@@ -626,6 +625,9 @@ function save_planif_det(cod) {
 			data: parametros,
 			url: 'packages/planif/planificaciones/modelo/planificacion.php',
 			type: 'post',
+			beforeSend: function () {
+				$("#cont_planif_det").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="35px" height="35px"> Procesando...');
+			},
 			success: function (response) {
 				cargar_planif_det(ubic);
 				var resp = JSON.parse(response);
@@ -633,6 +635,7 @@ function save_planif_det(cod) {
 					alert(resp.mensaje);
 				} else {
 					alert('Actualizacion Exitosa...');
+					CloseModal();
 				}
 			},
 			error: function (xhr, ajaxOptions, thrownError) {

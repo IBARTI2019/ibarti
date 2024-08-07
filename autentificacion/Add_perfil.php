@@ -11,8 +11,19 @@
 		$archivo = "empresa"; 
 		$archivo2 = "autentificacion/cons_perfil&Nmenu=".$Nmenu.""; 
 
-	$sql = " SELECT codigo, descripcion, orden, status
-               FROM men_perfiles WHERE codigo = '$codigo'";
+	$sql = "SELECT
+            men_perfiles.codigo,
+            men_perfiles.descripcion,
+            men_perfiles.orden,
+            men_perfiles.status,
+            men_perfiles.cod_criticidad idcriticidad,
+            criticidad.descripcion AS descrit 
+          FROM
+            men_perfiles
+            LEFT JOIN criticidad ON men_perfiles.cod_criticidad = criticidad.codigo 
+          WHERE
+            men_perfiles.codigo = '$codigo'";
+            
 	$query = $bd->consultar($sql);
 	$result=$bd->obtener_fila($query,0);
 	  	   
@@ -20,13 +31,16 @@
 	$descripcion = $result['descripcion'];
 	$orden       = $result['orden'];
 	$status      = $result['status'];
-
+  $cod_criticidad = $result['idcriticidad'];
+  $criticidad = $result['descrit'];
 	}else{
 	$codigo      = '';
-    $titulo = " Agregar ".$titulo."";	
+  $titulo = " Agregar ".$titulo."";	
 	$descripcion = '';
 	$orden       = '';
 	$status    = '';
+  $criticidad='';
+  $cod_criticidad =0;
 	}
 ?>
 <form action="autentificacion/sc_Menu_Perfil.php" method="post" name="add" id="add"> 
@@ -36,7 +50,7 @@
     <tr>
       <td class="etiqueta">Codigo:</td>
       <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo;?>" /> 
-         Activo: <input name="status" type="checkbox"<?php echo statusCheck("$status");?> value="T" /><br />
+         Activo: <input name="status" type="checkbox" <?php echo statusCheck("$status");?> value="T" /><br />
         <span class="textfieldRequiredMsg">El Campo es Requerido.</span> 
         <span class="textfieldMinCharsMsg">Debe Escribir m&aacute;s de 4 caracteres.</span></td>
 	 </tr>
@@ -51,7 +65,22 @@
       <td id="input03"><input type="text" name="orden" maxlength="3" style="width:120px" value="<?php echo $orden;?>" /><br />
         <span class="textfieldRequiredMsg">El Campo es Requerido.</span> 
         <span class="textfieldMinCharsMsg">Debe Escribir m&aacute;s de 4 caracteres.</span></td>
-	 </tr>     
+	 </tr>  
+   <tr>
+      <td class="etiqueta">Criticidad:</td>
+      	<td id="select01"><select name="cod_criticidad" style="width:250px">
+							<option value="<?php echo $cod_criticidad;?>"><?php echo $criticidad;?></option>
+          <?php  	$sql = " SELECT codigo, descripcion FROM criticidad
+		                      WHERE status = 'T' AND codigo <> '$cod_criticidad' ORDER BY 2 ASC ";
+		            $query = $bd->consultar($sql);
+            		while($datos=$bd->obtener_fila($query,0)){
+		  ?>
+          <option value="<?php echo $datos[0];?>"><?php echo $datos[1];?></option>
+          <?php }?>
+        </select>
+        <img src="imagenes/ok.gif" alt="Valida" class="validMsg" border="0"/><br />
+        	<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
+    </tr>   
 	 <tr> 
             <td height="8" colspan="2" align="center"><hr></td>
          </tr>	

@@ -90,7 +90,11 @@ while ($rowMenu=$bd->obtener_fila($query,0)){
 		$query02 = $bd->consultar($sql);
 
 		while ($rowSubMenu=$bd->obtener_fila($query02,0)){
-			echo '<li><a href="'.$rowSubMenu[2].'&Nmenu='.$rowSubMenu[0].'&mod='.$mod.'">'.$rowSubMenu[1].'</a></li>';				
+			if($rowSubMenu[2] == 'kanban'){
+				echo '<li><a href="'.$rowSubMenu[2].'" target="_blank">'.$rowSubMenu[1].'</a></li>';	
+			}else{
+				echo '<li><a href="'.$rowSubMenu[2].'&Nmenu='.$rowSubMenu[0].'&mod='.$mod.'">'.$rowSubMenu[1].'</a></li>';	
+			}			
 		}					
 		echo '</ul>';
 	}	

@@ -1161,3 +1161,13 @@ function Get_mayor_a_stock(cod_ajuste,callback) {
         }
     });
 }
+
+function filtrarEANS(elem){
+    var ValorBusqueda = new RegExp($(elem).val(), 'i');
+    $('#listar_eans tr').hide();
+    $('#listar_eans tr').filter(function (i) {
+        i++;
+        console.log(ValorBusqueda, $('#reng_num_ean_'+i).val(), '#reng_num_ean_'+i);
+        return ValorBusqueda.test($('#reng_num_ean_'+i ).val());
+    }).show();
+}

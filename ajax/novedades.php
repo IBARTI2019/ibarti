@@ -13,7 +13,12 @@ $Nmenu      = $_POST['Nmenu'];
 $mod        = $_POST['mod'];
 $archivo    = $_POST['archivo']."&Nmenu=$Nmenu&mod=$mod";
 $vinculo    = "inicio.php?area=formularios/Add_$archivo";
-$ficha 		= $_POST['ficha'];
+$ficha 		= "";
+
+if(isset($_POST['ficha'])){
+	$ficha = $_POST['ficha'];
+}
+
 $novedad    = $_POST['novedad'];
 $clasif     = $_POST['clasif'];
 $cliente    = $_POST['cliente'];
@@ -30,7 +35,9 @@ $perfil     = $_POST['perfil'];
                 AND clientes_ubicacion.cod_cliente = clientes.codigo
 				AND nov_procesos.cod_nov_status = nov_status.codigo
 				
-				AND nov_procesos.cod_ficha = ficha.cod_ficha ";
+				AND nov_procesos.cod_ficha = ficha.cod_ficha 
+				AND novedades.cod_nov_tipo = nov_tipo.codigo
+				AND nov_tipo.kanban = 'F'";
 
 	if(!empty($_POST['tipo'])){
 		$where .= " AND nov_perfiles.".$_POST['tipo']." = 'T' 
@@ -66,7 +73,7 @@ $perfil     = $_POST['perfil'];
 			 	    CONCAT(ficha.nombres, ' ',ficha.apellidos) AS trabajador, nov_clasif.descripcion AS clasif,
 				    clientes.nombre AS cliente,  nov_status.descripcion  AS status, nov_procesos.cod_ficha as ficha
                FROM nov_procesos, novedades, clientes, nov_clasif,
-                    nov_status, ficha,  nov_perfiles, clientes_ubicacion
+                    nov_status, ficha,  nov_perfiles, clientes_ubicacion, nov_tipo
              $where
            ORDER BY 1 DESC ";
    $query = $bd->consultar($sql);

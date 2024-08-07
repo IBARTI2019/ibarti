@@ -72,7 +72,12 @@ class Cliente
 		a.limite_cred, a.plazo_pago, a.desc_global, a.desc_p_pago,
 		a.campo01, a.campo02, a.campo03, a.campo04, a.contacto,
 		a.cod_us_ing, a.fec_us_ing,a.cod_us_mod, a.fec_us_mod, a.`status`, 
-		a.latitud, a.longitud, a.direccion_google
+		a.latitud, a.longitud, a.direccion_google,
+		(
+			SELECT MAX(asistencia_apertura.fec_diaria) FROM asistencia, asistencia_apertura WHERE 
+			asistencia.cod_as_apertura = asistencia_apertura.codigo
+			AND asistencia.cod_cliente = a.codigo LIMIT 1
+		) fec_ult_asistencia
 		FROM clientes a , clientes_tipos , vendedores , regiones
 		WHERE a.codigo = '$cod'
 		AND a.cod_cl_tipo = clientes_tipos.codigo

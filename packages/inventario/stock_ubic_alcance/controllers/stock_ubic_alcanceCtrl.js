@@ -46,14 +46,16 @@ function buscarMovimiento() {  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO//
     var ubicacion = $("#ubicacion").val();
     var codigo = $("#codigo").val();
     var producto = $("#stdID").val();
+    var cliente = $("#cliente").val();
 
+     
     if ((fechaValida(fecha_desde) != true || fechaValida(fecha_hasta) != true) && (fecha_desde != "" || fecha_hasta != "")) {
         var errorMessage = ' Campos De Fecha Incorrectas ';
         var error = error + 1;
     }
     //console.log(fecha_desde,fecha_hasta);
     if (error == 0) {
-        var parametros = { fecha_desde, fecha_hasta, ubicacion, codigo, producto };
+        var parametros = { fecha_desde, fecha_hasta, ubicacion, codigo, producto,cliente};
         $.ajax({
             data: parametros,
             url: 'packages/inventario/stock_ubic_alcance/views/Buscar_movimiento.php',
@@ -116,6 +118,7 @@ function Form_stock_ubic_alcance(cod, metodo, anulado) {
                     //$("#borrar_stock_ubic_alcance").removeClass("d-none"); 
                     $("#add_renglon_etiqueta").hide();
                     $("#add_renglon").hide();
+                    Reng_ped(cod);
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -553,8 +556,8 @@ function Agregar_renglon() {
                     var td02 = ('<td>' + producto_des + '</td>');
                     var td03 = ('<td>' + almacen_des + '</td>');
                     var td04 = ('<td><input type="text" id="cant_' + reng_num + '" value="' + cantidad + '" readonly style="width:100px"></td>');
-                    var td05 = ('<td><input type="text" id="costo_' + reng_num + '" value="' + costo + '" readonly style="width:100px"></td>');
-                    var td06 = ('<td><input type="text" id="neto_' + reng_num + '" value="' + neto + '" readonly style="width:150px"></td>');
+                    // var td05 = ('<td><input type="text" id="costo_' + reng_num + '" value="' + costo + '" readonly style="width:100px"></td>');
+                    // var td06 = ('<td><input type="text" id="neto_' + reng_num + '" value="' + neto + '" readonly style="width:150px"></td>');
                     var td07 = ('<td><img class="imgLink" border="null" width="20px" height="20px" src="imagenes/actualizar.bmp" onclick="Modificar_renglon(' + reng_num + ')" title="Modificar Registro" />&nbsp;<img  class="imgLink" border="null" width="20px" height="20px" src="imagenes/borrar.bmp"onclick="Borrar_renglon(' + reng_num + ')" title="Borrar Registro"/> </td>');
 
                     $('#listar_stock_ubic_alcance').append(tr);
@@ -562,8 +565,8 @@ function Agregar_renglon() {
                     $('#tr_' + reng_num + '').append(td02);
                     $('#tr_' + reng_num + '').append(td03);
                     $('#tr_' + reng_num + '').append(td04);
-                    $('#tr_' + reng_num + '').append(td05);
-                    $('#tr_' + reng_num + '').append(td06);
+                    // $('#tr_' + reng_num + '').append(td05);
+                    // $('#tr_' + reng_num + '').append(td06);
                     $('#tr_' + reng_num + '').append(td07);
 
                     Limpiar_producto();
@@ -698,7 +701,7 @@ function Reng_ped(codigo) {
             jQuery.each(Ped_detalle, function (i) {
                 //console.log(Ped_detalle[i]);
                 getIfEAN(Ped_detalle[i]['cod_producto'], null, false, () => {
-                    Reng_ped_ean(Ped_detalle[i]['cod_stock_ubic_alcance'], Ped_detalle[i]['reng_num'], i)
+                    Reng_ped_ean(Ped_detalle[i]['cod_ajuste'], Ped_detalle[i]['reng_num'], i)
                 });
                 reng_num = Ped_detalle[i]["reng_num"];
                 //reng_num++;
@@ -954,6 +957,7 @@ function verEans(index) {
     //console.log(Ped_detalle[index-1]['eans']);
     var reng_num_ean = 0;
     $('#listar_eans').html('');
+    console.log(Ped_detalle, index);
     var resp = Ped_detalle[index - 1]['eans'];
     jQuery.each(resp, function (i) {
         reng_num_ean++;
@@ -997,4 +1001,15 @@ function imprimir() {
     var codigo_ajuste = $("#ped_codigo").val();
     $("#codigo").val(codigo_ajuste);
     $("#procesar").click();
+}
+
+
+function filtrarEANS(elem){
+    var ValorBusqueda = new RegExp($(elem).val(), 'i');
+    $('#listar_eans tr').hide();
+    $('#listar_eans tr').filter(function (i) {
+        i++;
+        console.log(ValorBusqueda, $('#reng_num_ean_'+i).val(), '#reng_num_ean_'+i);
+        return ValorBusqueda.test($('#reng_num_ean_'+i ).val());
+    }).show();
 }

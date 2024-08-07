@@ -21,7 +21,7 @@ class stock_ubic_alcance
     IF(a.anulado = 'T', 'SI', 'NO') anulado_des
     FROM ajuste_alcance a, clientes_ubicacion b
 		WHERE a.cod_ubicacion = b.codigo
-    ORDER BY a.codigo LIMIT 100;";
+    ORDER BY a.codigo DESC LIMIT 100;";
     $query = $this->bd->consultar($sql);
 
     while ($datos = $this->bd->obtener_fila($query)) {
@@ -70,7 +70,16 @@ class stock_ubic_alcance
     $query = $this->bd->consultar($sql);
     return  $this->datos = $this->bd->obtener_fila($query);
   }
-
+  public function cliente_ubica($cod)
+  {
+    $this->datos   = array();
+    $sql = "SELECT clientes_ubicacion.descripcion ubicacion
+    FROM clientes_ubicacion 
+    WHERE clientes_ubicacion.cod_cliente = '$cod'
+    ORDER BY clientes_ubicacion.codigo DESC";
+    $query = $this->bd->consultar($sql);
+    return  $this->datos = $this->bd->obtener_fila($query);
+  }
   public function get_stock_actual($producto, $almacen)
   {
     $this->datos   = array();
@@ -84,7 +93,9 @@ class stock_ubic_alcance
   {
     $this->datos   = array();
     $sql = " SELECT FORMAT(cantidad,0) alcance
-    FROM clientes_ub_alcance WHERE cod_producto = '$producto' AND cod_cl_ubicacion = '$ubicacion'";
+    FROM clientes_ub_alcance, productos 
+    WHERE productos.item = '$producto' AND clientes_ub_alcance.cod_cl_ubicacion = '$ubicacion'
+    AND productos.cod_sub_linea = clientes_ub_alcance.cod_sub_linea";
     $query = $this->bd->consultar($sql);
     return  $this->datos = $this->bd->obtener_fila($query);
   }
@@ -117,7 +128,7 @@ class stock_ubic_alcance
     return $this->datos;
   }
 
-  public function buscar($fecha_desde, $fecha_hasta, $codigo, $ubicacion, $producto)
+  public function buscar($fecha_desde, $fecha_hasta, $codigo, $ubicacion, $producto, $cliente)
   {
     $WHERE = " WHERE a.cod_ubicacion = b.codigo
       AND a.codigo = c.cod_ajuste
@@ -128,11 +139,14 @@ class stock_ubic_alcance
     if ($codigo != '') {
       $WHERE .= " AND a.codigo = " . $codigo . "";
     }
+    if ($cliente != '' && $cliente != 'TODOS') {
+      $WHERE .= "  AND b.cod_cliente = '" . $cliente . "'";
+    }  
     if ($ubicacion != '' && $ubicacion != 'TODOS') {
-      $WHERE .= "  AND a.cod_ubicacion =" . $ubicacion . "";
+      $WHERE .= "  AND a.cod_ubicacion = " . $ubicacion . "";
     }
     if ($producto != '') {
-      $WHERE .= "  AND c.cod_producto = " . $producto . "";
+      $WHERE .= "  AND c.cod_producto = '" . $producto . "'";
     }
 
     $sql = "SELECT
@@ -147,10 +161,10 @@ class stock_ubic_alcance
     FROM
     ajuste_alcance a,
     clientes_ubicacion b,
-    ajuste_reng c
+    ajuste_alcance_reng c
     " . $WHERE . "   
     GROUP BY 1
-    ORDER BY a.codigo";
+    ORDER BY a.codigo DESC";
 
     $query = $this->bd->consultar($sql);
     while ($datos = $this->bd->obtener_fila($query)) {
@@ -220,7 +234,7 @@ class stock_ubic_alcance
   public function get_aj_reng_eans($ajuste_alcance, $renglon)
   {
     $this->datos   = array();
-    $sql = " SELECT cod_ean FROM ajuste_alcance_reng_eans WHERE cod_ajuste_alcance = '$ajuste_alcance' AND reng_num = '$renglon';";
+    $sql = " SELECT cod_ean FROM ajuste_alcance_reng_eans WHERE cod_ajuste = '$ajuste_alcance' AND reng_num = '$renglon';";
     $query = $this->bd->consultar($sql);
 
     while ($datos = $this->bd->obtener_fila($query)) {
@@ -233,8 +247,11 @@ class stock_ubic_alcance
   {
     $this->datos   = array();
     if ($salida) {
-      $sql = " SELECT cod_ean FROM prod_ean WHERE inStock = 'T' AND cod_producto = '$cod' AND cod_almacen = '$almacen'
-    ORDER BY 1 DESC";
+      $where  = " inStock = 'T' AND cod_producto = '$cod'";
+      if ($almacen != "" && $almacen != "undefined"){
+        $where .= " AND cod_almacen = '$almacen' ";
+      }
+      $sql = " SELECT cod_ean FROM prod_ean WHERE $where ORDER BY 1 DESC";
     } else {
       $sql = " SELECT a.cod_producto, a.cod_ean
     FROM prod_ean a

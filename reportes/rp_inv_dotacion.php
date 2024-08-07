@@ -22,7 +22,7 @@ $titulo  = " DOTACION TRABAJADOR ";
 		var ubicacion = document.getElementById("ubicacion").value;
 		var anulado = document.getElementById("anulado").value;
 		var trabajador = document.getElementById("stdID").value;
-
+        var almacen = document.getElementById("almacen").value;
 		var error = 0;
 		var errorMessage = ' ';
 		if (fechaValida(fecha_desde) != true || fechaValida(fecha_hasta) != true) {
@@ -37,6 +37,11 @@ $titulo  = " DOTACION TRABAJADOR ";
 			var error = error + 1;
 			errorMessage = errorMessage + ' \n Debe Seleccionar un Cliente ';
 		}
+		if (almacen == '') {
+			var error = error + 1;
+			errorMessage = errorMessage + ' \n Debe Seleccionar un Almacen ';
+		}
+
 		if (error == 0) {
 			var contenido = "listar";
 			var parametros = {
@@ -49,7 +54,8 @@ $titulo  = " DOTACION TRABAJADOR ";
 				"fecha_desde": fecha_desde,
 				"fecha_hasta": fecha_hasta,
 				"cliente": cliente,
-				"ubicacion": ubicacion
+				"ubicacion": ubicacion,
+				"almacen"  :almacen
 			}
 			$.ajax({
 				data: parametros,
@@ -144,6 +150,18 @@ $titulo  = " DOTACION TRABAJADOR ";
 				</select></td>
 		</tr>
 		<tr>
+			<td>Almacen:</td>
+			<td>
+				<select name="almacen" id="almacen"  style="width:120px;">
+						<?php
+						echo $select_cl ;
+						$query01 = $bd->consultar($sql_almacen);
+						while ($row01 = $bd->obtener_fila($query01, 0)) {
+							echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
+						} ?>
+
+				</select>
+			</td>
 			<td>Anulado:</td>
 			<td><select name="anulado" id="anulado" style="width:120px;">
 					<option value="TODOS">TODOS</option>
@@ -161,7 +179,7 @@ $titulo  = " DOTACION TRABAJADOR ";
 			<td><?php echo $leng['trabajador'] ?>:</td>
 			<td colspan="3"><input id="stdName" type="text" size="35" disabled="disabled" />
 				<input type="hidden" name="trabajador" id="stdID" value="" /></td>
-
+           
 			<td>&nbsp;
 				<input type="hidden" name="Nmenu" id="Nmenu" value="<?php echo $Nmenu; ?>" />
 				<input type="hidden" name="mod" id="mod" value="<?php echo $mod; ?>" />

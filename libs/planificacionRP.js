@@ -80,6 +80,7 @@ function rp_planif_trab_serv(data, id_contenedor, callback, formato) {
 function rp_planif_trab_serv_create_cabecera(id_contenedor, callback, formato) {
 	/////////////////Creacion de la tabla y cabecera
 	var divs = d3.select('#' + id_contenedor).selectAll('div').data(res_fecha_cont).enter().append('div');
+	
 	if (formato == 'pdf') {
 		divs.append('span').attr('align', 'center').html((d) =>
 			'<img class="imgLink" title="imprimir planificacion(' +
@@ -91,11 +92,17 @@ function rp_planif_trab_serv_create_cabecera(id_contenedor, callback, formato) {
 		divs.append('span').attr('align', 'center').html((d) =>
 			'<img class="imgLink" title="imprimir planificacion(' +
 			d.values[0].values[0].values[0].cliente + ' - ' + d.values[0].values[0].values[0].ubicacion +
-			')" width="25px" src="imagenes/excel.gif" border="0" onclick="rp_planif_serv_rp(\'excel\',\'table' +
+			')" width="25px" src="imagenes/pdf.gif" border="0" onclick="rp_planif_serv_rp(\'pdf\',\'table' +
 			d.key + '\')"> <select name="update" style="width:90px;" onchange="rp_planif_serv_update(' + d.key + ',this.value)">' +
 			'<option value="C"> CANTIDADES</option><option value="H">HORAS</option></select>');
+		divs.append('span').attr('align', 'center').html((d) =>
+			'<img class="imgLink" title="imprimir planificacion(' +
+			d.values[0].values[0].values[0].cliente + ' - ' + d.values[0].values[0].values[0].ubicacion +
+			')" width="25px" src="imagenes/excel.gif" border="0" onclick="rp_planif_serv_rp(\'excel\',\'table' +
+			d.key + '\')"> <select name="update" style="width:90px;" onchange="rp_planif_serv_update(' + d.key + ',this.value)">' +
+			'<option value="C">CANTIDADES</option><option value="H">HORAS</option></select>');
 		divs.append('span').style("float", 'right').html((d) =>
-			'<b>DOBLE CLICK PARA MODIFICAR</b>');
+			'<b>DOBLE  CLICK PARA MODIFICAR</b>');
 	}
 
 	var tablas = divs.append('table').attr('id', (d) => "table" + d.key).attr('width', '100%').attr('class', 'tabla_planif').attr('align', 'center');
@@ -1279,15 +1286,17 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, cliente, ubi
 		d3.select('#t_reporte').append('thead').attr('id', 'thead');
 		d3.select('#t_reporte').append('tbody').attr('id', 'tbody');
 		d3.select('#thead').append('tr').attr('class', 'fondo00')
-			.html('<th width="25%" class="etiqueta">Region</th>' +
-				'<th width="25%" class="etiqueta">Estado</th>' +
-				'<th width="25%" class="etiqueta">Empresa</th>' +
-				'<th width="25%" class="etiqueta">ubicacion</th>' +
-				'<th width="10%" class="etiqueta">Pl. Cantidad </th>' +
-				'<th width="10%" class="etiqueta">Trab. Necs.</th>' +
-				'<th width="10%" class="etiqueta">Hombres Activos</th>' +
-				'<th width="10%" class="etiqueta">Pl. Excepcion</th>' +
-				'<th width="10%" class="etiqueta">Diferencia</th>');
+			.html('<th width="15%" class="etiqueta">Region</th>' +
+				'<th width="15%" class="etiqueta">Estado</th>' +
+				'<th width="10%" class="etiqueta">Cod. Empresa</th>' +
+				'<th width="15%" class="etiqueta">Empresa</th>' +
+				'<th width="10%" class="etiqueta">Cod. ubicacion</th>' +
+				'<th width="15%" class="etiqueta">Ubicacion</th>' +
+				'<th width="5%" class="etiqueta">Pl. Cantidad </th>' +
+				'<th width="5%" class="etiqueta">Trab. Necs.</th>' +
+				'<th width="5%" class="etiqueta">Hombres Activos</th>' +
+				'<th width="5%" class="etiqueta">Pl. Excepcion</th>' +
+				'<th width="5%" class="etiqueta">Diferencia</th>');
 		d3.select('#t_reporte').selectAll('.tbody2').data(res_contratacion).enter().append('tbody').attr('class', 'tbody2')
 			.attr('id', (d) => {
 				return 'body_' + d.key;
@@ -1336,8 +1345,13 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, cliente, ubi
 					});
 					factor = Math.floor((trab_activos - excepcion) - trab_neces);
 					if (factor == 0) factor = 'OK';
-					return '<td class="texto" id="center" >' + e.values[0].region + '</td><td class="texto" id="center" >' + e.values[0].estado + '</td><td class="texto" id="center" >' + e.values[0].cliente + '</td><td class="texto" id="center" >' + e.values[0].ubicacion + '</td><td class="texto" id="center" >' + cantidad
-						+ '</td><td class="texto" id="center" >' + trab_neces + '</td><td class="texto" id="center" >' + trab_activos + '</td><td class="texto" id="center" >' + excepcion + '</td><td class="texto" id="center" >' + factor + '</td>';
+					
+					return '<td class="texto" id="center" >' + e.values[0].region + '</td><td class="texto" id="center" >' + e.values[0].estado
+					 + '</td><td class="texto" id="center" >' + e.values[0].cod_cliente + '</td><td class="texto" id="center" >' + e.values[0].cliente 
+					 + '</td><td class="texto" id="center" >' + e.values[0].cod_ubicacion + '</td><td class="texto" id="center" >' + e.values[0].ubicacion 
+					 + '</td><td class="texto" id="center" >' + cantidad + '</td><td class="texto" id="center" >' + trab_neces 
+					 + '</td><td class="texto" id="center" >' + trab_activos + '</td><td class="texto" id="center" >' + excepcion 
+					 + '</td><td class="texto" id="center" >' + factor + '</td>';
 				});
 		});
 		if (typeof (callback) == 'function') callback();

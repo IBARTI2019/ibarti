@@ -17,7 +17,7 @@ $datos_ap    = $planificacion->get_planif_trab_ap($cod_pl_trab);
 $datos_det   = $planificacion->get_planif_trab_det($cod_pl_trab);
 $turno       = $modelo->get_turno('');
 
-$ubicaciones =  $planificacion->get_planif_ap_ubic($datos_ap["cod_planif_cl"], $datos_ap["cod_cliente"]);
+$ubicaciones =  $planificacion->get_planif_ap_ubic($datos_ap["cod_cliente"], $datos_ap["cod_planif_cl"]);
 $puesto      =  $planificacion->get_ubic_puesto($datos_ap["cod_ubicacion"]);
 
 if($datos_ap["vetado"] == "NO" ){

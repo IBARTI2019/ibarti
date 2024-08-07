@@ -67,8 +67,8 @@ prod_lineas.codigo cod_linea,
 prod_lineas.descripcion AS linea,
 clientes_ub_uniforme.cod_sub_linea,
 prod_sub_lineas.descripcion AS sub_linea,
-IFNULL( productos.item, prod_sub_lineas.codigo )  cod_producto,
-CONCAT( productos.descripcion, ' ', IFNULL( tallas.descripcion, '' ) ) producto,
+IFNULL(productos.item, prod_sub_lineas.codigo ) cod_producto,
+CONCAT(productos.descripcion, ' ', IFNULL(tallas.descripcion, '' ) ) producto,
 SUM(
 	IFNULL(
 		(
@@ -113,7 +113,8 @@ INNER JOIN `prod_dotacion` ON `prod_dotacion`.`status` = 'T'
 AND `prod_dotacion`.`anulado` = 'F' 
 AND prod_dotacion.cod_ficha = ficha.cod_ficha
 LEFT JOIN `prod_dotacion_det` ON `prod_dotacion`.`codigo` = `prod_dotacion_det`.`cod_dotacion` 
-AND prod_dotacion_det.cod_sub_linea = clientes_ub_uniforme.cod_sub_linea
+AND prod_dotacion_det.cod_sub_linea = clientes_ub_uniforme.cod_sub_linea 
+AND prod_dotacion_det.cod_dotacion IN (SELECT MAX( pdd.cod_dotacion ) cod_dotacion FROM prod_dotacion pd, prod_dotacion_det pdd WHERE pd.codigo = pdd.cod_dotacion AND pd.cod_ficha = ficha.cod_ficha GROUP BY pdd.cod_sub_linea)
 INNER JOIN `productos` ON `productos`.`item` = `prod_dotacion_det`.`cod_producto`
 LEFT JOIN `tallas` ON `productos`.`cod_talla` = `tallas`.`codigo`
 INNER JOIN contractos ON ficha.cod_contracto = contractos.codigo

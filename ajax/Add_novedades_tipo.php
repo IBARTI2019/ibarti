@@ -1,5 +1,8 @@
 <?php
 $clasificacion = $_POST['clasificacion'];
+if(isset($_POST['campo04'])){
+    $campo04 = $_POST['campo04'];
+}
 $inicial = $_POST['inicial'];
 define("SPECIALCONSTANT", true);
 require("../autentificacion/aut_config.inc.php");
@@ -12,7 +15,13 @@ require_once("../" . class_bdI);
 $bd = new DataBase();
 $wheree = '';
 if ($clasificacion != 'TODOS' && $clasificacion != '') {
-    $wheree = 'AND nov_clasif.codigo="' . $clasificacion . '"';
+    $wheree .= ' AND nov_clasif.codigo="' . $clasificacion . '"';
+}
+
+if(isset($_POST['campo04'])){
+    if ($campo04 != 'TODOS' && $campo04 != '') {
+        $wheree .= 'AND nov_clasif.campo04 ="' . $campo04 . '"';
+    }
 }
 
 $sql = 'SELECT nov_tipo.codigo,nov_tipo.descripcion

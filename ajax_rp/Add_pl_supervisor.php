@@ -75,7 +75,7 @@ ORDER BY 1,2,9,4,6,8 ASC";
 		<th  class="etiqueta"><?php echo $leng['trabajador']?></th>
 		<th  class="etiqueta"><?php echo $leng['cliente']?></th>
 		<th  class="etiqueta"><?php echo $leng['ubicacion']?></th>
-		<th  class="etiqueta">Proyecto </th>
+		<th  class="etiqueta">Proyecto</th>
 		<th  class="etiqueta">Actividad </th>
 		<th  class="etiqueta">Hora Inicio </th>
 		<th  class="etiqueta">Hora Fin </th>

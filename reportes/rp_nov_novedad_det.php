@@ -30,6 +30,8 @@ if(isset($reporte)){
 	if($cod_nov!=''){
 		$where = " WHERE nov_procesos.codigo = '".$cod_nov."'
 		AND nov_procesos.cod_novedad = novedades.codigo
+		AND novedades.cod_nov_tipo = nov_tipo.codigo
+		AND nov_tipo.kanban != 'T'
 		AND novedades.cod_nov_clasif = nov_clasif.codigo
 		AND nov_clasif.campo04 = 'F'
 		AND nov_procesos.cod_cliente = clientes.codigo
@@ -39,6 +41,8 @@ if(isset($reporte)){
 
 		$where2 = " WHERE nov_procesos.codigo = '".$cod_nov."'
 		AND nov_procesos.cod_novedad = novedades.codigo
+		AND novedades.cod_nov_tipo = nov_tipo.codigo
+		AND nov_tipo.kanban != 'T'
 		AND novedades.cod_nov_clasif = nov_clasif.codigo
 		AND nov_clasif.campo04 = 'F'
 		AND nov_procesos.cod_cliente = clientes.codigo
@@ -55,6 +59,8 @@ if(isset($reporte)){
 		$where = " WHERE nov_procesos.fec_us_ing BETWEEN \"$fecha_D\" AND \"$fecha_H\"
 		AND nov_procesos.cod_novedad = novedades.codigo
 		AND novedades.cod_nov_clasif = nov_clasif.codigo
+		AND novedades.cod_nov_tipo = nov_tipo.codigo
+		AND nov_tipo.kanban != 'T'
 		AND nov_clasif.campo04 = 'F'
 		AND nov_procesos.cod_cliente = clientes.codigo
 		AND nov_procesos.cod_ubicacion = clientes_ubicacion.codigo
@@ -63,6 +69,8 @@ if(isset($reporte)){
 
 		$where2 = " WHERE nov_procesos.fec_us_ing BETWEEN \"$fecha_D\" AND \"$fecha_H\"
 		AND nov_procesos.cod_novedad = novedades.codigo
+		AND novedades.cod_nov_tipo = nov_tipo.codigo
+		AND nov_tipo.kanban != 'T'
 		AND novedades.cod_nov_clasif = nov_clasif.codigo
 		AND nov_clasif.campo04 = 'F'
 		AND nov_procesos.cod_cliente = clientes.codigo
@@ -110,7 +118,7 @@ if(isset($reporte)){
 	CONCAT(ficha.apellidos ,' ',ficha.nombres) AS trabajador ,
 	nov_procesos.observacion,
 	nov_procesos.repuesta, nov_status.descripcion AS status
-	FROM nov_procesos , novedades , nov_clasif,  clientes ,
+	FROM nov_procesos , novedades , nov_tipo,  nov_clasif,  clientes ,
 	clientes_ubicacion , ficha , nov_status
 	$where
 	ORDER BY 1 ASC";
@@ -121,7 +129,7 @@ if(isset($reporte)){
 	nov_procesos.cod_ficha,  ficha.cedula,
 	CONCAT(ficha.apellidos ,' ',ficha.nombres) AS trabajador , nov_procesos.observacion AS observacion_g,
 	nov_procesos.repuesta, nov_status.descripcion AS status
-	FROM nov_procesos , novedades , nov_clasif,  clientes ,
+	FROM nov_procesos , novedades , nov_tipo, nov_clasif,  clientes ,
 	clientes_ubicacion , ficha , nov_status,
 	nov_procesos_det, men_usuarios
 	$where2
@@ -142,9 +150,11 @@ if(isset($reporte)){
 			$i =0;
 			while ($row01 = $bd->obtener_num($query01)){
 				$sql_pre = "SELECT nov_procesos_det.codigo,CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre)AS usuario,  nov_procesos_det.fec_us_ing, nov_procesos_det.hora, nov_procesos_det.observacion, nov_status.descripcion AS status
-				FROM nov_procesos,nov_procesos_det,novedades,clientes,clientes_ubicacion,ficha  , nov_clasif , nov_status, men_usuarios
+				FROM nov_procesos,nov_procesos_det,novedades, nov_tipo, clientes,clientes_ubicacion,ficha  , nov_clasif , nov_status, men_usuarios
 				WHERE nov_procesos.fec_us_ing BETWEEN \"$fecha_D\" AND \"$fecha_H\"
 				AND nov_procesos.cod_novedad = novedades.codigo
+				AND novedades.cod_nov_tipo = nov_tipo.codigo
+				AND nov_tipo.kanban != 'T'
 				AND novedades.cod_nov_clasif = nov_clasif.codigo
 				AND nov_clasif.campo04 = 'F'
 				AND nov_procesos.cod_cliente = clientes.codigo
@@ -171,9 +181,11 @@ if(isset($reporte)){
 			$query01  = $bd->consultar(	$sql_det);
 			while ($row01 = $bd->obtener_num($query01)){
 				$sql_pre = "SELECT nov_procesos_det.codigo,CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre)AS usuario,  nov_procesos_det.fec_us_ing, nov_procesos_det.hora, nov_procesos_det.observacion, nov_status.descripcion AS status
-				FROM nov_procesos,nov_procesos_det,novedades,clientes,clientes_ubicacion,ficha  , nov_clasif , nov_status, men_usuarios
+				FROM nov_procesos,nov_procesos_det,novedades, nov_tipo, clientes,clientes_ubicacion,ficha  , nov_clasif , nov_status, men_usuarios
 				WHERE nov_procesos.fec_us_ing BETWEEN \"$fecha_D\" AND \"$fecha_H\"
 				AND nov_procesos.cod_novedad = novedades.codigo
+				AND novedades.cod_nov_tipo = nov_tipo.codigo
+				AND nov_tipo.kanban != 'T'
 				AND novedades.cod_nov_clasif = nov_clasif.codigo
 				AND nov_clasif.campo04 = 'F'
 				AND nov_procesos.cod_cliente = clientes.codigo

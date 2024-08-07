@@ -133,7 +133,7 @@ $sql = " SELECT nov_procesos.codigo,  nov_procesos.fec_us_ing,
 				CONCAT(ficha.nombres, ' ',ficha.apellidos) AS trabajador, nov_clasif.descripcion AS clasif,
 				clientes.nombre AS cliente,  nov_status.descripcion  AS status
 		   FROM nov_procesos, novedades, clientes, nov_clasif,
-				nov_status, ficha, nov_perfiles, clientes_ubicacion
+				nov_status, ficha, nov_perfiles, clientes_ubicacion, nov_tipo
 		  WHERE nov_procesos.fec_us_ing = CURDATE()
 			AND nov_procesos.cod_novedad = novedades.codigo
 			AND novedades.cod_nov_clasif = nov_clasif.codigo
@@ -145,6 +145,8 @@ $sql = " SELECT nov_procesos.codigo,  nov_procesos.fec_us_ing,
             AND clientes_ubicacion.cod_cliente = clientes.codigo
 			AND nov_procesos.cod_nov_status = nov_status.codigo
 			AND nov_procesos.cod_ficha = ficha.cod_ficha
+			AND novedades.cod_nov_tipo = nov_tipo.codigo
+			AND nov_tipo.kanban = 'F'
 	   ORDER BY 2 DESC ";
 		  $query = $bd->consultar($sql);
 

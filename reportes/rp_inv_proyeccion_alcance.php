@@ -12,7 +12,23 @@ $titulo  = " PROYECCION DE DOTACION DE ALCANCES ";
 $sql01   = "SELECT control.dias_proyeccion FROM control";
 $query01 = $bd->consultar($sql01);
 $row01   = $bd->obtener_fila($query01, 0);
-$d_proyeccion = $row01[0]; ?>
+$d_proyeccion = $row01[0]; 
+
+if ($_SESSION['r_cliente'] == "F") {
+	$sql_cliente    = "SELECT clientes.codigo, clientes.nombre
+						   FROM clientes WHERE status = 'T'
+						  ORDER BY 2 ASC ";
+} else {
+	$sql_cliente = " SELECT clientes.codigo, clientes.nombre
+							FROM clientes
+						WHERE clientes.codigo IN (SELECT DISTINCT clientes_ubicacion.cod_cliente
+							FROM usuario_clientes, clientes_ubicacion
+						WHERE usuario_clientes.cod_usuario = '" . $_SESSION['usuario_cod'] . "'
+							AND usuario_clientes.cod_ubicacion = clientes_ubicacion.codigo)
+						WHERE status = 'T'
+						ORDER BY 2 ASC ";
+}
+?>
 <script language="JavaScript" type="text/javascript">
 	function Add_filtroX() { // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 

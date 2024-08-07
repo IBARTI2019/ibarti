@@ -45,9 +45,9 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 	*/
 	if(error == 0){
 		$("#img_actualizar").remove();
-		$("#listar").html("<img src='imagenes/loading.gif' /> Procesando, espere por favor...");
+		$("#contenido_listar").html("<img src='imagenes/loading.gif' /> Procesando, espere por favor...");
 
-		var contenido = "listar";
+		var contenido = "contenido_listar";
 		var parametros = {
 			"fecha_desde": fecha_desde,
 			"region": region, 		    "estado": estado,
@@ -60,13 +60,13 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 			url:   'ajax_rp/Add_rop_planif_cl_vs_trab_cubrir.php',
 			type:  'post',
 			success:  function (response) {
-				$("#listar").html('');
+				$("#contenido_listar").html('');
 				$("#cont_img").html("<img class='imgLink' id='img_actualizar' src='imagenes/actualizar.png' border='0' onclick='Add_filtroX()'>");
 				var resp = JSON.parse(response);
 				if(typeof resp['contrato'] == 'undefined'){
-					$("#listar" ).html('Sin Resultados!..');
+					$("#contenido_listar" ).html('Sin Resultados!..');
 				}else{							
-					rp_planif_contratacion_vs_trab_cubrir(resp,'listar',cliente,ubicacion,()=>$('#body_cubrir').val($('#t_reporte').html()));
+					rp_planif_contratacion_vs_trab_cubrir(resp,'contenido_listar',cliente,ubicacion,()=>$('#body_cubrir').val($('#t_reporte').html()));
 				}
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -137,7 +137,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 					<td width="5%" id="cont_img"><img class="imgLink" id="img_actualizar" src="imagenes/actualizar.png" border="0"
 						onclick=" Add_filtroX()" ></td>
 					</tr>   
-				</table><hr /><div id="listar"></div>
+				</table><hr /><div id="contenido_listar" class="listar"></div>
 				<div align="center"><br/>
 					<span class="art-button-wrapper">
 						<span class="art-button-l"> </span>

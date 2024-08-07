@@ -151,11 +151,13 @@ if (($status == $nuevo) or ($status == $rechazado)) {
 		$rech++;
 	}
 
+	/* 	
 	if ($refl02_apto == 'S') {
 		$apt++;
 	} elseif ($refl02_apto == 'N') {
 		$rech++;
-	}
+	} 
+	*/
 
 	if ($psi_apto == 'A') {
 		$apt++;
@@ -171,7 +173,7 @@ if (($status == $nuevo) or ($status == $rechazado)) {
 	// VALIDO
 	if ($rech > 0) {
 		$status =  $rechazado;
-	} elseif ($apt >= 7) {
+	} elseif ($apt >= 6) {
 		$status = $apto;
 	} else {
 		$status =  $status;

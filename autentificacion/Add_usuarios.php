@@ -18,7 +18,8 @@ if (isset($_GET['codigo'])) { //== ''
                     men_usuarios.nombre, men_usuarios.apellido,
                     men_usuarios.login, men_usuarios.email,
 					men_usuarios.r_cliente, men_usuarios.r_rol,
-                    men_usuarios.status,
+                    men_usuarios.status, men_usuarios.admin_kanban,
+					men_usuarios.admin_rrhh,
 					men_usuarios.cod_region, IFNULL(regiones.descripcion, 'TODAS') region,
 					men_usuarios.cod_estado, IFNULL(estados.descripcion, 'TODAS') estado,
 					men_usuarios.cod_ciudad, IFNULL(ciudades.descripcion, 'TODAS') ciudad
@@ -45,6 +46,8 @@ if (isset($_GET['codigo'])) { //== ''
 	$ciudad     = $result['ciudad'];
 	$r_cliente  = $result['r_cliente'];
 	$r_rol      = $result['r_rol'];
+	$admin_kanban = $result['admin_kanban'];
+	$admin_rrhh = $result['admin_rrhh'];
 	$status     = $result['status'];
 	$disabled   = 'readonly="true"';
 	$metodo     = 'modificar';
@@ -68,6 +71,8 @@ if (isset($_GET['codigo'])) { //== ''
 	$ciudad     = 'TODAS';
 	$r_cliente  = '';
 	$r_rol      = '';
+	$admin_kanban      = '';
+	$admin_rrhh      = '';
 	$status     = '';
 	$disabled   = '';
 	$metodo     = 'agregar';
@@ -213,6 +218,18 @@ if (isset($_GET['codigo'])) { //== ''
 				</td>
 			</tr>
 			<tr>
+				<td class="etiqueta">Administrador Kanban:</td>
+				<td id="radio03">SI<input type="radio" name="admin_kanban" value="T" style="width:auto" <?php echo CheckX($admin_kanban, "T"); ?> /> NO<input type="radio" name="admin_kanban" value="F" style="width:auto" <?php echo CheckX($admin_kanban, "F"); ?> />
+					<br /><span class="radioRequiredMsg">Debe seleccionar un Campo.</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="etiqueta">Administrador RRHH:</td>
+				<td id="radio03">SI<input type="radio" name="admin_rrhh" value="T" style="width:auto" <?php echo CheckX($admin_rrhh, "T"); ?> /> NO<input type="radio" name="admin_rrhh" value="F" style="width:auto" <?php echo CheckX($admin_rrhh, "F"); ?> />
+					<br /><span class="radioRequiredMsg">Debe seleccionar un Campo.</span>
+				</td>
+			</tr>
+			<tr>
 				<td height="8" colspan="2" align="center">
 					<hr>
 				</td>
@@ -266,7 +283,9 @@ if (isset($_GET['codigo'])) { //== ''
 	var radio02 = new Spry.Widget.ValidationRadio("radio02", {
 		validateOn: ["change", "blur"]
 	});
-
+	var radio03 = new Spry.Widget.ValidationRadio("radio03", {
+		validateOn: ["change", "blur"]
+	});
 	var select01 = new Spry.Widget.ValidationSelect("select01", {
 		validateOn: ["blur", "change"]
 	});

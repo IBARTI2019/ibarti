@@ -17,8 +17,7 @@ $mod        = $_POST['mod'];
 
 	$vinculo = "inicio.php?area=pestanas/add_$archivo&Nmenu=$Nmenu&mod=$mod";
 
-	$where =" WHERE ficha.cedula = preingreso.cedula
-	            AND ficha.cod_ficha_status = ficha_status.codigo
+	$where =" WHERE ficha.cod_ficha_status = ficha_status.codigo
                 AND ficha.cod_contracto = control.contracto_eventuales
                 AND ficha.cod_ficha = trab_roles.cod_ficha
                 AND trab_roles.cod_rol = roles.codigo ";
@@ -31,11 +30,12 @@ $mod        = $_POST['mod'];
 	}
 
 		$sql = "SELECT ficha.cod_ficha, ficha.cedula,
-	                   CONCAT(preingreso.apellidos,' ', preingreso.nombres) AS nombres,  roles.descripcion AS rol,
+	                   CONCAT( ficha.apellidos, ' ', ficha.nombres ) AS nombres,
+					roles.descripcion AS rol,
 				       ficha.fec_ingreso,  ficha.fec_us_ing,
 				       ficha.fec_us_mod, ficha.cod_ficha_status,
 				       ficha_status.descripcion AS status
-	              FROM ficha, preingreso, ficha_status, control, trab_roles, roles
+	              FROM ficha, ficha_status, control, trab_roles, roles
 	            $where
 		   ORDER BY  3, 2 DESC ";
 

@@ -16,7 +16,7 @@ $tipo        = $_POST["tipo"];
 $descripcion = htmlentities($_POST["descripcion"]);			
 $activo      = statusbd($_POST['activo']);
 $valor       = $_POST["valor"];
-
+$v_maximo     = $_POST["v_maximo"];
 $href     = $_POST['href'];
 $usuario  = $_POST['usuario']; 
 $proced   = $_POST['proced'];
@@ -26,7 +26,8 @@ $cantidad = $_POST['cantidad'];
 	if(isset($_POST['proced'])){
 
 	$sql    = "$SELECT $proced('$metodo', '$codigo', '$orden', '$clasif', 
-	                           '$tipo', '$descripcion', '$usuario', '$activo',$dias_vencimiento)";						 		
+	                           '$tipo', '$descripcion', '$usuario', '$activo',$dias_vencimiento, $v_maximo)";						 		
+
 
 	$query = $bd->consultar($sql);	
 	//if(count($valor)>0){

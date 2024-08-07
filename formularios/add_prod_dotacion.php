@@ -177,6 +177,31 @@ function mostrar_dotacion_ficha(cod_ficha){
 		});
 }
 
+function mostrar_cliente_ficha(cod_ficha){
+	ficha = cod_ficha;
+	var parametros = {'cod_ficha':cod_ficha};
+	$.ajax({
+		data:  parametros,
+		url:   'ajax/Add_cliente_ficha.php',
+		type:  'post',
+		success:  function (response) {
+			var resp = JSON.parse(response);
+			if (resp.error) {
+				alert(resp.mensaje);
+				$("#cliente_ficha_nombre").val("");
+				$("#ubicacion_ficha_nombre").val("");
+			} else {
+				$("#tr_cliente_ficha").show();
+				$("#cliente_ficha_nombre").val(resp.cliente);
+				$("#ubicacion_ficha_nombre").val(resp.ubicacion);
+			}			
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			toastr.error(xhr.status);
+			toastr.error(thrownError);}
+		});
+}
+
 function borrar2(num) {
 	borrarElement("Contenedor02", "Tabla"+num+"");
 }
@@ -222,55 +247,55 @@ function validarCamp(metodo){
 		document.getElementById('incremento').value = numX -1;
 	}else{
 		var valido     = 1;
-//	alert(metodo);
-var mensaje   = " ";
-mensaje01 = " Debe Seleccionar La Linea \n";
-mensaje02 = " Debe Seleccionar La SubLinea \n";
-mensaje03 = " Debe Seleccionar Un Productos \n";
-mensaje04 = " Debe Ingresar la Cantidad \n ";
-mensaje04 = " Debe Seleccionar Un Almacen \n ";
+		//	alert(metodo);
+		var mensaje   = " ";
+		mensaje01 = " Debe Seleccionar La Linea \n";
+		mensaje02 = " Debe Seleccionar La SubLinea \n";
+		mensaje03 = " Debe Seleccionar Un Productos \n";
+		mensaje04 = " Debe Ingresar la Cantidad \n ";
+		mensaje04 = " Debe Seleccionar Un Almacen \n ";
 
-select01  = document.getElementById('linea_'+numX+'').value;
-select02  = document.getElementById('sub_linea_'+numX+'').value;
-select03  = document.getElementById('producto_'+numX+'').value;
-select04  = document.getElementById('almacen_'+numX+'').value;
-input01   = Number(document.getElementById('cantidad_'+numX+'').value);
-input01Max   = Number(document.getElementById('cantidad_'+numX+'').getAttribute("max"));
+		select01  = document.getElementById('linea_'+numX+'').value;
+		select02  = document.getElementById('sub_linea_'+numX+'').value;
+		select03  = document.getElementById('producto_'+numX+'').value;
+		select04  = document.getElementById('almacen_'+numX+'').value;
+		input01   = Number(document.getElementById('cantidad_'+numX+'').value);
+		input01Max   = Number(document.getElementById('cantidad_'+numX+'').getAttribute("max"));
 
-mensaje05 = input01+ " La Cantidad Supera el Stock Actual \n Stock Actual = "+input01Max;
+		mensaje05 = input01+ " La Cantidad Supera el Stock Actual \n Stock Actual = "+input01Max;
 
-if(select01 == ""){
-	valido++;
-	mensaje += mensaje01;
-}
-if(select02 == ""){
-	valido++;
-	mensaje += mensaje02;
-}
-if(select03 == ""){
-	valido++;
-	mensaje += mensaje03;
-}
-if(select04 == ""){
-	valido++;
-	mensaje += mensaje05;
-}
-if(input01 == ""){
-	valido++;
-	mensaje += mensaje04;
-}
+		if(select01 == ""){
+			valido++;
+			mensaje += mensaje01;
+		}
+		if(select02 == ""){
+			valido++;
+			mensaje += mensaje02;
+		}
+		if(select03 == ""){
+			valido++;
+			mensaje += mensaje03;
+		}
+		if(select04 == ""){
+			valido++;
+			mensaje += mensaje05;
+		}
+		if(input01 == ""){
+			valido++;
+			mensaje += mensaje04;
+		}
 
-/* if(input01 > input01Max){
-	valido++;
-	mensaje += mensaje05;
-} */
-     /////  validar ///
-     if(valido ==  1){
-		validarAlcance(numX);
-     }else{
-     	toastr.error(mensaje);
-     }
- }
+		/* if(input01 > input01Max){
+			valido++;
+			mensaje += mensaje05;
+		} */
+			/////  validar ///
+			if(valido ==  1){
+				validarAlcance(numX);
+			}else{
+				toastr.error(mensaje);
+			}
+		}
 }
 
 
@@ -438,6 +463,12 @@ $proced      = "p_prod_dotacion";
 									<td colspan="2" class="etiqueta">Anulado: <?php echo valorS($anulado);?>
 									<input type="hidden" name="anulado" id="anulado" value="<?php echo $anulado;?>"/></td>
 								</tr>
+						<tr id="tr_cliente_ficha" style="display: none;">
+							<td class="etiqueta" width="13%" >Cliente:</td>
+							<td colspan="2"><input type="text" size="40" id="cliente_ficha_nombre" name="cliente_ficha_nombre" value="" readonly="readonly"/>
+							<td class="etiqueta">Ubicación:</td>
+							<td colspan="2"><input type="text" size="40" id="ubicacion_ficha_nombre" name="ubicacion_ficha_nombre" value="" readonly="readonly"/>
+						</tr>
 							</table>
 						</fieldset>
 						<fieldset class="fieldset" id="datos_dotacion">
@@ -629,6 +660,7 @@ $proced      = "p_prod_dotacion";
 													document.getElementById("stdID").value = id; 
 													toastr.clear(toastr.getLastToast);
 													mostrar_dotacion_ficha(id);
+													mostrar_cliente_ficha(id);
 													
             // document.getElementsByName("stdID")[0].value = id;
         }

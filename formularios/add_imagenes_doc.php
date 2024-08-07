@@ -8,7 +8,8 @@ $sql      = "SELECT control.url_doc, IFNULL(ficha_documentos.link, 0) link
 			                       ON ficha_documentos.cod_ficha = '$ficha' 
 								  AND ficha_documentos.cod_documento = '$doc' ";			  
 $query01  = $bd->consultar($sql);
-$row01    = mysql_fetch_row($query01);
+//$row01    = mysql_fetch_row($query01)se cambio 
+$row01     = $bd->obtener_fila($query01,0);
 $url      = $row01[0];		
 $link     = $row01[1];		
 
@@ -34,12 +35,12 @@ if(file_exists($img_src)){
 <form enctype="multipart/form-data" class="formulario">
 	<table width="100%">
     	<tr><td width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>"></div>
-                      <input name="archivo" type="file" id="imagen"   value="Subir Imagen"/><br/>
+                      <input name="images" type="file" id="imagen"   value="Subir Imagen"/><br/>
                 <span class="art-button-wrapper" id="imgMostrar"  style="display:none">
                     <span class="art-button-l"> </span>
                     <span class="art-button-r"> </span> 
                       <input type="button" id="subir_img" value="Subir imagen"class="readon art-button" 
-                             onClick="subirImagen('<?php echo $directorio;?>')" /></span>
+                             onClick="subirImagenS3()" /></span>
                 <br/>
                  <br/>
                     <!--div para visualizar mensajes-->

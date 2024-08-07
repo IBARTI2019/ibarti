@@ -173,7 +173,7 @@ if(isset($reporte)){
 		$filename = "../imagenes/fotos/".$row01[7].".jpg";
 
 		if (file_exists($filename)){
-			 echo "<a href='".$filename."'><img src='".$filename."' border='0' width='45' height='60'/></a>";
+			 echo "<a href='".$filename."'><img src='".$filename."?nocache=".time()."' border='0' width='45' height='60'/></a>";
 		}else{
 			   echo '<img src="../imagenes/img_no_disp.png" width="120px" height="80px" />';
 		}

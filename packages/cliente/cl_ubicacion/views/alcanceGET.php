@@ -7,10 +7,10 @@ $result = array();
 
 $typing     = $_GET['q'];
 
-$sql = "SELECT productos.codigo, productos.descripcion, 
-CONCAT(productos.descripcion,' (',productos.item,') ') descripcionFull, productos.item              
-FROM productos 
-WHERE (LOCATE('$typing', productos.codigo) OR LOCATE('$typing', productos.descripcion))         
+$sql = "SELECT  prod_sub_lineas.codigo, prod_sub_lineas.descripcion, 
+CONCAT(prod_sub_lineas.codigo,' (',prod_sub_lineas.descripcion,') ') descripcionFull, prod_sub_lineas.codigo             
+FROM prod_sub_lineas 
+WHERE (LOCATE('$typing',prod_sub_lineas.descripcion) OR LOCATE('$typing', prod_sub_lineas.codigo))         
 ORDER BY 2 DESC";
 $query = $bd->consultar($sql);
 while ($datos=$bd->obtener_fila($query,0)){

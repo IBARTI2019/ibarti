@@ -12,9 +12,8 @@ $cod_talla = "";
     AND productos.item =b.cod_producto
     ORDER BY 2 ASC ";
    $query = $bd->consultar($sql);
-
-	echo'<select name="almacen_'.$relacion.'" id="almacen_'.$relacion.'" style="width:200px"
-	onchange="cantidad_maxima(this.value,'.$relacion.')" required>
+//    onchange="cantidad_maxima(this.value,'.$relacion.')" 
+	echo'<select name="almacen_'.$relacion.'" id="almacen_'.$relacion.'" onchange="cantidad_maxima(this.value, '.$relacion.')" style="width:200px" required>
 			     <option value="">Seleccione...</option>';
 			     $i=0;
 			  	 while($datos=$bd->obtener_fila($query,0)){

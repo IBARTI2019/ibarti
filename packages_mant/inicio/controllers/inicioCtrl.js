@@ -168,11 +168,13 @@ function Ver_log(){
 					captcha();
 					$("#log_us").val('');
 					$("#log_p").val('');
-
 				}else {
 					window.location.href = "inicio.php?area=formularios/index&mod=000&Nmenu=000";
 					sessionStorage.setItem('condi',"F");
 					sessionStorage.setItem('numero',0);
+					localStorage.setItem('userIbartiKanban', resp.codigo);
+					localStorage.setItem('admin_kanban', resp.admin_kanban);
+					localStorage.setItem('admin_rrhh', resp.admin_rrhh);
 				}
 			},
 			error: function (xhr, ajaxOptions, thrownError) {

@@ -1,4 +1,5 @@
 <?php
+session_start(); 
 define("SPECIALCONSTANT", true);
 require "../autentificacion/aut_config.inc.php";
 include "../".Funcion;
@@ -9,15 +10,15 @@ require_once('../'.ConfigDomPdf);
 
 //$codigo='99';
 $codigo      = $_POST["codigo"];
+$usuario =  $_SESSION['usuario_cod'];
 
 $sql = "SELECT prod_dotacion.codigo, prod_dotacion.fec_dotacion,
 prod_dotacion.descripcion,
 v_ficha.rol, v_ficha.cod_ficha,
-v_ficha.cedula, v_ficha.ap_nombre AS trabajador,
+v_ficha.cedula, v_ficha.ap_nombre AS trabajador,men_usuarios.cedula AS cedulausuario, concat(men_usuarios.nombre ,' ',men_usuarios.apellido) as nombreusuario,
 prod_dotacion.descripcion,  control.nota_unif
-FROM v_ficha , prod_dotacion,  control
-WHERE v_ficha.cod_ficha = prod_dotacion.cod_ficha
-AND prod_dotacion.codigo = '".$codigo."' ";
+FROM v_ficha , prod_dotacion, control, men_usuarios 
+WHERE v_ficha.cod_ficha = prod_dotacion.cod_ficha AND prod_dotacion.codigo = '". $codigo ."' AND men_usuarios.codigo='$usuario'";
 //query Cliente
 $queryc = $bd->consultar($sql);
 
@@ -36,6 +37,7 @@ if ($row = $bd->obtener_name($queryc))
 {
   ob_start();
   $titulo= 'DOTACIÓN DE UNIFORMES Y EQUIPOS DE PROTECCIÓN PERSONAL';
+  
   require_once('../'.PlantillaDOM.'/unicas/prod_dotacion_ibarti.php');
  //$dompdf = new DOMPDF();
  //$dompdf->load_html(ob_get_clean(),'UTF-8');

@@ -114,7 +114,7 @@ $trabajador      = $_POST['trabajador'];
 				  <td class="texto">'.longitud($datos["ap_nombre"]).'</td>
 				  <td class="texto">'.$datos["fec_carnet"].'</td>';
 				$filename = "imagenes/fotos/".$datos[7].".jpg";
-		  echo "<td><a href='".$filename."'><img src='".$filename."' border='0' width='45' height='60' alt='SIN FOTO' /></a></td>";
+		  echo "<td><a href='".$filename."'><img src='".$filename."?nocache=".time()."' border='0' width='45' height='60' alt='SIN FOTO' /></a></td>";
           echo  '</tr>';
         	}
 		};?>

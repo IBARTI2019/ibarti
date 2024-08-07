@@ -13,6 +13,8 @@ $titulo  = " PROYECTOS ";
 
 $titulo      = "REPORTE $titulo";
 $codigo      = '';
+
+$sql_area = "SELECT codigo, descripcion FROM area_proyecto WHERE status = 'T';";
 ?>
 <script language="JavaScript" type="text/javascript">
 	function showDetail(proyecto) {
@@ -52,8 +54,26 @@ $codigo      = '';
 		});
 	}
 
-	function Add_filtroX() { // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
+	function cargar_proyectos(proyecto) {
+		var parametros = {
+			"codigo": proyecto
+		};
+		$.ajax({
+			data: parametros,
+			url: 'ajax/Add_proyectos.php',
+			type: 'post',
+			success: function(response) {
+				$("#proyecto").html(response);
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+	}
 
+	function Add_filtroX() { // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
+		var area = $("#area").val();
 		var proyecto = $("#proyecto").val();
 		var status = $("#status").val();
 		var actividad = $("#actividad").val();
@@ -73,6 +93,7 @@ $codigo      = '';
 			var contenido = "listar";
 
 			var parametros = {
+				"area": area,
 				"proyecto": proyecto,
 				"actividad": actividad,
 				"realizado": realizado,
@@ -111,6 +132,14 @@ $codigo      = '';
 	<hr />
 	<table width="100%" class="etiqueta">
 		<tr>
+			<td>Area:</td>
+			<td><select name="area" id="area" style="width:120px;" onchange="cargar_proyectos(this.value)" required>
+					<?php
+					echo '<option value="TODOS">TODOS</option>';
+					$query01 = $bd->consultar($sql_area);
+					while ($row01 = $bd->obtener_fila($query01, 0)) {
+						echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
+					} ?></select></td>
 			<td>Proyecto:</td>
 			<td><select name="proyecto" id="proyecto" style="width:120px;" onchange="cargar_actividades(this.value)" required>
 					<?php

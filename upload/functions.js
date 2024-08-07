@@ -115,8 +115,6 @@ function subirImagen(directorio) {
     });
 }
 
-<<<<<<< Updated upstream
-=======
 function subirImagenS3(directorio) {
     //informaci�n del formulario
 
@@ -154,7 +152,6 @@ function subirImagenS3(directorio) {
         }
     });
 }
->>>>>>> Stashed changes
 
 
 function subirImagenCliente(directorio) {
@@ -196,8 +193,6 @@ function subirImagenCliente(directorio) {
     });
 }
 
-<<<<<<< Updated upstream
-=======
 function uploadActulizarS3(url) {
     console.log('uploadActulizarS3: ', url)
     var ficha = $("#ficha").val();
@@ -240,7 +235,6 @@ function uploadActulizarS3(url) {
      //window.history.go(-1);
 };
 
->>>>>>> Stashed changes
 function uploadActulizar(url) {
     var ficha = $("#ficha").val();
     var ci = $("#ci").val();

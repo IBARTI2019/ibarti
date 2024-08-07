@@ -5,9 +5,9 @@ require_once("../".class_bd);
 require_once("../".Leng);
 $bd = new DataBase(); 
 $codigo      = $_POST['codigo'];
-	   $sql01 ="SELECT clientes_ub_alcance.cod_producto, productos.descripcion producto, clientes_ub_alcance.cantidad,
+	   $sql01 ="SELECT clientes_ub_alcance.cod_sub_linea cod_producto, prod_sub_lineas.descripcion producto, clientes_ub_alcance.cantidad,
           clientes_ub_alcance.dias, clientes_ub_alcance.vencimiento
-              FROM clientes_ub_alcance, productos WHERE clientes_ub_alcance.cod_producto = productos.item 
+              FROM clientes_ub_alcance, prod_sub_lineas WHERE clientes_ub_alcance.cod_sub_linea = prod_sub_lineas.codigo 
               AND clientes_ub_alcance.cod_cl_ubicacion = '$codigo'";
 ?>
 <tr>
@@ -30,7 +30,7 @@ $codigo      = $_POST['codigo'];
 			echo '<tr class="' . $fondo . '">
 				  <td>     
                   <input type="text" id="codigo_producto'.$i.'" value="'.$datos['producto'].'" disabled  style="width:450px"/>
-                  <input type="hidden" name="trabajador" id="stdID'.$i.'" value="'.$datos['cod_producto'].'"/>
+                  <input type="hidden" name="producto" id="stdID'.$i.'" value="'.$datos['cod_producto'].'"/>
                 </td>
                 <td>
                  <input type="number" id="cantidad'.$i.'" style="width:100px"  value="'.$datos['cantidad'].'" min="1">

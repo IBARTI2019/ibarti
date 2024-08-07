@@ -46,8 +46,8 @@ if(isset($_SESSION['usuario_cod'])){
     <input type="text" name="reporte" id="reporte" hidden="hidden">
     <input type="text" name="tipos" id="tipos" hidden="hidden">
                   
-    <img class="imgLink" id="img_pdf" src="imagenes/pdf.gif" border="0"
-    onclick="enviar_pdf()" width="25px" title="imprimir a pdf">
+    <img class="imgLink" id="img_pdf" src="imagenes/pdf.gif" border="0" onclick="enviar_pdf()" width="25px" title="imprimir a pdf">
+    <img class="imgLink" id="img_pdf" src="imagenes/excel.gif" border="0" onclick="enviar_excel()" width="25px" title="imprimir a excel">
              <span class="art-button-wrapper">
                     <span class="art-button-l"> </span>
                     <span class="art-button-r"> </span>

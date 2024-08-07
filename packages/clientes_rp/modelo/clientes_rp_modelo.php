@@ -40,7 +40,18 @@ class clientes_reporte
 		}
 		return $this->datos;
 	}
-	
+	public function llenar_estatus(){
+		$sql = "SELECT estados.codigo, estados.descripcion
+		FROM estados , control
+		WHERE estados.cod_pais = control.cod_pais AND estados.`status` = 'T'
+		ORDER BY 2 ASC";
+
+		$query = $this->bd->consultar($sql);
+		while ($datos = $this->bd->obtener_fila($query)) {
+			$this->datos[] = $datos;
+		}
+		return $this->datos;
+	}
 	public function llenar_ciudades($estado){
 		$where='';
 		if($estado!='TODOS'){
@@ -122,7 +133,6 @@ class clientes_reporte
 		}
 		return $this->datos;
 	}
-	
 	
 	
 	

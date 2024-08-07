@@ -60,6 +60,7 @@ if($pasaImgSize == true)
 {
 
 	// Verificamos Tamaño y extensiones
+	// $extension[$num]=='jpg' || $extension[$num]=='png')
 	if(in_array($tipo, $fileType) && $tamanio>0 && $tamanio<=maxUpload && ($extension[$num]=='jpg' || $extension[$num]=='png'))
 	{
 		// Intentamos copiar el archivo
@@ -81,7 +82,7 @@ if($pasaImgSize == true)
 	}
 	else
 		// Error en el tamaño y tipo de imagen
-		$mensajeFile = 'Verifique el tamaño y tipo de imagen';
+		$mensajeFile = 'Verifique el tamaño y tipo de imagen (debe ser tipo .jpg)';
 					
 }
 else

@@ -40,7 +40,7 @@ $tb_perfil  = "men_perfil_menu";
      $query = "SELECT $tb_usuario.codigo, $tb_usuario.cod_perfil, $tb_usuario.cedula, $tb_usuario.nombre,
 	                  $tb_usuario.apellido, $tb_usuario.login, $tb_usuario.pass, $tb_usuario.pass_old,
 					  $tb_usuario.email, DATEDIFF(NOW(), $tb_usuario.fec_mod_pass) AS dias_caduca,
-               		  $tb_usuario.r_cliente, $tb_usuario.r_rol, $tb_usuario.status, clientes.abrev, clientes.nombre AS cl_nombre,
+               		  $tb_usuario.r_cliente, $tb_usuario.r_rol, $tb_usuario.status, $tb_usuario.admin_rrhh, clientes.abrev, clientes.nombre AS cl_nombre,
 					  control.ficha_preingreso, control.administrador, control.cod_pais, control.ficha_activo,
                       control.oesvica AS cl_principal
 
@@ -152,8 +152,7 @@ $tb_perfil  = "men_perfil_menu";
 	$_SESSION['cl_principal']      = $usuario_datos['cl_principal'];
 	$_SESSION['r_cliente']         = $usuario_datos['r_cliente'];
 	$_SESSION['r_rol']             = $usuario_datos['r_rol'];
-
-
+	$_SESSION['admin_rrhh']             = $usuario_datos['admin_rrhh'];
 
 
     // Hacemos una llamada a si mismo (scritp) para que queden disponibles
@@ -171,7 +170,7 @@ $tb_perfil  = "men_perfil_menu";
 	 $sql     = "$SELECT $proced('conexion', '$cod', '', '',
 							'', '','', '',
 							'', '','', '',
-							'$ip', '$captcha', '', '')";
+							'$ip', '$captcha', '', '', '')";
 		 $query = $bd->consultar($sql);
 
 

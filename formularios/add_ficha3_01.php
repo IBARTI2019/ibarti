@@ -25,10 +25,13 @@ if ($metodo == 'modificar') {
 				   v_ficha.fec_contracto, v_ficha.cod_us_ing,
 				   v_ficha.fec_us_ing, v_ficha.cod_us_mod,
 				   v_ficha.fec_us_mod, v_ficha.cod_ficha_status,
-				   v_ficha.`status`, v_preingreso.cedula,
-			       v_preingreso.cod_cargo, v_preingreso.cargo,
-				   v_preingreso.cod_estado, v_preingreso.estado,
-				   v_preingreso.cod_ciudad, v_preingreso.ciudad,
+				   v_ficha.`status`, 	v_ficha.cedula,
+					v_ficha.cod_cargo,
+					v_ficha.cargo,
+					v_ficha.cod_estado,
+					v_ficha.estado,
+					v_ficha.cod_ciudad,
+					v_ficha.ciudad,
 			 	   v_preingreso.cod_nacionalidad, v_preingreso.nacionalidad,
 				   v_preingreso.cod_estado_civil, v_preingreso.estado_civil,
 				   v_preingreso.cod_ocupacion, v_preingreso.ocupacion,
@@ -36,13 +39,17 @@ if ($metodo == 'modificar') {
 				   v_preingreso.cod_t_pantalon, v_preingreso.pantalon,
 				   v_preingreso.cod_t_camisas, v_preingreso.camisa,
 				   v_preingreso.cod_n_zapatos, v_preingreso.zapato,
-				   v_preingreso.nombres, v_preingreso.apellidos,
-				   v_preingreso.ap_nombre, 
-				   v_preingreso.fec_nacimiento, v_preingreso.lugar_nac, 
-				   v_preingreso.celular,
-				   v_preingreso.correo, v_preingreso.experiencia,
-				   v_preingreso.sexo, v_preingreso.telefono,
-				   v_preingreso.direccion, v_preingreso.fec_preingreso,
+				   	v_ficha.nombres,
+					v_ficha.apellidos,
+					v_ficha.ap_nombre,
+					v_ficha.fec_nacimiento,
+					v_ficha.lugar_nac,
+					v_ficha.celular,
+					v_ficha.correo,
+					v_ficha.experiencia,
+					v_ficha.sexo,
+					v_ficha.telefono,
+					v_ficha.direccion, v_preingreso.fec_preingreso,
 				   v_preingreso.fec_psic, v_preingreso.psic_apto,
 				   v_preingreso.psic_observacion, v_preingreso.fec_pol,
 				   v_preingreso.pol_apto, v_preingreso.pol_observacion,
@@ -59,9 +66,8 @@ if ($metodo == 'modificar') {
 				   v_preingreso.refl01_apto, v_preingreso.refl02_empresa,
 				   v_preingreso.refl02_telf, v_preingreso.refl02_contacto,
 				   v_preingreso.refl02_observacion, v_preingreso.refl02_apto
-              FROM v_ficha , v_preingreso
-             WHERE v_ficha.cod_ficha = '$codigo'
-               AND v_ficha.cedula = v_preingreso.cedula ";
+              FROM v_ficha LEFT JOIN v_preingreso ON v_ficha.cedula = v_preingreso.cedula
+				WHERE v_ficha.cod_ficha = '$codigo'";
 
 	$query  = $bd->consultar($sql);
 	$result = $bd->obtener_fila($query, 0);
@@ -349,7 +355,7 @@ $sql_ciudad = " SELECT codigo, descripcion FROM ciudades WHERE cod_estado = '$co
 					$filename = "imagenes/fotos/$cedula.jpg";
 
 					if (file_exists($filename)) {
-						echo '<img src="' . $filename . '" width="110px" height="130px" />';
+						echo '<img src="' . $filename . '?nocache='.time().'" width="110px" height="130px" />';
 					} else {
 						echo '<img src="imagenes/img_no_disp.png" width="110px" height="130px"/>';
 					} ?>

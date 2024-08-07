@@ -84,7 +84,7 @@ if(isset($reporte)){
 					   CONCAT(ficha.apellidos,' ', ficha.nombres) AS ap_nombre, contractos.descripcion AS contrato, ficha_documentos.cod_documento,  documentos.descripcion AS doc,
 						 StatusD(ficha_documentos.checks) checks, StatusD(ficha_documentos.vencimiento) vencimiento,
 						 if(ficha_documentos.vencimiento = 'N','SIN VENCIMIENTO',ficha_documentos.venc_fecha), ficha_status.descripcion AS `status`,
-						 ficha.fec_ingreso
+						 ficha.fec_ingreso, ficha_documentos.venc_fecha
                   FROM ficha , trab_roles, ficha_documentos , documentos , roles, regiones, estados, ciudades,
 					   contractos, ficha_status
                 $where
@@ -100,13 +100,13 @@ if(isset($reporte)){
  	 echo "<tr><th> ".$leng['rol']." </th><th> ".$leng['region']." </th><th> ".$leng['estado']." </th><th> ".$leng['ciudad']." </th>
 	           <th> ".$leng['ficha']." </th><th> ".$leng['ci']." </th><th> ".$leng['trabajador']." </th> <th> ".$leng['contrato']."</th>
 			   <th> Cod. Documento </th><th> Documento </th><th> CHECKS </th> <th> VENCIMIENTO </th> <th> FECHA VENCIMIENTO </th><th> Status </th>
-			   <th> Fecha de Ingreso </th></tr>";
+			   <th> Fecha de Ingreso </th><th> Fecha de Vencimiento </th></tr>";
 
 		while ($row01 = $bd->obtener_num($query01)){
 		 echo "<tr><td>".$row01[0]."</td><td>".$row01[1]."</td><td>".$row01[2]."</td><td>".$row01[3]."</td>
 		           <td>'".$row01[4]."'</td><td>".$row01[5]."</td><td>".$row01[6]."</td><td>".$row01[7]."</td>
 				   <td>".$row01[8]."</td><td>".$row01[9]."</td><td>".$row01[10]."</td><td>".$row01[11]."</td>
-					 <td>".$row01[12]."</td><td>".$row01[13]."</td><td>".$row01[14]."</td>
+					 <td>".$row01[12]."</td><td>".$row01[13]."</td><td>".$row01[14]."</td><td>".$row01[15]."</td>
 			   </tr>";
 		}
 		 echo "</table>";

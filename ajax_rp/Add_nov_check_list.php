@@ -39,6 +39,10 @@ if ($clasif != "TODOS") {
 	$where .= " AND nov_clasif.codigo = '$clasif' ";
 }
 
+if ($tipo != "TODOS") {
+	$where .= " AND nov_tipo.codigo = '$tipo' ";
+}
+
 if ($cliente != "TODOS") {
 	$where .= " AND clientes.codigo = '$cliente' ";
 }

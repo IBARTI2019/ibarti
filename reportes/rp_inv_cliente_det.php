@@ -14,10 +14,11 @@ $region          = $_POST['region'];
 $estado          = $_POST['estado'];
 $ciudad          = $_POST['ciudad'];
 $puesto			 = $_POST['puesto'];
+$estatu          = $_POST['estatu'];
 $reporte         = $_POST['reporte'];
 
 $archivo         = "rp_cs_cliente_" . $fecha . "";
-$titulo          = "  REPORTE CLIENTES  \n";
+$titulo          = "  REPORTE CLIENTES \n";
 
 if (isset($reporte)) {
 
@@ -25,9 +26,7 @@ if (isset($reporte)) {
 	AND clientes.cod_cl_tipo = clientes_tipos.codigo
 	AND clientes_ubicacion.cod_region = regiones.codigo
 	AND clientes_ubicacion.cod_estado = estados.codigo
-	AND clientes_ubicacion.cod_ciudad = ciudades.codigo
-	AND clientes_ub_puesto.cod_cl_ubicacion = clientes_ubicacion.codigo
-	AND clientes_ub_puesto.cod_cliente = clientes.codigo";
+	AND clientes_ubicacion.cod_ciudad = ciudades.codigo";
 
 
 	if ($cliente != "TODOS") {
@@ -50,11 +49,19 @@ if (isset($reporte)) {
 	}
 
 	if ($puesto != "TODOS") {
-		$where .= "AND clientes_ub_puesto.codigo = '$puesto'";
+		$where .= " AND clientes_ub_puesto.codigo = '$puesto'";
 	}
+
+	if ($estatu != "TODOS"){
+		$where .= " AND clientes.status = '$estatu'";
+		if($estatu == 'T'){
+			$where .= " AND clientes_ubicacion.status = 'T'";
+		}
+	}
+	
 	// QUERY A MOSTRAR //
 	$sql = " SELECT regiones.descripcion AS region, estados.descripcion AS estado,
-	ciudades.descripcion AS ciudad, clientes.nombre AS cliente,
+	ciudades.descripcion AS ciudad, clientes.nombre AS cliente,clientes.status,
 	clientes_tipos.descripcion AS cliente_tipo,
 	clientes.rif, clientes_ubicacion.contacto,
 	IF(clientes.latitud, 'SI', 'NO') geolocalizacion_cliente,
@@ -62,19 +69,20 @@ if (isset($reporte)) {
 	clientes.longitud longitud_cliente,
 	clientes_ubicacion.descripcion AS ubicacion,
 	clientes_ubicacion.telefono, clientes_ubicacion.email,
-	clientes_ubicacion.direccion, clientes_ubicacion.`status`,
+	clientes_ubicacion.direccion, clientes_ubicacion.status,
 	clientes_ub_puesto.nombre as cliente_puesto_nombre,
 	clientes_ub_puesto.actividades as cliente_puesto_actividades,
 	clientes_ub_puesto.observ as cliente_puesto_observacion,
 	IF(clientes_ubicacion.latitud, 'SI', 'NO') geolocalizacion_ubicacion,
 	clientes_ubicacion.latitud latitud_ubicacion,
 	clientes_ubicacion.longitud longitud_ubicacion
-	FROM clientes_ubicacion, clientes, clientes_tipos ,
-	regiones , estados , ciudades, clientes_ub_puesto
+	FROM clientes_ubicacion 
+	LEFT JOIN clientes_ub_puesto ON clientes_ub_puesto.cod_cl_ubicacion = clientes_ubicacion.codigo, 
+	clientes, clientes_tipos, regiones , estados , ciudades
 	$where
 	ORDER BY 1 ASC";
 
-	if ($reporte == 'excel') {
+	if ($reporte == 'excel' ) {
 		echo "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />";
 		header("Content-type: application/vnd.ms-excel");
 		header("Content-Disposition:  filename=\"rp_$archivo.xls\";");
@@ -86,7 +94,7 @@ if (isset($reporte)) {
 		<th> CIUDAD && MUNICIPIO </th>
 		<th> " . $leng['cliente'] . " </th>
 		<th> Tipo </th><th> " . $leng['rif'] . " </th>
-		<th> Contacto </th>
+		<th> Contacto</th>
 		<th> Geolicalización Cliente </th>
 		<th> Latitud Cliente </th>
 		<th> Longitud Cliente </th>
@@ -95,17 +103,15 @@ if (isset($reporte)) {
 		<th> Actividad </th>
 		<th> Observacion </th>
 		<th> Teléfono </th><th> " . $leng['correo'] . " </th>
-		<th> Dirección</th><th>Status </th>
+		<th> Dirección</th><th>Status</th>
 		<th> Geolicalización Ubicación </th>
 		<th> Latitud Ubicación </th>
 		<th> Longitud Ubicación </th></tr>";
-
 		while ($row01 = $bd->obtener_num($query01)) {
 			echo "<tr><td > " . $row01[0] . " </td>
 			<td>" . $row01[1] . "</td>
 			<td>" . $row01[2] . "</td>
 			<td>" . $row01[3] . "</td>
-			<td>" . $row01[4] . "</td>
 			<td>" . $row01[5] . "</td>
 			<td>" . $row01[6] . "</td>
 			<td>" . $row01[7] . "</td>
@@ -121,7 +127,10 @@ if (isset($reporte)) {
 			<td>" . statuscal($row01[14]) . "</td>
 			<td>" . $row01[18] . "</td>
 			<td>" . floatval($row01[19]) . "</td>
-			<td>" . floatval($row01[20]) . "</td></tr>";
+			<td>" . floatval($row01[20]) . "</td>
+			
+		
+			</tr>";
 		}
 		echo "</table>";
 	}
@@ -148,7 +157,7 @@ if (isset($reporte)) {
 		<th width='10%'>Puesto</th>
 		<th width='10%'>Teléfono</th>
 		<th width='35%'>Dirección</th>
-		
+			
 		</tr>";
 
 		$f = 0;
@@ -164,6 +173,7 @@ if (isset($reporte)) {
 			<td width='10%'>" . $row[15] . "</td>
 			<td width='10%'>" . $row[11] . "</td>
 			<td width='35%'>" . $row[13] . "</td>
+						
 			</tr>";
 
 			$f++;

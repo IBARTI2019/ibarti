@@ -45,7 +45,9 @@ class Notificaciones
 		AND novedades.cod_nov_clasif = nov_perfiles.cod_nov_clasif
 		AND nov_perfiles.cod_perfil = '$perfil' 
 		and nov_perfiles.respuesta = 'T'
-		AND nov_procesos.cod_ubicacion = clientes_ubicacion.codigo ";
+		AND nov_procesos.cod_ubicacion = clientes_ubicacion.codigo
+		AND novedades.cod_nov_tipo = nov_tipo.codigo
+		AND nov_tipo.kanban != 'T' ";
 
 		if ($region != null && $region != '') {
 			$where .= " AND clientes_ubicacion.cod_region = '$region' ";
@@ -60,7 +62,7 @@ class Notificaciones
 		}
 
 		$sql = "SELECT nov_procesos.codigo,nov_procesos_det.codigo cod_proc,nov_procesos_det.observacion ,ficha.cedula,nov_procesos.fec_us_mod fecha,novedades.descripcion,men_usuarios.nombre,nov_status.descripcion as stat,nov_status.color_notificaciones as color
-		FROM nov_procesos,novedades,nov_perfiles, men_usuarios, control,nov_status,ficha,nov_procesos_det, clientes_ubicacion
+		FROM nov_procesos,novedades, nov_tipo, nov_perfiles, men_usuarios, control,nov_status,ficha,nov_procesos_det, clientes_ubicacion
 		$where
 		GROUP BY nov_procesos.codigo
 		ORDER BY nov_status.control_notif_orden ASC,nov_procesos.fec_us_mod ASC ";
@@ -90,6 +92,8 @@ class Notificaciones
 		AND nov_status.control_notificaciones = 'T'
 		AND nov_procesos_det.cod_us_ing <> '$usuario'
 		AND novedades.cod_nov_clasif = nov_perfiles.cod_nov_clasif
+		AND novedades.cod_nov_tipo = nov_tipo.codigo
+		AND nov_tipo.kanban != 'T'
 		and nov_procesos.cod_nov_status = nov_status.codigo
 		AND nov_perfiles.cod_perfil = '$perfil' 
 		AND nov_procesos_det.cod_us_ing = men_usuarios.codigo
@@ -110,7 +114,7 @@ class Notificaciones
 
 
 		$sql = "SELECT nov_procesos.codigo,men_usuarios.cedula,nov_procesos_det.observacion,nov_procesos_det.fec_us_ing fecha,novedades.descripcion,men_usuarios.nombre,nov_status.descripcion as stat,nov_status.color_notificaciones as color
-		FROM nov_procesos,nov_procesos_det,novedades,nov_perfiles, men_usuarios, control, nov_status, clientes_ubicacion
+		FROM nov_procesos,nov_procesos_det,novedades, nov_tipo, nov_perfiles, men_usuarios, control, nov_status, clientes_ubicacion
 		$where
 		GROUP BY nov_procesos.codigo
 		ORDER BY nov_status.control_notif_orden DESC,nov_procesos_det.fec_us_ing ASC";

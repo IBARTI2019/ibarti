@@ -184,7 +184,7 @@ class Planificacion
 		}
 		return $this->datos;
 	}
-
+	
 	function get_regiones($cliente)
 	{
 		$this->datos = array();

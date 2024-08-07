@@ -82,7 +82,7 @@ if($estado != "TODOS"){
 	if($reporte == 'pdf'){
 
 		require_once('../'.ConfigDomPdf);
-
+	
 		$dompdf= new DOMPDF();
 
 		$query  = $bd->consultar($sql);

@@ -53,8 +53,9 @@ if (isset($_SESSION['usuario_cod'])) {
 				<br>
 				<div align="center" class="etiqueta_title">Listado de Eans <span id="span_cant_ing">(<span id="cant_ing"></span>)</span></div>
 				<br>
+				<th>Buscador <input type="text" class="text" onkeyup="filtrarEANS(this)" /><br>
 				<hr />
-				<table id="listar_eans">
+				<table>
 					<thead>
 						<tr class="fondo00">
 							<th>Codigo EAN</th>
@@ -68,7 +69,7 @@ if (isset($_SESSION['usuario_cod'])) {
 					<span class="art-button-wrapper" id="boton_guardar_eans">
 						<span class="art-button-l"> </span>
 						<span class="art-button-r"> </span>
-						<input type="button" title="Anular stock_ubic_alcance" id="boton_eans" class="readon art-button" value="Procesar" />
+						<input type="button" title="Procesar Eans" id="boton_eans" class="readon art-button" value="Procesar" />
 					</span>
 					<span class="art-button-wrapper">
 						<span class="art-button-l"> </span>

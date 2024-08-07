@@ -4,6 +4,7 @@ require("../autentificacion/aut_config.inc.php");
 require_once("../".class_bd);
 $bd = new DataBase();
 $rel   = $_POST['codigo'];
+
 ?>
     <table width="100%" align="center">
 	<tr class="text" id="tr_1_<?php echo $rel;?>">

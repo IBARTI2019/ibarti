@@ -14,6 +14,7 @@ $titulo          = "PROYECTOS \n";
 
 if (isset($reporte)) {
 
+	$area    = $_POST['area'];
 	$proyecto    = $_POST['proyecto'];
 	$status    = $_POST['status'];
 	$actividad  = $_POST['actividad'];
@@ -21,6 +22,9 @@ if (isset($reporte)) {
 
 	$where = " WHERE planif_proyecto.codigo = planif_proyecto.codigo ";
 
+	if ($area != "TODOS") {
+		$where  .= " AND area_proyecto.codigo = '$area' ";
+	}
 
 	if ($proyecto != "TODOS") {
 		$where  .= " AND planif_proyecto.codigo = '$proyecto' ";
@@ -39,6 +43,7 @@ if (isset($reporte)) {
 	}
 
 	$sql = "SELECT DISTINCT
+	area_proyecto.descripcion area,
 	planif_proyecto.codigo,
 	planif_proyecto.descripcion,
 	planif_proyecto.abrev,
@@ -49,6 +54,7 @@ if (isset($reporte)) {
 	planif_proyecto
 	LEFT JOIN planif_actividad ON planif_actividad.cod_proyecto = planif_proyecto.codigo AND planif_actividad.status = 'T'
 	LEFT JOIN planif_proyecto_cargos ON planif_proyecto_cargos.cod_proyecto = planif_proyecto.codigo
+	LEFT JOIN area_proyecto ON planif_proyecto.cod_area = area_proyecto.codigo
 	$where
 	ORDER BY planif_proyecto.codigo";
 
@@ -62,6 +68,7 @@ if (isset($reporte)) {
 		echo "<table border=1>";
 		echo "		<tr >
 			<th >Código</th>
+			<th >Area</th>
 			<th >Proyecto</th>
 			<th >Abreviatura</th>
 			<th >Actividades</th>
@@ -84,6 +91,7 @@ if (isset($reporte)) {
 			}
 			echo '<tr>
 			<td class="texto">' . $datos["codigo"] . '</td>
+			<td class="texto">' . $datos["area"] . '</td>
 			<td class="texto">' . $datos["descripcion"] . '</td>
 			<td class="texto">' . $datos["abrev"] . '</td>
 			<td class="texto">' . $datos["actividad"] . '</td>
@@ -135,6 +143,7 @@ if (isset($reporte)) {
 		<tbody>
 		<tr style='background-color: #4CAF50;'>
 		<th class='etiqueta'>Código</th>
+		<th class='etiqueta'>Area</th>
 		<th class='etiqueta'>Proyecto</th>
 		<th class='etiqueta'>Abreviatura</th>
 		<th class='etiqueta'>Actividad</th>
@@ -163,6 +172,7 @@ if (isset($reporte)) {
 			}
 			echo '
 			<td class="texto">' . $datos["codigo"] . '</td>
+			<td class="texto">' . $datos["area"] . '</td>
 			<td class="texto">' . $datos["descripcion"] . '</td>
 			<td class="texto">' . $datos["abrev"] . '</td>
 			<td class="texto">' . $datos["actividad"] . '</td>

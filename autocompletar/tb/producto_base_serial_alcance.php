@@ -9,7 +9,7 @@ $where  = "  ";
 
 $sql = "SELECT productos.codigo, productos.descripcion, productos.item              
 FROM productos, clientes_ub_alcance 
-WHERE productos.item = clientes_ub_alcance.cod_producto 
+WHERE productos.cod_sub_linea = clientes_ub_alcance.cod_sub_linea 
 AND clientes_ub_alcance.cod_cl_ubicacion = $ubic
 AND (LOCATE('$typing', productos.codigo) OR LOCATE('$typing', productos.descripcion))         
 ORDER BY 2 DESC";

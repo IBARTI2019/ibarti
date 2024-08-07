@@ -368,7 +368,7 @@ if ($cod_status == $apto) {
 				//   $filename = "imagenes/fotos/".$codigo.".jpg";
 
 				if (file_exists($filename)) {
-					echo '<img src="' . $filename . '" width="110px" height="130px" />';
+					echo '<img src="' . $filename . '?nocache='.time().'" width="110px" height="130px" />';
 				} else {
 					echo '<img src="imagenes/img_no_disp.png" width="110px" height="130px"/>';
 				} ?>

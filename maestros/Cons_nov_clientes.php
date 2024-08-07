@@ -9,6 +9,18 @@ $archivo2 = "../inicio.php?area=maestros/Cons_$archivo&Nmenu=$Nmenu&mod=".$_GET[
 $bd = new DataBase();
 ?>
 <script language="JavaScript" type="text/javascript">
+	function marcar(source) 
+	{
+		
+		checkboxes=document.getElementsByTagName('input'); //obtenemos todos los controles del tipo Input
+		for(i=0;i<checkboxes.length;i++) //recoremos todos los controles
+		{
+			if(checkboxes[i].type == "checkbox") //solo si es un checkbox entramos
+			{
+				checkboxes[i].checked=source.checked; //si es un checkbox le damos el valor del checkbox que lo llamó (Marcar/Desmarcar Todos)
+			}
+		}
+	}
 function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO//
 
 	var cliente       = document.getElementById("cliente").value;
@@ -109,7 +121,7 @@ function llenar_nov_tipo(clasificacion){
         <img src="imagenes/ok.gif" alt="Valida" class="validMsg" border="0"/><br />
         	<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
 
-      <td class="etiqueta">Novedades Tipo:</td>
+      <td class="etiqueta">Novedades Tipo :</td>
       	<td id="select01"><select id="nov_tipo" name="nov_tipo" style="width:200px" onchange="Add_filtroX()">
 							      <option value="TODOS">TODOS</option>
           <?php

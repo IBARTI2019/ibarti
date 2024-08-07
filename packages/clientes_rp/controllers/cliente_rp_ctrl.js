@@ -8,6 +8,7 @@ $(function() {
 		llenar_cliente('TODOS');
 		llenar_ubicacion('TODOS');
 		llenar_puesto('TODOS','TODOS');
+		
 	});
 });
 
@@ -103,6 +104,22 @@ function llenar_puesto(cliente,ubicacion){
 		type:  'post',
 		success:  function (response) {
 			$('#puesto').html(response);			
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);}
+			});
+}
+function llenar_estatu(){
+	$('#estatu').html('');
+	var parametros = { };
+	$.ajax({
+		data:  parametros,
+		url:   'packages/clientes_rp/views/Get_estatus.php',
+		type:  'post',
+		success:  function (response) {
+			
+			$('#estatu').html(response);
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
 				alert(xhr.status);

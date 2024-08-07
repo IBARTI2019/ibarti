@@ -31,7 +31,9 @@ echo '<table width="100%" align="center">
 			<tr>
 				<td width="6%" class="etiqueta"> CODIGO </td>
 				<td width="80%" class="etiqueta"> NOVEDADES CHECK LIST </td>
-				<td width="14%" class="etiqueta">CHECK</td>
+				<td width="2%" class="etiqueta">CHECK
+				 <input type="checkbox" name="todos" id="todos" value="0" onclick="marcar(this)";/>
+				</td>
 		   </tr>
 			<tr> 
          	   <td height="8" colspan="2" align="center"><hr></td>

@@ -40,12 +40,13 @@ $listar  =  $ajuste->get();
             } ?>
           </select>
         </td>
-        <td width="12%">Ubicación:</td>
-        <td width="14%" id="contenido_ubic">
-          <select name="ubicacion" id="ubicacion" style="width:150px;">
-            <option value="TODOS">TODOS</option>
+        <td width="12%" >Ubicación:</td>
+          <td id="contenido_ubic">
+          <select name="ubicacion" id="ubicacion" style="width:150px;" >
+            <option value="<?php echo $ped['cod_ubicacion']; ?>"><?php echo $ped['ubicacion']; ?></option>
           </select>
-        </td>
+         </td>
+                
         <td>Producto:</td>
         <td colspan="4"><input id="stdName" type="text" style="width:200px" />
           <input type="hidden" name="producto" id="stdID" value="" /></td>

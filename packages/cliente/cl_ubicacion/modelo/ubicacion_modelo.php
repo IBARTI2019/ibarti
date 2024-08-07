@@ -81,7 +81,12 @@ class Ubicacion
 	                  clientes_ubicacion.email, clientes_ubicacion.observacion,
 						        clientes_ubicacion.campo01, clientes_ubicacion.campo02,
 						        clientes_ubicacion.campo03, clientes_ubicacion.campo04,
-						        clientes_ubicacion.`status`
+						        clientes_ubicacion.`status`,
+						(
+							SELECT MAX(asistencia_apertura.fec_diaria) FROM asistencia, asistencia_apertura 
+							WHERE asistencia.cod_as_apertura = asistencia_apertura.codigo
+								AND asistencia.cod_ubicacion = clientes_ubicacion.codigo LIMIT 1
+						) fec_ult_asistencia
 	             FROM clientes_ubicacion, estados,  ciudades , regiones,
 								    nom_calendario, zonas
 	            WHERE clientes_ubicacion.cod_estado = estados.codigo

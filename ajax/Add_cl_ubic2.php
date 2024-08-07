@@ -23,7 +23,7 @@ ORDER BY 2 ASC";
 
 $query = $bd->consultar($sql);
 echo '<select name="ubicacion" id="ubicacion" style="width:' . $tamano . 'px" ' . $change . ' required >
-<option value="TODOS">Seleccione...</option>';
+<option value="TODOS">TODOS</option>';
 while ($row02 = $bd->obtener_fila($query, 0)) {
 	echo '<option value="' . $row02[0] . '">' . $row02[1] . '</option>';
 }

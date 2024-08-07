@@ -149,11 +149,11 @@ $metodo   = $_POST['metodo'];
 		$rech++;	
 		}	
 		
-		if($refl02_apto == 'S'){
+		/* if($refl02_apto == 'S'){
 		$apt++;
 		}elseif($refl02_apto == 'N'){
 		$rech++;	
-		}
+		} */
 						
 		if($psi_apto == 'A' OR $psi_apto== 'C'){
 		$apt++;
@@ -169,7 +169,7 @@ $metodo   = $_POST['metodo'];
 		// VALIDO
 		if($rech > 0){
 		$status =  $rechazado;	
-		}elseif($apt >= 7){
+		}elseif($apt >= 6){
 	   $status = $apto;			
 		}else{
 	   $status =  $status;		

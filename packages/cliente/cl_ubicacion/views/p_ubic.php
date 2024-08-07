@@ -283,6 +283,11 @@
 
 			</tr>
 			<tr>
+				<td class="etiqueta">Fecha Última Asistencia: </td>
+				<td><input type="text" name="fec_ult_asistencia" id="fec_ult_asistencia" maxlength="60" size="26" value="<?php echo $ubic['fec_ult_asistencia']; ?>" />
+				</td>
+			</tr>
+			<tr>
 				<td height="8" colspan="4" align="center">
 					<hr>
 				</td>

@@ -88,7 +88,7 @@ if (isset($_POST['login']) && isset($_POST['pass'])) {
                       			$sql    = "$SELECT $proced('error', '$cod', '', '',
                       			'', '','', '',
                       			'', '','', '',
-                      			'', '')";
+                      			'', '', '')";
 
                       			$query = $bd->consultar($sql);
                       			Header ("Location: $redir?error_login=3");
@@ -171,7 +171,7 @@ if (isset($_POST['login']) && isset($_POST['pass'])) {
     $sql     = "$SELECT $proced('conexion', '$cod', '', '',
     '', '','', '',
     '', '','', '',
-    '$ip', '$captcha', '', '')";
+    '$ip', '$captcha', '', '', '')";
     $query = $bd->consultar($sql);
 
 

@@ -68,7 +68,7 @@ $metodo         = $_POST['metodo'];
 				$observacion  = htmlentities($_POST["observacion_".$valorX.""]); 
 	
  				 $sql    = "$SELECT $proced2('$metodo', '$codigo','$valorX',  '$valor',
-											 '$observacion')";							  
+											 '$observacion')";				  
 				 $query = $bd->consultar($sql);
 				 
 				}

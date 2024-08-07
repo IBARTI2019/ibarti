@@ -7,8 +7,17 @@
     <tr><td class="etiqueta">Ciudad:</td><td><select name="ciudad" id="ciudad"style="width:220px"/></td></tr>
     <tr><td class="etiqueta">Empresa:</td><td><select name="cliente" id="cliente"style="width:220px" onchange="llenar_ubicacion(this.value)" /></td></tr>
     <tr><td class="etiqueta">ubicacion:</td><td><select name="ubicacion" id="ubicacion"style="width:220px" onchange="rellenar(this.selectedIndex,this.value)" /></td></tr>
-    <tr><td class="etiqueta">Puesto:</td><td><select name="puesto" id="puesto"style="width:220px" onchange="" /></td></tr>
-
+    <tr><td class="etiqueta">Puesto:</td><td><select name="puesto" id="puesto" style="width:220px" onchange="" /></td></tr>
+    <tr>
+		<td class="etiqueta">Estatus:</td>	
+		<td >
+			<select id="estatu" name="estatu"  style="width:220px" onchange="">
+				<option value="TODOS">TODOS</option>
+				<option value="T">ACTIVO</option>
+				<option value="F">INACTIVO</option>
+		</select>
+      
+    </tr>
     <td height="8" colspan="2" align="center"><hr></td>
 </table>
 <input type="submit" name="procesar" id="procesar" hidden="hidden">

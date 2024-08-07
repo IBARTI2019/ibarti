@@ -78,10 +78,10 @@ if (count($result) == 0) {
     <legend>Egreso Trabajador </legend>
     <table width="80%" align="center">
       <tr>
-        <td class="etiqueta">Fecha de Egreso:</td>
+        <td class="etiqueta">Fecha de Egreso :</td>
         <td id="fecha01_5">
 
-          <input type="text" name="fec_egreso" size="15" value="<?php echo $fec_egreso; ?>" /><br />
+          <input type="text" name="fec_egreso" size="15" onchange="validarfechaegreso(this.value)"  value="<?php echo $fec_egreso; ?>" /><br />
           <span class="textfieldRequiredMsg">La Fecha Es Requerida.</span>
           <span class="textfieldInvalidFormatMsg">El Formato Es Invalido</span>
         </td>
@@ -273,7 +273,7 @@ if (count($result) == 0) {
         </td>
       </tr>
       <tr>
-        <td height="20" class="etiqueta">Status:</td>
+        <td height="20" class="etiqueta">Estatus:</td>
         <td id="select10_5">
           <select name="status" style="width:200px;">
             <option value="<?php echo $cod_status; ?>"><?php echo $status; ?></option>

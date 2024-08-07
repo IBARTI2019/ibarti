@@ -440,7 +440,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 				while ($datos = $bd->obtener_fila($query, 0)) {
 					$cod_nov = $datos[1];
 					$cod_valor = $datos[3];
-					$obsev = "&observ=" . $datos[4] . "'";
+					$obsev = "&observ=" . $datos[4];
 
 					$sql02 = " SELECT nov_valores.codigo, nov_valores.abrev,nov_valores.descripcion
                      FROM nov_valores_det , nov_valores
@@ -459,7 +459,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 	   ' . CheckX('' . $cod_valor . '', '' . $datos02[0] . '') . '/>';
 					}
 					echo '</td>
-      <td><textarea  name="observacion_' . $cod_nov . '" cols="50" rows="1">' . $datos[4] . '</textarea><img src="imagenes/nuevo.bmp" alt="Agregar Registro" title="Agregar Registro" width="20px" height="20px" border="null" class="imgLink" onclick="Vinculo(' . $href2 . $obsev . ')"/></td>
+      <td><textarea  name="observacion_' . $cod_nov . '" cols="50" rows="1">' . $datos[4] . '</textarea><img src="imagenes/nuevo.bmp" alt="Agregar Registro" title="Agregar Registro" width="20px" height="20px" border="null" class="imgLink" onclick="Vinculo(' . $href2 . $obsev . '\')"/><img src="imagenes/nuevo2.bmp" alt="Agregar Registro Kanban" title="Agregar Registro Kanban" width="20px" height="20px" border="null" class="imgLink" onclick="Vinculo(' . $href2 . $obsev . '&kanban=true\')"/></td>
     </tr>';
 				}
 			} ?>

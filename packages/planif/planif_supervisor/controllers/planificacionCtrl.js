@@ -516,17 +516,17 @@ function cargar_planif_superv_det(apertura) {
 								result = "<div>(" + arg.event.extendedProps.codigo + ") " + moment(arg.event.start).format("HH: mm") + " - " + moment(arg.event.end).format("HH: mm") + ' - ';
 								result += "<label>" + arg.event.title + "</label> <br>";
 								result += arg.event.extendedProps.ubicacion + " <br> ";
-								var codigo_proyecto = arg.event.extendedProps.actividades[0].cod_proyecto;
+								var codigo_proyecto = arg.event.extendedProps.actividades[0].codigo;
 								var index = 1;
 								arg.event.extendedProps.actividades.forEach((act, i) => {
 									if ((i != 0) && (act.cod_proyecto != codigo_proyecto)) {
 										index = 1;
-										codigo_proyecto = act.cod_proyecto;
-										result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+										codigo_proyecto = act.codigo;
+										result += "<label>" + act.descripcion+ " (" + act.abrev_proyecto + ")</label><br>";
 									} else if (i == 0) {
-										result += "<label>" + act.proyecto + " (" + act.abrev_proyecto + ")</label><br>";
+										result += "<label>" + act.descripcion + " (" + act.descripcion + ")</label><br>";
 									}
-									result += "<span>" + index + ": " + act.actividad + "</span><br>";
+									result += "<span>" + index + ": " + act.descripcion + "</span><br>";
 									index++;
 								});
 							}
@@ -969,6 +969,7 @@ function saveActividad() {
 			validarIngreso(apertura, cliente, ubicacion, actividades, fechaQuery, hora_inicio, hora_fin, props.cod_ficha, (valid) => {
 				if (valid.error) {
 					toastr.error(valid.msg);
+					$("#guardar_actividad").attr("disabled", false);
 				} else {
 					var parametros = {
 						"codigo": props.codigo, "fecha_inicio": fecha_inicio, "fecha_fin": fecha_fin,
@@ -989,10 +990,12 @@ function saveActividad() {
 								typeCalendar = calendar.view.type;
 								cargar_planif_superv_det(apertura);
 							}
+							$("#guardar_actividad").attr("disabled", false);
 						},
 						error: function (xhr, ajaxOptions, thrownError) {
 							alert(xhr.status);
 							alert(thrownError);
+							$("#guardar_actividad").attr("disabled", false);
 						}
 					});
 				}
@@ -1019,17 +1022,19 @@ function saveActividad() {
 						typeCalendar = calendar.view.type;
 						cargar_planif_superv_det(apertura);
 					}
+					$("#guardar_actividad").attr("disabled", false);
 				},
 				error: function (xhr, ajaxOptions, thrownError) {
 					alert(xhr.status);
 					alert(thrownError);
+					$("#guardar_actividad").attr("disabled", false);
 				}
 			});
 		}
 	} else {
 		toastr.warning(errorMessage);
+		$("#guardar_actividad").attr("disabled", false);
 	}
-	$("#guardar_actividad").attr("disabled", false);
 }
 
 function mostrar_icono_apertura(valor) {

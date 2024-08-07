@@ -144,7 +144,13 @@ function EstadoFiltro(valor) {
 		validar.disabled = "";
 	}
 }
-
+function Salir01(idX) { // CARGAR EL MODULO DE AGREGAR //
+    numX=1;
+	if (confirm("�Esta Seguro de Cerrar")) {
+		document.getElementById('table'+idX).remove();
+		document.getElementById('incremento').value = numX -1;
+	}
+}
 function Borrar01(idX) {  // CARGAR EL MODULO DE AGREGAR //
 	if (confirm("�Esta Seguro De Borrar Este Registro")) {
 		var tabla = document.getElementById("tabla").value;
@@ -154,14 +160,121 @@ function Borrar01(idX) {  // CARGAR EL MODULO DE AGREGAR //
 		ajax.onreadystatechange = function () {
 			if (ajax.readyState == 4) {
 				document.getElementById("Contenedor01").innerHTML = ajax.responseText;
-				setTimeout(alert("" + document.getElementById("mensaje_aj").value + ""), Reload(), 1000);
+				setTimeout(alert("" + document.getElementById("mensaje_aj")?.value + ""), Reload(), 1000);
 			}
 		}
 		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 		ajax.send("codigo=" + idX + "&metodo=borrar&tabla=" + tabla + "&activo=f&descipcion=");
 	}
 }
+function Procesar01(cod_prod,idX) {  // CARGAR EL MODULO DE AGREGAR //
+	
+    var idean='';
+    if (confirm("�Desea Procesar listado EANS")) {
+		var tabla = "vectoreans";
+		var valor = "sc_maestros/sc_maestros_auxvector.php";
+		ajax = nuevoAjax();
+		ajax.open("POST", valor, true);
+		ajax.onreadystatechange = function () {
+			if (ajax.readyState == 4) {
+				document.getElementById("Contenedor01").innerHTML = ajax.responseText;
+				// setTimeout(alert("" + document.getElementById("mensaje_aj").value + ""), Reload(), 1000);
+			}
+		}
+		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		ajax.send("codigo=" + cod_prod + "&codigoean=" + idean + "&metodo=agregarean&tabla=" + tabla + "");
+	} 
 
+    document.getElementById('table' + cod_prod).remove();
+    document.getElementById('botong').remove();
+    document.getElementById('botons').remove();
+    document.getElementById("boton").type="button";
+    document.getElementById("boton_"+idX).value="EANS"; 
+    
+    
+    
+    
+    
+}
+
+function showHint(cod_prod){
+	var numX     =1;
+    var  metodo="buscar";
+    var esans="";
+    var producto  = document.getElementById('producto_'+numX+'').value;
+    console.log("policia"+producto);
+    var cantidad= Number(document.getElementById('cantidad_'+numX+'').value);
+	if(numX != ''){
+		var valor = "ajax/Add_prod_dotacion_det_clientes_modal.php";
+		var contenido = "Contenedor01_"+numX+"";
+		ajax=nuevoAjax();
+		ajax.open("POST", valor, true);
+		ajax.onreadystatechange=function()
+		{
+			if (ajax.readyState==4){
+				document.getElementById(contenido).innerHTML = ajax.responseText;
+				document.getElementById('incremento').value = numX;
+				spryN(numX);
+			}
+		}
+		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		ajax.send("codigo="+producto+"&numero="+numX+"&tieneeans="+esans+"&metodo="+metodo+"&cantidad="+cantidad+"&comodin="+cod_prod+"");
+	}else{
+		alert("Falta Codificacion ");
+	}
+   document.getElementById(producto).remove();
+    document.getElementById('botong').remove();
+    document.getElementById('botons').remove();
+}
+
+
+function Clickup(idX,idean,cantidad) {
+	
+	var cod_prod=idX;
+    var cantidadaux= Number(cantidad);
+    
+	if (cod_prod != '') {
+		var parametros = { "codigo": cod_prod};
+		$.ajax({
+			data: parametros,
+			url: 'packages/cliente/cl_ubicacion/views/CantidadEANS_clientes.php',
+			type: 'post',
+			success: function (response) {
+				var resp = JSON.parse(response);
+				if(resp.error){
+					toast.danger(resp.mensaje);
+				}else{
+                    
+					if(resp.length < cantidadaux){
+                        ClickupVector(idX,idean,cantidad);                        
+					}else{	
+						  alert("La cantidad no puede ser Menor que EANS");
+						}
+					
+				}
+			}
+		 });
+	
+    }
+}
+
+function ClickupVector(idX,idean,cantidad) {  // CARGAR EL MODULO DE AGREGAR //
+       
+        var tabla = "vectoreans";
+		var valor = "sc_maestros/sc_maestros_auxvector.php";
+		ajax = nuevoAjax();
+		ajax.open("POST", valor, true);
+		ajax.onreadystatechange = function () {
+			if (ajax.readyState == 4) {
+				document.getElementById("Contenedor01").innerHTML = ajax.responseText;
+				// setTimeout(alert("" + document.getElementById("mensaje_aj").value + ""), Reload(), 1000);
+			}
+		}
+		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		ajax.send("codigo=" + idX + "&codigoean=" + idean + "&metodo=vector&tabla=" + tabla + "");  
+ 
+
+}
 function Borrar02(codigo, codigo2) {  // CARGAR EL MODULO DE AGREGAR//
 
 	if (confirm("�Esta Seguro De Borrar Este Registro")) {
@@ -216,9 +329,9 @@ function Add_ajax02(codigo, codigo2, archivo, contenido) {  // CARGAR  ARCHIVO D
 	}
 }
 function Add_ajax_maestros(codigo, archivo, contenido, tb) {  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO Y TABLAS//
-
+	
 	if (codigo != '') {
-
+      
 		ajax = nuevoAjax();
 		ajax.open("POST", archivo, true);
 		ajax.onreadystatechange = function () {
@@ -232,7 +345,9 @@ function Add_ajax_maestros(codigo, archivo, contenido, tb) {  // CARGAR  ARCHIVO
 		alert("Debe de Seleccionar Un Campo ");
 	}
 }
-
+function procesar() {
+	alert("Haz hecho clic en el botón");
+}
 /*
 $cod_cliente  = $_POST['codigo'];
 $usuario      = $_POST['usuario'];
@@ -259,6 +374,7 @@ function Filtrar_select(idX, name, archivo, contenedor, px, evento) {
 function Add_Cl_Ubic(valor, contenido, activar, tamano) {  // CARGAR  UBICACION DE CLIENTE  Y tama�o  //
 	var error = 0;
 	var errorMessage = ' ';
+    
 	if (valor == '') {
 		var error = error + 1;
 		errorMessage = errorMessage + ' \n Debe Seleccionar Un Cliente ';
@@ -279,7 +395,30 @@ function Add_Cl_Ubic(valor, contenido, activar, tamano) {  // CARGAR  UBICACION 
 		alert(errorMessage);
 	}
 }
-
+function Add_Cl_Alcance(valor, contenido, activar, tamano) {  
+	var error = 0;
+	var errorMessage = ' ';
+  
+	if (valor == '') {
+		var error = error + 1;
+		errorMessage = errorMessage + ' \n Debe Seleccionar Una Ubicacion ';
+	}
+	if (error == 0) {
+		ajax = nuevoAjax();
+		ajax.open("POST", "ajax/Add_cl_ubic3.php", true);
+		ajax.onreadystatechange = function () {
+			if (ajax.readyState == 4) {
+				document.getElementById(contenido).innerHTML = ajax.responseText;
+				if (activar == "T") {
+				}
+			}
+		}
+		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		ajax.send("codigo=" + valor + "&tamano=" + tamano + "&activar=" + activar + "");
+	} else {
+		alert(errorMessage);
+	}
+}
 function Add_Ub_puesto(valor, contenido, tamano) {  // CARGAR  UBICACION DE CLIENTE  Y tama�o  //
 	var error = 0;
 	var errorMessage = ' ';

@@ -184,7 +184,10 @@ class Planificacion
 		c.cod_puesto_trabajo, (SELECT x.nombre  FROM clientes_ub_puesto x WHERE x.codigo =  c.cod_puesto_trabajo) puesto_trabajo,
 		c.posicion_inicio, RotTurno(c.cod_rotacion, c.posicion_inicio) turno,
 		IFNULL(c.fecha_inicio, a.fecha_inicio) fecha_inicio, IFNULL(c.fecha_fin, a.fecha_fin) fecha_fin, IFNULL(d.cod_ficha,'NO') vetado
-		FROM planif_clientes a, ficha b LEFT JOIN planif_clientes_trab c ON  b.cod_ficha = c.cod_ficha AND c.cod_planif_cl = '$apertura' LEFT JOIN clientes_vetados d ON  (c.cod_ficha = d.cod_ficha AND c.cod_ubicacion = d.cod_ubicacion) OR (b.cod_ficha = d.cod_ficha AND b.cod_ubicacion = d.cod_ubicacion) ,control
+		FROM planif_clientes a, ficha b 
+		LEFT JOIN planif_clientes_trab c ON  b.cod_ficha = c.cod_ficha AND c.cod_planif_cl = '$apertura' AND c.cod_ubicacion = '$ubic'
+		LEFT JOIN clientes_vetados d ON  (c.cod_ficha = d.cod_ficha AND c.cod_ubicacion = d.cod_ubicacion) 
+		OR (b.cod_ficha = d.cod_ficha AND b.cod_ubicacion = d.cod_ubicacion), control
 		WHERE a.codigo = '$apertura'
 		AND b.cod_ubicacion = '$ubic'
 		AND b.cod_ficha_status= control.ficha_activo
@@ -444,11 +447,11 @@ class Planificacion
 		WHERE v_ficha.cod_ficha_status = control.ficha_activo 
 		AND clientes.codigo = clientes_ubicacion.cod_cliente 
 		AND clientes_ubicacion.codigo = v_ficha.cod_ubicacion
-		AND v_ficha.cod_cliente = $cliente AND v_ficha.cod_ubicacion = $ubic
+		AND v_ficha.cod_cliente = '$cliente' AND v_ficha.cod_ubicacion = $ubic
 		AND v_ficha.cod_ficha NOT IN (SELECT planif_clientes_trab_det.cod_ficha FROM planif_clientes_trab_det
-		WHERE planif_clientes_trab_det.cod_planif_cl = '$apertura' AND  planif_clientes_trab_det.cod_cliente = $cliente AND planif_clientes_trab_det.cod_ubicacion = $ubic)
+		WHERE planif_clientes_trab_det.cod_planif_cl = '$apertura' AND  planif_clientes_trab_det.cod_cliente = '$cliente' AND planif_clientes_trab_det.cod_ubicacion = $ubic)
 		AND v_ficha.cod_ficha NOT IN (SELECT clientes_vetados.cod_ficha FROM clientes_vetados
-		WHERE clientes_vetados.cod_cliente = $cliente AND clientes_vetados.cod_ubicacion = $ubic)";
+		WHERE clientes_vetados.cod_cliente = '$cliente' AND clientes_vetados.cod_ubicacion = $ubic)";
 
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query, 0)) {

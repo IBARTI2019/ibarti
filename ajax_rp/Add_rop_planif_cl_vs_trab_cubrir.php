@@ -1,4 +1,5 @@
 <?php
+// header('Content-Type: application/json; charset=utf-8');  
 define("SPECIALCONSTANT", true);
 include_once "../funciones/funciones.php";
 require "../autentificacion/aut_config.inc.php";

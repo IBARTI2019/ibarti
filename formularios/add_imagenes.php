@@ -40,6 +40,7 @@ $dst_h  = "280";
 						return false;
 					} else {
 						document.getElementById('ext').value = ext;
+						
 						$('#loaderAjax').show();
 						btn_firma.text('Espere por favor');
 						this.disable();
@@ -48,12 +49,13 @@ $dst_h  = "280";
 				onComplete: function(file, response){
 					// alert(response);
 					console.log(response);
+					
 					btn_firma.text('Cambiar Imagen');
 					
 					respuesta = $.parseJSON(response);
 
 					if(respuesta.respuesta == 'done'){
-						 prueba();							
+						 prueba(file);							
 						 	
 					}
 					else{
@@ -68,12 +70,14 @@ $dst_h  = "280";
     });
 </script>
 <script type="text/javascript">
-  function prueba(){
-//	  alert("hola");
+  function prueba(archivo){
+  
 	  	var ci    = document.getElementById('cedula').value;
+		var fileaux=archivo; 
+		
 		var tipo  = document.getElementById('tipo').value;
-	  
-	  	window.location.href="inicio.php?area=formularios/add_imagenes2&ci="+ci+"&tipo="+tipo+"";
+	    var exti= document.getElementById('ext').value;
+	  	window.location.href="inicio.php?area=formularios/add_imagenes2&ci="+ci+"&tipo="+tipo+"&exti="+exti+"";
  };  
 
 </script>
@@ -81,7 +85,7 @@ $dst_h  = "280";
 <div id="Contenedor01" class="mensaje"></div>
 <table width="100%">
     <tr><td width="100%"><div id="contenedorImagen">
-                    <img id="fotografia" class="fotografia" src="<?php echo $img_src?>"></div>
+                    <img id="fotografia" class="fotografia" src="<?php echo $img_src;?>"></div>
                 <span class="art-button-wrapper">
                     <span class="art-button-l"> </span>
                     <span class="art-button-r"> </span> 

@@ -1,10 +1,13 @@
 
+<?php
+require "../../../../".Leng;
+?>
 <form action="" method="post" id="add_cliente_contacto_form">
   <fieldset class="fieldset">
     <legend>Datos Contactos <?php echo $leng['cliente']; ?></legend>
     <table width="90%" id="data_ad" align="center">
       <tr>
-        <td width="10%" class="etiqueta">Documento:</td>
+        <td width="10%" class="etiqueta"><?php echo $leng['ubicacion']; ?>:</td>
         <td width="30%">
           <input type="text" name="c_doc" id="c_doc" style="width:160px;">
         </td>

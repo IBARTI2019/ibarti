@@ -1,8 +1,8 @@
 <?php
-$sql01 =	"SELECT clientes_ub_alcance.cod_producto, productos.descripcion producto, clientes_ub_alcance.cantidad,
+$sql01 =	"SELECT clientes_ub_alcance.cod_sub_linea cod_producto, prod_sub_lineas.descripcion producto, clientes_ub_alcance.cantidad,
 				 clientes_ub_alcance.dias,  clientes_ub_alcance.vencimiento
-                   FROM clientes_ub_alcance, productos
-                  WHERE clientes_ub_alcance.cod_producto = productos.item
+                   FROM clientes_ub_alcance, prod_sub_lineas
+                  WHERE clientes_ub_alcance.cod_sub_linea = prod_sub_lineas.codigo
 				  AND clientes_ub_alcance.cod_cl_ubicacion = '$codigo'";
 ?>
 <script language="javascript">
@@ -12,6 +12,7 @@ $sql01 =	"SELECT clientes_ub_alcance.cod_producto, productos.descripcion product
 		var cantidad = document.getElementById("cantidad").value;
         var errorMessage = 'Debe Ingresar minimo 1 producto ';
         var campo01 = 0;
+       
         if (!cod_producto) {
             campo01++;
 		}
@@ -44,7 +45,7 @@ $sql01 =	"SELECT clientes_ub_alcance.cod_producto, productos.descripcion product
 	function ValidarAlcance(auto, metodo) {
 		var cod_ubic = document.getElementById("codigo_ubic").value;
 		var usuario = document.getElementById("usuario").value;
-		var cod_producto = document.getElementById("stdID" + auto + "").value;
+        var cod_producto = document.getElementById("stdID" + auto + "").value;
 		var cantidad = document.getElementById("cantidad" + auto + "").value;
 		var dias = document.getElementById("dias" + auto + "").value;
 		var vencimiento = Status($('input:checkbox[id=vencimiento'+auto+']:checked').val());
@@ -64,7 +65,7 @@ $sql01 =	"SELECT clientes_ub_alcance.cod_producto, productos.descripcion product
 						$("#cantidad").val(0)
 					}
 				}else{
-					toastr.success('Actualizado con exito.');
+					toastr.success('Actualizado con exito');
 				}
 				//window.location.href=""+href+"";
 			}
@@ -74,14 +75,17 @@ $sql01 =	"SELECT clientes_ub_alcance.cod_producto, productos.descripcion product
 	}
 
 	function BorrarAlcance(auto, metodo) {
-		if (confirm("� Esta Seguro Eliminar Este Registro")) {
+		if (confirm("� Esta Seguro Eliminar Este Registro ")) {
 			var cod_ubic = document.getElementById("codigo_ubic").value;
-            var cod_producto = document.getElementById("stdID" + auto + "").value;
+            var cod_producto = document.getElementById("codigo_producto" + auto + "").value;
+            
 			var cantidad = document.getElementById("cantidad" + auto + "").value;
 			var dias = document.getElementById("dias" + auto + "").value;
 			var vencimiento = Status($('input:checkbox[id=vencimiento'+auto+']:checked').val());
 			var ususario = "";
-
+            if (confirm("� policia " +cod_producto)) {
+              alert("polciia") ;   
+            }
 			var valor = "scripts/sc_cl_ubic_alcance.php";
 			var proced = "p_cl_ubic_alcance";
 
@@ -102,12 +106,12 @@ $sql01 =	"SELECT clientes_ub_alcance.cod_producto, productos.descripcion product
 	}
 
 	function ActualizarDet(codigo) {
-		var valor = "ajax/Add_cl_ubic_alcance.php";
+        var valor = "ajax/Add_cl_ubic_alcance.php";
 		ajax = nuevoAjax();
 		ajax.open("POST", valor, true);
 		ajax.onreadystatechange = function() {
 			if (ajax.readyState == 4) {
-				toastr.success('Actualizado con exito.');
+				toastr.success('Actualizado con exito'+codigo);
 				document.getElementById("Contenedor03").innerHTML = ajax.responseText;
 			}
 		}
@@ -115,14 +119,14 @@ $sql01 =	"SELECT clientes_ub_alcance.cod_producto, productos.descripcion product
 		ajax.send("codigo=" + codigo + "");
 	}
 </script>
-<div align="center" class="etiqueta_title"> ALCANCE </div>
+<div align="center" class="etiqueta_title"> ALCANCE</div>
 <hr />
 <div id="Cont_mensaje" class="mensaje"></div>
 <div>
      <table width="80%" border="0" align="center">
 		<tr class="fondo01">
 			<!-- <th width="20%" style="display:none" class="etiqueta">Codigo Ubicacion</th> -->
-			<th width="60%" class="etiqueta"><?php echo $leng['producto'];?>
+			<th width="60%" class="etiqueta">Sub Linea
             <input type="hidden" name="producto" id="stdID" value=""/></th>
             <th width="14%" class="etiqueta">Cantidad</th>
 			<th width="14%" class="etiqueta">Dias para Reponer</th>
@@ -131,7 +135,7 @@ $sql01 =	"SELECT clientes_ub_alcance.cod_producto, productos.descripcion product
 		</tr>
 		<tr class="fondo02">
         <td>       
-        <input type="text" id="codigo_producto" tabindex="1" value="" placeholder="Ingrese Dato del <?php echo $leng['producto'];?>" required style="width:450px"/>
+        <input type="text" id="codigo_producto" tabindex="1" value="" placeholder="Ingrese dato de la sublinea" required style="width:450px"/>
 	</td>
       <td>
        <input type="number" id="cantidad" style="width:100px" value="1" min="0"  required placeholder="">
@@ -171,7 +175,7 @@ $sql01 =	"SELECT clientes_ub_alcance.cod_producto, productos.descripcion product
 			echo '<tr class="' . $fondo . '">
 				  <td>     
                   <input type="text" id="codigo_producto'.$i.'" value="'.$datos['producto'].'" disabled  style="width:450px"/>
-                  <input type="hidden" name="trabajador" id="stdID'.$i.'" value="'.$datos['cod_producto'].'"/>
+                  <input type="hidden" name="producto" id="stdID'.$i.'" value="'.$datos['cod_producto'].'"/>
                 </td>
                 <td>
                  <input type="number" id="cantidad'.$i.'" style="width:100px"  value="'.$datos['cantidad'].'" min="1">
@@ -264,7 +268,7 @@ const autoCompletejs = new autoComplete({
     document.querySelector("#codigo_producto").value = "";
     // Change placeholder with the selected value
     document.querySelector("#codigo_producto").setAttribute("placeholder", selection);
-	$("#stdID").val(feedback.selection.value.item);
+	$("#stdID").val(feedback.selection.value.codigo);
   },
 }); 
 
