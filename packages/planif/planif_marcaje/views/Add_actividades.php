@@ -8,9 +8,14 @@ $ficha     = $_POST['ficha'];
 $cliente     = $_POST['cliente'];
 $ubicacion     = $_POST['ubicacion'];
 $result  =  $marcaje->get_actividades($ficha, $cliente, $ubicacion);
+<<<<<<< HEAD
 
 $disabled = "";
+=======
+>>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
 
+$disabled = "";
+	
 foreach ($result as  $datos) {
     if ($datos["realizado"] == 'SI') {
         echo '<tr class="marcar">';
@@ -36,7 +41,16 @@ foreach ($result as  $datos) {
             echo '<td>N/A</td></tr>';
         }
     } else {
+<<<<<<< HEAD
         echo '<td><img class="imgLink" id="m_observaciones" src="imagenes/nuevo.bmp" alt="Modificar Observaciones" title="Modificar Observaciones" onclick="openModalObservacionesdos(' . $datos["codigo"] . ',\'' .$ficha . '\',\''. $cliente .'\','. $ubicacion .')" width="15px" height="15px"></td>
+=======
+<<<<<<< Updated upstream
+        
+        echo '<td><img class="imgLink" id="m_observaciones" src="imagenes/nuevo.bmp" alt="Modificar Observaciones" title="Modificar Observaciones" onclick="openModalObservacionesdos(' . $datos["codigo"] . ',' .$ficha . ',' . $ci . ')" width="15px" height="15px"></td>
+=======
+        echo '<td><img class="imgLink" id="m_observaciones" src="imagenes/nuevo.bmp" alt="Modificar Observaciones" title="Modificar Observaciones" onclick="openModalObservacionesdos(' . $datos["codigo"] . ',\'' .$ficha . '\',\''. $cliente .'\','. $ubicacion .')" width="15px" height="15px"></td>
+>>>>>>> Stashed changes
+>>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
          <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Observaciones" onclick="openModalObservaciones(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["observaciones"] . ')</td>';
         if ($datos["participantes"] == 'T') {
             echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Participantes" onclick="openModalParticipantes(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td></tr>';
@@ -45,5 +59,12 @@ foreach ($result as  $datos) {
         }
     }
     
+<<<<<<< HEAD
  echo $result;   
+=======
+<<<<<<< Updated upstream
+=======
+ echo $result;   
+>>>>>>> Stashed changes
+>>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
 }
