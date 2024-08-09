@@ -179,6 +179,7 @@ if (isset($_SESSION['usuario_cod'])) {
   </div>
 </div>
 
+
 <div id="myModalO2" class="modal" >
   <div class="modal-content">
     <div class="modal-header">

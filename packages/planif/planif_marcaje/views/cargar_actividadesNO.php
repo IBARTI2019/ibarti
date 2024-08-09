@@ -32,18 +32,18 @@ foreach ($resultNO as  $datos) {
 
     if ($datos["realizado"] == 'SI') {
         echo '<td> <input type="checkbox" id="marcado" name="marcado"  checked disabled  width="15px" height="15px"></td> <td><img src="imagenes/cerrar.bmp" ' . $disabled . ' alt="Realizado" title="Actividad Realizada" width="20px" height="20px" border="null"/></a></td>
-        <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Observaciones" onclick="openModalParticipantesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td>';
+        <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Participantes" onclick="openModalParticipantesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td>';
         if ($datos["participantes"] == 'T') {
-            echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Participantes" onclick="openModalObservacionesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td></tr>';
+            echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Observaciones" onclick="openModalObservacionesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td></tr>';
         } else {
             echo '<td>N/A</td></tr>';
         }
     } else {
         
         echo '<td> <input type="checkbox" id="marcado" name="marcado" disabled  width="15px" height="15px"></td>
-         <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Observaciones" onclick="openModalParticipantesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td>';
+         <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Participantes" onclick="openModalParticipantesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td>';
         if ($datos["participantes"] == 'T') {
-            echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Participantes" onclick="openModalObservacionesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["observaciones"] . ')</td></tr>';
+            echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Observaciones" onclick="openModalObservacionesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["observaciones"] . ')</td></tr>';
         } else {
             echo '<td>N/A</td></tr>';
         }

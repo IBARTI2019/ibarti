@@ -336,7 +336,7 @@ function addObservacionNO(codigo = '') {
                         toastr.error("A ocurrido un error al intentar agregar la observación!..");
                     } else {
                         toastr.success("Observación agregada con exito!..");
-                        cargar_observaciones(cod_det)
+                        cargar_observacionesNO(cod_det)
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
@@ -358,15 +358,6 @@ function openModalObservacionesNO(codigo) {
     $("#myModalO1").show();
     cargar_observacionesNO(codigo);
 }
-function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion) {
-    $("#cod_det2").val(codigo);
-    $("#vector").val(xcliente);  
-    $("#myModalO2").show();
-    cargar_actividades(xficha,xcliente,xubicacion);
-}
-
-
-
 function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion) {
     $("#cod_det2").val(codigo);
     $("#vector").val(xcliente);  
