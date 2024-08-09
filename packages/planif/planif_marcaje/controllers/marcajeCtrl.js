@@ -115,13 +115,14 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
     var cod_ubicacion=$("#ubicacion").val();
     var marcados=document.some_form['marcado'];
     var lista=[];
-	
-	for(i=0;i<marcados.length;i++){
-		if(marcados[i].checked){
-            lista.push(i);
-		}
-     
-	}
+    if (marcados.length >0 ){
+	    for(i=0;i<marcados.length;i++){
+		    if(marcados[i].checked){
+                 lista.push(i);
+		    }
+        }
+    } 
+    
     let vectorJSON = JSON.stringify(lista);
     var doc =archi;
     var tusuario=xusuario
@@ -151,8 +152,6 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
             message = $("<span class='success'>La imagen ha sido guardada con exitos...</span>");
             showMessage(message);
             Add_filtroX();
-            //window.history.go(-1);
-
         },
         //si ha ocurrido un error
         error: function () {
@@ -228,9 +227,96 @@ function addParticipante(metodo, codigo = '', ficha_delete = '') {
         }
     }
 }
+function addParticipanteNO(metodo, codigo = '', ficha_delete = '') {
+    var cod_ficha = $("#stdIDP1").val();
+    var cod_det = $("#cod_det").val()
+    if (metodo == "agregar") {
+        if (confirm("Esta seguro de que desea agregar a este trabajador como participante!.")) {
+            var usuario = $("#usuario").val();
+            var parametros = {
+                cod_det, cod_ficha, usuario, metodo
+            };
+            $.ajax({
+                data: parametros,
+                url: 'packages/planif/planif_marcaje/modelo/participante.php',
+                type: 'post',
+                success: function (response) {
+                    var resp = JSON.parse(response);
+                    if (resp.error) {
+                        toastr.error("A ocurrido un error al intentar agregar al participante!..");
+                    } else {
+                        toastr.success("Participante agregado con exito!..");
+                        cargar_participantesNO(cod_det)
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
+    } else if (metodo == "eliminar") {
+        if (confirm("Esta seguro de que desea eliminar el participante (" + ficha_delete + ")!.")) {
+            var usuario = $("#usuario").val();
+            var parametros = {
+                codigo, metodo
+            };
+            $.ajax({
+                data: parametros,
+                url: 'packages/planif/planif_marcaje/modelo/participante.php',
+                type: 'post',
+                success: function (response) {
+                    var resp = JSON.parse(response);
+                    if (resp.error) {
+                        toastr.error("A ocurrido un error al intentar eliminar el participante!..");
+                    } else {
+                        toastr.success("Participante eliminado con exito!..");
+                        cargar_participantesNO(cod_det)
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
+    }
+}
 
 function addObservacion(codigo = '') {
     var observacion = $("#observacion").val();
+    if (observacion == '') {
+        toastr.success("La observación no puede estar vacía!..");
+    } else {
+        var cod_det = $("#cod_det").val()
+        if (confirm("Esta seguro de que desea agregar esta observación")) {
+            var usuario = $("#usuario").val();
+            var parametros = {
+                cod_det, observacion, usuario
+            };
+            $.ajax({
+                data: parametros,
+                url: 'packages/planif/planif_marcaje/modelo/observacion.php',
+                type: 'post',
+                success: function (response) {
+                    var resp = JSON.parse(response);
+                    if (resp.error) {
+                        toastr.error("A ocurrido un error al intentar agregar la observación!..");
+                    } else {
+                        toastr.success("Observación agregada con exito!..");
+                        cargar_observaciones(cod_det)
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
+    }
+}
+function addObservacionNO(codigo = '') {
+    var observacion = $("#observacionNO").val();
     if (observacion == '') {
         toastr.success("La observación no puede estar vacía!..");
     } else {
@@ -267,6 +353,18 @@ function openModalObservaciones(codigo) {
     $("#myModalO").show();
     cargar_observaciones(codigo);
 }
+function openModalObservacionesNO(codigo) {
+    $("#cod_det").val(codigo);
+    $("#myModalO1").show();
+    cargar_observacionesNO(codigo);
+}
+function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion) {
+    $("#cod_det2").val(codigo);
+    $("#vector").val(xcliente);  
+    $("#myModalO2").show();
+    cargar_actividades(xficha,xcliente,xubicacion);
+}
+
 
 
 function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion) {
@@ -280,7 +378,9 @@ function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion) {
 function cerrarModalObservaciones() {
     $("#myModalO").hide();
 }
-
+function cerrarModalObservacionesNO() {
+    $("#myModalO1").hide();
+}
 function cerrarModalfile() {
     $("#myModalO2").hide();
 }
@@ -290,11 +390,39 @@ function openModalParticipantes(codigo) {
     cargar_participantes(codigo);
 
 }
+function openModalParticipantesNO(codigo) {
+    $("#cod_det").val(codigo);
+    $("#myModalP2").show();
+    cargar_participantesNO(codigo);
 
+}
+
+function cerrarModalParticipantesNO() {
+    $("#myModalP2").hide();
+}
 function cerrarModalParticipantes() {
     $("#myModalP").hide();
 }
-
+function cargar_participantesNO(codigo) {
+    var parametros = {
+        codigo
+    };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_marcaje/views/Add_participantes.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#participantesNO").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            $("#participantesNO").html(response);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
 function cargar_participantes(codigo) {
     var parametros = {
         codigo
@@ -315,7 +443,6 @@ function cargar_participantes(codigo) {
         }
     });
 }
-
 function cargar_observaciones(codigo) {
     var parametros = {
         codigo
@@ -329,6 +456,27 @@ function cargar_observaciones(codigo) {
         },
         success: function (response) {
             $("#observaciones").html(response);
+            
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
+function cargar_observacionesNO(codigo) {
+    var parametros = {
+        codigo
+    };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_marcaje/views/Add_observaciones.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#observacionesNO").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            $("#observacionesNO").html(response);
             
         },
         error: function (xhr, ajaxOptions, thrownError) {
@@ -362,3 +510,13 @@ function cargar_actividades(ficha,cliente,ubicacion) {
         }
     });
 }
+function activarcheckbox() {
+    var marcados=document.some_form['marcado'];
+    
+    if (marcados.length >0 ){
+	    for(i=0;i<marcados.length;i++){
+		    marcados[i].disabled= false ;
+          
+        }
+    } ;
+  }
