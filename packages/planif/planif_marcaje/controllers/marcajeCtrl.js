@@ -109,11 +109,6 @@ function subirImagenS3marcaje(codigo) {
 function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
     
     var ficha = cod;
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
     
     var cod_ficha =$("#stdID").val();;
     var cod_cliente=$("#cliente").val();
@@ -128,31 +123,17 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
      
 	}
     let vectorJSON = JSON.stringify(lista);
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
     var doc =archi;
     var tusuario=xusuario
     var parametros = {
         "link": url,
         "codigo": doc,
         "doc": doc,
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-        "usuario": xusuario
-=======
->>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
         "usuario": xusuario,
         "vector" : vectorJSON,
         "cod_ficha":cod_ficha,
         "cod_cliente":cod_cliente,
         "cod_ubicacion":cod_ubicacion
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
     };
     
     $.ajax({
@@ -169,15 +150,9 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
         success: function (data) {
             message = $("<span class='success'>La imagen ha sido guardada con exitos...</span>");
             showMessage(message);
-<<<<<<< HEAD
             Add_filtroX();
-=======
-<<<<<<< Updated upstream
             //window.history.go(-1);
-=======
-            Add_filtroX();
->>>>>>> Stashed changes
->>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
+
         },
         //si ha ocurrido un error
         error: function () {
@@ -293,25 +268,12 @@ function openModalObservaciones(codigo) {
     cargar_observaciones(codigo);
 }
 
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-function openModalObservacionesdos(codigo,xficha,xcedula) {
-    $("#cod_det2").val(codigo);
-    $("#ficha").val(xficha);
-    $("#myModalO2").show();
-    
-=======
->>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
+
 function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion) {
     $("#cod_det2").val(codigo);
     $("#vector").val(xcliente);  
     $("#myModalO2").show();
     cargar_actividades(xficha,xcliente,xubicacion);
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
 }
 
 

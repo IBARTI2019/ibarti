@@ -9,17 +9,9 @@
 </style>
 <?php
 $Nmenu = '4406';
-<<<<<<< HEAD
 
 $img_src = ""; 
-=======
-<<<<<<< Updated upstream
-$img_src = "imagenes/img-no-disponible.png"; 
-=======
 
-$img_src = ""; 
->>>>>>> Stashed changes
->>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
 if (isset($_SESSION['usuario_cod'])) {
     require_once('autentificacion/aut_verifica_menu.php');
     require_once('sql/sql_report.php');
@@ -187,7 +179,7 @@ if (isset($_SESSION['usuario_cod'])) {
     </div>
   </div>
 </div>
-<<<<<<< HEAD
+
 <div id="myModalO2" class="modal" >
   <div class="modal-content">
     <div class="modal-header">
@@ -262,8 +254,6 @@ if (isset($_SESSION['usuario_cod'])) {
 <input type="hidden" name="vector" id="vector" value="">
 <input name="usuario" id="usuario" type="hidden" value="<?php echo $us; ?>" />
 
-=======
-<<<<<<< Updated upstream
 <div id="myModalO2" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -305,7 +295,7 @@ if (isset($_SESSION['usuario_cod'])) {
 <input type="hidden" name="cod_det" id="cod_det" value="">
 
 <input name=" usuario" id="usuario" type="hidden" value="<?php echo $us; ?>" />
-=======
+
 <div id="myModalO2" class="modal" >
   <div class="modal-content">
     <div class="modal-header">
@@ -380,8 +370,6 @@ if (isset($_SESSION['usuario_cod'])) {
 <input type="hidden" name="vector" id="vector" value="">
 <input name="usuario" id="usuario" type="hidden" value="<?php echo $us; ?>" />
 
->>>>>>> Stashed changes
->>>>>>> 9d33f42b67fe636b377f9656702dc159e2c4e57c
 <script type="text/javascript">
   filtroValue = $("#paciFiltro").val();
   new Autocomplete("stdName", function() {
