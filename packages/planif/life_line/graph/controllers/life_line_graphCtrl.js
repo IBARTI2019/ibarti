@@ -43,12 +43,16 @@ function Add_filtroX() {
                         ubicSelect = ubicacion;
                         graph = g.LifeLine('chart-area', resp);
                     }
+                    $('#ttc').show();
+                    $('#mtc').show();
                     $("#ttc").html(`${Math.floor(graph.ttc / 60)} hrs, con ${("0"+graph.ttc % 60).slice(-2)} min`);
                     $("#mtc").html(`${Math.floor(graph.mtc.time / 60)} hrs, con ${("0"+graph.mtc.time % 60).slice(-2)} min  (${moment(graph.mtc.d.data[0].x).format("HH:mm")} - ${moment(graph.mtc.d.data[1].x).format("HH:mm")})`);
                 } else {
                     $('.brs').hide();
                     $('#sin_data').show();
                     $('#grafica').hide();
+                    $('#ttc').hide();
+                    $('#mtc').hide();
                 }
             },
             error: function (xhr, ajaxOptions, thrownError) {
