@@ -358,11 +358,12 @@ function openModalObservacionesNO(codigo) {
     $("#myModalO1").show();
     cargar_observacionesNO(codigo);
 }
-function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion) {
+function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion,xproyecto) {
     $("#cod_det2").val(codigo);
+    $("#cod_proyecto").val(xproyecto);
     $("#vector").val(xcliente);  
     $("#myModalO2").show();
-    cargar_actividades(xficha,xcliente,xubicacion);
+    cargar_actividades(xficha,xcliente,xubicacion,xproyecto);
 }
 
 
@@ -477,10 +478,10 @@ function cargar_observacionesNO(codigo) {
     });
 }
 
-function cargar_actividades(ficha,cliente,ubicacion) {
+function cargar_actividades(ficha,cliente,ubicacion,proyecto) {
     
     var parametros = {
-        auxficha:ficha,auxcliente:cliente,auxubicacion:ubicacion
+        auxficha:ficha,auxcliente:cliente,auxubicacion:ubicacion,auxproyecto:proyecto
     };
     
     $.ajax({

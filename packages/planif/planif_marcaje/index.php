@@ -243,7 +243,8 @@ if (isset($_SESSION['usuario_cod'])) {
         <input name="ci" id="ci" type="hidden"  value="<?php echo $ci;?>" />
         <input name="cliente" id="cliente" type="hidden"  value="<?php echo $cliente;?>" />
         <input name="ubicacion" id="ubicacion" type="hidden"  value="<?php echo $ubicacion;?>" />
-		    <input name="doc" id="doc" type="hidden"  value="<?php echo $doc;?>" />   
+        <input name="cod_proyecto" id="cod_proyecto" type="hidden"  value="<?php echo $proyecto;?>" />
+        <input name="doc" id="doc" type="hidden"  value="<?php echo $doc;?>" />   
         <input name="url_new" id="url_new" type="hidden"  value="<?php echo $url_new;?>" />   
  </form>
   </div>

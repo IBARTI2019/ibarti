@@ -7,9 +7,9 @@ $resultNO=array();
 $ficha     = $_POST['auxficha'];
 $cliente     = $_POST['auxcliente'];
 $ubicacion     = $_POST['auxubicacion'];
-$proyecto= $_POST['auxproyecto'];
+$proyecto      =$_POST['auxproyecto'];
 
-$resultNO = $marcaje->get_actividadesNO($ficha, $cliente, $ubicacion,$proyecto);
+$resultNO = $marcaje->get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto);
 
 
 $disabled = "";

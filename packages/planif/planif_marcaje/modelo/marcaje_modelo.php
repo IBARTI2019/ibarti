@@ -74,7 +74,7 @@ class Marcaje
         return $this->datos;
     }
 
-function get_actividadesNO($ficha, $cliente, $ubicacion)
+function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto)
    
     {
         $this->datos  = array();
@@ -86,8 +86,7 @@ function get_actividadesNO($ficha, $cliente, $ubicacion)
         and pa.obligatoria='F'
         AND DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d')
         -- AND TIME(pd.fecha_fin) <= CURRENT_TIME()
-        AND p.cod_ficha = '$ficha'
-        ";
+        AND p.cod_ficha = '$ficha' AND pp.codigo='$proyecto'";
 
         if ($cliente != 'TODOS' && $cliente != "" && $cliente != null) {
             $where .= " AND p.cod_cliente = '$cliente'";
