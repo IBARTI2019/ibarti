@@ -257,6 +257,41 @@ class Grafica {
             }
             var dataGroup = Object.groupBy(data, ({ cod_actividad }) => cod_actividad);
             var maxL =  (Object.keys(dataGroup).map((k) => k).length) - 0.5;
+            var annotations = this.datos.map((d, i) => {
+                var fecha_desde = moment(d.data[0].x);
+                var fecha_hasta = moment(d.data[1].x)
+                var rango_minutos = fecha_hasta.diff(fecha_desde, 'minutes');
+                var rango_minutos_dia = fecha_hasta.diff(this.fechaActual + " 00:00", 'minutes');
+
+                var dataX = ((rango_minutos_dia * 960) / 1440) - 480;
+                if(dataX > 0){
+                    dataX = dataX - 25 
+                }
+                return {
+                    id: `hline${i}`,
+                    type: 'line',
+                    mode: 'horizontal',
+                    scaleID: `y-axis-0`,
+                    value: (d.data[0].y + 0.05),
+                    borderColor: 'transparent',
+                    // borderWidth: 0,
+                    label: {
+                        xAdjust: Math.round(dataX) ,
+                        backgroundColor: "transparent",
+                        content: `${rango_minutos >= 60 ? `${Math.floor(rango_minutos / 60)} hrs, con ` : ''}${(" " + rango_minutos % 60).slice(-2)} min`,
+                        enabled: true,
+                        hidden: true,
+                        fontSize: 8,
+                        position: "top",
+                        fontColor: "black",
+                    },
+                    // onClick: function(e) {
+                    //     // The annotation is is bound to the `this` variable
+                    //     console.log('Annotation', e.type, this);
+                    // }
+                };
+            });
+
             this.configLinea = {
                 type: 'line',
                 data: {
@@ -283,7 +318,7 @@ class Grafica {
                                 var fecha_desde = moment(data.datasets[tooltipItem.datasetIndex].data[0].x);
                                 var fecha_hasta = moment(data.datasets[tooltipItem.datasetIndex].data[1].x)
                                 var rango_minutos = fecha_hasta.diff(fecha_desde, 'minutes');
-                                return `${fecha_desde.format("HH:mm")} - ${fecha_hasta.format("HH:mm")} (${Math.floor(rango_minutos / 60)} hrs, con ${("0" + rango_minutos % 60).slice(-2)} min)`;
+                                return `${fecha_desde.format("HH:mm")} - ${fecha_hasta.format("HH:mm")} ${rango_minutos >= 60 ? `(${Math.floor(rango_minutos / 60)} hrs, con ` : '('}${("0" + rango_minutos % 60).slice(-2)} min)`;
                             },
                             title: (tooltipItem, data) => {
                                 return data.datasets[tooltipItem[0].datasetIndex].label;
@@ -304,10 +339,11 @@ class Grafica {
                               max: this.fechaActual + " 24:00",
                               unit: 'minute'
                             },
-                            parser: "HH:mm"
+                            parser: "HH:mm",
+                            labelString: 'Hora'
                           }],
                           yAxes: [{
-                            display: false,
+                            display: true,
                             ticks: {
                                 suggestedMin: -1.5,
                                 suggestedMax: maxL,
@@ -337,6 +373,11 @@ class Grafica {
                             })
                             ci.update();
                          }
+                    },
+                    annotation: {
+                        events: ['click'],
+                        drawTime: 'afterDatasetsDraw',
+                        annotations: annotations
                     }
                 }
             };
