@@ -18,11 +18,13 @@ function Add_filtroX() {
     var usuario = $("#usuario").val();
     var ubicacion =$("#ubicacion").val(); //378;
     var error = 0,
+    var propuesta = $("#propuesta").val();;
     errorMessage = ' ';
     if (error == 0 && ubicacion != "TODOS" && ubicacion != "") {
         var parametros = {
             "ubicacion": ubicacion,
-            "usuario": usuario
+            "usuario": usuario,
+            "propuesta": propuesta
         };
         $.ajax({
             data: parametros,
@@ -35,7 +37,8 @@ function Add_filtroX() {
                     $('#sin_data').hide();
                     $('#grafica').show();
                     if (graph && ubicSelect == ubicacion) {
-                        graph = g.actualizarLifeLine(graph, resp, true)
+                        graph = g.LifeLine('chart-area', resp);
+                        // graph = g.actualizarLifeLine(graph.graph, resp, true)
                     } else {
                         ubicSelect = ubicacion;
                         graph = g.LifeLine('chart-area', resp);

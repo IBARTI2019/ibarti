@@ -257,7 +257,7 @@ class Grafica {
             }
             var dataGroup = Object.groupBy(data, ({ cod_actividad }) => cod_actividad);
             var maxL =  (Object.keys(dataGroup).map((k) => k).length) - 0.5;
-            var annotations = this.datos.map((d, i) => {
+            var annotations = this.datos.filter(d => d.label != 'Sin Actividad').map((d, i) => {
                 var fecha_desde = moment(d.data[0].x);
                 var fecha_hasta = moment(d.data[1].x)
                 var rango_minutos = fecha_hasta.diff(fecha_desde, 'minutes');
@@ -360,22 +360,23 @@ class Grafica {
                                 fillStyle: dataGroup[l][0].color,
                                 strokeStyle: dataGroup[l][0].backgroundColor,
                                 hidden: chart.getDatasetMeta(this.datos.findIndex(ds => ds.label == dataGroup[l][0].actividad)).hidden,
+                                // enabled: false
                             })),
                         },
                         onClick: function (e, legendItem) {
-                            var index = legendItem.datasetIndex;
-                            let ci = this.chart;
-                            ci.data.datasets.forEach((ds, i) => {
-                                if(ds.label == legendItem.text){
-                                    var meta = ci.getDatasetMeta(i);
-                                    meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
-                                }
-                            })
-                            ci.update();
+                            // var index = legendItem.datasetIndex;
+                            // let ci = this.chart;
+                            // ci.data.datasets.forEach((ds, i) => {
+                            //     if(ds.label == legendItem.text){
+                            //         var meta = ci.getDatasetMeta(i);
+                            //         meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+                            //     }
+                            // })
+                            // ci.update();
                          }
                     },
                     annotation: {
-                        events: ['click'],
+                        // events: ['click'],
                         drawTime: 'afterDatasetsDraw',
                         annotations: annotations
                     }
@@ -417,6 +418,7 @@ class Grafica {
     actualizarLifeLine(obj, data) {
         this.datos = [];
         this.codigos = [];
+        const pointRadius = 2;
         var y = 0;
         for (let index = 0; index < data.length; index++) {
             const element = data[index];

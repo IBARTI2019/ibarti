@@ -15,14 +15,14 @@ $nombre = htmlentities($nombre);
 try {
   if($metodo == "agregar"){
     $sql = "INSERT INTO planif_life_line_actividades (codigo, abrev, descripcion, color,
-                                  cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, `status`)
+                                  cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, `status`, propuesta)
                           VALUES (NULL, '$abrev', '$nombre', '$color',
-                                  '$usuario', current_date, '$usuario', current_date, '$status')";
+                                  '$usuario', current_date, '$usuario', current_date, '$status', '$propuesta')";
   }else{
     $sql = "UPDATE planif_life_line_actividades SET
             abrev          = '$abrev',     descripcion    = '$nombre',
             fec_us_mod     = current_date, cod_us_mod     = '$usuario',
-            color = '$color', `status`       = '$status'
+            color = '$color', `status`       = '$status', propuesta = '$propuesta'
       WHERE codigo         = '$codigo'";
   }
 

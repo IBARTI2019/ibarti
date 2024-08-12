@@ -58,6 +58,7 @@ function save_life_line() {
 	var nombre = $("#r_nombre").val();
 	var color = $("#r_color").val();
 	var status = Status($("#r_status:checked").val());
+	var propuesta = Status($("#r_propuesta:checked").val());
 	var usuario = $("#usuario").val();
 	var metodo = $("#h_metodo").val();
 
@@ -66,7 +67,7 @@ function save_life_line() {
 		var parametros = {
 			"codigo": codigo, "status": status,
 			"nombre": nombre, "abrev": abrev,
-			"color": color,
+			"color": color, "propuesta": propuesta,
 			"usuario": usuario, "metodo": metodo
 		};
 		$.ajax({

@@ -33,6 +33,7 @@ if ($metodo == 'modificar') {
         </td>
         <td class="etiqueta">
           Activo: <input id="r_status" type="checkbox" <?php echo statusCheck($actividad["status"]); ?> value="T" />
+          Propuesta: <input id="r_propuesta" type="checkbox" <?php echo statusCheck($actividad["propuesta"]); ?> value="T" />
         </td>
        </td>
       </tr>
