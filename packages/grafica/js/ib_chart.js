@@ -192,7 +192,8 @@ class Grafica {
                 }
 
                 var dataA = [];
-                this.codigos.push(element.cod_actividad);
+                if(this.codigos.findIndex((d) => d == element.cod_actividad) == -1)
+                    this.codigos.push(element.cod_actividad);
                 y = this.codigos.findIndex((d) => d == element.cod_actividad);
                 dataA.push({x:this.fechaActual + " " + element.hora_inicio,y:y});
                 dataA.push({x:this.fechaActual + " " + element.hora_fin,y:y});
@@ -377,7 +378,6 @@ class Grafica {
                     },
                     annotation: {
                         // events: ['click'],
-                        drawTime: 'afterDatasetsDraw',
                         annotations: annotations
                     }
                 }
@@ -423,7 +423,8 @@ class Grafica {
         for (let index = 0; index < data.length; index++) {
             const element = data[index];
             var dataA = [];
-            this.codigos.push(element.cod_actividad);
+            if(this.codigos.findIndex((d) => d == element.cod_actividad) == -1)
+                this.codigos.push(element.cod_actividad);
             y = this.codigos.findIndex((d) => d == element.cod_actividad);
             dataA.push({x:this.fechaActual + " " + element.hora_inicio,y:y});
             dataA.push({x:this.fechaActual + " " + element.hora_fin,y:y});
