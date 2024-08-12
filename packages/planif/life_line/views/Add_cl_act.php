@@ -12,9 +12,10 @@ src="imagenes\ico_agregar.ico" title="Agregar Actividad"
 onclick="B_add_actividad()" width="15px" height="15px">
 <table width="100%" border="0" align="center">
 <tr>
-<th width="50%">Actividad</th>
-<th width="20">Hora inicio</th>
-<th width="20%">hora fin</th>
+<th width="54%">Actividad</th>
+<th width="12">Hora inicio</th>
+<th width="12%">hora fin</th>
+<th width="12%">Tipo</th>
 <th width="10%"></th>
 </tr>';
 $i = 0;
@@ -24,6 +25,12 @@ foreach ($actividades as  $datos)
 		$metodo = "agregar";
 	}else{
 		$metodo = "modificar";
+	}
+
+	if($datos["propuesta"] == 'T'){
+		$propuesta_str = 'Propuesta';
+	}else{
+		$propuesta_str = 'Actual';
 	}
 	$i++;
 	echo '<tr>
@@ -36,6 +43,9 @@ foreach ($actividades as  $datos)
 	</td>
 	<td>
 	<input id="det_hora_fin'.$i.'" type="time" value="'.$datos["hora_fin"].'" required>
+	</td>
+		<td>
+		'.$propuesta_str.'
 	</td>
 	<td>
 	<img src="imagenes/actualizar.bmp" width="16px" height="16px" onClick="save_act_det('.$i.')"  alt="Guardar" title="Guardar" class="imgLink">

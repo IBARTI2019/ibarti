@@ -64,7 +64,8 @@ class LifeLine
 					planif_life_line_actividades.descripcion actividad,
 					planif_life_line_actividades.abrev abrev_actividad,
 					planif_life_line.hora_inicio,
-					planif_life_line.hora_fin
+					planif_life_line.hora_fin,
+					planif_life_line.propuesta
 				FROM
 					planif_life_line,
 					planif_life_line_actividades,
@@ -73,7 +74,7 @@ class LifeLine
 					planif_life_line.cod_ubicacion = clientes_ubicacion.codigo
 					AND planif_life_line.cod_actividad = planif_life_line_actividades.codigo  
 					AND planif_life_line.cod_ubicacion = $ubic
-				ORDER BY planif_life_line.hora_inicio ASC;";
+				ORDER BY planif_life_line.propuesta, planif_life_line.hora_inicio ASC;";
 
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query)) {

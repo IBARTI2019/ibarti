@@ -93,13 +93,14 @@ function save_act_det(cod) {
 	var hora_inicio = $("#det_hora_inicio" + cod + "").val();
 	var hora_fin = $("#det_hora_fin" + cod + "").val();
 	var metodo = $("#det_metodo" + cod + "").val();
+	var propuesta = $("#det_propuesta" + cod + "").val();
 	var usuario = $("#usuario").val();
 	
 	if (error == 0) {
 		var parametros = { 
 			"codigo": codigo, "actividad": actividad,
 			"ubicacion": ubic, "hora_inicio": hora_inicio,
-			"hora_fin": hora_fin,
+			"hora_fin": hora_fin, "propuesta": propuesta,
 			"metodo": metodo, "usuario": usuario
 		}
 		$.ajax({

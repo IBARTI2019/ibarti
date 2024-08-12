@@ -11,15 +11,15 @@ $result = array();
 try {
     if($metodo == "agregar"){
       $sql = "INSERT INTO planif_life_line
-                          (cod_ubicacion, cod_actividad, hora_inicio, hora_fin,
+                          (cod_ubicacion, cod_actividad, hora_inicio, hora_fin, propuesta,
                           cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod)
-                  VALUES ('$ubicacion', '$actividad','$hora_inicio', '$hora_fin',
+                  VALUES ('$ubicacion', '$actividad','$hora_inicio', '$hora_fin', '$propuesta',
                           '$usuario', CURRENT_TIMESTAMP, '$usuario', CURRENT_TIMESTAMP)";
       $query = $bd->consultar($sql);
     }else if($metodo == "modificar"){
       $sql = "UPDATE planif_life_line SET
                      cod_ubicacion = '$ubicacion', cod_actividad = '$actividad',
-                     hora_inicio = '$hora_inicio', hora_fin = '$hora_fin',
+                     hora_inicio = '$hora_inicio', hora_fin = '$hora_fin', propuesta = '$propuesta',
                      cod_us_mod = '$usuario', fec_us_mod = CURRENT_TIMESTAMP
                WHERE codigo = '$codigo' ";
       $query = $bd->consultar($sql);

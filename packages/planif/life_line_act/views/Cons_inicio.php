@@ -14,7 +14,6 @@ $matriz  =  $life_line_act->get();
 			<th width="45%">Nombre</th>
       <th width="10%" class="etiqueta">Color</th>
       <th width="10%" class="etiqueta">Estatus</th>
-      <th width="10%" class="etiqueta">Propuesta</th>
   		<th width="10%" align="center"><img src="imagenes/nuevo.bmp" alt="Agregar" onclick="Cons_life_line('', 'agregar')" title="Agregar Registro" width="30px" height="30px" border="null"/></th>
 		</tr>
     <?php
@@ -31,7 +30,6 @@ $matriz  =  $life_line_act->get();
 				  <td>'.longitud($datos["descripcion"]).'</td>
           <td><input disabled="true" type="color" value="'.$datos["color"].'"></td>
 					<td>'.statuscal($datos["status"]).'</td>
-          	<td>'.$propuesta.'</td>
 				  <td><img src="imagenes/actualizar.bmp" onclick="Cons_life_line(\''.$datos[0].'\', \'modificar\')" alt="Modificar" title="Modificar Registro" width="20" height="20" border="null"/></a>&nbsp;<img src="imagenes/borrar.bmp"  width="20px" height="20px" title="Borrar Registro" border="null" onclick="Borrar_life_line(\''.$datos[0].'\')"/></td></tr>';
         }
       ?>
