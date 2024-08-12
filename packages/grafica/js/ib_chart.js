@@ -281,7 +281,7 @@ class Grafica {
                         content: `${rango_minutos >= 60 ? `${Math.floor(rango_minutos / 60)} hrs, con ` : ''}${(" " + rango_minutos % 60).slice(-2)} min`,
                         enabled: true,
                         hidden: true,
-                        fontSize: 10,
+                        fontSize: 9,
                         position: "top",
                         fontColor: "black",
                     },
