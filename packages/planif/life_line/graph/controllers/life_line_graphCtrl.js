@@ -17,8 +17,8 @@ $(function () {
 function Add_filtroX() {
     var usuario = $("#usuario").val();
     var ubicacion =$("#ubicacion").val(); //378;
-    var error = 0,
     var propuesta = $("#propuesta").val();;
+    var error = 0;
     errorMessage = ' ';
     if (error == 0 && ubicacion != "TODOS" && ubicacion != "") {
         var parametros = {
