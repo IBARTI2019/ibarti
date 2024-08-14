@@ -43,6 +43,24 @@ class Planificacion
 		return $this->datos;
 	}
 
+	function get_cargos_excl(){
+		$sql = " SELECT
+					cargos_excl_confirm.codigo,
+					cargos_excl_confirm.cod_cargo,
+					cargos.descripcion cargo
+				FROM
+					cargos_excl_confirm, cargos
+				WHERE 
+					cargos_excl_confirm.cod_cargo = cargos.codigo";
+	
+		$query = $this->bd->consultar($sql);
+
+		while ($datos = $this->bd->obtener_fila($query)) {
+			$this->datos[] = $datos;
+		}
+		return $this->datos;
+	}
+
 	function get_cliente($usuario, $r_cliente)
 	{
 		if ($r_cliente == "F") {

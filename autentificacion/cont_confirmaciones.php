@@ -99,11 +99,40 @@ $bd = new DataBase();
 </table>
 <table class="tabla_sistema" width="80%" border="0" align="center" id="confirmaciones_especificas">
 </table>
+<br>
+<br>
+<br>
+<table width="80%" align="center">
+  <tr valign="top">                    
+     <td height="23" colspan="9" class="etiqueta_title" align="center">CARGOS EXCLUIDOS</td>
+   </tr>
+  <tr><td height="8" colspan="9" align="center"><hr></td></tr>			 
+  </tr>
+    <td class="etiqueta">Cargo: </td>
+    <td>
+      <select name="cargo" id="cargo" style="width:500px;">
+        <option value="">Seleccione</option>
+        <?php
+        $query01 = $bd->consultar($sql_cargo);
+        while($row01=$bd->obtener_fila($query01,0)){
+          echo '<option value="'.$row01[0].'">'.$row01[1].' ('.$row01[0].')</option>';
+        }
+        ?>
+      </select>
+    </td>
+    <td>
+      <img class="imgLink" src="imagenes\ico_agregar.ico" alt="Agregar" title="Agregar"  width="15px" height="15px" onclick="addCargo()">
+    </td>
+  </tr>
+</table>
+<table class="tabla_sistema" width="80%" border="0" align="center" id="cargos_excl">
+</table>
 <input name="usuario" type="hidden" value="<?php echo $usuario; ?>" />
 
 <script>
   $(function () {
     getConfEsp();
+    getCargosExcl();
   });
 
   function getConfEsp() {
@@ -128,6 +157,7 @@ $bd = new DataBase();
     $("#ubicacion").val("TODOS");
     $("#horario_conf").val("TODOS");
     $("#hora_entrada_conf").val("");
+    $("#cargo").val("");
   }
 
   function addConfEsp() {
@@ -169,6 +199,70 @@ $bd = new DataBase();
         },
         success: function (response) {
           getConfEsp();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(xhr.status);
+          alert(thrownError);
+        }
+      });
+    }
+  }
+
+  function getCargosExcl() {
+    $.ajax({
+      url: 'packages/planif/planificaciones/views/Add_cargos_excl.php',
+      type: 'get',
+      beforeSend: function () {
+        $("#cargos_excl").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+      },
+      success: function (response) {
+        $("#cargos_excl").html(response);
+        resetData();
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        alert(xhr.status);
+        alert(thrownError);
+      }
+    });
+  }
+
+  function addCargo() {
+    var cargo = $("#cargo").val();
+    var usuario = $("#usuario").val();
+    if(cargo != ""){
+      var parametros = { "cargo": cargo, "usuario": usuario };
+      $.ajax({
+        data: parametros,
+        url: 'packages/planif/planificaciones/modelo/cargos_excl.php',
+        type: 'post',
+        // beforeSend: function () {
+        //   $("#confirmaciones_especificas").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        // },
+        success: function (response) {
+          getCargosExcl();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          alert(xhr.status);
+          alert(thrownError);
+        }
+      });
+    }else{
+      alert("Debe seleccionar el cargo");
+    }
+  }
+
+  function Borrar_cargo_det(codigo){
+    if (confirm("Estas seguro(a) de que deseas eliminar este cargo de la lista de exclusion?..")) {
+      var parametros = {"codigo": codigo };
+      $.ajax({
+        data: parametros,
+        url: 'packages/planif/planificaciones/modelo/delete_cargo_excl.php',
+        type: 'post',
+        beforeSend: function () {
+          $("#cargos_excl").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+          getCargosExcl();
         },
         error: function (xhr, ajaxOptions, thrownError) {
           alert(xhr.status);
