@@ -119,7 +119,7 @@ class Confirmaciones
             AND turno.cod_horario = horarios.codigo 
             AND horarios.cod_concepto = conceptos.codigo 
             AND conceptos.asist_perfecta = 'T' 
-            AND ficha.cod_cargo NOT IN ('ARLAT', '063', 'CES', '071', '100', 'ASLL')
+            AND ficha.cod_cargo NOT IN (SELECT cod_cargo FROM cargos_excl_confirm)
         ";
 
         if ($cliente != 'TODOS' && $cliente != "" && $cliente != null) {
