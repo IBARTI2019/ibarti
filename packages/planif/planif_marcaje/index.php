@@ -184,7 +184,7 @@ if (isset($_SESSION['usuario_cod'])) {
   <div class="modal-content">
     <div class="modal-header">
       <span class="close" onclick="cerrarModalfile()">&times;</span>
-      <span>Cargar Archivos y Actividades No Obligatorias</span>
+      <span>Cargar Archivos</span>
     </div>
    
     <script type="text/javascript" src="upload/functions.js"></script>
@@ -194,15 +194,14 @@ if (isset($_SESSION['usuario_cod'])) {
 <div id="Contenedor01" class="mensaje"></div>
 <form name="some_form" enctype="multipart/form-data" class="formulario" >
 <table width="100%">
-  <tr><td 
-      
-      width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>"></div>
-                      <input name="images" type="file" id="imagen"  value="Subir Imagen"  onfocus="activarcheckbox()"/><br/>
-                
-                 <br/>
-   
+  
+     <td 
+      width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>">
+      <input name="images" type="file" id="imagen"  value="Subir Imagen"  onfocus="activarcheckbox()"/>
+      <span id="correo_ubicacion" >¿Enviar a Correo de <?php echo $leng['ubicacion']?>?<input id="enviar_ubicacion" name="enviar_ubicacion" disabled type="checkbox" style="width: 100px;"/></span>
       </div>
-    </td></tr>     
+    </td>
+  
 </table>
 <table width="100%" class="tabla_sistema">
           <thead>

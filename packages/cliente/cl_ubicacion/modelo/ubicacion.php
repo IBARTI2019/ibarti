@@ -15,8 +15,12 @@ $codigo  = htmlentities($codigo);
       $sql    = "$SELECT $proced('$metodo', '$codigo', '$cliente', '$estado',
    	                             '$ciudad', '$region', '$zona', '$calendario',
                                  '$nombre', '$contacto', '$cargo', '$telefono',
-                                 '$email', '$direccion', '$observ', '$latitud', '$longitud',
-   								               '$campo01', '$campo02', '$campo03', '$campo04', '$usuario',  '$status')";
+                                 '$email', '$direccion', '$observ', '$latitud', 
+                                 '$longitud','$campo01', '$campo02', '$campo03', 
+                                 '$campo04', '$usuario',  '$status', '$contacto1', 
+                                 '$cargo1', '$telefono1', '$email1','$contacto2', 
+                                 '$cargo2', '$telefono2', '$email2','$contacto3', 
+                                 '$cargo3', '$telefono3', '$email3')";
    	 $query = $bd->consultar($sql);
      $result['sql'] = $sql;
 

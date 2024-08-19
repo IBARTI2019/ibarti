@@ -78,6 +78,18 @@ function save_ubic() {
 	var cargo = $("#ub_cargo").val();
 	var telefono = $("#ub_telefono").val();
 	var email = $("#ub_email").val();
+	var contacto1 = $("#ub_contacto1").val();
+	var cargo1 = $("#ub_cargo1").val();
+	var telefono1 = $("#ub_telefono1").val();
+	var email1 = $("#ub_email1").val();
+	var contacto2 = $("#ub_contacto2").val();
+	var cargo2 = $("#ub_cargo2").val();
+	var telefono2 = $("#ub_telefono2").val();
+	var email2 = $("#ub_email2").val();
+	var contacto3 = $("#ub_contacto3").val();
+	var cargo3 = $("#ub_cargo3").val();
+	var telefono3 = $("#ub_telefono3").val();
+	var email3 = $("#ub_email3").val();
 	var direccion = $("#ub_direccion").val();
 
 	var latitud = $("#ub_latitud").val();
@@ -102,7 +114,17 @@ function save_ubic() {
 			"calendario": calendario, "zona": zona,
 			"contacto": contacto,
 			"cargo": cargo, "telefono": telefono,
-			"email": email, "direccion": direccion,
+			"email": email, 
+			"contacto1": contacto1,
+			"cargo1": cargo1, "telefono1": telefono1,
+			"email1": email1, 
+			"contacto2": contacto2,
+			"cargo2": cargo2, "telefono2": telefono2,
+			"email2": email2, 
+			"contacto3": contacto3,
+			"cargo3": cargo3, "telefono3": telefono3,
+			"email3": email3, 
+			"direccion": direccion,
 			"latitud": latitud, "longitud": longitud,
 			"observ": observ,
 			"proced": proced, "usuario": usuario,

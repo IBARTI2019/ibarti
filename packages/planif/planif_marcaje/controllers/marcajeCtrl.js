@@ -108,12 +108,12 @@ function subirImagenS3marcaje(codigo) {
 
 function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
     
-    var ficha = cod;
-    
-    var cod_ficha =$("#stdID").val();;
+     var cod_ficha =$("#stdID").val();;
     var cod_cliente=$("#cliente").val();
     var cod_ubicacion=$("#ubicacion").val();
     var marcados=document.some_form['marcado'];
+    var ubi= document.some_form['enviar_ubicacion'];
+    
     var lista=[];
     if (marcados.length >0 ){
 	    for(i=0;i<marcados.length;i++){
@@ -151,6 +151,12 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
         success: function (data) {
             message = $("<span class='success'>La imagen ha sido guardada con exitos...</span>");
             showMessage(message);
+            //enviar correo a ubicacion 
+            if (ubi.checked){
+                message = $("<span class='enviando email, por favor espere...</span>");
+                showMessage(message)
+                 enviaremail(cod_cliente,cod_ubicacion);
+            }
             Add_filtroX();
         },
         //si ha ocurrido un error
@@ -159,7 +165,7 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
             showMessage(message);
         }
     });
-
+   
     cerrarModalfile();
    
         
@@ -503,12 +509,56 @@ function cargar_actividades(ficha,cliente,ubicacion,proyecto) {
     });
 }
 function activarcheckbox() {
-    var marcados=document.some_form['marcado'];
-    
-    if (marcados.length >0 ){
+    let marcados=[];
+    marcados=document.some_form['marcado'];
+    let ubi= document.some_form['enviar_ubicacion'];
+   
+    if (marcados.length ===1 ){
+	    marcados=[document.some_form['marcado']];
+    } else {
+        if (marcados.length ===undefined ){
+          marcados=[document.some_form['marcado']];
+        } else {
+            marcados=document.some_form['marcado'];
+        }
+    }
+    ;
+
+     if (marcados.length >=0 ){
 	    for(i=0;i<marcados.length;i++){
 		    marcados[i].disabled= false ;
           
         }
     } ;
+    ubi.disabled= false;
   }
+function enviaremail(auxcliente,auxubicacion) {
+    if (auxubicacion && auxcliente) {
+        if (confirm("Esta seguro de que desea enviar el Email (" + auxubicacion + "), Esta operación es irreversible!.")) {
+            var usuario = $("#usuario").val();
+            var archivo = $("#archivo").val();
+            alert(archivo);
+            var parametros = {
+                ubicacion:auxubicacion,usuario,link:archivo
+            };
+            $.ajax({
+                data: parametros,
+                url: 'packages/planif/planif_marcaje/modelo/enviaremail.php',
+                type: 'post',
+                success: function (response) {
+                    var resp = JSON.parse(response);
+                    if (resp.error) {
+                        toastr.error("A ocurrido un error al intentar enviar el email!..");
+                    } else {
+                        toastr.success("email enviado con Exitos!....");
+                        
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
+    }
+}
