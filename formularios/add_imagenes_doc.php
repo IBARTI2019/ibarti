@@ -8,7 +8,8 @@ $sql      = "SELECT control.url_doc, IFNULL(ficha_documentos.link, 0) link
 			                       ON ficha_documentos.cod_ficha = '$ficha' 
 								  AND ficha_documentos.cod_documento = '$doc' ";			  
 $query01  = $bd->consultar($sql);
-$row01    = mysql_fetch_row($query01);
+//$row01    = mysql_fetch_row($query01)se cambio 
+$row01     = $bd->obtener_fila($query01,0);
 $url      = $row01[0];		
 $link     = $row01[1];		
 

@@ -42,16 +42,24 @@ $vinculo = "inicio.php?area=pestanas/Add_$archivo&Nmenu=$Nmenu&mod=$mod&archivo=
 		$where .= "  AND preingreso.cedula = '$cedula' ";
 	}
 
- $sql = " SELECT preingreso.cod_estado, estados.descripcion AS estados,
-                 preingreso.cedula, CONCAT(preingreso.apellidos,' ', preingreso.nombres) AS nombres,
-				 preingreso.fec_preingreso,
-				 preingreso.fec_psic, preingreso.psic_apto,
-				 preingreso.fec_pol, preingreso.pol_apto,
-				 preingreso.fec_us_ing,
-			 	 preingreso.`status` AS cod_status, preing_status.descripcion AS status
-            FROM preingreso , estados, preing_status
-		  $where
-		   ORDER BY fec_us_ing DESC ";
+ $sql = " SELECT v_preingreso.fec_us_ing AS fec_sistema, v_preingreso.fec_preingreso,
+				v_preingreso.cod_estado, v_preingreso.estado, 
+				v_preingreso.cod_ciudad, v_preingreso.ciudad,
+				v_preingreso.cedula, v_preingreso.apellidos, v_preingreso.nombres, 
+				v_preingreso.cod_nacionalidad, v_preingreso.nacionalidad,
+				v_preingreso.cod_estado_civil, v_preingreso.estado_civil, 
+				v_preingreso.fec_nacimiento, v_preingreso.lugar_nac, Sexo(v_preingreso.sexo) sexo,
+				v_preingreso.telefono, v_preingreso.celular,
+				v_preingreso.correo, v_preingreso.direccion,
+				v_preingreso.ocupacion, v_preingreso.cargo,
+				v_preingreso.nivel_academico, v_preingreso.pantalon,
+				v_preingreso.camisa, v_preingreso.zapato,
+				v_preingreso.fec_psic, v_preingreso.psic_observacion,
+				Valores(v_preingreso.psic_apto) AS psic_apto, v_preingreso.fec_pol,
+				v_preingreso.pol_observacion, Valores(v_preingreso.pol_apto) AS pol_apto,
+				v_preingreso.observacion, v_preingreso.cod_status, v_preingreso.`status`
+			FROM v_preingreso
+				ORDER BY 2 ASC;";
 ?>
 <table width="100%" border="0" align="center">
 		<tr class="fondo00">

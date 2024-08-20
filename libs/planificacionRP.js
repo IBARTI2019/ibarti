@@ -80,6 +80,7 @@ function rp_planif_trab_serv(data, id_contenedor, callback, formato) {
 function rp_planif_trab_serv_create_cabecera(id_contenedor, callback, formato) {
 	/////////////////Creacion de la tabla y cabecera
 	var divs = d3.select('#' + id_contenedor).selectAll('div').data(res_fecha_cont).enter().append('div');
+	
 	if (formato == 'pdf') {
 		divs.append('span').attr('align', 'center').html((d) =>
 			'<img class="imgLink" title="imprimir planificacion(' +
@@ -91,11 +92,17 @@ function rp_planif_trab_serv_create_cabecera(id_contenedor, callback, formato) {
 		divs.append('span').attr('align', 'center').html((d) =>
 			'<img class="imgLink" title="imprimir planificacion(' +
 			d.values[0].values[0].values[0].cliente + ' - ' + d.values[0].values[0].values[0].ubicacion +
-			')" width="25px" src="imagenes/excel.gif" border="0" onclick="rp_planif_serv_rp(\'excel\',\'table' +
+			')" width="25px" src="imagenes/pdf.gif" border="0" onclick="rp_planif_serv_rp(\'pdf\',\'table' +
 			d.key + '\')"> <select name="update" style="width:90px;" onchange="rp_planif_serv_update(' + d.key + ',this.value)">' +
 			'<option value="C"> CANTIDADES</option><option value="H">HORAS</option></select>');
+		divs.append('span').attr('align', 'center').html((d) =>
+			'<img class="imgLink" title="imprimir planificacion(' +
+			d.values[0].values[0].values[0].cliente + ' - ' + d.values[0].values[0].values[0].ubicacion +
+			')" width="25px" src="imagenes/excel.gif" border="0" onclick="rp_planif_serv_rp(\'excel\',\'table' +
+			d.key + '\')"> <select name="update" style="width:90px;" onchange="rp_planif_serv_update(' + d.key + ',this.value)">' +
+			'<option value="C">CANTIDADES</option><option value="H">HORAS</option></select>');
 		divs.append('span').style("float", 'right').html((d) =>
-			'<b>DOBLE CLICK PARA MODIFICAR</b>');
+			'<b>DOBLE  CLICK PARA MODIFICAR</b>');
 	}
 
 	var tablas = divs.append('table').attr('id', (d) => "table" + d.key).attr('width', '100%').attr('class', 'tabla_planif').attr('align', 'center');
