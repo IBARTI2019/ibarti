@@ -1,7 +1,6 @@
 <?php
 $nombre = $_GET['valor'];
 $imgURL = $_GET['imgURL'];
-
 // $imgURL = $_GET['imgURL'];
 // Tiempo de espera del script
 // Este lo usamos para emular mas o menos el comportamiento en un servidor web no local
@@ -70,7 +69,6 @@ if($pasaImgSize == true)
 			{
 				$respuestaFile = 'done';
 				$fileName = $imgFile;
-				
 				$mensajeFile = $imgFile;
 			}
 			else

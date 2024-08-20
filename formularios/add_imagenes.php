@@ -40,7 +40,6 @@ $dst_h  = "280";
 						return false;
 					} else {
 						document.getElementById('ext').value = ext;
-						
 						$('#loaderAjax').show();
 						btn_firma.text('Espere por favor');
 						this.disable();
@@ -49,13 +48,12 @@ $dst_h  = "280";
 				onComplete: function(file, response){
 					// alert(response);
 					console.log(response);
-					
 					btn_firma.text('Cambiar Imagen');
 					
 					respuesta = $.parseJSON(response);
 
 					if(respuesta.respuesta == 'done'){
-						 prueba(file);							
+						 prueba();							
 						 	
 					}
 					else{
@@ -70,14 +68,12 @@ $dst_h  = "280";
     });
 </script>
 <script type="text/javascript">
-  function prueba(archivo){
-  
+  function prueba(){
+//	  alert("hola");
 	  	var ci    = document.getElementById('cedula').value;
-		var fileaux=archivo; 
-		
 		var tipo  = document.getElementById('tipo').value;
-	    var exti= document.getElementById('ext').value;
-	  	window.location.href="inicio.php?area=formularios/add_imagenes2&ci="+ci+"&tipo="+tipo+"&exti="+exti+"";
+	  
+	  	window.location.href="inicio.php?area=formularios/add_imagenes2&ci="+ci+"&tipo="+tipo+"";
  };  
 
 </script>

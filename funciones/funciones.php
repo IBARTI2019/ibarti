@@ -397,17 +397,6 @@ function Feriado_as($valor, $tipo){
 	return $resul;
 }
 
-function imgcarpeta($valor){
-	if (intval($valor)==0) {
-		$carpeta = "imagenes/carpeta.png";
-	} else  {
-		$carpeta = "imagenes/carpetaverde.png";
-
-	}
-	
-	return $carpeta;
-
-}
 function imgExtension($link){
 	$ext =  end(explode(".", $link));
 

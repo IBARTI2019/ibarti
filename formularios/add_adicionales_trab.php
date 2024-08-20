@@ -1,25 +1,15 @@
 <?php 	   
 	$foto     = "imagenes/fotos/$cedula.jpg";
-	$foto2    = "imagenes/fotos/$cedula.png";
 	$cedu     = "imagenes/cedula/$cedula.jpg";	
-    $cedu2     = "imagenes/cedula/$cedula.png";	
+ 
 	  if (file_exists($foto)) {
-		   $foto     = "imagenes/fotos/$cedula.jpg?nochache=".time();
+		$foto     = "imagenes/fotos/$cedula.jpg?nochache=".time();
  		   $foto01 = '<img src="'.$foto.'" />';
 		   $foto_Mens = 'Cambiar Foto';
 		   
 		} else {
-			if (file_exists($foto2)) {
-				$foto     = "imagenes/fotos/$cedula.png?nochache=".time();
-				$foto01 = '<img src="'.$foto.'" />';
-			   $foto_Mens = 'Cambiar Foto';
-
-			} else {
-				$foto_Mens = 'Cargar Foto';
-				$foto01 = '<img src="imagenes/foto.jpg"/>';
-			}
-
-		 
+		   $foto_Mens = 'Cargar Foto';
+		   $foto01 = '<img src="imagenes/foto.jpg"/>';
 		}
 		
 		if (file_exists($cedu)) {
@@ -28,15 +18,8 @@
 			$cedula_Mens = 'Cambiar Cedula';
  		    $cedula01 = '<img src="'.$cedu.'"/>';
 		} else {
-			if (file_exists($cedu2)) { 
-				$cedu     = "imagenes/cedula/$cedula.png?nochache=".time();
-				$cedula_Mens = 'Cambiar Cedula';
-				$cedula01 = '<img src="'.$cedu.'"/>';
-			} else {
-               $cedula_Mens = 'Cargar Cedula';
-		       $cedula01 =  '<img src="imagenes/cedula.jpg"/>';
-			}
-			
+			$cedula_Mens = 'Cargar Cedula';
+		   $cedula01 =  '<img src="imagenes/cedula.jpg"/>';
 		}		
 		 ?>  
 

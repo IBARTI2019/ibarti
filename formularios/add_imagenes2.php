@@ -3,54 +3,25 @@ $ci           = $_GET["ci"];
 $img_nomb     = $usuario;
 $img_nomb_dst = $ci;
 $imgURL = "imagenes/temp/";
-$exti= $_GET["exti"]; 
-if( $exti == "jpg"){
-  $ext= "jpg";
-  
-  }elseif ( $exti == "png"){
-    $ext="png";
-    }else{
-     exit;
-    }
-  
-
+$ext    = "jpg"; 
 $tipo   = $_GET["tipo"];
 $subida = "SI";
 $titulo = " Guardar Imagen Y Recortar ";
 
-if(( $tipo == "01")  && ( $exti == "jpg")){
+if( $tipo == "01"){
 $dst_w  = "200";
 $dst_h  = "240";  
 $imgDST = "imagenes/fotos/";
 $img_src = "imagenes/temp/$usuario.jpg";
-$filename = "imagenes/fotos/$ci.png";
-if (file_exists($filename)){
-        unlink($filename);
-};
 
-}elseif (( $tipo == "02")  && ( $exti == "jpg")) {
+}elseif ( $tipo == "02"){
   $imgDST = "imagenes/cedula/";
   $img_src = "imagenes/temp/$usuario.jpg";
- 
 $dst_w  = "410";
 $dst_h  = "280";
+  }else{
+   exit;
   }
-  if(( $tipo == "01") && ( $exti == "png")){
-    $dst_w  = "200";
-    $dst_h  = "240";  
-    $imgDST = "imagenes/fotos/";
-    $img_src = "imagenes/temp/$usuario.png";
-    $filename = "imagenes/fotos/$ci.jpg";
-		if (file_exists($filename)){
-						unlink($filename);
-    };
-    }elseif (( $tipo == "02") && ( $exti == "png")){
-      $imgDST = "imagenes/cedula/";
-      $img_src = "imagenes/temp/$usuario.png";
-    $dst_w  = "410";
-    $dst_h  = "280";
-      }
-  
 
 ?>
 <script src="Jcrop/js/jquery.min.js"></script>
@@ -119,28 +90,16 @@ $dst_h  = "280";
       
   function SaveImg(){
   var Contenedor = "Contenedor01";
+  var valor   = "jQueryUpLoadyPHP/includes/red_img.php"; 
+
+
   var ext      = document.getElementById('ext').value;
   var img_nomb  = document.getElementById('img_nomb').value;
-  if (ext=="jpg") {
-    var valor   = "jQueryUpLoadyPHP/includes/red_img.php"; 
-  }
-  if (ext=="png") {
-    var valor   = "jQueryUpLoadyPHP/includes/red_imgpng.php";
-    
-  } 
- 
-  
-  
- 
-  
   var img_nomb_dst  = document.getElementById('img_nomb_dst').value;
   var imgURL  = document.getElementById('imgURL').value;
-  
   var imgDST  = document.getElementById('imgDST').value;
     var imgURL   = imgURL+img_nomb+"."+ext; 
-    
     var imgDST   = imgDST+img_nomb_dst+"."+ext;
-    
   var dst_w   = document.getElementById('dst_w').value;   
   var dst_h   = document.getElementById('dst_h').value;
   var x1      = document.getElementById('x1').value;
@@ -182,7 +141,6 @@ $dst_h  = "280";
   }else{
   alert(errorMessage);
    }
-   
 }    
 
   function Mensaje(){

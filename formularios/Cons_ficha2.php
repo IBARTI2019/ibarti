@@ -145,7 +145,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO//
                   AND trab_roles.cod_rol = roles.codigo
                   AND ficha.cod_ficha_status = ficha_status.codigo
                   AND ficha.cod_ficha_status = control.ficha_activo
-                  AND ficha.fec_us_mod  BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND CURDATE()";
+                  AND ficha.fec_us_mod  BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND CURDATE()  ";
 
 	if($_SESSION['r_rol'] == "T"){
 		$FROM   .= "  ,usuario_roles ";

@@ -77,7 +77,6 @@ pa.minutos, IF(pd.realizado='T','SI', 'NO') realizado
 FROM planif_clientes_superv_trab p, planif_clientes_superv_trab_det pd, clientes cl, clientes_ubicacion cu, ficha f,
 planif_proyecto pp, planif_actividad pa
 $where
-group by 13
 ORDER BY 1,2,3,13,5,7,11 ASC";
 
 	if($reporte== 'excel'){

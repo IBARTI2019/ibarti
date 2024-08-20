@@ -1,4 +1,3 @@
-
 <?php
 include_once('../funciones/funciones.php');
 require("../autentificacion/aut_config.inc.php");

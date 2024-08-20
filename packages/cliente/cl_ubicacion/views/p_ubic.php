@@ -237,85 +237,24 @@
 					</select></td>
 			</tr>
 			<tr>
-				<td class="etiqueta">Contacto:</td>
+				<td class="etiqueta">Contacto: </td>
 				<td id="input03"><input type="text" id="ub_contacto" maxlength="30" size="30" value="<?php echo $ubic["contacto"]; ?>" required /><br />
 					<span class="textfieldRequiredMsg">El Campo es Requerido...</span>
 				</td>
 
-				<td class="etiqueta">Cargo :</td>
+				<td class="etiqueta">Cargo: </td>
 				<td id="input04"><input type="text" id="ub_cargo" maxlength="30" size="30" value="<?php echo $ubic["cargo"]; ?>" required />
 				</td>
 			</tr>
 			<tr>
 
-				<td class="etiqueta">Tel&eacute;fono :</td>
+				<td class="etiqueta">Tel&eacute;fono: </td>
 				<td id="input05"><input type="text" id="ub_telefono" maxlength="60" size="30" value="<?php echo $ubic["telefono"]; ?>" />
 				</td>
 
-				<td class="etiqueta">Email:</td>
+				<td class="etiqueta"><?php echo $leng['correo'] ?>: </td>
 				<td><input type="email" id="ub_email" maxlength="60" size="30" value="<?php echo $ubic["email"]; ?>" /></td>
 			</tr>
-			<tr style="height:10px;"></tr>
-			<tr>
-				<td class="etiqueta">Contacto 1:</td>
-				<td id="input06"><input type="text" id="ub_contacto1" maxlength="30" size="30" value="<?php echo $ubic["contacto1"]; ?>"/><br />
-					<span class="textfieldRequiredMsg">El Campo es Requerido...</span>
-				</td>
-
-				<td class="etiqueta">Cargo 1:</td>
-				<td id="input07"><input type="text" id="ub_cargo1" maxlength="30" size="30" value="<?php echo $ubic["cargo1"]; ?>" />
-				</td>
-			</tr>
-			<tr>
-
-				<td class="etiqueta">Tel&eacute;fono 1:</td>
-				<td id="input08"><input type="text" id="ub_telefono1" maxlength="60" size="30" value="<?php echo $ubic["telefono1"]; ?>" />
-				</td>
-
-				<td class="etiqueta">Email 1</td>
-				<td><input type="email" id="ub_email1" maxlength="60" size="30" value="<?php echo $ubic["email1"]; ?>" /></td>
-			</tr>
-			<tr style="height:10px;"></tr>
-			<tr>
-				<td class="etiqueta">Contacto 2:</td>
-				<td id="input09"><input type="text" id="ub_contacto2" maxlength="30" size="30" value="<?php echo $ubic["contacto2"]; ?>"/><br />
-					<span class="textfieldRequiredMsg">El Campo es Requerido...</span>
-				</td>
-
-				<td class="etiqueta">Cargo 2:</td>
-				<td id="input010"><input type="text" id="ub_cargo2" maxlength="30" size="30" value="<?php echo $ubic["cargo2"]; ?>"/>
-				</td>
-			</tr>
-			<tr>
-
-				<td class="etiqueta">Tel&eacute;fono 2:</td>
-				<td id="input011"><input type="text" id="ub_telefono2" maxlength="60" size="30" value="<?php echo $ubic["telefono2"]; ?>" />
-				</td>
-
-				<td class="etiqueta">Email 2:</td>
-				<td><input type="email" id="ub_email2" maxlength="60" size="30" value="<?php echo $ubic["email2"]; ?>" /></td>
-			</tr>
-			<tr style="height:10px;"></tr>
-			<tr>
-				<td class="etiqueta">Contacto 3:</td>
-				<td id="input012"><input type="text" id="ub_contacto3" maxlength="30" size="30" value="<?php echo $ubic["contacto3"]; ?>"/><br />
-					<span class="textfieldRequiredMsg">El Campo es Requerido...</span>
-				</td>
-
-				<td class="etiqueta">Cargo 3:</td>
-				<td id="input013"><input type="text" id="ub_cargo3" maxlength="30" size="30" value="<?php echo $ubic["cargo3"]; ?>"/>
-				</td>
-			</tr>
-			<tr>
-
-				<td class="etiqueta">Tel&eacute;fono 3:</td>
-				<td id="input014"><input type="text" id="ub_telefono3" maxlength="60" size="30" value="<?php echo $ubic["telefono3"]; ?>" />
-				</td>
-
-				<td class="etiqueta">Email 3:</td>
-				<td><input type="email" id="ub_email3" maxlength="60" size="30" value="<?php echo $ubic["email3"]; ?>" /></td>
-			</tr>
-			<tr style="height:10px;"></tr>
 			<tr>
 				<td class="etiqueta">Direcci&oacute;n:</td>
 				<td id="textarea01"><textarea id="ub_direccion" cols="50" rows="3"><?php echo $ubic["direccion"]; ?></textarea>
