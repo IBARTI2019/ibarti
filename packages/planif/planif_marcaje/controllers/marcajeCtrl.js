@@ -113,6 +113,7 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
     var cod_ubicacion=$("#ubicacion").val();
     var marcados=document.some_form['marcado'];
     var ubi= document.some_form['enviar_ubicacion'];
+    var proyecto= $("#cod_proyecto").val();
     
     var lista=[];
     if (marcados.length >0 ){
@@ -124,8 +125,9 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
     } 
     
     let vectorJSON = JSON.stringify(lista);
+    
     var doc =archi;
-    var tusuario=xusuario
+    
     var parametros = {
         "link": url,
         "codigo": doc,
@@ -134,7 +136,8 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
         "vector" : vectorJSON,
         "cod_ficha":cod_ficha,
         "cod_cliente":cod_cliente,
-        "cod_ubicacion":cod_ubicacion
+        "cod_ubicacion":cod_ubicacion,
+        "cod_proyecto" :proyecto
     };
     
     $.ajax({

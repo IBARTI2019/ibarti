@@ -27,7 +27,7 @@ if (isset($codigo)) {
     AND DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d')
     -- AND TIME(pd.fecha_fin) <= CURRENT_TIME()
     AND p.cod_ficha = '$cod_ficha'  AND p.cod_cliente = '$cod_cliente' AND p.cod_ubicacion = '$cod_ubicacion'
-    ";
+    AND  pp.codigo='$cod_proyecto'";
     $sql1 = "SELECT
     pd.codigo, cu.descripcion ubicacion, pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad, 
     IF(pd.realizado = 'T', 'SI', 'NO') realizado, TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
