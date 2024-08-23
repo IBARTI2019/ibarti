@@ -193,7 +193,7 @@ if (isset($_SESSION['usuario_cod'])) {
 <div align="center" class="etiqueta_title"><?php echo $titulo;?> </div><hr />
 <div id="Contenedor01" class="mensaje"></div>
 <form name="some_form" enctype="multipart/form-data" class="formulario" >
-<table width="100%">
+<table width="100%" id="table_file_soporte">
   
      <td 
       width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>">
@@ -211,7 +211,7 @@ if (isset($_SESSION['usuario_cod'])) {
               <th>Proyecto</th>
               <th>Actividad</th>
               <th>Hora Inicio Hora Fin</th>
-              <th>Realziado</th>
+              <th>Realizado</th>
               <th>Marcar</th>
               <th>Participantes</th>
               <th>Observaciones</th>
@@ -221,7 +221,7 @@ if (isset($_SESSION['usuario_cod'])) {
 
           </tbody>
   </table>
-  <table width="100%">
+  <table width="100%" id="table_boton_subir">
   <tr><td 
        width="100%"><div align="center"  ><br/>
                 <span class="art-button-wrapper" id="imgMostrar"  style="display:none">

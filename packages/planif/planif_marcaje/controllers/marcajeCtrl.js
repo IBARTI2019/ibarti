@@ -62,48 +62,49 @@ function showMessage(message) {
 
 function subirImagenS3marcaje(codigo) {
     //informaci�n del formulario
-
-    var formData = new FormData($(".formulario")[0]);
-    var folder =$("#stdID").val();;
-    var doc = $("#cod_det2").val();
-    var usuario=$("#usuario").val();
-    var nombre = ci + "_" + doc;
-    var config = [
-        {
-          folder: folder,
-          key: doc
-        }
-      ]
-    
-      formData.append("config", JSON.stringify(config));
-    var message = "";
-    //hacemos la petici�n ajax  
-    $.ajax({
-        url: 'http://194.163.161.64:9090/docs/upload_marcaje/',
-        type: 'POST',
-        // Form data
-        //datos del formulario
-        data: formData,
-        //necesario para subir archivos via ajax
-        cache: false,
-        contentType: false,
-        processData: false,
-        //mientras enviamos el archivo
-        beforeSend: function () {
-            message = $("<span class='before'>Subiendo la imagen, por favor espere...</span>");
-            showMessage(message)
-        },
-        //una vez finalizado correctamente
+    if (confirm("¿Esta seguro de continuar con el registro del marcaje?. Esta operación es irreversible!?")) {	
+        var formData = new FormData($(".formulario")[0]);
+        var folder =$("#stdID").val();;
+        var doc = $("#cod_det2").val();
+        var usuario=$("#usuario").val();
+        var nombre = ci + "_" + doc;
+        var config = [
+            {
+            folder: folder,
+            key: doc
+            }
+        ]
         
-        success: function (data) {
-            uploadActulizarS3marcaje(data.data.image[0],folder,doc,usuario);
-        },
-        //si ha ocurrido un error
-        error: function () {
-            message = $("<span class='error'>Ha ocurrido un error.</span>");
-            showMessage(message);
-        }
-    });
+        formData.append("config", JSON.stringify(config));
+        var message = "";
+        //hacemos la petici�n ajax  
+        $.ajax({
+            url: 'http://194.163.161.64:9090/docs/upload_marcaje/',
+            type: 'POST',
+            // Form data
+            //datos del formulario
+            data: formData,
+            //necesario para subir archivos via ajax
+            cache: false,
+            contentType: false,
+            processData: false,
+            //mientras enviamos el archivo
+            beforeSend: function () {
+                message = $("<span class='before'>Subiendo la imagen, por favor espere...</span>");
+                showMessage(message)
+            },
+            //una vez finalizado correctamente
+            
+            success: function (data) {
+                uploadActulizarS3marcaje(data.data.image[0],folder,doc,usuario);
+            },
+            //si ha ocurrido un error
+            error: function () {
+                message = $("<span class='error'>Ha ocurrido un error.</span>");
+                showMessage(message);
+            }
+        });
+    }
 }
 
 function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
@@ -367,12 +368,19 @@ function openModalObservacionesNO(codigo) {
     $("#myModalO1").show();
     cargar_observacionesNO(codigo);
 }
-function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion,xproyecto) {
+function openModalObservacionesdos(codigo,xficha,xcliente,xubicacion,xproyecto, realizado) {
     $("#cod_det2").val(codigo);
     $("#cod_proyecto").val(xproyecto);
     $("#vector").val(xcliente);  
     $("#myModalO2").show();
-    cargar_actividades(xficha,xcliente,xubicacion,xproyecto);
+    if(realizado == true){
+        $("#table_file_soporte").hide();
+        $("#table_boton_subir").hide();
+    }else{
+        $("#table_file_soporte").show();
+        $("#table_boton_subir").show();
+    }
+    cargar_actividades(xficha,xcliente,xubicacion,xproyecto, realizado);
 }
 
 
@@ -487,10 +495,10 @@ function cargar_observacionesNO(codigo) {
     });
 }
 
-function cargar_actividades(ficha,cliente,ubicacion,proyecto) {
+function cargar_actividades(ficha,cliente,ubicacion,proyecto, realizado) {
     
     var parametros = {
-        auxficha:ficha,auxcliente:cliente,auxubicacion:ubicacion,auxproyecto:proyecto
+        auxficha:ficha,auxcliente:cliente,auxubicacion:ubicacion,auxproyecto:proyecto, realizado
     };
     
     $.ajax({
