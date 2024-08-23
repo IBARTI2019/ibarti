@@ -159,8 +159,9 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
             if (ubi.checked){
                 message = $("<span class='enviando email, por favor espere...</span>");
                 showMessage(message)
-                 enviaremail(cod_cliente,cod_ubicacion);
+                enviaremail(cod_cliente,cod_ubicacion);
             }
+            $("#imagen").val("");
             Add_filtroX();
         },
         //si ha ocurrido un error
@@ -392,6 +393,7 @@ function cerrarModalObservacionesNO() {
 }
 function cerrarModalfile() {
     $("#myModalO2").hide();
+    $("#imagen").val("");
 }
 function openModalParticipantes(codigo) {
     $("#cod_det").val(codigo);
