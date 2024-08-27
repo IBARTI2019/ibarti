@@ -666,5 +666,5 @@ $proced      = "p_prod_dotacion";
         }
         if (this.isModified) this.setValue("");
         if (this.value.length < 1) return ;
-        return "autocompletar/tb/trabajador.php?q="+this.text.value +"&filtro="+filtroValue+"&r_cliente="+r_cliente+"&r_rol="+r_rol+"&usuario="+usuario+""});
+        return "autocompletar/tb/trabajador.php?q="+this.text.value +"&filtro="+filtroValue+"&r_cliente="+r_cliente+"&r_rol="+r_rol+"&usuario="+usuario+"&activos=true"});
     </script>

@@ -23,14 +23,21 @@ switch ($filtro) {
 		$where  .= " WHERE LOCATE('$typing', v_ficha.apellidos) ";
 		break;
 	case "telefono":
-		$where  .= " WHERE LOCATE(REPLACE(REPLACE('".$typing."', '-', ''), ' ', ''), REPLACE(REPLACE(v_ficha.telefono , '-', ''), ' ', ''))";
+		$where  .= " WHERE LOCATE(REPLACE(REPLACE('".$typing."', '-', ''), ' ', ''), REPLACE(REPLACE(v_ficha.telefono , '-', ''), ' ', '')) ";
 		break;
 	case "TODOS":
 		$where  .= " WHERE LOCATE('$typing', v_ficha.cod_ficha) OR LOCATE('$typing', v_ficha.ap_nombre) OR LOCATE('$typing', v_ficha.cedula) ";
 		break;
 }
 
-$sql = "SELECT v_ficha.cod_ficha, v_ficha.cedula,  v_ficha.ap_nombre FROM v_ficha $where ORDER BY 3 ASC";
+if(isset($_GET['activos'])){
+	$sql = "SELECT v_ficha.cod_ficha, v_ficha.cedula,  v_ficha.ap_nombre FROM v_ficha, control $where 
+	AND v_ficha.cod_ficha_status = control.ficha_activo
+	ORDER BY 3 ASC";
+}else{
+	$sql = "SELECT v_ficha.cod_ficha, v_ficha.cedula,  v_ficha.ap_nombre FROM v_ficha $where ORDER BY 3 ASC";
+}
+
 $query = $bd->consultar($sql);
 
 while ($datos = $bd->obtener_fila($query, 0)) {
