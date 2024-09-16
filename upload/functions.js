@@ -18,13 +18,13 @@ $(document).ready(function () {
         //mensaje con la informaci�n del archivo
         // personalizado ING WUILMER GARCIA
         if (validarExt(fileExtension)) {
-            if (validarSize(fileSize)) {
+            // if (validarSize(fileSize)) {
                 $("#imgMostrar").show();
                 showMessage("<span class='info'>Archivo para subir: " + fileName + ", peso total: " + fileSize + " bytes.</span>");
-            } else {
-                showMessage("<span class='error'>Error: " + fileName + ",Excedio el Tama�o maximo: 10mb (" + fileSize + ")</span>");
-                $("#imgMostrar").hide();
-            }
+            // } else {
+            //     showMessage("<span class='error'>Error: " + fileName + ",Excedio el Tama�o maximo: 10mb (" + fileSize + ")</span>");
+            //     $("#imgMostrar").hide();
+            // }
         } else {
             showMessage("<span class='error'>Error: " + fileName + ", Extension Perimitidas: jpg, jpeg, gif, png, pdf, doc </span>");
             $("#imgMostrar").hide();
