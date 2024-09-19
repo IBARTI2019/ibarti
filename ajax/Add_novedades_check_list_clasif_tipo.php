@@ -43,7 +43,37 @@ $ubicacion = $_POST['codigo'];
 			</select> </td>
 	<?php
 	}
+
+if (isset($_POST['checkListTrab'])){
 	?>
+
+<tr>
+		<td class="etiqueta" width="15%">CLASIFICACION:</td>
+		<td width="25%" id="select04"><select name="clasif" id="clasif" style="width:150px;" onchange="getTipos(this.value)">
+				<option value="">Seleccione...</option>
+				<?php
+				$sql01    = "SELECT nov_clasif.codigo, nov_clasif.descripcion
+                               FROM nov_cl_ubicacion , novedades, nov_clasif, nov_perfiles
+                              WHERE nov_cl_ubicacion.cod_cl_ubicacion = '$ubicacion' 
+                                AND nov_perfiles.cod_nov_clasif = novedades.cod_nov_clasif
+                                AND nov_cl_ubicacion.cod_novedad = novedades.codigo 
+                                AND novedades.cod_nov_clasif = nov_clasif.codigo
+								AND nov_clasif.campo04 = 'E'
+                           GROUP BY novedades.cod_nov_clasif ORDER BY 2 ASC";
+				$query01 = $bd->consultar($sql01);
+				while ($row01 = $bd->obtener_fila($query01, 0)) {
+					echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
+				} ?>
+			</select> </td>
+		<td class="etiqueta">TIPO:</td>
+		<td id="select05"><select name="tipo" id="tipo" style="width:150px;" onchange="Add_filtroX()">
+				<option value="">Seleccione...</option>
+			</select> </td>
+	</tr>
+
+	<?php
+}else{
+?>
 	<tr>
 		<td class="etiqueta" width="15%">CLASIFICACION:</td>
 		<td width="25%" id="select04"><select name="clasif" id="clasif" style="width:150px;" onchange="getTipos(this.value)">
@@ -80,4 +110,7 @@ $ubicacion = $_POST['codigo'];
 				} ?>
 			</select> </td>
 	</tr>
+<?php
+	}
+?>
 </table>

@@ -14,15 +14,12 @@ $tabla    = $_POST['tabla'];
 $tabla_id = 'codigo';
 
 $codigo      = $_POST['codigo'];
-$descripcion = $_POST['descripcion'];	
+$descripcion = $_POST['descripcion'];		
 $campo01 = $_POST['campo01'];	
 $campo02 = $_POST['campo02'];	
 $campo03 = $_POST['campo03'];	
-$campo04 = $_POST['campo04'];	
 
 $check_list = $_POST['check_list'];	
-
-
 
 
 $activo      = statusbd($_POST['activo']);

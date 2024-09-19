@@ -1,13 +1,13 @@
 <link rel="stylesheet" type="text/css" href="latest/stylesheets/autocomplete.css" />
 <script type="text/javascript" src="latest/scripts/autocomplete.js"></script>
 <?php
-$Nmenu   = 455;
+$Nmenu   = 458;
 $NmenuX = 435;
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report_t.php');
 $mod     = $_GET['mod'];
-$titulo  = "CHECK LIST RESPUESTA CLIENTES";
-$archivo = "novedades_check_list_resp";
+$titulo  = "CHECK LIST RESPUESTA TRABAJADORES";
+$archivo = "novedades_check_list_trab";
 $metodo  = $_GET['metodo'];
 $href    = "../inicio.php?area=formularios/Cons_$archivo&Nmenu=$Nmenu&mod=$mod";
 require_once('autentificacion/aut_verifica_menu.php');
@@ -16,17 +16,20 @@ $query  = $bd->consultar($sql);
 $result = $bd->obtener_fila($query, 0);
 $campo_04  = $result[0];
 
-$proced    = "p_nov_check_list";
-$proced2   = "p_nov_check_list_det";
-$proced3   = "p_nov_check_list_max";
+$proced    = "p_nov_check_list_trabajadores";
+$proced2   = "p_nov_check_list_trabajadores_det";
+
 if ($metodo == 'modificar') {
 	$titulo = "MODIFICAR $titulo";
 	$codigo = $_GET['codigo'];
 	$bd = new DataBase();
 
 	$sql = " SELECT nov_check_list.codigo,
-                    nov_check_list.hora,  nov_check_list.cod_ficha,
-                    ficha.cedula, CONCAT(ficha.apellidos, ' ', ficha.nombres) AS trabajador,
+                    nov_check_list.hora,  
+					nov_check_list.cod_ficha,
+                    ficha.cedula, CONCAT(ficha.apellidos, ' ', ficha.nombres) AS supervisor,
+					nov_check_list.cod_ficha_trab,
+                    ft.cedula cedula_trab, CONCAT(ft.apellidos, ' ', ft.nombres) AS trabajador,
                     nov_check_list.cod_nov_clasif, nov_clasif.descripcion AS nov_clasif,
 					nov_check_list.cod_nov_tipo, nov_tipo.descripcion AS nov_tipo,
                     nov_check_list.cod_cliente, clientes.nombre AS cliente,
@@ -39,13 +42,14 @@ if ($metodo == 'modificar') {
                     CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre) AS us_mod
                FROM nov_check_list LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo ,
 			        nov_clasif , nov_tipo, clientes , clientes_ubicacion ,
-					ficha , nov_status
+					ficha , ficha ft, nov_status
               WHERE nov_check_list.codigo = '$codigo'
                 AND nov_check_list.cod_nov_clasif = nov_clasif.codigo
 			    AND nov_check_list.cod_nov_tipo   = nov_tipo.codigo
                 AND nov_check_list.cod_cliente    = clientes.codigo
                 AND nov_check_list.cod_ubicacion  = clientes_ubicacion.codigo
                 AND nov_check_list.cod_ficha      = ficha.cod_ficha
+				AND nov_check_list.cod_ficha_trab      = ft.cod_ficha
                 AND nov_check_list.cod_nov_status = nov_status.codigo ";
 	$query = $bd->consultar($sql);
 	$result = $bd->obtener_fila($query, 0);
@@ -56,7 +60,9 @@ if ($metodo == 'modificar') {
 	$us_mod        = $result['us_mod'];
 	$fec_us_mod    = conversion($result['fec_us_mod']);
 	$cod_ficha     = $result['cod_ficha'];
-	$trabajador    = $result['cod_ficha'] . ' - ' . ' (' . $result['cedula'] . ') ' . $result['trabajador'];
+	$supervisor    = $result['cod_ficha'] . ' - ' . ' (' . $result['cedula'] . ') ' . $result['supervisor'];
+	$cod_ficha_trab     = $result['cod_ficha_trab'];
+	$trabajador    = $result['cod_ficha_trab'] . ' - ' . ' (' . $result['cedula_trab'] . ') ' . $result['trabajador'];
 	$cod_clasif    = $result['cod_nov_clasif'];
 	$clasif        = $result['nov_clasif'];
 	$cod_tipo      = $result['cod_nov_tipo'];
@@ -72,7 +78,8 @@ if ($metodo == 'modificar') {
 	$cod_status   = $result['cod_nov_status'];
 	$status       = $result['nov_status'];
 
-	$supervisor    = '<option value="trabajador"> Supervisor </option>';
+	$supervisor_opciones    = '<option value="supervisor"> Supervisor </option>';
+	$trabajador_opciones    = '<option value="trabajador"> Trabajador </option>';
 } elseif ($metodo == 'agregar') {
 
 	$sql   = "SELECT codigo, descripcion FROM nov_status, control
@@ -85,6 +92,8 @@ if ($metodo == 'modificar') {
 	$titulo       = "AGREGAR $titulo";
 	$codigo       = '';
 	$cod_ficha    = '';
+	$supervisor   = '';
+	$cod_ficha_trab    = '';
 	$trabajador   = '';
 	$cod_clasif   = '';
 	$clasif       = 'Seleccione...';
@@ -107,7 +116,13 @@ if ($metodo == 'modificar') {
 	$hora          = date("H:i:s");
 	$us_mod        = '';
 	$fec_us_mod    = '';
-	$supervisor    = '<option value="">Seleccione...</option>
+	$supervisor_opciones    = '<option value="">Seleccione...</option>
+	        		  <option value="codigo"> C&oacute;digo </option>
+				      <option value="cedula"> C&eacute;dula </option>
+				      <option value="trabajador"> Supervisor </option>
+                      <option value="apellidos"> Apellido </option>
+                      <option value="nombres"> Nombre </option>';
+	$trabajador_opciones    = '<option value="">Seleccione...</option>
 	        		  <option value="codigo"> C&oacute;digo </option>
 				      <option value="cedula"> C&eacute;dula </option>
 				      <option value="trabajador"> Supervisor </option>
@@ -133,6 +148,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		var cliente = document.getElementById("cliente").value;
 		var ubicacion = document.getElementById("ubicacion").value;
 		var superv = document.getElementById("stdID").value;
+		var trab = document.getElementById("stdIDTrab").value;
 		var Nmenu = document.getElementById("Nmenu").value;
 		var mod = document.getElementById("mod").value;
 
@@ -152,6 +168,11 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		if (superv == '') {
 			var error = error + 1;
 			var errorMessage = ' Debe Selecionar Un Supervisor';
+		}
+
+		if (trab == '') {
+			var error = error + 1;
+			var errorMessage = ' Debe Selecionar Un Trabjador';
 		}
 
 		if (error == 0) {
@@ -181,7 +202,6 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 			type: 'post',
 			success: function(response) {
 				$('#tipo').html(response);
-				Add_filtroX();
 			},
 			error: function(xhr, ajaxOptions, thrownError) {
 				alert(xhr.status);
@@ -228,7 +248,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 				}
 			}
 			ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			ajax.send("codigo=" + ubicacion + "");
+			ajax.send("codigo=" + ubicacion + "&checkListTrab="+true);
 		}
 	}
 
@@ -239,6 +259,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		var cliente = document.getElementById("cliente").value;
 		var ubicacion = document.getElementById("ubicacion").value;
 		var superv = document.getElementById("stdID").value;
+		var trab = document.getElementById("stdIDTrab").value;
 
 		var error = 0;
 		var errorMessage = ' ';
@@ -268,6 +289,12 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 			var errorMessage = ' Debe Selecionar Un Supervisor';
 		}
 
+		if (trab == '') {
+			var error = error + 1;
+			var errorMessage = ' Debe Selecionar Un Trabajador';
+		}
+
+
 		if (error == 0) {
 			document.add.submit();
 		} else {
@@ -275,7 +302,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		}
 	}
 </script>
-<form action="scripts/sc_novedades_check_list.php" method="post" name="add" id="add">
+<form action="scripts/sc_novedades_check_list_trab.php" method="post" name="add" id="add">
 	<div id="Contenedor01"></div>
 	<table width="100%" align="center">
 		<tr valign="top">
@@ -293,16 +320,31 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 			<td id="fecha01" width="35%"><input type="text" size="20" value="<?php echo $fecha_sistema . ' &nbsp; ' . $hora; ?>" disabled="disabled" /></td>
 		</tr>
 		<tr>
-			<td class="etiqueta">Supervisor:</td>
+			<td class="etiqueta">Filtro supervisor:</td>
 			<td id="select01">
 				<select id="paciFiltro" onchange="EstadoFiltro(this.value)" style="width:200px">
-					<?php echo $supervisor; ?>
+					<?php echo $supervisor_opciones; ?>
 				</select><br />
 				<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span>
 			</td>
-			<td class="etiqueta">Nombre:</td>
-			<td><input id="stdName" type="text" style="width:300px" disabled="disabled" value="<?php echo $trabajador; ?>" />
-				<span id="input01"><input type="hidden" name="trabajador" id="stdID" value="<?php echo $cod_ficha; ?>" /> <br />
+			<td class="etiqueta">Supervisor:</td>
+			<td><input id="stdName" type="text" style="width:300px" disabled="disabled" value="<?php echo $supervisor; ?>" />
+				<span id="input01"><input type="hidden" name="supervisor" id="stdID" value="<?php echo $cod_ficha; ?>" /> <br />
+					<span class="textfieldRequiredMsg">Debe De Seleccionar Un Campo De la Lista.</span>
+					<span class="textfieldInvalidFormatMsg">El Formato es Invalido</span> </span>
+			</td>
+		</tr>
+		<tr>
+			<td class="etiqueta">Filtro trabajador:</td>
+			<td id="select01">
+				<select id="paciFiltroTrab" onchange="EstadoFiltroTrab(this.value)" style="width:200px">
+					<?php echo $trabajador_opciones; ?>
+				</select><br />
+				<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span>
+			</td>
+			<td class="etiqueta">Trabajador:</td>
+			<td><input id="stdNameTrab" type="text" style="width:300px" disabled="disabled" value="<?php echo $trabajador; ?>" />
+				<span id="input01"><input type="hidden" name="trabajador" id="stdIDTrab" value="<?php echo $cod_ficha_trab; ?>" /> <br />
 					<span class="textfieldRequiredMsg">Debe De Seleccionar Un Campo De la Lista.</span>
 					<span class="textfieldInvalidFormatMsg">El Formato es Invalido</span> </span>
 			</td>
@@ -337,7 +379,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 				</select><br /><span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
 		</tr>
 		<tr>
-			<td class="etiqueta">Contacto:</td>
+			<td class="etiqueta">Jefe Directo:</td>
 			<td><input id="contanto" type="text" style="width:200px" disabled="disabled" value="<?php echo $contato; ?>" /></td>
 			<td class="etiqueta"><?php echo $campo_04; ?>:</td>
 			<td><input id="campo_04" type="text" style="width:300px" disabled="disabled" value="<?php echo $campo_04_d; ?>" /></td>
@@ -401,7 +443,8 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 							$sql01    = "SELECT nov_clasif.codigo, nov_clasif.descripcion
                                FROM nov_clasif
                               WHERE nov_clasif.`status` = 'T'
-							    AND nov_clasif.campo04 = 'T' ORDER BY 2 ASC";
+							    AND nov_clasif.campo04 = 'E' 
+								ORDER BY 2 ASC";
 							$query01 = $bd->consultar($sql01);
 							while ($row01 = $bd->obtener_fila($query01, 0)) {
 								echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
@@ -411,15 +454,8 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 				<td class="etiqueta">TIPO:</td>
 				<td id="select05">
 					<select name="tipo" id="tipo" style="width:150px;" onchange="Add_filtroX()">
-						<?php
-						if ($metodo == 'agregar') {
-							$query01 = $bd->consultar($sql_nov_tipo);
-							while ($row01 = $bd->obtener_fila($query01, 0)) {
-								echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
-							}
-						} else {
-							echo	'<option value="' . $cod_tipo . '">' . $tipo . '</option>';
-						} ?></select>
+						<option value="<?php echo $cod_tipo; ?>"><?php echo  $tipo; ?></option>
+					</select> 
 				</td>
 			</tr>
 		</table>
@@ -496,7 +532,6 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		<input name="metodo" type="hidden" value="<?php echo $metodo; ?>" />
 		<input name="proced" type="hidden" value="<?php echo $proced; ?>" />
 		<input name="proced2" type="hidden" value="<?php echo $proced2; ?>" />
-		<input name="proced3" type="hidden" value="<?php echo $proced3; ?>" />
 		<input name="Nmenu" id="Nmenu" type="hidden" value="<?php echo $Nmenu; ?>" />
 		<input name="mod" id="mod" type="hidden" value="<?php echo $mod; ?>" />
 		<input name="href" type="hidden" value="<?php echo $href; ?>" />
@@ -551,6 +586,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 	r_rol = $("#r_rol").val();
 	usuario = $("#usuario").val();
 	filtroValue = $("#paciFiltro").val();
+	filtroValueTrab = $("#paciFiltroTrab").val();
 
 	new Autocomplete("stdName", function() {
 		this.setValue = function(id) {
@@ -559,5 +595,14 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		if (this.isModified) this.setValue("");
 		if (this.value.length < 1) return;
 		return "autocompletar/tb/trabajador.php?q=" + this.text.value + "&filtro=" + filtroValue + "&r_cliente=" + r_cliente + "&r_rol=" + r_rol + "&usuario=" + usuario + ""
+	});
+
+	new Autocomplete("stdNameTrab", function() {
+		this.setValue = function(id) {
+			document.getElementById("stdIDTrab").value = id; // document.getElementsByName("stdID")[0].value = id;
+		}
+		if (this.isModified) this.setValue("");
+		if (this.value.length < 1) return;
+		return "autocompletar/tb/trabajador.php?q=" + this.text.value + "&filtro=" + filtroValueTrab + "&r_cliente=" + r_cliente + "&r_rol=" + r_rol + "&usuario=" + usuario + ""
 	});
 </script>

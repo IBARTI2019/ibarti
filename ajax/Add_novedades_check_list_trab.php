@@ -27,13 +27,13 @@ $perfil     = $_POST['perfil'];
 $metodo      = "modificar";
 
 $where = " WHERE nov_check_list.cod_nov_clasif = nov_clasif.codigo
-				AND nov_clasif.campo04 = 'T'
+				AND  nov_clasif.campo04 = 'E'
 				AND nov_check_list.cod_nov_tipo   = nov_tipo.codigo
 				AND nov_clasif.codigo = nov_perfiles.cod_nov_clasif
                 AND nov_perfiles.cod_perfil = '$perfil'
                 AND nov_check_list.cod_cliente = clientes.codigo
                 AND nov_check_list.cod_ubicacion = clientes_ubicacion.codigo
-                AND nov_check_list.cod_ficha = ficha.cod_ficha
+                AND nov_check_list.cod_ficha_trab = ficha.cod_ficha
                 AND nov_check_list.cod_nov_status = nov_status.codigo";
 
 if ($codigo != "" && $codigo != null) {
@@ -80,8 +80,7 @@ $query = $bd->consultar($sql);
 		<th width="7%" class="etiqueta">Fecha</th>
 		<th width="18%" class="etiqueta">Clasificacion</th>
 		<th width="18%" class="etiqueta">Tipo</th>
-		<th width="18%" class="etiqueta"><?php echo $leng["cliente"]; ?></th>
-		<th width="18%" class="etiqueta"><?php echo $leng["ubicacion"]; ?></th>
+		<th width="18%" class="etiqueta"><?php echo $leng["trabajador"]; ?></th>
 		<th width="8%" class="etiqueta">Status</th>
 		<th width="6%" align="center"><a href="<?php echo $vinculo . "&codigo=''&metodo=agregar"; ?>"><img src="imagenes/nuevo.bmp" alt="Agregar Registro" title="Agregar Registro" width="20px" height="20px" border="null" /></a></td>
 	</tr>
@@ -106,8 +105,7 @@ $query = $bd->consultar($sql);
 				  <td class="texo">' . $datos["fec_us_ing"] . '</td>
 				  <td class="texo">' . longitudMin($datos["clasif"]) . '</td>
   				  <td class="texo">' . longitudMin($datos["tipo"]) . '</td>
-                  <td class="texo">' . longitudMin($datos["cliente"]) . '</td>
-				  <td class="texo">' . longitudMin($datos["ubicacion"]) . '</td>
+                  <td class="texo">' . longitudMin($datos["trabajador"]) . '</td>
 				  <td class="texo">' . longitudMin($datos["status"]) . '</td>
 				  <td align="center"><a href="' . $vinculo . '&codigo=' . $datos[0] . '&metodo=' . $metodo . '"><img src="imagenes/actualizar.bmp" alt="Modificar" title="Modificar Registro" width="20" height="20" border="null"/></a>&nbsp;<img src="imagenes/borrar.bmp"  width="20px" height="20px" title="Borrar Registro" border="null" onclick="' . $Borrar . '" class="imgLink"/></td>
             </tr>';

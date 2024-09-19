@@ -18,6 +18,11 @@ CONCAT(
     ' ',
     ficha.nombres
 ) AS trabajador,
+CONCAT(
+    fe.apellidos,
+    ' ',
+    fe.nombres
+) AS evaluado,
 nov_clasif.descripcion AS clasif,
 nov_tipo.descripcion AS tipo,
 clientes.nombre AS cliente,
@@ -25,9 +30,13 @@ clientes_ubicacion.descripcion AS ubicacion,
 nov_check_list.observacion,
 nov_status.descripcion AS `status`,
 nov_tipo.campo01 basc,
-nov_tipo.campo02 rev 
+nov_tipo.campo02 rev ,
+nov_clasif.campo04,
+CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre) AS us_mod
 FROM
-nov_check_list,
+nov_check_list 
+LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo
+LEFT JOIN ficha fe ON nov_check_list.cod_ficha_trab = fe.cod_ficha,
 nov_clasif,
 clientes,
 clientes_ubicacion,
@@ -46,6 +55,8 @@ AND nov_check_list.codigo = '$codigo'";
 $query_datos = $bd->consultar($sql_datos);
 $datos = $bd->obtener_name($query_datos);
 $tomo = $datos['basc'] . " <br> " . $datos['rev'];
+$campo04 = $datos['campo04'];
+$usuario = $datos['us_mod'];
 
 ob_start();
 
@@ -68,11 +79,23 @@ echo '
 	<td width="40%" style="border:1px solid"><b>Empresa: </b> ' . $datos['cliente'] . '</td>
 	<td width="40%" style="border:1px solid"><b>Ubicacion: </b>' . $datos['ubicacion'] . '</td>
 	<td width="20%" style="border:1px solid"><b>Fecha: </b>' . $datos['fec_us_ing'] . '</td>
-	</tr><tr>
-	<td style="border:1px solid"><b>Supervisor: </b> ' . $datos['trabajador'] . '</td>
-	<td style="border:1px solid" colspan="2"><b>Observacion: </b>' . $datos['observacion'] . '</td>
-	</tr>
-	</table>
+	</tr>';
+    if($campo04 == 'E'){     echo '<tr>
+        <td style="border:1px solid"><b>Supervisor: </b> ' . $datos['trabajador'] . '</td>
+        <td style="border:1px solid" colspan="2"><b>Trabajador: </b> ' . $datos['evaluado'] . '</td>
+        </tr>
+        <tr>
+        <td style="border:1px solid" colspan="3"><b>Observacion: </b>' . $datos['observacion'] . '</td>
+        </tr>';
+    }else{
+        echo '<tr>
+        <td style="border:1px solid"><b>Supervisor: </b> ' . $datos['trabajador'] . '</td>
+        <td style="border:1px solid" colspan="2"><b>Observacion: </b>' . $datos['observacion'] . '</td>
+        </tr>';
+    }
+    
+
+echo '</table>
     <table width="100%" style="padding-top: 10px;" border="1px">
 	<tr>
 		<td class="etiqueta" width="45%" align="center">Check List</td>
@@ -132,10 +155,20 @@ echo '
 <td colspan="4" style="padding: 0px !important;">
 <table width="100%" style="margin: 0px !important;padding: 0px !important;">
 <tr>
-<td width="50%" style="text-align:center;">Firma de Supervisor:<br><br><br></td>
-<td width="50%" style="border-left:1px solid; text-align:center;">Firma de representante de la empresa:<br><br><br></td>
-</tr>
-</table>
+<td width="50%" style="text-align:center;">Firma de Supervisor:<br><br><br></td> ';
+
+if($campo04 == 'E'){
+    echo '<td width="50%" style="border-left:1px solid; text-align:center;">Evaluador:<br><br>
+            <b>'. $usuario .'</b>
+            <br>
+    </td>
+    </tr>';
+}else{
+   echo '<td width="50%" style="border-left:1px solid; text-align:center;">Firma de representante de la empresa:<br><br><br></td>
+    </tr>';
+}
+
+echo '</table>
 </td>
 </table>
 </div>

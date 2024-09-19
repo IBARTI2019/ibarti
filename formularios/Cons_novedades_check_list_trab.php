@@ -1,12 +1,12 @@
 <?php
-$Nmenu     = 455;
+$Nmenu     = 458;
 $mod       = $_GET['mod'];
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report_t.php');
 $bd = new DataBase();
-$archivo  = "novedades_check_list_resp";
+$archivo  = "novedades_check_list_trab";
 $vinculo  = "inicio.php?area=formularios/Add_$archivo&Nmenu=$Nmenu&mod=$mod";
-$titulo   = "NOVEDADES CHECK LIST REPUESTA CLIENTES ";
+$titulo   = "NOVEDADES CHECK LIST REPUESTA TRABAJADORES ";
 ?>
 <script language="JavaScript" type="text/javascript">
 	function Add_filtroX() { // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO//
@@ -39,7 +39,7 @@ $titulo   = "NOVEDADES CHECK LIST REPUESTA CLIENTES ";
 			$("#img_actualizar").remove();
 			$("#listar").html("<img src='imagenes/loading.gif' /> Procesando, espere por favor...");
 			ajax = nuevoAjax();
-			ajax.open("POST", "ajax/Add_novedades_check_list_cons.php", true);
+			ajax.open("POST", "ajax/Add_novedades_check_list_trab.php", true);
 			ajax.onreadystatechange = function() {
 				if (ajax.readyState == 4) {
 					document.getElementById(contenido).innerHTML = ajax.responseText;
@@ -75,7 +75,7 @@ $titulo   = "NOVEDADES CHECK LIST REPUESTA CLIENTES ";
 		                       WHERE nov_clasif.`status` = 'T'
                                  AND nov_clasif.codigo = nov_perfiles.cod_nov_clasif
                                  AND nov_perfiles.cod_perfil = '" . $_SESSION['cod_perfil'] . "'
-                                 AND nov_clasif.campo04 = 'T' ORDER BY 2 ASC ";
+                                 AND nov_clasif.campo04 = 'E' ORDER BY 2 ASC ";
 						$query01 = $bd->consultar($sql01);
 						while ($row01 = $bd->obtener_fila($query01, 0)) {
 							echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
@@ -135,8 +135,7 @@ $titulo   = "NOVEDADES CHECK LIST REPUESTA CLIENTES ";
 			<th width="7%" class="etiqueta">Fecha</th>
 			<th width="18%" class="etiqueta">Clasificacion</th>
 			<th width="18%" class="etiqueta">Tipo</th>
-			<th width="18%" class="etiqueta"><?php echo $leng["cliente"]; ?></th>
-			<th width="18%" class="etiqueta"><?php echo $leng["ubicacion"]; ?></th>
+			<th width="18%" class="etiqueta"><?php echo $leng["trabajador"]; ?></th>
 			<th width="8%" class="etiqueta">Status</th>
 			<th width="6%" align="center"><a href="<?php echo $vinculo . "&codigo=''&metodo=agregar"; ?>"><img src="imagenes/nuevo.bmp" alt="Agregar Registro" title="Agregar Registro" width="20px" height="20px" border="null" /></a></th>
 		</tr>
@@ -150,6 +149,7 @@ $titulo   = "NOVEDADES CHECK LIST REPUESTA CLIENTES ";
                       ficha, nov_status , nov_perfiles, nov_tipo
                 WHERE nov_check_list.fec_us_ing     = CURDATE()
                   AND nov_check_list.cod_nov_clasif = nov_clasif.codigo
+				  AND nov_clasif.campo04 = 'E'
 			      AND nov_clasif.codigo             = nov_perfiles.cod_nov_clasif
 				  AND nov_check_list.cod_nov_tipo   = nov_tipo.codigo
                   AND nov_perfiles.cod_perfil       = '" . $_SESSION['cod_perfil'] . "'
@@ -180,72 +180,9 @@ $titulo   = "NOVEDADES CHECK LIST REPUESTA CLIENTES ";
 				  <td class="texo">' . longitudMin($datos["clasif"]) . '</td>
   				  <td class="texo">' . longitudMin($datos["tipo"]) . '</td>
                   <td class="texo">' . longitudMin($datos["cliente"]) . '</td>
-				  <td class="texo">' . longitudMin($datos["ubicacion"]) . '</td>
 				  <td class="texo">' . longitudMin($datos["status"]) . '</td>
 				  <td align="center"><a href="' . $vinculo . '&codigo=' . $datos[0] . '&metodo=modificar"><img src="imagenes/actualizar.bmp" alt="Modificar" title="Modificar Registro" width="20" height="20" border="null"/></a>&nbsp;<img src="imagenes/borrar.bmp"  width="20px" height="20px" title="Borrar Registro" border="null" onclick="' . $Borrar . '" class="imgLink"/></td>
             </tr>';
 		} ?>
 	</table>
 </div>
-<?php /*
-<div id="listar"><table width="100%" border="0" align="center">
-		<tr class="fondo00">
-			<th width="7%" class="etiqueta">Codigo</th>
-            <th width="8%" class="etiqueta">Fecha</th>
-			<th width="18%" class="etiqueta">Clasificacion</th>
-            <th width="18%" class="etiqueta">Tipo</th>
-  			<th width="18%" class="etiqueta">Cliente</th>
-            <th width="18%" class="etiqueta">Ubicacion</th>
-            <th width="8%" class="etiqueta">Status</th>
-		    <th width="7%" align="center"><a href="<?php echo $vinculo."&codigo=''&metodo=agregar";?>"><img src="imagenes/nuevo.bmp" alt="Agregar Registro" title="Agregar Registro" width="20px" height="20px" border="null"/></a></th>
-		</tr>
-<?php
-	$sql   = " SELECT nov_check_list.codigo, nov_check_list.fec_us_ing,
-                      CONCAT(preingreso.apellidos, ' ', preingreso.nombres) AS trabajador,
-                      nov_clasif.descripcion AS clasif, nov_tipo.descripcion AS tipo,
-					  clientes.nombre AS cliente,
-                      clientes_ubicacion.descripcion AS ubicacion, nov_status.descripcion AS `status`
-                 FROM nov_check_list , nov_clasif , clientes , clientes_ubicacion ,
-                      ficha , preingreso , nov_status , nov_perfiles, nov_tipo
-                WHERE nov_check_list.fec_us_ing     = CURDATE()
-                  AND nov_check_list.cod_nov_clasif = nov_clasif.codigo
-			      AND nov_clasif.codigo             = nov_perfiles.cod_nov_clasif
-				  AND nov_check_list.cod_nov_tipo   = nov_tipo.codigo
-                  AND nov_perfiles.cod_perfil       = '".$_SESSION['cod_perfil']."'
-                  AND nov_check_list.cod_cliente    = clientes.codigo
-                  AND nov_check_list.cod_ubicacion  = clientes_ubicacion.codigo
-                  AND nov_check_list.cod_ficha      = ficha.cod_ficha
-                  AND ficha.cedula                  = preingreso.cedula
-                  AND nov_check_list.cod_nov_status = nov_status.codigo
-                ORDER BY 2 DESC ";
-   $query = $bd->consultar($sql);
-
-	$valor = 0;
-		while ($datos=$bd->obtener_fila($query,0)){
-		if ($valor == 0){
-			$fondo = 'fondo01';
-		$valor = 1;
-		}else{
-			$fondo = 'fondo02';
-			$valor = 0;
-		}
-
-	// $Modificar = "Add_Mod01('".$datos[0]."', 'modificar')";
-	//</a>&nbsp;<img src="imagenes/borrar.bmp"  width="20px" height="20px" title="Borrar Registro" border="null" onclick="'.$Borrar.'" class="imgLink"/>
-	   $Borrar = "Borrar01('".$datos[0]."')";
-
-		echo '<tr class="'.$fondo.'">
-                  <td class="texo">'.$datos["codigo"].'</td>
-				  <td class="texo">'.$datos["fec_us_ing"].'</td>
-				  <td class="texo">'.longitudMin($datos["clasif"]).'</td>
-  				  <td class="texo">'.longitudMin($datos["tipo"]).'</td>
-                  <td class="texo">'.longitudMin($datos["cliente"]).'</td>
-				  <td class="texo">'.longitudMin($datos["ubicacion"]).'</td>
-				  <td class="texo">'.longitud($datos["status"]).'</td>
-				  <td align="center"><a href="'.$vinculo.'&codigo='.$datos[0].'&metodo=modificar"><img src="imagenes/actualizar.bmp" alt="Modificar" title="Modificar Registro" width="20" height="20" border="null"/></a>&nbsp;<img src="imagenes/borrar.bmp"  width="20px" height="20px" title="Borrar Registro" border="null" onclick="'.$Borrar.'" class="imgLink"/></td>
-            </tr>';
-        }?>
-    </table>
-</div>
-
-*/ ?>

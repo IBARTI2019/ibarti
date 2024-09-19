@@ -144,6 +144,21 @@ function EstadoFiltro(valor) {
 		validar.disabled = "";
 	}
 }
+
+
+function EstadoFiltroTrab() {
+	filtroId = document.getElementById("paciFiltroTrab");
+	filtroIndice = filtroId.selectedIndex;
+	filtroValueTrab = filtroId.options[filtroIndice].value;
+
+	var validar = document.getElementById("stdNameTrab");
+	if (filtroValueTrab == '') {
+		validar.disabled = true;
+	} else {
+		validar.disabled = "";
+	}
+}
+
 function Salir01(idX) { // CARGAR EL MODULO DE AGREGAR //
     numX=1;
 	if (confirm("�Esta Seguro de Cerrar")) {
