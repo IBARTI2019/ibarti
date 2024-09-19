@@ -320,14 +320,14 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 			<td id="fecha01" width="35%"><input type="text" size="20" value="<?php echo $fecha_sistema . ' &nbsp; ' . $hora; ?>" disabled="disabled" /></td>
 		</tr>
 		<tr>
-			<td class="etiqueta">Filtro supervisor:</td>
+			<td class="etiqueta">Filtro jefe inmediato:</td>
 			<td id="select01">
 				<select id="paciFiltro" onchange="EstadoFiltro(this.value)" style="width:200px">
 					<?php echo $supervisor_opciones; ?>
 				</select><br />
 				<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span>
 			</td>
-			<td class="etiqueta">Supervisor:</td>
+			<td class="etiqueta">Jefe inmediato:</td>
 			<td><input id="stdName" type="text" style="width:300px" disabled="disabled" value="<?php echo $supervisor; ?>" />
 				<span id="input01"><input type="hidden" name="supervisor" id="stdID" value="<?php echo $cod_ficha; ?>" /> <br />
 					<span class="textfieldRequiredMsg">Debe De Seleccionar Un Campo De la Lista.</span>
@@ -379,7 +379,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 				</select><br /><span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
 		</tr>
 		<tr>
-			<td class="etiqueta">Jefe Directo:</td>
+			<td class="etiqueta">Contacto:</td>
 			<td><input id="contanto" type="text" style="width:200px" disabled="disabled" value="<?php echo $contato; ?>" /></td>
 			<td class="etiqueta"><?php echo $campo_04; ?>:</td>
 			<td><input id="campo_04" type="text" style="width:300px" disabled="disabled" value="<?php echo $campo_04_d; ?>" /></td>

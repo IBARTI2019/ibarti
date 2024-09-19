@@ -35,7 +35,7 @@ nov_clasif.campo04,
 CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre) AS us_mod
 FROM
 nov_check_list 
-LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo
+LEFT JOIN men_usuarios ON nov_check_list.cod_us_ing = men_usuarios.codigo
 LEFT JOIN ficha fe ON nov_check_list.cod_ficha_trab = fe.cod_ficha,
 nov_clasif,
 clientes,
@@ -81,7 +81,7 @@ echo '
 	<td width="20%" style="border:1px solid"><b>Fecha: </b>' . $datos['fec_us_ing'] . '</td>
 	</tr>';
     if($campo04 == 'E'){     echo '<tr>
-        <td style="border:1px solid"><b>Supervisor: </b> ' . $datos['trabajador'] . '</td>
+        <td style="border:1px solid"><b>Jefe Inmediato: </b> ' . $datos['trabajador'] . '</td>
         <td style="border:1px solid" colspan="2"><b>Trabajador: </b> ' . $datos['evaluado'] . '</td>
         </tr>
         <tr>
