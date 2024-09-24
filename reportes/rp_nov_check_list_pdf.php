@@ -27,7 +27,7 @@ nov_clasif.descripcion AS clasif,
 nov_tipo.descripcion AS tipo,
 clientes.nombre AS cliente,
 clientes_ubicacion.descripcion AS ubicacion,
-nov_check_list.observacion,
+nov_check_list.nombre_adiestramiento,
 nov_status.descripcion AS `status`,
 nov_tipo.campo01 basc,
 nov_tipo.campo02 rev ,
@@ -57,6 +57,7 @@ $datos = $bd->obtener_name($query_datos);
 $tomo = $datos['basc'] . " <br> " . $datos['rev'];
 $campo04 = $datos['campo04'];
 $usuario = $datos['us_mod'];
+$supervisor =  $datos['trabajador'];
 
 ob_start();
 
@@ -81,11 +82,11 @@ echo '
 	<td width="20%" style="border:1px solid"><b>Fecha: </b>' . $datos['fec_us_ing'] . '</td>
 	</tr>';
     if($campo04 == 'E'){     echo '<tr>
-        <td style="border:1px solid"><b>Jefe Inmediato: </b> ' . $datos['trabajador'] . '</td>
+        <td style="border:1px solid"><b>Jefe Inmediato: </b> ' . $supervisor . '</td>
         <td style="border:1px solid" colspan="2"><b>Trabajador: </b> ' . $datos['evaluado'] . '</td>
         </tr>
         <tr>
-        <td style="border:1px solid" colspan="3"><b>Observacion: </b>' . $datos['observacion'] . '</td>
+        <td style="border:1px solid" colspan="3"><b>Nombre del adiestramiento: </b>' . $datos['nombre_adiestramiento'] . '</td>
         </tr>';
     }else{
         echo '<tr>
@@ -154,17 +155,23 @@ echo '
 <tr>
 <td colspan="4" style="padding: 0px !important;">
 <table width="100%" style="margin: 0px !important;padding: 0px !important;">
-<tr>
-<td width="50%" style="text-align:center;">Firma de Supervisor:<br><br><br></td> ';
+<tr>';
 
 if($campo04 == 'E'){
-    echo '<td width="50%" style="border-left:1px solid; text-align:center;">Evaluador:<br><br>
+    echo '
+    <td width="50%" style="text-align:center;">Supervisor:<br><br>
+        <b>'. $supervisor .'</b>
+        <br>
+    </td> 
+    <td width="50%" style="border-left:1px solid; text-align:center;">Evaluador:<br><br>
             <b>'. $usuario .'</b>
             <br>
     </td>
     </tr>';
 }else{
-   echo '<td width="50%" style="border-left:1px solid; text-align:center;">Firma de representante de la empresa:<br><br><br></td>
+   echo '
+   <td width="50%" style="text-align:center;">Firma de Supervisor:<br><br><br></td> 
+   <td width="50%" style="border-left:1px solid; text-align:center;">Firma de representante de la empresa:<br><br><br></td>
     </tr>';
 }
 
