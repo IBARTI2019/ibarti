@@ -40,16 +40,16 @@ if ($metodo == 'modificar') {
                     nov_check_list.fec_us_ing,  nov_check_list.fec_us_mod,
 					nov_check_list.cod_us_mod,
                     CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre) AS us_mod, nov_check_list.nombre_adiestramiento
-               FROM nov_check_list LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo ,
+               FROM nov_check_list LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo 
+			   LEFT JOIN ficha ft ON nov_check_list.cod_ficha_trab  = ft.cod_ficha,
 			        nov_clasif , nov_tipo, clientes , clientes_ubicacion ,
-					ficha , ficha ft, nov_status
+					ficha, nov_status
               WHERE nov_check_list.codigo = '$codigo'
                 AND nov_check_list.cod_nov_clasif = nov_clasif.codigo
 			    AND nov_check_list.cod_nov_tipo   = nov_tipo.codigo
                 AND nov_check_list.cod_cliente    = clientes.codigo
                 AND nov_check_list.cod_ubicacion  = clientes_ubicacion.codigo
                 AND nov_check_list.cod_ficha      = ficha.cod_ficha
-				AND nov_check_list.cod_ficha_trab      = ft.cod_ficha
                 AND nov_check_list.cod_nov_status = nov_status.codigo ";
 	$query = $bd->consultar($sql);
 	$result = $bd->obtener_fila($query, 0);

@@ -33,8 +33,8 @@ $where = " WHERE nov_check_list.cod_nov_clasif = nov_clasif.codigo
                 AND nov_perfiles.cod_perfil = '$perfil'
                 AND nov_check_list.cod_cliente = clientes.codigo
                 AND nov_check_list.cod_ubicacion = clientes_ubicacion.codigo
-                AND nov_check_list.cod_ficha_trab = ficha.cod_ficha
-                AND nov_check_list.cod_nov_status = nov_status.codigo";
+                AND nov_check_list.cod_nov_status = nov_status.codigo
+				AND nov_check_list.cod_ficha = fs.cod_ficha ";
 
 if ($codigo != "" && $codigo != null) {
 	$where .= " AND nov_check_list.codigo = '$codigo' ";
@@ -65,11 +65,12 @@ if ($status != "TODOS") {
 
 $sql   = " SELECT nov_check_list.codigo, nov_check_list.fec_us_ing,
                       CONCAT(ficha.apellidos, ' ', ficha.nombres) AS trabajador,
+					  CONCAT(fs.apellidos, ' ', fs.nombres) AS supervisor,
                       nov_clasif.descripcion AS clasif, nov_tipo.descripcion AS tipo,
 					  clientes.nombre AS cliente,
                       clientes_ubicacion.descripcion AS ubicacion, nov_status.descripcion AS `status`
-                 FROM nov_check_list , nov_clasif , clientes , clientes_ubicacion ,
-                      ficha , nov_status , nov_perfiles , nov_tipo
+                 FROM nov_check_list LEFT JOIN ficha ON nov_check_list.cod_ficha_trab = ficha.cod_ficha, 
+				 	nov_clasif , clientes , clientes_ubicacion , nov_status , nov_perfiles , nov_tipo, ficha fs
                $where
                   ORDER BY 2 DESC ";
 $query = $bd->consultar($sql);
@@ -80,6 +81,8 @@ $query = $bd->consultar($sql);
 		<th width="7%" class="etiqueta">Fecha</th>
 		<th width="18%" class="etiqueta">Clasificacion</th>
 		<th width="18%" class="etiqueta">Tipo</th>
+		<th width="18%" class="etiqueta"><?php echo $leng["ubicacion"]; ?></th>
+		<th width="18%" class="etiqueta">Jefe inmediato</th>
 		<th width="18%" class="etiqueta"><?php echo $leng["trabajador"]; ?></th>
 		<th width="8%" class="etiqueta">Status</th>
 		<th width="6%" align="center"><a href="<?php echo $vinculo . "&codigo=''&metodo=agregar"; ?>"><img src="imagenes/nuevo.bmp" alt="Agregar Registro" title="Agregar Registro" width="20px" height="20px" border="null" /></a></td>
@@ -105,6 +108,8 @@ $query = $bd->consultar($sql);
 				  <td class="texo">' . $datos["fec_us_ing"] . '</td>
 				  <td class="texo">' . longitudMin($datos["clasif"]) . '</td>
   				  <td class="texo">' . longitudMin($datos["tipo"]) . '</td>
+				  	  <td class="texo">' . longitudMin($datos["ubicacion"]) . '</td>
+				  <td class="texo">' . longitudMin($datos["supervisor"]) . '</td>
                   <td class="texo">' . longitudMin($datos["trabajador"]) . '</td>
 				  <td class="texo">' . longitudMin($datos["status"]) . '</td>
 				  <td align="center"><a href="' . $vinculo . '&codigo=' . $datos[0] . '&metodo=' . $metodo . '"><img src="imagenes/actualizar.bmp" alt="Modificar" title="Modificar Registro" width="20" height="20" border="null"/></a>&nbsp;<img src="imagenes/borrar.bmp"  width="20px" height="20px" title="Borrar Registro" border="null" onclick="' . $Borrar . '" class="imgLink"/></td>
