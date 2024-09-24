@@ -14,6 +14,7 @@ $tipo           = $_POST['tipo'];
 $cliente        = $_POST['cliente'];
 $ubicacion      = $_POST['ubicacion'];
 $observacion    = $_POST['observacion'];
+$nombre_adiestramiento = $_POST['nombre_adiestramiento'];
 $repuesta       = htmlentities($_POST['repuesta']); 
 $activo         = $_POST['status'];
 $check_list     = $_POST['check_list'];
@@ -48,7 +49,7 @@ $metodo         = $_POST['metodo'];
 		                            '$cliente', '$ubicacion', '$supervisor', '$trabajador', '$observacion',
 									'$repuesta',
 									'$campo01', '$campo02', '$campo03', '$campo04',  
-								    '$usuario',  '$activo')";							  
+								    '$usuario',  '$activo', '$nombre_adiestramiento')";							  
 			 $query = $bd->consultar($sql);	
 
 	    $sql    = " SELECT MAX(nov_check_list.codigo)

@@ -39,7 +39,7 @@ if ($metodo == 'modificar') {
 					clientes_ubicacion.contacto, clientes_ubicacion.campo04,
                     nov_check_list.fec_us_ing,  nov_check_list.fec_us_mod,
 					nov_check_list.cod_us_mod,
-                    CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre) AS us_mod
+                    CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre) AS us_mod, nov_check_list.nombre_adiestramiento
                FROM nov_check_list LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo ,
 			        nov_clasif , nov_tipo, clientes , clientes_ubicacion ,
 					ficha , ficha ft, nov_status
@@ -72,6 +72,7 @@ if ($metodo == 'modificar') {
 	$cod_ubicacion = $result['cod_ubicacion'];
 	$ubicacion     = $result['ubicacion'];
 	$observacion   = $result['observacion'];
+	$nombre_adiestramiento = $result['nombre_adiestramiento'];
 	$respuesta     = $result['repuesta'];
 	$contato       = $result['contacto'];
 	$campo_04_d    = $result['campo04'];
@@ -104,6 +105,7 @@ if ($metodo == 'modificar') {
 	$cod_ubicacion = '';
 	$ubicacion    = 'Seleccione...';
 	$observacion  = '';
+	$nombre_adiestramiento = '';
 	$respuesta    = '';
 
 	$contato      = '';
@@ -385,6 +387,15 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 			<td><input id="campo_04" type="text" style="width:300px" disabled="disabled" value="<?php echo $campo_04_d; ?>" /></td>
 		</tr>
 		<tr>
+			<td class="etiqueta">Nombre del adiestramiento:</td>
+			<td colspan="3" id="textarea10"><textarea name="nombre_adiestramiento" cols="45" rows="2"><?php echo $nombre_adiestramiento; ?></textarea>
+				<span id="Counterror_mess1" class="texto">&nbsp;</span><br />
+				<span class="textareaRequiredMsg">El Campo es Requerido.</span>
+				<span class="textareaMinCharsMsg">Debe Escribir mas de 10 caracteres.</span>
+				<span class="textareaMaxCharsMsg">El maximo de caracteres permitidos es 255.</span>
+			</td>
+		</tr>
+		<tr>
 			<td class="etiqueta">Observacion:</td>
 			<td id="textarea01"><textarea name="observacion" cols="45" rows="2"><?php echo $observacion; ?></textarea>
 				<span id="Counterror_mess1" class="texto">&nbsp;</span><br />
@@ -565,6 +576,15 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		validateOn: ["blur", "change"]
 	});
 
+	var textarea10 = new Spry.Widget.ValidationTextarea("textarea01", {
+		maxChars: 500,
+		validateOn: ["blur", "change"],
+		counterType: "chars_count",
+		counterId: "Counterror_mess1",
+		useCharacterMasking: false,
+		isRequired: false
+	});
+
 	var textarea01 = new Spry.Widget.ValidationTextarea("textarea01", {
 		maxChars: 500,
 		validateOn: ["blur", "change"],
@@ -575,7 +595,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 	});
 
 	var textarea02 = new Spry.Widget.ValidationTextarea("textarea02", {
-		maxChars: 500,
+		maxChars: 255,
 		validateOn: ["blur", "change"],
 		counterType: "chars_count",
 		counterId: "Counterror_mess2",
