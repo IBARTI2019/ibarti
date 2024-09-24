@@ -79,7 +79,7 @@ $metodo         = $_POST['metodo'];
 				}
 			}
 		}
-		}elseif($metodo == "modificar"){
+	}elseif($metodo == "modificar"){
 			 $sql    = "$SELECT $proced('$metodo', '$codigo',  '$clasif', '$tipo', 
 								'$cliente', '$ubicacion', '$supervisor', '$trabajador', '$observacion',
 								'$repuesta',
@@ -106,4 +106,4 @@ $metodo         = $_POST['metodo'];
 			}	
 		}
 	}
-// require_once('../funciones/sc_direccionar.php');
+require_once('../funciones/sc_direccionar.php');

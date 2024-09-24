@@ -441,8 +441,10 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 						if ($metodo == 'agregar') {
 
 							$sql01    = "SELECT nov_clasif.codigo, nov_clasif.descripcion
-                               FROM nov_clasif
+                               FROM nov_clasif, nov_perfiles
                               WHERE nov_clasif.`status` = 'T'
+							   AND nov_clasif.codigo = nov_perfiles.cod_nov_clasif
+                                 AND nov_perfiles.cod_perfil = '" . $_SESSION['cod_perfil'] . "'
 							    AND nov_clasif.campo04 = 'E' 
 								ORDER BY 2 ASC";
 							$query01 = $bd->consultar($sql01);
