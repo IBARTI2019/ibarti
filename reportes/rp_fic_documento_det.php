@@ -106,7 +106,7 @@ if(isset($reporte)){
 		           <td>'".$row01[4]."'</td><td>".$row01[5]."</td><td>".$row01[6]."</td><td>".$row01[7]."</td>
 				   <td>".$row01[8]."</td><td>".$row01[9]."</td><td>".$row01[10]."</td><td>".$row01[11]."</td>
 					 <td>".$row01[12]."</td><td>".$row01[13]."</td><td>".$row01[14]."</td><td>".$row01[15]."</td>
-					 <td>".$row01[16]."</td><td>".$row01[17]."</td><td><a href='".$row01[18]."></a></td>
+					 <td>".$row01[16]."</td><td>".$row01[17]."</td><td><a href='".$row01[18]."'></a></td>
 			   </tr>";
 		}
 		 echo "</table>";
