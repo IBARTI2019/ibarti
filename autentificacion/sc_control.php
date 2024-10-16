@@ -55,6 +55,11 @@ $dias_nov_notif = $_POST['dias_nov'];
 $min_nov_notif = $_POST['min_nov'];
 $porc_min_aprob_encuesta_preing = $_POST['porc_min_aprob_encuesta_preing'];
 
+$min_confirm       = $_POST['min_confirm'];
+$max_confirm       = $_POST['max_confirm'];
+$min_in_transport       = $_POST['min_in_transport'];
+$max_in_transport       = $_POST['max_in_transport'];
+
 $href     = $_POST['href'];
 $usuario  = $_POST['usuario'];
 $proced   = $_POST['proced'];
@@ -71,7 +76,8 @@ if (isset($_POST['proced'])) {
 								'$cl_campo_04_d', '$turno_dl', '$ar_linea', '$uniforme_linea', '$ficha_preingreso',
 								'$nov_clasif_sms', '$url_doc', '$rop_meses','$host_smtp',
 								'$puerto_smtp', '$protocolo_smtp', '$cuenta_smtp','$password_smtp',$dias_nov_notif,
-								$min_nov_notif, $porc_min_aprob_encuesta_preing)";
+								$min_nov_notif, $porc_min_aprob_encuesta_preing, 
+								$min_confirm, $max_confirm, $min_in_transport, $max_in_transport)";
 
 	$query = $bd->consultar($sql);
 

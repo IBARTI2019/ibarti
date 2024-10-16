@@ -442,7 +442,7 @@ if ($cod_status == $apto) {
 			<td id="input06"><input type="text" name="telefono" maxlength="40" size="25" value="<?php echo $telefono; ?>" /><br />
 				<span class="textfieldRequiredMsg">El Campo es Requerido...</span>
 			</td>
-			<td class="etiqueta">Tel. Celular: </td>
+			<td class="etiqueta">Tel&eacute;fono con WhatsApp: </td>
 			<td id="custom01"><input type="text" name="celular" maxlength="40" size="25" value="<?php echo $celular; ?>" /><br />
 				<span class="textfieldRequiredMsg">El Campo es Requerido...</span>
 				<span class="textfieldInvalidFormatMsg">El Formato Es Invalido</span>
@@ -555,7 +555,7 @@ if ($cod_status == $apto) {
 			<td id="select10"><select name="status" style="width:200px">
 					<option value="<?php echo $cod_status; ?>"><?php echo $status; ?></option>
 					<?php /* 	$sql_ing = " SELECT codigo, descripcion FROM preing_status WHERE status = 'T' ORDER BY 2 ASC ";
-		            $query = $bd->consultar($sql);
+		            $query = $bd->consultar($sql_ing);
             		while($datos=$bd->obtener_fila($query,0)){
 		  ?>
           <option value="<?php echo $datos[0];?>"><?php echo utf8_decode($datos[1]);?></option>

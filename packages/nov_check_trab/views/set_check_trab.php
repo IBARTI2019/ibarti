@@ -22,7 +22,7 @@ $codigos = (isset($_POST['cod'])) ? $_POST['cod'] : "";
 
 $sql = "CALL p_nov_check_list_trab('$metodo','$codigos','$clasificacion','$tipo','$ficha','$cedula','$observacion','$respuesta','$usuario')";
 $query01 = $bd->consultar($sql);
-echo $sql;
+
 if ($metodo != "modificar") {
     $sql = "SELECT MAX(codigo) from nov_check_list_trab";
     $query01 = $bd->consultar($sql);
@@ -37,6 +37,7 @@ if ($metodo != "modificar") {
 
 
 foreach ($valores as $novedad => $valor) {
-    $sql = "CALL p_nov_check_list_trab_det('agregar','$codigo','$novedad','$valor','$obs[$novedad]')";
+    $agrupacion = $_POST['cod_agrupacion_'.$novedad];
+    $sql = "CALL p_nov_check_list_trab_det('agregar','$codigo','$novedad', '$agrupacion', '$valor','$obs[$novedad]')";
     $query01 = $bd->consultar($sql);
 }

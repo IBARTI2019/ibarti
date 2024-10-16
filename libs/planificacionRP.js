@@ -1253,7 +1253,7 @@ function validarFondoTr(num) {
 
 /*SE USA PARA TRABAJADORES NECESARIOS PARA CUBRIR SERVICIOS (REPORTES OPERACIONALES)*/
 
-function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, cliente, ubicacion, callback) {
+function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, callback) {
 	if (d3.select('#' + id_contenedor).node()) {
 		limpiarContenedor('id_contenedor');
 
@@ -1299,11 +1299,17 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, cliente, ubi
 			d3.select('#body_' + d.key).selectAll('tr').data(d.values).enter().append('tr')
 				.attr('class', (e) => {
 					factor = 0, trab_neces = 0, trab_activos = 0, excepcion = 0, color = ''; cantidad = 0;
+
 					if (data['excepcion'] !== undefined) {
 						if (map_res_excepcion.has(e.key)) {
 							excepcion = Number(map_res_excepcion.get(e.key).values[0].cantidad);
 						}
 					}
+
+					let valorMax  = e.values.reduce((previous, current) => {
+						return Number(current.trab_neces) > Number(previous.trab_neces) ? current : previous;
+					});
+					e.values = [valorMax];
 					e.values.forEach((f, i) => {
 						cantidad += Number(f.cantidad);
 						trab_neces += Number(f.trab_neces);
@@ -1320,11 +1326,17 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, cliente, ubi
 					return color;
 				}).html((e) => {
 					factor = 0, trab_neces = 0, trab_activos = 0, excepcion = 0; cantidad = 0;
+
 					if (data['excepcion'] !== undefined) {
 						if (map_res_excepcion.has(e.key)) {
 							excepcion = Number(map_res_excepcion.get(e.key).values[0].cantidad);
 						}
 					}
+
+					let valorMax  = e.values.reduce((previous, current) => {
+						return Number(current.trab_neces) > Number(previous.trab_neces) ? current : previous;
+					});
+					e.values = [valorMax];
 					e.values.forEach((f, i) => {
 						cantidad += Number(f.cantidad);
 						trab_neces += Number(f.trab_neces);
@@ -1403,7 +1415,7 @@ function rp_planif_serv_vs_contratacion_horario(data, id_contenedor, callback) {
 				}
 			}
 
-			res_horario.forEach((b) => {
+		/* 	res_horario.forEach((b) => {
 				sum_dia = 0;
 				color = '';
 				clases = '';
@@ -1426,7 +1438,7 @@ function rp_planif_serv_vs_contratacion_horario(data, id_contenedor, callback) {
 					})
 
 				}
-			});
+			}); */
 		});
 
 		if (typeof (callback) == 'function') callback();

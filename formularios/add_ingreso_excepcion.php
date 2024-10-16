@@ -204,7 +204,7 @@ if($metodo == 'modificar'){
       <td id="input06"><input type="text" name="telefono" maxlength="40" size="25" value="<?php echo $telefono;?>"/><br />
 		   <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
-      <td class="etiqueta">Tel. Celular: </td>
+      <td class="etiqueta">Tel&eacute;fono con WhatsApp: </td>
       <td id="input07"><input type="text" name="celular" maxlength="40" size="25" value="<?php echo $celular;?>"/><br />
 		   <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>

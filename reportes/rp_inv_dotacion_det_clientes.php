@@ -19,6 +19,7 @@ $linea      = $_POST['linea'];
 $sub_linea  = $_POST['sub_linea'];
 $producto   = $_POST['producto'];
 $anulado    = $_POST['anulado'];
+$only_active    = $_POST['only_active'];
 $trabajador      = $_POST['trabajador'];
 $cliente	= $_POST['cliente'];
 $ubicacion	= $_POST['ubicacion'];
@@ -53,6 +54,10 @@ if(isset($reporte)){
 
 	if($anulado != "TODOS"){
 		$where  .= " AND  ajuste_alcance.anulado  = '$anulado' ";
+	}
+
+	if($only_active == "T"){
+		$where  .= " AND  clientes.status  = 'T' AND clientes_ubicacion.status = 'T' ";
 	}
 
 	if($trabajador != NULL){
@@ -155,6 +160,7 @@ ORDER BY 2 ASC";
 </html>";
 
 		    $dompdf->load_html(ob_get_clean(),'UTF-8');
+			$dompdf->set_paper('letter','landscape');
 		    $dompdf->render();
 		    $dompdf->stream($archivo, array('Attachment' => 0));
 }

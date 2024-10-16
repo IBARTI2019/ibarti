@@ -77,7 +77,7 @@ if (isset($reporte)) {
 		p.cod_cliente, cl.nombre cliente, p.cod_ubicacion, cu.descripcion ubicacion, 
 		pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad,
 		TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
-		pa.minutos, IF(pd.realizado='T','SI', 'NO') realizado, psod.observacion, CONCAT(men_usuarios.nombre, ' ', men_usuarios.apellido) marcado_por
+		pa.minutos, IF(pd.realizado='T','SI', 'NO') realizado, psod.observacion, CONCAT(men_usuarios.nombre, ' ', men_usuarios.apellido) marcado_por, pd.link
 		FROM planif_clientes_superv_trab p, planif_clientes_superv_trab_det pd
 		LEFT JOIN planif_clientes_superv_trab_det_observ psod ON pd.codigo = psod.cod_det
 		LEFT JOIN men_usuarios ON pd.cod_us_marcaje = men_usuarios.codigo, 
@@ -96,14 +96,15 @@ if (isset($reporte)) {
 		echo "<tr><th> Fecha </th><th> " . $leng['ficha'] . " </th><th> " . $leng['trabajador'] . " </th>
 		<th> Cod. Cliente </th><th> " . $leng['cliente'] . " </th><th> Cod. Ubicación </th><th> " . $leng['ubicacion'] . " </th>
 		<th> Cod. Proyecto </th><th> Proyecto </th><th> Cod. Actividad </th><th> Actividad </th><th> Hora Inicio </th>
-		<th> Hora Fin </th><th> Minutos decicados </th><th> Realizado </th><th> Marcado Por </th><th> Observación </th>
+		<th> Hora Fin </th><th> Minutos decicados </th><th> Realizado </th><th> Marcado Por </th><th> Observación </th><th>Link marcaje</th>
 		</tr>";
 
 		while ($row01 = $bd->obtener_num($query01)) {
 			echo "<tr><td> " . $row01[0] . " </td><td>" . $row01[1] . "</td><td>" . $row01[2] . "</td><td>" . $row01[3] . "</td>
 			<td>" . $row01[4] . "</td><td>" . $row01[5] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td>
 			<td>" . $row01[8] . "</td><td>" . $row01[9] . "</td><td>" . $row01[10] . "</td><td>" . $row01[11] . "</td>
-			<td>" . $row01[12] . "</td><td>" . $row01[13] . "</td><td>" . $row01[14] . "</td></td><td>" . $row01[16] . "</td><td>" . $row01[15] . "</td></tr>";
+			<td>" . $row01[12] . "</td><td>" . $row01[13] . "</td><td>" . $row01[14] . "</td></td><td>" . $row01[16] . "</td><td>" . $row01[15] . "</td>
+			<td>". $row01[17] ."</td></tr>";
 		}
 		echo "</table>";
 	}

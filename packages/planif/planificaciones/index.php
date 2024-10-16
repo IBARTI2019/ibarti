@@ -2,6 +2,7 @@
 <script type="text/javascript" src="funciones/modal.js"></script>
 <script type="text/javascript" src="packages/planif/planificaciones/controllers/planificacionCtrl.js"></script>
 <script type="text/javascript" src="libs/planificacionRP.js"></script>
+<script type="text/javascript" src="libs/planificacionRPRESUMIDA.js"></script>
 <?php
 $Nmenu = '4403';
 if(isset($_SESSION['usuario_cod'])){
@@ -42,4 +43,5 @@ if(isset($_SESSION['usuario_cod'])){
 	</div>
 </div>
 <div id="Cont_planificacion"></div>
+<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
 <input name="usuario" id="usuario" type="hidden" value="<?php echo $us;?>" />

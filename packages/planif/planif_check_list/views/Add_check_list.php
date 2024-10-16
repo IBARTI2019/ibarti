@@ -181,7 +181,8 @@ $fec_us_mod    = '';
 				
 				$sql   = " SELECT
 							novedades.codigo,
-							novedades.descripcion 
+							novedades.descripcion,
+							novedades.cod_nov_agrupacion
 						FROM
 							nov_planif_actividad,
 							novedades 
@@ -200,7 +201,7 @@ $fec_us_mod    = '';
 								FROM nov_valores_det , nov_valores
 								WHERE nov_valores_det.cod_novedades = '$cod_c'
 								AND nov_valores_det.cod_valores = nov_valores.codigo
-							ORDER BY 1 ASC ";
+							ORDER BY 2 ASC ";
 					$query02 = $bd->consultar($sql02);
 
 					echo '<tr>
@@ -209,7 +210,7 @@ $fec_us_mod    = '';
 					while ($datos02 = $bd->obtener_fila($query02, 0)) {
 						echo ' ' . $datos02[1] . ' <input type = "radio"  name="check_list_valor_' . $cod_c . '" value ="' . $datos02[0] . '" style="width:auto" title="' . $datos02[2] . '" />';
 					}
-					echo '<input type="hidden" name="cod_valor_' . $cod_c . '" value="' . $datos[0] . '" /><input type="hidden" name="check_list[]" value="' . $datos[0] . '" /> </td>
+					echo '<input type="hidden" name="cod_agrupacion_' . $cod_nov  . '" value="' . $datos[2] . '" /><input type="hidden" name="cod_valor_' . $cod_c . '" value="' . $datos[0] . '" /><input type="hidden" name="check_list[]" value="' . $datos[0] . '" /> </td>
 				<td><textarea  name="observacion_' . $datos[0] . '" cols="50" rows="1"></textarea>
 				</tr>';
 				}
@@ -237,7 +238,7 @@ $fec_us_mod    = '';
 		<input type="hidden" value="<?php echo $cod_status; ?>" />
 		<input type="hidden" name="descripcion" value="" />
 		<input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol']; ?>" />
-		<input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente']; ?>" />
+		<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente']; ?>" />
 		<input type="hidden" name="usuario" id="usuario" value="<?php echo $us; ?>" />
 		<input type="hidden" name="stdID" id="stdID" value="<?php echo $us; ?>" />
 		<input type="hidden" name="trabajador" id="trabajador" value="<?php echo $cod_ficha; ?>" />

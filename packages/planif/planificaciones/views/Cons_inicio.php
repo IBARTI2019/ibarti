@@ -4,7 +4,7 @@ require "../../../../" . Leng;
 
 $titulo = $leng['planificacion'];
 $plan   = new Planificacion;
-$cliente  =  $plan->get_cliente();
+$cliente  =  $plan->get_cliente($_POST["usuario"], $_POST["r_cliente"]);
 ?>
 <div align="center" class="etiqueta_title"><?php echo $titulo; ?> </div>
 <hr />
@@ -63,7 +63,12 @@ $cliente  =  $plan->get_cliente();
     <span class="art-button-wrapper">
       <span class="art-button-l"> </span>
       <span class="art-button-r"> </span>
-      <input type="button" id="volver" value="Servicios Trabajadores" onClick="B_reporte('F')" class="readon art-button" />
+      <input type="button" id="volver" value="Servicios  Trabajadores" onClick="B_reporte('F')" class="readon art-button" />
+    </span>
+    <span class="art-button-wrapper">
+      <span class="art-button-l"> </span>
+      <span class="art-button-r"> </span>
+      <input type="button" id="volver" value="Planificacion Servicios Resumen" onClick="RE_reporte('R')" class="readon art-button" />
     </span>
     <span class="art-button-wrapper">
       <span class="art-button-l"> </span>
@@ -89,4 +94,6 @@ $cliente  =  $plan->get_cliente();
   <input type="hidden" name="ubicacion" id="cod_ubic_serv" value="">
   <input type="hidden" name="usuario" id="cod_usuario_serv" value="">
   <input type="hidden" name="reporte" id="reporte_serv" value="">
+  <input type="hidden" name="idcliente" id="idcliente" value="<?php echo $cliente; ?>">
+
 </form>

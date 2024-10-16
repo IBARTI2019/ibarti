@@ -21,7 +21,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 	var cliente      = $( "#cliente").val();
 	var ubicacion      = $( "#ubicacion").val()
 	var vencimiento      = $( "#vencimiento").val()
-	var producto  = $( "#stdID").val();
+	var sub_linea  = $( "#sub_linea").val();
 	var error = 0;
 	var errorMessage = ' ';
 
@@ -33,7 +33,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 			"ciudad" : ciudad,
 			"cliente" : cliente,
 			"ubicacion" : ubicacion,
-			"producto":producto,
+			"sub_linea":sub_linea,
 			"vencimiento":vencimiento
 		};
 		$.ajax({
@@ -115,14 +115,18 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 										</tr>
 
 										<tr>
-												<td><?php echo $leng['producto']?>:</td>
-												<td colspan="2"><input  id="stdName" type="text" size="22"  style="width:250px" />
-													<input type="hidden" name="producto" id="stdID" value=""/></td>
+												<td>Sub Linea:</td>
+												<td><select name="sub_linea" id="sub_linea" style="width:120px;">
+													<option value="TODOS">TODOS</option>
+													<?php $query02 = $bd->consultar($sql_sub_lineas);
+													while($row02=$bd->obtener_fila($query02,0)){
+														echo '<option value="'.$row02[0].'">'.$row02[1].'</option>';
+													}?></select></td>
 													<td>&nbsp;<input type="hidden" name="Nmenu" id="Nmenu" value="<?php echo $Nmenu;?>" />
 														<input type="hidden" name="mod" id="mod" value="<?php echo $mod;?>" />
 														<input type="hidden" name="archivo" id="archivo" value="<?php echo $archivo;?>" />
 														<input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol'];?>"/>
-														<input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente'];?>"/>
+														<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
 														<input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod'];?>"/></td>
 													</tr>
 												</table><hr /><div id="listar">&nbsp;</div>
@@ -144,17 +148,3 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 													onclick="{$('#reporte').val('excel');$('#procesar').click();}" width="25px" title="imprimir a excel">
 												</div>
 											</form>
-											<script type="text/javascript">
-												r_cliente = $("#r_cliente").val();
-												r_rol     = $("#r_rol").val();
-												usuario   = $("#usuario").val();
-
-												new Autocomplete("stdName", function() {
-													this.setValue = function(id) {
-            document.getElementById("stdID").value = id; 
-        }
-        if (this.isModified) this.setValue("");
-        if (this.value.length < 1) return ;
-		return "autocompletar/tb/producto_base_serial.php?q="+this.text.value });
-		</script>
-

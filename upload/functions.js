@@ -18,13 +18,13 @@ $(document).ready(function () {
         //mensaje con la informaci�n del archivo
         // personalizado ING WUILMER GARCIA
         if (validarExt(fileExtension)) {
-            if (validarSize(fileSize)) {
+            // if (validarSize(fileSize)) {
                 $("#imgMostrar").show();
                 showMessage("<span class='info'>Archivo para subir: " + fileName + ", peso total: " + fileSize + " bytes.</span>");
-            } else {
-                showMessage("<span class='error'>Error: " + fileName + ",Excedio el Tama�o maximo: 10mb (" + fileSize + ")</span>");
-                $("#imgMostrar").hide();
-            }
+            // } else {
+            //     showMessage("<span class='error'>Error: " + fileName + ",Excedio el Tama�o maximo: 10mb (" + fileSize + ")</span>");
+            //     $("#imgMostrar").hide();
+            // }
         } else {
             showMessage("<span class='error'>Error: " + fileName + ", Extension Perimitidas: jpg, jpeg, gif, png, pdf, doc </span>");
             $("#imgMostrar").hide();
@@ -119,10 +119,18 @@ function subirImagenS3(directorio) {
     //informaci�n del formulario
 
     var formData = new FormData($(".formulario")[0]);
-    var ci = $("#ci").val();
+    var folder = $("#ficha").val();
     var doc = $("#doc").val();
-    var nombre = ci + "_" + doc;
-    console.log(formData);
+
+    var config = [
+      {
+        folder: folder,
+        key: doc
+      }
+    ]
+
+    formData.append("config", JSON.stringify(config));
+
     var message = "";
     //hacemos la petici�n ajax  
     $.ajax({
@@ -142,7 +150,7 @@ function subirImagenS3(directorio) {
         },
         //una vez finalizado correctamente
         success: function (data) {
-            uploadActulizarS3(data.data.image[0]);
+            uploadActualizarS3(data.data.image[0]);
         },
         //si ha ocurrido un error
         error: function () {
@@ -191,8 +199,8 @@ function subirImagenCliente(directorio) {
     });
 }
 
-function uploadActulizarS3(url) {
-    console.log('uploadActulizarS3: ', url)
+function uploadActualizarS3(url) {
+    console.log('uploadActualizarS3: ', url)
     var ficha = $("#ficha").val();
     var ci = $("#ci").val();
     var doc = $("#doc").val();

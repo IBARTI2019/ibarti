@@ -16,7 +16,7 @@ if ($activar == "T") {
 }
 
 $sql = "SELECT
-		CONCAT( productos.descripcion, ' (', productos.codigo, ') ' ) sub_linea,
+		prod_sub_lineas.descripcion sub_linea,
 		clientes_ub_alcance.cantidad,
 		IFNULL(
 			(
@@ -40,7 +40,7 @@ $sql = "SELECT
 		clientes_ubicacion.codigo 
 	FROM
 		clientes_ub_alcance
-		INNER JOIN productos ON clientes_ub_alcance.cod_sub_linea = productos.cod_sub_linea,
+		INNER JOIN prod_sub_lineas ON clientes_ub_alcance.cod_sub_linea = prod_sub_lineas.codigo,
 		clientes_ubicacion 
 	WHERE
 		clientes_ub_alcance.cod_cl_ubicacion = '$codigo' 

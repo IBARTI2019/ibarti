@@ -24,6 +24,11 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 	var cliente      = $( "#cliente").val();
 	var ubicacion    = $( "#ubicacion").val();
 
+	if($('#maximo:checked').val()){
+		var maximo  = 'T';
+	}else{
+		var maximo  = 'F';
+	}
 	var Nmenu       = $( "#Nmenu").val();
 	var mod         = $( "#mod").val();
 	var archivo     = $( "#archivo").val();
@@ -52,6 +57,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 			"fecha_desde": fecha_desde,
 			"region": region, 		    "estado": estado,
 			"cliente": cliente, 		    "ubicacion": ubicacion,
+			"maximo": maximo,
 			"Nmenu" : Nmenu,  			"mod" : mod,
 			"archivo": archivo, "usuario":usuario
 		};
@@ -66,7 +72,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 				if(typeof resp['contrato'] == 'undefined'){
 					$("#contenido_listar" ).html('Sin Resultados!..');
 				}else{							
-					rp_planif_contratacion_vs_trab_cubrir(resp,'contenido_listar',cliente,ubicacion,()=>$('#body_cubrir').val($('#t_reporte').html()));
+					rp_planif_contratacion_vs_trab_cubrir(resp,'contenido_listar',()=>$('#body_cubrir').val($('#t_reporte').html()));
 				}
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -137,6 +143,13 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 					<td width="5%" id="cont_img"><img class="imgLink" id="img_actualizar" src="imagenes/actualizar.png" border="0"
 						onclick=" Add_filtroX()" ></td>
 					</tr>   
+					<tr>
+					<td>Máximo del mes: </td>
+					<td>
+						
+						<input type="checkbox" id="maximo" name="maximo">
+					</td> 
+					</tr>
 				</table><hr /><div id="contenido_listar" class="listar"></div>
 				<div align="center"><br/>
 					<span class="art-button-wrapper">

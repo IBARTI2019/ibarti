@@ -108,7 +108,8 @@ IF
 	DATE_ADD( DATE_FORMAT( max( `prod_dotacion`.`fec_dotacion` ), '%Y-%m-%d' ), INTERVAL clientes_ub_uniforme.dias DAY ) < DATE_ADD( '$fecha_D', INTERVAL $d_proyeccion DAY ),
 	DATE_ADD( DATE_FORMAT( max( `prod_dotacion`.`fec_dotacion` ), '%Y-%m-%d' ), INTERVAL control.dias_proyeccion DAY ) < DATE_ADD( '$fecha_D', INTERVAL $d_proyeccion DAY ) 
 ) vencido,
-prod_dotacion_det.cantidad cantidad_dot 
+prod_dotacion_det.cantidad cantidad_dot,
+ficha.sexo
 FROM
 clientes_ub_uniforme
 INNER JOIN control ON control.oesvica = control.oesvica
@@ -125,7 +126,7 @@ AND `prod_dotacion`.`anulado` = 'F'
 AND prod_dotacion.cod_ficha = ficha.cod_ficha
 LEFT JOIN `prod_dotacion_det` ON `prod_dotacion`.`codigo` = `prod_dotacion_det`.`cod_dotacion` 
 AND prod_dotacion_det.cod_sub_linea = clientes_ub_uniforme.cod_sub_linea
-AND prod_dotacion_det.cod_dotacion IN (SELECT MAX( pdd.cod_dotacion ) cod_dotacion FROM prod_dotacion pd, prod_dotacion_det pdd WHERE pd.codigo = pdd.cod_dotacion AND pd.cod_ficha = ficha.cod_ficha GROUP BY pdd.cod_sub_linea)
+AND prod_dotacion_det.cod_dotacion IN (SELECT MAX(pdd.cod_dotacion) cod_dotacion FROM prod_dotacion pd, prod_dotacion_det pdd WHERE pd.codigo = pdd.cod_dotacion AND pd.cod_ficha = ficha.cod_ficha GROUP BY pdd.cod_dotacion, pdd.cod_sub_linea)
 INNER JOIN `productos` ON `productos`.`item` = `prod_dotacion_det`.`cod_producto`
 LEFT JOIN `tallas` ON `productos`.`cod_talla` = `tallas`.`codigo`
 INNER JOIN contractos ON ficha.cod_contracto = contractos.codigo
@@ -141,7 +142,7 @@ cod_linea,
 cod_sub_linea 
 HAVING
 ( vencido = 1 ) 
-OR ( vencido = 0 AND cantidad < alcance ) 
+OR ( vencido = 0 AND cantidad < alcance AND cantidad > 0 ) 
 UNION
 	SELECT
 	'SIN DOTAR' fecha,
@@ -164,7 +165,8 @@ UNION
 	0 cantidad,
 	clientes_ub_uniforme.cantidad alcance,
 	1 vencido,
-	0 cantidad_dot 
+	0 cantidad_dot,
+	ficha.sexo
 FROM
 	clientes_ub_uniforme
 	INNER JOIN control ON control.oesvica = control.oesvica
@@ -210,7 +212,7 @@ fecha ASC, ap_nombre ASC, producto ASC
 		echo "<tr><th> Fecha </th><th> ".$leng['estado']." </th><th> ".$leng['cliente']." </th><th> ".$leng['ubicacion']." </th>
 		<th>".$leng['contrato']."</th> <th>Cargo</th><th> ".$leng['ficha']." </th><th> ".$leng['ci']." </th><th> ".$leng['trabajador']." </th>
 		<th> Linea </th><th> Sub Linea </th><th> Cod. Producto</th> <th> Producto </th>
-		<th> Cantidad </th><th> Alcance </th><th> Cant. A Dotar </th><th>Vencido</th></tr>";
+		<th> Cantidad </th><th> Alcance </th><th> Cant. A Dotar </th><th>Vencido</th><th>Sexo</th></tr>";
 
 		while ($row01 = $bd->obtener_num($query01)){
 			$vencido = "NO";
@@ -220,7 +222,7 @@ fecha ASC, ap_nombre ASC, producto ASC
 			echo "<tr><td>".$row01[0]." </td><td>".$row01[1]."</td><td>".$row01[3]."</td><td>".$row01[5]."</td>
 			<td>".$row01[6]."</td><td>".$row01[7]."</td><td>".$row01[8]."</td><td>".$row01[9]."</td><td>".$row01[10]."</td>
 			<td>".$row01[12]."</td><td>".$row01[14]."</td><td>".$row01[15]."</td><td>".$row01[16]."</td>
-			<td>".$row01[17]."</td><td>".$row01[18]."</td><td>".($row01[18] - $row01[17])."</td><td>".$vencido."</td></tr>";
+			<td>".$row01[17]."</td><td>".$row01[18]."</td><td>".($row01[18] - $row01[17])."</td><td>".$vencido."</td><td>".$row01[21]."</td></tr>";
 		}
 		echo "</table>";
 	}

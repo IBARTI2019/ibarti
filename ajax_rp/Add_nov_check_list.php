@@ -13,8 +13,9 @@ $mod        = $_POST['mod'];
 $archivo    = $_POST['archivo'] . "&Nmenu=$Nmenu&mod=$mod";
 $vinculo    = "reportes/rp_nov_check_list_printer.php?Nmenu=$Nmenu&mod=$mod";
 
-$codigo       = $_POST['codigo'];
+$codigo     = $_POST['codigo'];
 $tipo       = $_POST['tipo'];
+$agrupacion = $_POST['agrupacion'];
 $clasif     = $_POST['clasif'];
 $cliente    = $_POST['cliente'];
 $ubicacion  = $_POST['ubicacion'];
@@ -25,7 +26,8 @@ $where = " WHERE nov_check_list.cod_nov_clasif = nov_clasif.codigo
                 AND nov_check_list.cod_cliente = clientes.codigo
                 AND nov_check_list.cod_ubicacion = clientes_ubicacion.codigo
                 AND nov_check_list.cod_ficha = ficha.cod_ficha
-                AND nov_check_list.cod_nov_status = nov_status.codigo ";
+                AND nov_check_list.cod_nov_status = nov_status.codigo 
+				AND nov_check_list.codigo = nov_check_list_det.cod_check_list";
 
 if ($fecha_D != '0000-00-00' && $fecha_H != '0000-00-00') {
 	$where .= " AND nov_check_list.fec_us_ing BETWEEN \"$fecha_D\" AND \"$fecha_H\"";
@@ -41,6 +43,10 @@ if ($clasif != "TODOS") {
 
 if ($tipo != "TODOS") {
 	$where .= " AND nov_tipo.codigo = '$tipo' ";
+}
+
+if ($agrupacion != "TODOS") {
+	$where .= " AND nov_agrupacion.codigo = '$agrupacion' ";
 }
 
 if ($cliente != "TODOS") {
@@ -61,7 +67,9 @@ $sql   = " SELECT nov_check_list.codigo, nov_check_list.fec_us_ing,
 		                  nov_check_list.cod_ficha,ficha.cedula,
 						  nov_check_list.repuesta, nov_check_list.fec_us_mod,
 						  CONCAT(men_usuarios.apellido,' ',men_usuarios.nombre) AS us_mod,
-						  CONCAT(ficha.apellidos, ' ', ficha.nombres) AS trabajador, nov_status.descripcion AS nov_status                     FROM nov_check_list LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo ,
+						  CONCAT(ficha.apellidos, ' ', ficha.nombres) AS trabajador, nov_status.descripcion AS nov_status                     
+					FROM nov_check_list LEFT JOIN men_usuarios ON nov_check_list.cod_us_mod = men_usuarios.codigo ,
+					nov_check_list_det LEFT JOIN nov_agrupacion ON nov_check_list_det.cod_nov_agrupacion = nov_agrupacion.codigo, 
 			        nov_clasif , nov_tipo, clientes , clientes_ubicacion ,
 					ficha, nov_status
 					$where

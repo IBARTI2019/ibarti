@@ -46,6 +46,8 @@ function Cons_planificacion_inicio() {
 	var errorMessage = ' ';
 	if (error == 0) {
 		var parametros = {};
+		parametros['usuario'] = $("#usuario").val();
+		parametros['r_cliente'] = $("#r_cliente").val();
 		$.ajax({
 			data: parametros,
 			url: 'packages/planif/planificaciones/views/Cons_inicio.php',
@@ -184,6 +186,8 @@ function planif_contratacion() {
 
 function cargar_ubic() {
 	var parametros = { "codigo": contratacion, "cliente": cliente };
+	parametros["usuario"] = $("#usuario").val();
+	parametros["r_cliente"] = $("#r_cliente").val();
 	$.ajax({
 		data: parametros,
 		url: 'packages/planif/planificaciones/views/Add_planif_ap_ubic.php',
@@ -625,6 +629,9 @@ function save_planif_det(cod) {
 			data: parametros,
 			url: 'packages/planif/planificaciones/modelo/planificacion.php',
 			type: 'post',
+			beforeSend: function () {
+				$("#cont_planif_det").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="35px" height="35px"> Procesando...');
+			},
 			success: function (response) {
 				cargar_planif_det(ubic);
 				var resp = JSON.parse(response);
@@ -632,6 +639,7 @@ function save_planif_det(cod) {
 					alert(resp.mensaje);
 				} else {
 					alert('Actualizacion Exitosa...');
+					CloseModal();
 				}
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -763,6 +771,52 @@ function Borrar_trab_det(cod) {
 }
 
 
+function RE_reporte(detalle) {
+	var errorMessage = '';
+	var ubicacion = $("#planf_ubicacion").val();
+
+	if (ubicacion == 'TODOS' || ubicacion == '' || apertura == '') {
+		errorMessage = 'Necesita completar los campos para generar el reporte!..';
+	}
+	var parametros = {
+		"cliente": cliente, "ubicacion": ubicacion, "apertura": apertura,
+		"contratacion": contratacion, "usuario": usuario
+	};
+	if (errorMessage == '') {
+		$.ajax({
+			data: parametros,
+			url: 'ajax/Add_planif_servicio_min.php',
+			type: 'post',
+			beforeSend: function () {
+				$("#modal_contenidoRP").html('');
+				$('#modalRP').show();
+				$("#RP").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px"> Procesando...');
+				$("#cod_contratacion_serv").val($("#planif_contratacion").val());
+			},
+			success: function (response) {
+				var resp = JSON.parse(response);
+				if (typeof resp['servicio'] == 'undefined') {
+					$("#RP").html('Sin Resultados!..');
+				} else {
+					if (detalle == 'T') {
+						rp_planif_trab_serv_detalle(resp, 'modal_contenidoRP', () => $('#body_planif').val($('#t_reporte').html()));
+					} else if (detalle == 'R') {
+						rp_planif_trab_servresumida(resp, 'modal_contenidoRP', () => $('#body_planif').val($('#t_reporte').html()));
+					}
+					$("#RP").html('');
+				}
+				
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(xhr.status);
+				alert(thrownError);
+			}
+		});
+	} else {
+		alert(errorMessage);
+	}
+}
+
 function B_reporte(detalle) {
 	var errorMessage = '';
 	var ubicacion = $("#planf_ubicacion").val();
@@ -797,6 +851,7 @@ function B_reporte(detalle) {
 					}
 					$("#RP").html('');
 				}
+				
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
 				alert(xhr.status);

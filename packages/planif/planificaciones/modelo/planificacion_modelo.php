@@ -15,14 +15,72 @@ class Planificacion
 		$this->bd = new Database;
 	}
 
-	function get_cliente()
-	{
-		$sql = "  SELECT clientes.codigo, IF(COUNT(clientes_contratacion.codigo) = 0, 'S/C - ' , '') sc,
-		clientes.abrev, clientes.nombre cliente
-		FROM clientes LEFT JOIN clientes_contratacion ON clientes.codigo = clientes_contratacion.cod_cliente
-		WHERE clientes.`status` = 'T'
-		GROUP BY clientes.codigo ORDER BY 2 ASC ";
+	function get_confirmaciones_esp(){
+		$sql = " SELECT
+					horario_cl_ubicacion.codigo,
+					clientes_ubicacion.cod_cliente,
+					clientes.nombre cliente,
+					horario_cl_ubicacion.cod_cl_ubicacion cod_ubicacion,
+					clientes_ubicacion.descripcion ubicacion,
+					horario_cl_ubicacion.cod_horario,
+					horarios.nombre horario,
+					horario_cl_ubicacion.hora_entrada 
+				FROM
+					horario_cl_ubicacion,
+					clientes,
+					clientes_ubicacion,
+					horarios
+				WHERE
+					horario_cl_ubicacion.cod_cl_ubicacion = clientes_ubicacion.codigo 
+					AND horario_cl_ubicacion.cod_horario = horarios.codigo 
+					AND clientes_ubicacion.cod_cliente = clientes.codigo";
+	
+		$query = $this->bd->consultar($sql);
 
+		while ($datos = $this->bd->obtener_fila($query)) {
+			$this->datos[] = $datos;
+		}
+		return $this->datos;
+	}
+
+	function get_cargos_excl(){
+		$sql = " SELECT
+					cargos_excl_confirm.codigo,
+					cargos_excl_confirm.cod_cargo,
+					cargos.descripcion cargo
+				FROM
+					cargos_excl_confirm, cargos
+				WHERE 
+					cargos_excl_confirm.cod_cargo = cargos.codigo";
+	
+		$query = $this->bd->consultar($sql);
+
+		while ($datos = $this->bd->obtener_fila($query)) {
+			$this->datos[] = $datos;
+		}
+		return $this->datos;
+	}
+
+	function get_cliente($usuario, $r_cliente)
+	{
+		if ($r_cliente == "F") {
+			$sql = "  SELECT clientes.codigo, IF(COUNT(clientes_contratacion.codigo) = 0, 'S/C - ' , '') sc,
+			clientes.abrev, clientes.nombre cliente
+			FROM clientes LEFT JOIN clientes_contratacion ON clientes.codigo = clientes_contratacion.cod_cliente
+			WHERE clientes.`status` = 'T'
+			GROUP BY clientes.codigo ORDER BY 2 ASC ";
+		} else {
+			$sql = "  SELECT clientes.codigo, IF(COUNT(clientes_contratacion.codigo) = 0, 'S/C - ' , '') sc,
+			clientes.abrev, clientes.nombre cliente
+			FROM clientes LEFT JOIN clientes_contratacion ON clientes.codigo = clientes_contratacion.cod_cliente
+			WHERE clientes.`status` = 'T'
+			AND clientes.codigo IN (SELECT DISTINCT clientes_ubicacion.cod_cliente
+										FROM usuario_clientes, clientes_ubicacion
+										WHERE usuario_clientes.cod_usuario = '" . $usuario . "'
+											AND usuario_clientes.cod_ubicacion = clientes_ubicacion.codigo)
+			GROUP BY clientes.codigo ORDER BY 2 ASC ";
+		}
+		
 		$query = $this->bd->consultar($sql);
 
 		while ($datos = $this->bd->obtener_fila($query)) {
@@ -128,15 +186,26 @@ class Planificacion
 		return $this->datos;
 	}
 
-	function get_planif_ap_ubic($cliente, $contratacion)
+	function get_planif_ap_ubic($cliente, $contratacion, $usuario, $r_cliente)
 	{
 		$this->datos  = array();
-		$sql = "SELECT b.cod_ubicacion, c.descripcion
-		FROM  clientes_contratacion_det b , clientes_ubicacion c
-		WHERE b.cod_contracion = $contratacion
-		AND b.cod_ubicacion = c.codigo
-		AND c.`status` = 'T'
-		GROUP BY b.cod_ubicacion ORDER BY c.descripcion DESC ";
+
+		if ($r_cliente == "F") {
+			$sql = "SELECT b.cod_ubicacion, c.descripcion
+			FROM  clientes_contratacion_det b , clientes_ubicacion c
+			WHERE b.cod_contracion = $contratacion
+			AND b.cod_ubicacion = c.codigo
+			AND c.`status` = 'T'
+			GROUP BY b.cod_ubicacion ORDER BY c.descripcion DESC";
+		}else {
+			$sql = "SELECT b.cod_ubicacion, c.descripcion
+			FROM  clientes_contratacion_det b , clientes_ubicacion c, usuario_clientes
+			WHERE b.cod_contracion = $contratacion
+			AND b.cod_ubicacion = c.codigo
+			AND c.`status` = 'T'
+			AND usuario_clientes.cod_usuario = '$usuario'  AND usuario_clientes.cod_ubicacion = c.codigo
+			GROUP BY b.cod_ubicacion ORDER BY c.descripcion DESC ";
+		}
 
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query)) {

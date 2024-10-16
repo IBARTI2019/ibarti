@@ -16,6 +16,7 @@ class ProductoSubLinea
     $this->datos     = array();
     $this->propiedades     = array();
     $this->lineas     = array();
+    $this->productos     = array();
     $this->bd        = new Database;
   }
 
@@ -46,6 +47,15 @@ class ProductoSubLinea
       $this->lineas[] = $datos;
     }
     return $this->lineas;
+  } 
+
+  public function get_productos($codigo){
+    $sql = "SELECT descripcion FROM productos WHERE cod_sub_linea = '$codigo'";
+    $query = $this->bd->consultar($sql);
+    while ($datos= $this->bd->obtener_fila($query)) {
+      $this->productos[] = $productos;
+    }
+    return $this->productos;
   } 
 
   public function buscar($data){

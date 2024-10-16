@@ -12,7 +12,23 @@ $titulo  = " PROYECCION DE DOTACION DE ALCANCES ";
 $sql01   = "SELECT control.dias_proyeccion FROM control";
 $query01 = $bd->consultar($sql01);
 $row01   = $bd->obtener_fila($query01, 0);
-$d_proyeccion = $row01[0]; ?>
+$d_proyeccion = $row01[0]; 
+
+if ($_SESSION['r_cliente'] == "F") {
+	$sql_cliente    = "SELECT clientes.codigo, clientes.nombre
+						   FROM clientes WHERE status = 'T'
+						  ORDER BY 2 ASC ";
+} else {
+	$sql_cliente = " SELECT clientes.codigo, clientes.nombre
+							FROM clientes
+						WHERE clientes.codigo IN (SELECT DISTINCT clientes_ubicacion.cod_cliente
+							FROM usuario_clientes, clientes_ubicacion
+						WHERE usuario_clientes.cod_usuario = '" . $_SESSION['usuario_cod'] . "'
+							AND usuario_clientes.cod_ubicacion = clientes_ubicacion.codigo)
+						WHERE status = 'T'
+						ORDER BY 2 ASC ";
+}
+?>
 <script language="JavaScript" type="text/javascript">
 	function Add_filtroX() { // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 
@@ -128,7 +144,7 @@ $d_proyeccion = $row01[0]; ?>
 				</select><input type="hidden" name="Nmenu" id="Nmenu" value="<?php echo $Nmenu; ?>" />
 				<input type="hidden" name="mod" id="mod" value="<?php echo $mod; ?>" />
 				<input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol']; ?>" />
-				<input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente']; ?>" />
+				<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente']; ?>" />
 				<input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod']; ?>" /></td>
 		</tr>
 		<tr>

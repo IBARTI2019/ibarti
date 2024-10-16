@@ -22,11 +22,11 @@ require_once('autentificacion/aut_verifica_menu.php');
         <span class="textfieldRequiredMsg">La Descripcion es Requerida.</span></td>
     </tr>
     <tr>
-      <td class="etiqueta" width="25%">Descripci&oacute;n:</td>
+      <td class="etiqueta" width="25%">Descripci&oacute;n: ojo</td>
       <td id="input02" width="75%"><input type="text" name="descripcion" maxlength="60" style="width:300px"/>	  
         <img src="imagenes/ok.gif" alt="Valida" class="validMsg" border="0"/><br>
         <span class="textfieldRequiredMsg">La Descripcion es Requerida.</span>
-		<span class="textfieldMinCharsMsg">Debe Escribir mínimo 2 Caracteres.</span></td>
+		<span class="textfieldMinCharsMsg">Debe Escribir mï¿½nimo 2 Caracteres.</span></td>
     </tr>		
      <tr>
 	     <td height="20" class="etiqueta">Status:</td>

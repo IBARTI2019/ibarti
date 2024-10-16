@@ -32,13 +32,11 @@ control.cl_campo_04_act, control.cl_campo_04_desc,
 control.cod_turno_dl, turno.descripcion AS turno_dl ,
 control.control_arma_linea AS cod_ar_linea, prod_lineas.descripcion AS ar_linea,
 control.control_uniforme_linea AS cod_uniforme_linea, pl.descripcion AS uniforme_linea,
-control.url_doc, control.rop_meses,control.dias_nov_notif,control.min_nov_notif, control.porc_min_aprob_encuesta_preing
-FROM control
-LEFT JOIN prod_lineas ON control.control_arma_linea = prod_lineas.codigo
-LEFT JOIN prod_lineas pl ON control.control_uniforme_linea = pl.codigo, 
-paises, clientes, ficha_status,
+control.url_doc, control.rop_meses,control.dias_nov_notif,control.min_nov_notif, control.porc_min_aprob_encuesta_preing,
+control.min_confirm, control.max_confirm, control.min_in_transport, control.max_in_transport
+FROM control, paises, clientes, ficha_status,
 conceptos, conceptos AS r, conceptos AS cest, conceptos AS hora_ex_d, conceptos AS hora_ex_n,
-roles, cargos, turno, nov_clasif
+roles, cargos, turno, prod_lineas, prod_lineas pl
 WHERE control.cod_pais = paises.codigo
 AND control.oesvica = clientes.codigo
 AND control.ficha_activo = ficha_status.codigo
@@ -106,7 +104,10 @@ $rop_meses       = $result['rop_meses'];
 $dias_nov_notif         = $result['dias_nov_notif'];
 $min_nov_notif       = $result['min_nov_notif'];
 $porc_min_aprob_encuesta_preing       = $result['porc_min_aprob_encuesta_preing'];
-
+$min_confirm       = $result['min_confirm'];
+$max_confirm       = $result['max_confirm'];
+$min_in_transport       = $result['min_in_transport'];
+$max_in_transport       = $result['max_in_transport'];
 ?>
 <table width="80%" align="center">
   <tr valign="top">

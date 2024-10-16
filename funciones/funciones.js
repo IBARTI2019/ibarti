@@ -144,6 +144,21 @@ function EstadoFiltro(valor) {
 		validar.disabled = "";
 	}
 }
+
+
+function EstadoFiltroTrab() {
+	filtroId = document.getElementById("paciFiltroTrab");
+	filtroIndice = filtroId.selectedIndex;
+	filtroValueTrab = filtroId.options[filtroIndice].value;
+
+	var validar = document.getElementById("stdNameTrab");
+	if (filtroValueTrab == '') {
+		validar.disabled = true;
+	} else {
+		validar.disabled = "";
+	}
+}
+
 function Salir01(idX) { // CARGAR EL MODULO DE AGREGAR //
     numX=1;
 	if (confirm("�Esta Seguro de Cerrar")) {
@@ -329,9 +344,9 @@ function Add_ajax02(codigo, codigo2, archivo, contenido) {  // CARGAR  ARCHIVO D
 	}
 }
 function Add_ajax_maestros(codigo, archivo, contenido, tb) {  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO Y TABLAS//
-
+	
 	if (codigo != '') {
-
+      
 		ajax = nuevoAjax();
 		ajax.open("POST", archivo, true);
 		ajax.onreadystatechange = function () {
@@ -345,7 +360,9 @@ function Add_ajax_maestros(codigo, archivo, contenido, tb) {  // CARGAR  ARCHIVO
 		alert("Debe de Seleccionar Un Campo ");
 	}
 }
-
+function procesar() {
+	alert("Haz hecho clic en el botón");
+}
 /*
 $cod_cliente  = $_POST['codigo'];
 $usuario      = $_POST['usuario'];

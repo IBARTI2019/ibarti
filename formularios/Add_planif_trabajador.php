@@ -315,7 +315,7 @@ $title = "Planificacion de ".$leng['trabajador'].", Periodo ($periodo), Desde :"
 				 <img src="imagenes/nuevo.bmp" alt="Agregar" title="Agregar Registro" onClick="Metodo('','agregar')" class="imgLink" width="20px" height="20px" border="null"/>
          <img src="imagenes/detalle.bmp" alt="Detalle" title="Detalle Registro" onclick="Filtrar()" class="imgLink" width="20px" height="20px" border="null"/>
 				 <img src="imagenes/calendario.gif" onClick="Calendario()"  alt="Calendario" title="Cargar Calendario" class="imgLink">
-			 <input type="hidden" name="Nmenu" id="Nmenu" value="<?php echo $Nmenu;?>"/><input type="hidden" name="mod" id="mod" value="<?php echo $mod;?>"/><input type="hidden" name="proced" id="proced" value="<?php echo $proced ;?>"/><input type="hidden" name="periodo" id="periodo" value="<?php echo $periodo;?>"/><input type="hidden" name="usuario" id="usuario" value="<?php echo $usuario;?>"/><input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol'];?>"/><input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente'];?>"/>
+			 <input type="hidden" name="Nmenu" id="Nmenu" value="<?php echo $Nmenu;?>"/><input type="hidden" name="mod" id="mod" value="<?php echo $mod;?>"/><input type="hidden" name="proced" id="proced" value="<?php echo $proced ;?>"/><input type="hidden" name="periodo" id="periodo" value="<?php echo $periodo;?>"/><input type="hidden" name="usuario" id="usuario" value="<?php echo $usuario;?>"/><input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol'];?>"/><input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
 		 </span></td>
 
 	 </tr>

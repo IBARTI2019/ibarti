@@ -3,6 +3,7 @@ define("SPECIALCONSTANT", true);
 include_once('../../../../funciones/funciones.php');
 require("../../../../autentificacion/aut_config.inc.php");
 require_once("../../../../" . class_bdI);
+require_once('../../../../sql/sql_report.php');
 
 class Planificacion
 {
@@ -15,16 +16,31 @@ class Planificacion
 		$this->bd = new Database;
 	}
 
-	function get_cliente()
+	function get_cliente($usuario, $r_cliente)
 	{
 		$this->datos   = array();
-		$sql = "  SELECT clientes.codigo, 
-		-- IF(COUNT(clientes_contratacion.codigo) = 0, 'S/P - ' , '') sc,
-		IF(COUNT(clientes_contratacion.codigo) = 0, '' , '') sc,
-		clientes.abrev, clientes.nombre cliente
-		FROM clientes LEFT JOIN clientes_contratacion ON clientes.codigo = clientes_contratacion.cod_cliente
-		WHERE clientes.`status` = 'T'
-		GROUP BY clientes.codigo ORDER BY 2 ASC ";
+
+		if ($r_cliente == "F") {
+			$sql = "  SELECT clientes.codigo, 
+					-- IF(COUNT(clientes_contratacion.codigo) = 0, 'S/P - ' , '') sc,
+					IF(COUNT(clientes_contratacion.codigo) = 0, '' , '') sc,
+					clientes.abrev, clientes.nombre cliente
+					FROM clientes LEFT JOIN clientes_contratacion ON clientes.codigo = clientes_contratacion.cod_cliente
+					WHERE clientes.`status` = 'T'
+					GROUP BY clientes.codigo ORDER BY 2 ASC ";
+		  } else {
+			$sql = "  SELECT clientes.codigo, 
+						-- IF(COUNT(clientes_contratacion.codigo) = 0, 'S/P - ' , '') sc,
+						IF(COUNT(clientes_contratacion.codigo) = 0, '' , '') sc,
+						clientes.abrev, clientes.nombre cliente
+						FROM clientes LEFT JOIN clientes_contratacion ON clientes.codigo = clientes_contratacion.cod_cliente
+						WHERE clientes.`status` = 'T'
+						AND clientes.codigo IN (SELECT DISTINCT clientes_ubicacion.cod_cliente
+									FROM usuario_clientes, clientes_ubicacion
+									WHERE usuario_clientes.cod_usuario = '" . $usuario . "'
+										AND usuario_clientes.cod_ubicacion = clientes_ubicacion.codigo)
+						GROUP BY clientes.codigo ORDER BY 2 ASC ";
+		  }
 
 		$query = $this->bd->consultar($sql);
 
@@ -82,7 +98,7 @@ class Planificacion
 		return $this->datos;
 	}
 
-	public function get_cargos($cliente, $ubic)
+	public function get_cargos($cliente, $ubic, $usuario)
 	{
 		$this->datos   = array();
 		$sql = " SELECT cargos.codigo, cargos.descripcion FROM cargos
@@ -93,10 +109,16 @@ class Planificacion
 						c.descripcion
 					FROM
 						clientes_supervision a,
-						cargos c
+						cargos c,
+						men_usuarios,
+						planif_perfil_cargos
 					WHERE
 						a.cod_cliente = $cliente
 					AND a.cod_cargo = c.codigo
+					AND men_usuarios.codigo = '$usuario'
+					AND men_usuarios.cod_perfil = planif_perfil_cargos.cod_perfil
+					AND planif_perfil_cargos.cod_cargo = c.codigo
+					AND planif_perfil_cargos.`status` = 'T'
 					GROUP BY 1  ";
 			if ($ubic != '') {
 				$sql = " SELECT
@@ -104,10 +126,16 @@ class Planificacion
 						c.descripcion
 					FROM
 						clientes_supervision a,
-						cargos c
+						cargos c,
+						men_usuarios,
+						planif_perfil_cargos
 					WHERE
 						a.cod_ubicacion = $ubic
 					AND a.cod_cargo = c.codigo
+					AND men_usuarios.codigo = '$usuario'
+					AND men_usuarios.cod_perfil = planif_perfil_cargos.cod_perfil
+					AND planif_perfil_cargos.cod_cargo = c.codigo
+					AND planif_perfil_cargos.`status` = 'T'
 					GROUP BY 1  ";
 			}
 		}
@@ -202,16 +230,26 @@ class Planificacion
 		return $this->datos;
 	}
 
-	function get_planif_ap_ubic($cliente)
+	function get_planif_ap_ubic($cliente, $usuario, $r_cliente)
 	{
 		$this->datos  = array();
-		$sql = "SELECT b.cod_ubicacion, c.descripcion
-		FROM  clientes_supervision b , clientes_ubicacion c
-		WHERE b.cod_ubicacion = c.codigo
-		AND c.cod_cliente = '$cliente'
-		AND c.`status` = 'T'
-		GROUP BY b.cod_ubicacion ORDER BY c.descripcion DESC ";
-
+		if ($r_cliente == "F") {
+			$sql = "SELECT b.cod_ubicacion, c.descripcion
+			FROM  clientes_supervision b , clientes_ubicacion c
+			WHERE b.cod_ubicacion = c.codigo
+			AND c.cod_cliente = '$cliente'
+			AND c.`status` = 'T'
+			GROUP BY b.cod_ubicacion ORDER BY c.descripcion DESC ";
+		}else {
+			$sql = "SELECT b.cod_ubicacion, c.descripcion
+			FROM  clientes_supervision b , clientes_ubicacion c, usuario_clientes
+			WHERE b.cod_ubicacion = c.codigo
+			AND c.cod_cliente = '$cliente'
+			AND c.`status` = 'T'
+			AND usuario_clientes.cod_usuario = '$usuario'  AND usuario_clientes.cod_ubicacion = c.codigo
+			GROUP BY b.cod_ubicacion ORDER BY c.descripcion DESC ";
+		}
+		
 		$query = $this->bd->consultar($sql);
 		while ($datos = $this->bd->obtener_fila($query)) {
 			$this->datos[] = $datos;
@@ -647,7 +685,7 @@ class Planificacion
 		AND v_ficha.cod_cargo = cargos.codigo
 		AND cargos.planificable = 'T'
 		AND v_ficha.cod_ficha NOT IN (SELECT planif_clientes_superv_trab.cod_ficha FROM planif_clientes_superv_trab
-		WHERE planif_clientes_superv_trab.cod_planif_cl = '$apertura' AND  planif_clientes_superv_trab.cod_cliente = $cliente)";
+		WHERE planif_clientes_superv_trab.cod_planif_cl = $apertura AND  planif_clientes_superv_trab.cod_cliente = '$cliente')";
 		$query = $this->bd->consultar($sql);
 		return $this->datos = $this->bd->obtener_fila($query);
 	}

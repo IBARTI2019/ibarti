@@ -47,6 +47,11 @@ $usuario  = $_POST['usuario'];
 $proced   = $_POST['proced'];
 $metodo   = $_POST['metodo'];
 
+$sql_cargo = "SELECT cod_cargo FROM ficha WHERE cod_ficha = '$trabajador';";
+$query_cargo = $bd->consultar($sql_cargo);
+$cargo = $bd->obtener_fila($query_cargo, 0);
+$cod_cargo = $cargo[0];
+
 $i = $_POST['metodo'];
 
 //  PROBLEMAS CON LA FECHA EN APERTURA DE FECHA
@@ -59,10 +64,10 @@ if (isset($_POST['metodo'])) {
 			//	 	 begin();
 
 
-			$sql    = "$SELECT $proced('$metodo', '$apertura', '$trabajador',  '$cliente',
+			$sql    = "$SELECT $proced('$metodo', '$apertura', '$trabajador', '$cliente',
                                '$ubicacion', '$ubicacion_old', '$concepto', '$concepto_old',
 							   '$clasif_asistencia', '$horaD', '$horaN', '$vale', '$feriado',
-							   '$NL', '$usuario')";
+							   '$NL', '$usuario', '$cod_cargo')";
 
 			$query = $bd->consultar($sql);
 

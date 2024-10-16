@@ -16,7 +16,8 @@ $metodo   = $_POST['metodo'];
 $usuario  = $_POST['usuario'];
 
 if(isset($_POST['proced'])){
-     $sql    = "$SELECT $proced('$metodo', '$codigo', '$cod_producto', $cantidad, $dias, '$vencimiento', '$usuario')";						  
+     $sql    = "$SELECT $proced('$metodo', '$codigo', '$cod_producto', $cantidad, $dias, '$vencimiento', '$usuario')";
+	 echo $sql;						  
 	 $query = $bd->consultar($sql);	 
 	}
 	require_once('../funciones/sc_direccionar.php');  	 

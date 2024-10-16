@@ -160,7 +160,11 @@ label {
 					/* background:#632523;  */
 					background: #FF2F2F;
 					/* background:#C00;  */
+					color: white;
+				}
 
+				.fondo03:hover {
+					color: #000 !important;
 				}
 
 				#right{

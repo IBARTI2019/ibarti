@@ -36,7 +36,12 @@ $r_rol     = $_POST['r_rol'];
 
 $admin_kanban = 'F';
 if (isset($_POST['admin_kanban'])) {
-	$admin_kanban     = $_POST['admin_kanban'];
+	$admin_kanban = $_POST['admin_kanban'];
+}
+
+$admin_rrhh = 'F';
+if (isset($_POST['admin_rrhh'])) {
+	$admin_rrhh = $_POST['admin_rrhh'];
 }
 
 $as_orden  = $_POST['as_orden'];
@@ -103,7 +108,7 @@ if (isset($_POST['proced'])) {
 									'$nombre', '$apellido','$login', '$check',
 									'$password', '$pass_ant','$email', '$as_orden',
 									 '$r_cliente', '$r_rol', '', '',
-									'$usuario',  '$status', '$admin_kanban')";
+									'$usuario',  '$status', '$admin_kanban', '$admin_rrhh')";
 	$query = $bd->consultar($sql);
 }
 

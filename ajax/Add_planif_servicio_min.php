@@ -93,7 +93,7 @@ OR (dias_habiles_det.cod_dias_tipo = dias_tipo.dia AND DATE_FORMAT(a.fecha,'%d')
 AND a.cod_cliente = cl.codigo AND a.cod_ubicacion = cu.codigo AND a.cod_ub_puesto = cp.codigo
 AND a.cod_cliente = '$cliente' AND a.cod_ubicacion = '$ubic' AND a.cod_contratacion = '$contratacion' 
 AND a.cod_planif_cl = '$apertura' AND a.`status`='T'  
-GROUP BY a.cod_cliente, a.cod_ubicacion,a.cod_ub_puesto, a.cod_turno, a.fecha";
+GROUP BY a.cod_cliente, a.cod_ubicacion,a.cod_ub_puesto, a.cod_turno, a.cod_cargo, a.fecha";
 $result['sql'][] = $sql;
 $query = $bd->consultar($sql);
 while($rows=$bd->obtener_name($query)){

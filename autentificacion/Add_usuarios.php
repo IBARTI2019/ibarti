@@ -19,6 +19,7 @@ if (isset($_GET['codigo'])) { //== ''
                     men_usuarios.login, men_usuarios.email,
 					men_usuarios.r_cliente, men_usuarios.r_rol,
                     men_usuarios.status, men_usuarios.admin_kanban,
+					men_usuarios.admin_rrhh,
 					men_usuarios.cod_region, IFNULL(regiones.descripcion, 'TODAS') region,
 					men_usuarios.cod_estado, IFNULL(estados.descripcion, 'TODAS') estado,
 					men_usuarios.cod_ciudad, IFNULL(ciudades.descripcion, 'TODAS') ciudad
@@ -46,6 +47,7 @@ if (isset($_GET['codigo'])) { //== ''
 	$r_cliente  = $result['r_cliente'];
 	$r_rol      = $result['r_rol'];
 	$admin_kanban = $result['admin_kanban'];
+	$admin_rrhh = $result['admin_rrhh'];
 	$status     = $result['status'];
 	$disabled   = 'readonly="true"';
 	$metodo     = 'modificar';
@@ -70,6 +72,7 @@ if (isset($_GET['codigo'])) { //== ''
 	$r_cliente  = '';
 	$r_rol      = '';
 	$admin_kanban      = '';
+	$admin_rrhh      = '';
 	$status     = '';
 	$disabled   = '';
 	$metodo     = 'agregar';
@@ -217,6 +220,12 @@ if (isset($_GET['codigo'])) { //== ''
 			<tr>
 				<td class="etiqueta">Administrador Kanban:</td>
 				<td id="radio03">SI<input type="radio" name="admin_kanban" value="T" style="width:auto" <?php echo CheckX($admin_kanban, "T"); ?> /> NO<input type="radio" name="admin_kanban" value="F" style="width:auto" <?php echo CheckX($admin_kanban, "F"); ?> />
+					<br /><span class="radioRequiredMsg">Debe seleccionar un Campo.</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="etiqueta">Administrador RRHH:</td>
+				<td id="radio03">SI<input type="radio" name="admin_rrhh" value="T" style="width:auto" <?php echo CheckX($admin_rrhh, "T"); ?> /> NO<input type="radio" name="admin_rrhh" value="F" style="width:auto" <?php echo CheckX($admin_rrhh, "F"); ?> />
 					<br /><span class="radioRequiredMsg">Debe seleccionar un Campo.</span>
 				</td>
 			</tr>

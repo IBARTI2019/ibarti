@@ -221,8 +221,6 @@ echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nom
             }
     echo   "<td width='10%'>".$row[0]."</td>
 		    <td width='20%'>".$row[2]."</td>
-		    <td>".$row[8]."</td>
-		    <td>".$row[9]."</td>
 		    <td>".$row[10]."</td>
 		    <td>".$row[11]."</td>
 		    <td>".$row[12]."</td>
@@ -282,8 +280,6 @@ echo	$tr = "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nom
  echo   "<td>".$row[0]."</td>
 		    <td width='10%'>".$row[0]."</td>
 		    <td width='20%'>".$row[2]."</td>
-		    <td>".$row[8]."</td>
-		    <td>".$row[9]."</td>
 		    <td>".$row[10]."</td>
 		    <td>".$row[11]."</td>
 		    <td>".$row[12]."</td>

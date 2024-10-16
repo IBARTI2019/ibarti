@@ -433,6 +433,8 @@ if ($metodo == 'modificar' or $metodo == 'consultar') {
 				ficha.campo04
 			FROM
 				ficha
+			LEFT JOIN clientes ON ficha.cod_cliente = clientes.codigo
+			LEFT JOIN clientes_ubicacion ON ficha.cod_ubicacion = clientes_ubicacion.codigo
 			LEFT JOIN ficha_dosis_covid19 ON ficha.cod_dosis_covid19 = ficha_dosis_covid19.codigo
 			LEFT JOIN ficha_historial_covid19 ON ficha_dosis_covid19.codigo = ficha_historial_covid19.cod_dosis
 			AND ficha_historial_covid19.cod_ficha = ficha.cod_ficha,
@@ -444,8 +446,6 @@ if ($metodo == 'modificar' or $metodo == 'consultar') {
 			ocupacion,
 			nivel_academico,
 			turno,
-			clientes,
-			clientes_ubicacion,
 			bancos,
 			preing_camisas,
 			preing_pantalon,
@@ -457,8 +457,6 @@ if ($metodo == 'modificar' or $metodo == 'consultar') {
 			AND ficha.cod_ocupacion = ocupacion.codigo
 			AND ficha.cod_nivel_academico = nivel_academico.codigo
 			AND ficha.cod_turno = turno.codigo
-			AND ficha.cod_cliente = clientes.codigo
-			AND ficha.cod_ubicacion = clientes_ubicacion.codigo
 			AND ficha.cod_banco = bancos.codigo
 			AND ficha.cod_n_contracto = ficha_n_contracto.codigo
 			AND ficha.cod_n_zapatos = preing_zapatos.codigo
@@ -834,7 +832,7 @@ AND codigo <> '$cod_ciudad' ORDER BY descripcion ASC ";
 				<td id="input06"><input type="text" name="telefono" maxlength="40" size="25" value="<?php echo $telefono; ?>" /><br />
 					<span class="textfieldRequiredMsg">El Campo es Requerido...</span>
 				</td>
-				<td class="etiqueta">Tel. Celular: </td>
+				<td class="etiqueta">Tel&eacute;fono con WhatsApp: </td>
 				<td id="custom01"><input type="text" name="celular" maxlength="40" size="25" value="<?php echo $celular; ?>" /><br />
 					<span class="textfieldRequiredMsg">El Campo es Requerido...</span>
 					<span class="textfieldInvalidFormatMsg">El Formato Es Invalido</span>
@@ -1037,9 +1035,10 @@ AND codigo <> '$cod_ciudad' ORDER BY descripcion ASC ";
 							<option value="<?php echo $datos[0]; ?>"><?php echo $datos[1]; ?></option>
 						<?php } ?>
 					</select><br /><span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
-				<td class="etiqueta"><?php echo $leng["ubicacion"]; ?>:</td>
+				<td class="etiqueta"><?php echo $leng["ubicacion"]; ?>: </td>
 				<td id="cl_ubicacion"><select name="ubicacion" style="width:200px">
-						<option value="<?php echo $cod_ubicacion; ?>"><?php echo $ubicacion; ?></option>
+			
+					<option value="<?php echo $cod_ubicacion; ?>"><?php echo $ubicacion; ?></option>
 						<?php $sql = " SELECT clientes_ubicacion.codigo, clientes_ubicacion.descripcion
 				FROM clientes_ubicacion
 				WHERE clientes_ubicacion.cod_cliente = clientes_ubicacion.cod_cliente

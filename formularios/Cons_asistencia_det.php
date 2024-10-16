@@ -410,7 +410,7 @@ AND ficha.cod_ficha = trab_roles.cod_ficha
 AND asistencia.cod_cliente = clientes.codigo 
 AND asistencia.cod_ubicacion = clientes_ubicacion.codigo 
 AND asistencia.cod_concepto = conceptos.codigo 
-AND trab_roles.cod_rol = '$cod_rol' UNION
+AND trab_roles.cod_rol = '$cod_rol' AND '$fec_diaria' >= ficha.fec_ingreso UNION
 SELECT
 pctd.cod_ficha,
 f.cedula,
@@ -625,7 +625,7 @@ $sql_conceptos = " SELECT conceptos.codigo, conceptos.descripcion, conceptos.abr
 								echo '<option value="' . $row04[0] . '">' . $row04[2] . Feriado_as($datos["feriado"], "FER") . Feriado_as($datos["NL"], "NL") . '</option>';
 							}
 							echo '</select><br/><input type="hidden" style="width:0px" id="feriado' . $i . '" name="feriado' . $i . '" value="' . $datos["feriado"] . '" /><input type="hidden" style="width:0px"  id="NL' . $i . '" name="NL' . $i . '" value="' . $datos["NL"] . '" /></td>
-							<td id="clasif_asistenciaX' . $i . '"><select name="clasif_asistencia" id="clasif_asistencia" style="width:120px">
+							<td id="clasif_asistenciaX' . $i . '"><select name="clasif_asistencia" id="clasif_asistencia' . $i . '" style="width:120px">
 							<option value="' . $datos["cod_asistencia_clasif"] . '">' . $datos["asistencia_clasif"] . '</option>                  </select></td>
 							<td><input type="text" id="horaD' . $i . '" style="width:40px" value="' . $datos["hora_extra_d"] . '" maxlength="3"
 				      onfocus="spryHora(this.id)" /><input type="hidden" id="ubicacion_old' . $i . '"  value="' . $datos["cod_ubicacion"] . '"/><input type="hidden" id="concepto_old' . $i . '"  value="' . $datos["cod_concepto"] . '"/></td>

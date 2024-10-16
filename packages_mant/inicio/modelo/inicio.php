@@ -24,7 +24,7 @@ $proced      = "p_usuario";
 					           a.email, DATEDIFF(NOW(), a.fec_mod_pass) dias_caduca,
                		   a.r_cliente, a.r_rol, a.status, c.abrev, c.nombre cl_nombre,
 					           b.ficha_preingreso, b.administrador, b.cod_pais, b.ficha_activo cod_ficha_activo,
-                     b.oesvica AS cl_principal, a.admin_kanban
+                     b.oesvica AS cl_principal, a.admin_kanban, a.admin_rrhh
 		            FROM men_usuarios a, control b, clientes c
                WHERE a.login = '$l'
                  AND a.pass = '$password'
@@ -45,6 +45,7 @@ $proced      = "p_usuario";
     $result['error'] = False;
     $result['codigo'] = $datos['codigo'];
     $result['admin_kanban'] = $datos['admin_kanban'];
+
     //session_name($usuarios_sesion);
      // incia sessiones
     session_start();
@@ -76,6 +77,7 @@ $proced      = "p_usuario";
     	$_SESSION['cl_principal']      = $datos['cl_principal'];
     	$_SESSION['r_cliente']         = $datos['r_cliente'];
     	$_SESSION['r_rol']             = $datos['r_rol'];
+      $_SESSION['admin_rrhh'] = $datos['admin_rrhh'];
   }
 
 

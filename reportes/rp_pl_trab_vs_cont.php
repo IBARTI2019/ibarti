@@ -71,7 +71,7 @@ $titulo      = "REPORTE $titulo";
 			<input type="hidden" name="mod" id="mod" value="<?php echo $mod;?>" />   </td>
 			<input type="hidden" name="archivo" id="archivo" value="<?php echo $archivo2;?>" />
 			<input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol'];?>"/>
-			<input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente'];?>"/>
+			<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
 			<input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod'];?>"/>
 			<input type="hidden" name="contratacion" id="contrato" value=""/>
 			<input type="hidden" name="reporte" id="reporte" value=""/>

@@ -10,9 +10,14 @@ require "../../../../" . Leng;
 $codigo   = $_POST['codigo'];
 $metodo   = $_POST['metodo'];
 $modelo = new ProductoSubLinea;
-
+$productos = array();
+$disabled = '';
 if ($metodo == 'modificar') {
   $titulo    = " MODIFICAR SUB LINEA (" . $codigo . ")";
+  $productos        = $modelo->get_productos($codigo);
+  if(count($productos) > 0){
+    $disabled = 'disabled';
+  }
   $prod        = $modelo->editar($codigo);
   $lineas   = $modelo->get_lineas();
 } else {
@@ -36,14 +41,14 @@ $activo = $prod['status'];
     <table width="80%" align="center">
       <tr>
         <td class="etiqueta">C&oacute;digo:</td>
-        <td><input type="text" name="codigo" id="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo; ?>" required />
+        <td><input type="text" name="codigo" id="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo; ?>" <?php echo $disabled; ?> required />
           Activo: <input name="activo" id="activo" type="checkbox" <?php echo statusCheck("$activo"); ?> value="T" /><br />
         </td>
       </tr>
       <tr>
         <td class="etiqueta">Linea:</td>
         <td>
-          <select name="linea" id="linea" style="width:250px" required>
+          <select name="linea" id="linea" style="width:250px" <?php echo $disabled; ?> required>
             <?php
             if ($metodo == "agregar") {
               echo '<option value="">Seleccione...</option>';
@@ -68,13 +73,13 @@ $activo = $prod['status'];
         <td class="etiqueta">Propiedades: </td>
         <td id="prop">
           <?php
-          echo 'Color: <input name="color" id="color" type="checkbox" ' . statusCheck($prod['color']) . ' value="T" /> 
+          echo 'Color: <input name="color" id="color" type="checkbox" ' . statusCheck($prod['color']) . ' value="T" '. $disabled .'/> 
 
-          Talla: <input name="talla" id="talla" type="checkbox" ' . statusCheck($prod['talla']) . ' value="T" /> 
+          Talla: <input name="talla" id="talla" type="checkbox" ' . statusCheck($prod['talla']) . ' value="T" '. $disabled .'/> 
 
-          Peso: <input name="peso" id="peso" type="checkbox" ' . statusCheck($prod['peso']) . ' value="T" /> 
+          Peso: <input name="peso" id="peso" type="checkbox" ' . statusCheck($prod['peso']) . ' value="T" '. $disabled .' /> 
           
-          Piecubico: <input name="piecubico" id="piecubico" type="checkbox" ' . statusCheck($prod['piecubico']) . ' value="T" />      ';
+          Piecubico: <input name="piecubico" id="piecubico" type="checkbox" ' . statusCheck($prod['piecubico']) . ' value="T" '. $disabled .'/>      ';
           ?>
         </td>
       </tr>

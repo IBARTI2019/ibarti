@@ -9,11 +9,11 @@ if ($metodo == 'modificar') {
 	$codigo = $_GET['codigo'];
 	$bd = new DataBase();
 	$sql = " SELECT novedades.codigo, 
-	                novedades.descripcion,
-                    novedades.cod_nov_clasif, nov_clasif.descripcion AS clasif,
+	                novedades.descripcion, novedades.cod_nov_agrupacion, IF(novedades.cod_nov_agrupacion, nov_agrupacion.descripcion, 'N/A') AS agrupacion,
+                    novedades.cod_nov_clasif, nov_clasif.descripcion AS clasif, nov_clasif.campo04 AS isChecklist,
                     novedades.cod_nov_tipo,  nov_tipo.descripcion AS tipo,                   
                     novedades.`status` , novedades.orden, novedades.dias_vencimiento, novedades.valor_maximo
-               FROM novedades , nov_clasif, nov_tipo 
+               FROM novedades LEFT JOIN nov_agrupacion ON  novedades.cod_nov_agrupacion = nov_agrupacion.codigo, nov_clasif, nov_tipo 
               WHERE novedades.cod_nov_clasif = nov_clasif.codigo	
                 AND novedades.cod_nov_tipo = nov_tipo.codigo 			    
                 AND novedades.codigo = '$codigo' ";
@@ -26,11 +26,14 @@ if ($metodo == 'modificar') {
 	$descripcion    = $result["descripcion"];
 	$cod_clasif     = $result["cod_nov_clasif"];
 	$clasif         = $result["clasif"];
+	$cod_agrupacion   = $result["cod_nov_agrupacion"];
+	$agrupacion       = $result["agrupacion"];
 	$cod_tipo       = $result["cod_nov_tipo"];
 	$tipo           = $result["tipo"];
 	$activo         = $result["status"];
 	$dias_v			= $result["dias_vencimiento"];
 	$v_maximo       = $result["valor_maximo"];
+	$isChecklist   = $result["isChecklist"];
 } else {
 
 	$titulo       = "AGREGAR DATOS BASICOS $titulo";
@@ -39,11 +42,14 @@ if ($metodo == 'modificar') {
 	$descripcion  = "";
 	$cod_clasif   = "";
 	$clasif       = " Seleccione... ";
+	$cod_agrupacion   = "";
+	$agrupacion       = "N/A";
 	$cod_tipo     = "";
 	$tipo         = " Seleccione... ";
 	$dias_v				= 0;
 	$v_maximo  = 1;
 	$activo       = 'T';
+	$isChecklist = 'F';
 }
 ?>
 <script>
@@ -93,9 +99,27 @@ if ($metodo == 'modificar') {
 			<tr>
 				<td class="etiqueta">Clasificaci&oacute;n:</td>
 				<td id="select01"><select name="clasif" id="clasif" style="width:250px">
-						<option value="<?php echo $cod_clasif; ?>"><?php echo $clasif; ?></option>
-						<?php $sql = " SELECT codigo, descripcion FROM nov_clasif WHERE `status` = 'T' 
+						<option value="<?php echo $cod_clasif; ?>" isChecklist="<?php echo $isChecklist; ?>"><?php echo $clasif; ?></option>
+						<?php $sql = " SELECT codigo, descripcion, campo04 FROM nov_clasif WHERE `status` = 'T' 
 		                        AND codigo <> '$cod_clasif' ORDER BY 2 ASC ";
+						$query = $bd->consultar($sql);
+						while ($datos = $bd->obtener_fila($query, 0)) {
+							?>
+							<option value="<?php echo $datos[0]; ?>" isChecklist="<?php echo $datos[2]; ?>"><?php echo $datos[1]; ?></option>
+						<?php } ?>
+					</select><br />
+					<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
+			</tr>
+			<tr id="agrupacionTr" <?php 
+				if($isChecklist != "T" && $isChecklist != "P"){
+					echo 'style="display: none"';
+				} 
+			?>>
+				<td class="etiqueta">Agrupaci&oacute;n:</td>
+				<td id="select03"><select name="agrupacion" id="agrupacion" style="width:250px">
+						<option value="<?php echo $cod_agrupacion; ?>"><?php echo $agrupacion; ?></option>
+						<?php $sql = " SELECT codigo, descripcion FROM nov_agrupacion WHERE `status` = 'T' 
+		                        AND codigo <> '$cod_agrupacion' ORDER BY 2 ASC ";
 						$query = $bd->consultar($sql);
 						while ($datos = $bd->obtener_fila($query, 0)) {
 							?>
@@ -318,9 +342,18 @@ if ($metodo == 'modificar') {
 			isRequired: false
 		});
 	}
-</script>
 
-<script>
+	$("#clasif").on('change', (event)=>{
+		var isChecklist = event.target[event.target.selectedIndex].getAttribute("isChecklist");
+		console.log('$("#clasif").on(change): ', isChecklist)
+		if(isChecklist == 'T' || isChecklist == 'P'){
+			$("#agrupacionTr").show();
+		}else{
+			$("#agrupacion").val("");
+			$("#agrupacionTr").hide();
+		}
+	});
+
 	var modificar = false;
 	var pos_modificar;
 
@@ -363,10 +396,10 @@ if ($metodo == 'modificar') {
 				}
 			}
 			update_table(tabla, arreglo_valores);
-			var v_maximo = $('#v_maximo').val();
-			if(cantidad > v_maximo){
-				$('#v_maximo').val(cantidad);
-			}
+			// var v_maximo = $('#v_maximo').val();
+			// if(cantidad > v_maximo){
+			// 	$('#v_maximo').val(cantidad);
+			// }
 		}
 	}
 
@@ -438,6 +471,7 @@ if ($metodo == 'modificar') {
 		var orden = $('#orden').val();
 		var clasif = $('#clasif').val();
 		var tipo = $('#tipo').val();
+		var agrupacion = $('#agrupacion').val();
 		var descripcion = $('#descripcion').val();
 		var activo = $('#activo').prop('checked') ? 'T' : 'F';
 		var href = $('#href').val();
@@ -462,6 +496,7 @@ if ($metodo == 'modificar') {
 				"orden": orden,
 				"clasif": clasif,
 				"tipo": tipo,
+				"agrupacion": agrupacion,
 				"descripcion": descripcion,
 				"activo": activo,
 				"href": href,
@@ -489,5 +524,6 @@ if ($metodo == 'modificar') {
 
 		update_table('tabla_add', arreglo_valores);
 	}
+
 	update_table('tabla_add', arreglo_valores);
 </script>

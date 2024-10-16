@@ -3,17 +3,21 @@
 $metodo = 'agregar';
 $proced      = "p_fichas_04";
 $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar";
+$admin_rrhh	    = $_SESSION['admin_rrhh'];
 ?>
+
+<link rel="stylesheet" href="css/modal_planif.css" type="text/css" media="screen" />
+
 <form action="scripts/sc_ficha_04.php" method="post" name="add" id="add">
 	<fieldset class="fieldset">
 		<legend>Documento Trabajador </legend>
 		<table width="98%" align="center">
 			<tr>
-				<td width="26%" class="etiqueta">Documentos:</td>
-				<td width="11%" class="etiqueta">Check:</td>
+				<td width="20%" class="etiqueta">Documentos:</td>
+				<td width="10%" class="etiqueta">Check:</td>
 				<td width="18%" class="etiqueta">observación:</td>
-				<td width="12%" class="etiqueta">Descargar - Subir</td>
-				<td width="25%" class="etiqueta">Vencimiento - Fecha</td>
+				<td width="16%" class="etiqueta">Descargar - Subir</td>
+				<td width="22%" class="etiqueta">Vencimiento - Fecha</td>
 				<td width="8%" class="etiqueta">Fec. Ult. Mod.</td>
 			</tr>
 			<?php
@@ -72,9 +76,13 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 			while ($datos = $bd->obtener_fila($query, 0)) {
 				extract($datos);
 				$img_src = $link;
+				$borrarDoc = "";
 				if ($img_src) {
 					$img_ext =  imgExtension($img_src);
-					$img_src = 	'<a target="_blank" href="' . $img_src . '"><img class="imgLink" src="' . $img_ext . '" width="22px" height="22px" /></a>';
+					$img_src = 	'<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\')" width="22px" height="22px"  />';
+					if($admin_rrhh == 'T'){
+						$borrarDoc = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$cod_documento.'\')"/>';
+					}
 				} else {
 					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
@@ -88,7 +96,10 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 						                            ' . CheckX($checks, 'S') . '/>NO <input type = "radio" name="documento' . $cod_documento . '"
 													value = "N" style="width:auto" disabled="disabled" ' . CheckX($checks, 'N') . '/><input type="hidden"                                                     name="documento_old' . $cod_documento . '" value = "' . $checks . '"/></td>
 						<td><textarea name="observ_doc' . $cod_documento . '" cols="20" rows="1">' . $observacion . '</textarea></td>
-						<td>' . $img_src . ' - <a target="_blank" onClick="' . $subir . '"><img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a></td>
+						<td>' . $img_src . ' - <a target="_blank" onClick="' . $subir . '">
+						<img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>'. $borrarDoc . '
+						</td>
+						
 						<td class="texto">SI <input type = "radio" name="vencimiento' . $cod_documento . '"  value = "S" style="width:auto"
 																				' . CheckX($vencimiento, 'S') . '/>NO <input type = "radio"
 																				name="vencimiento' . $cod_documento . '" value = "N" style="width:auto"
@@ -118,12 +129,25 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 			</span>
 			<input name="metodo" type="hidden" value="<?php echo $metodo; ?>" />
 			<input name="proced" type="hidden" value="<?php echo $proced; ?>" />
-			<input name="codigo" type="hidden" value="<?php echo $codigo; ?>" />
-			<input name="usuario" type="hidden" value="<?php echo $usuario; ?>" />
+			<input id="codigo" name="codigo" type="hidden" value="<?php echo $codigo; ?>" />
+			<input id="usuario" name="usuario" type="hidden" value="<?php echo $usuario; ?>" />
 			<input name="href" type="hidden" value="../inicio.php?area=<?php echo $archivo ?>" />
 		</div>
 	</fieldset>
 </form>
+
+<div id="myModalDocument" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="cerrarModalDocument()">&times;</span>
+      <span id='titleDocument'>Documento</span>
+    </div>
+    <div class="modal-body">
+      <div id="modal_documento_cont">
+      </div>
+    </div>
+  </div>
+</div>
 
 <script language="javascript" type="text/javascript">
 	function spryFecVenc(ValorN) {
@@ -133,5 +157,77 @@ $archivo = "$area&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar
 			validateOn: ["blur", "change"],
 			useCharacterMasking: true
 		});
+	}
+
+	function openModalDocument(documentName, link) {	
+		console.log(documentName, link)	
+		$("#myModalDocument").show();
+		$("#titleDocument").html(documentName);
+		var contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+		$("#modal_documento_cont").html(contenido);
+		/* 	
+			$("#modal_documento_cont").html("<img src='imagenes/loading.gif' /> Procesando, espere por favor...");
+			$.ajax({
+				type: 'GET',
+				url: link,
+				responseType: 'arraybuffer',
+				success: function (data){
+					let blob = new Blob([data], { type: 'application/pdf'} );
+					let url = window.URL.createObjectURL(blob);
+					var contenido = '<embed src="' + url + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+					$("#modal_documento_cont").html(contenido);	
+				},
+				error: function() {
+					console.log("Error");
+				}
+			}); 
+		*/
+	}
+
+	function showMessage(message) {
+		$(".messages").html("").show();
+		$(".messages").html(message);
+	}
+
+	function BorrarDocumento(codigoDoc) {
+		if (confirm("¿Esta seguro de eliminar la imagen de este documento?")) {	
+			var codigo = $("#codigo").val();
+			var usuario = $("#usuario").val();
+			var parametros = {
+				"link": "",
+				"ficha": codigo,
+				"doc": codigoDoc,
+				"borrar": true,
+				"usuario": usuario
+			};
+
+			$.ajax({
+				url: 'upload/documentos.php',
+				type: 'POST',
+				data: parametros,
+				success: function (data) {
+					location.reload();
+				},
+				//si ha ocurrido un error
+				error: function () {
+					message = $("<span class='error'>Ha ocurrido un error.</span>");
+					showMessage(message);
+				}
+			});
+		}
+	}
+
+	function _base64ToArrayBuffer(base64) {
+		var binary_string = window.atob(base64);
+		var len = binary_string.length;
+		var bytes = new Uint8Array(len);
+		for (var i = 0; i < len; i++) {
+			bytes[i] = binary_string.charCodeAt(i);
+		}
+		return bytes.buffer;
+	}
+
+	function cerrarModalDocument(refresh) {
+		$("#myModalDocument").hide();
 	}
 </script>

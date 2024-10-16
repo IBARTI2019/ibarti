@@ -13,11 +13,10 @@ $bd = new DataBase();
 
 function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 
-	var rol         = $( "#rol").val();
 	var region      = $( "#region").val();
 	var contrato    = $( "#contrato").val();
-	var estado      = $( "#estado").val();
-	var ciudad      = $( "#ciudad").val();
+	var cliente      = $( "#cliente").val();
+	var ubicacion      = $( "#ubicacion").val();
   var doc_check   = $( "#doc_check").val();
 	var documento   = $( "#documento").val();
 	var doc_vencimiento  = $( "#doc_vencimiento").val();
@@ -28,10 +27,6 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 	var error = 0;
     var errorMessage = ' ';
 
-     if(rol == '') {
-	 var error = error+1;
-	  errorMessage = errorMessage + ' \n Debe Seleccionar un Rol ';
-	}
 	if(error == 0){
 		var contenido = "listar";
 
@@ -50,7 +45,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 				}
 			}
 			ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			ajax.send("rol="+rol+"&region="+region+"&contrato="+contrato+"&estado="+estado+"&ciudad="+ciudad+"&documento="+documento+"&doc_check="+doc_check+"&doc_vencimiento="+doc_vencimiento+"&status="+status+"&trabajador="+trabajador+"");
+			ajax.send("region="+region+"&contrato="+contrato+"&cliente="+cliente+"&ubicacion="+ubicacion+"&documento="+documento+"&doc_check="+doc_check+"&doc_vencimiento="+doc_vencimiento+"&status="+status+"&trabajador="+trabajador+"");
 
 	}else{
  		alert(errorMessage);
@@ -62,14 +57,6 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 <form name="form_reportes" id="form_reportes" action="<?php echo $archivo;?>"  method="post" target="_blank">
 <hr /><table width="100%" class="etiqueta">
  		<tr>
-        <td width="10%"><?php echo $leng['rol']?>:</td>
-		 <td width="14%"><select name="rol" id="rol" style="width:120px;" required>
-					<?php
-					echo $select_rol;
-		   			$query01 = $bd->consultar($sql_rol);
-		 		while($row01=$bd->obtener_fila($query01,0)){
-					 echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
-			   }?></select></td>
         <td width="10%"><?php echo $leng['region']?>:</td>
 		 <td width="14%"><select name="region" id="region" style="width:120px;">
 					<option value="TODOS">TODOS</option>
@@ -78,16 +65,26 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 		 		while($row01=$bd->obtener_fila($query01,0)){
 					 echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
 			   }?></select></td>
-        <td width="10%"><?php echo $leng['contrato']?>: </td>
-		<td width="14%"><select name="contrato" id="contrato" style="width:120px;">
+
+<td width="10%"><?php echo $leng['cliente']?>: </td>
+		<td width="14%"><select name="cliente" id="cliente" style="width:120px;"
+		onchange="Add_Cl_Ubic(this.value, 'contenido_ubic', 'T', '120')">
 					<option value="TODOS">TODOS</option>
 					<?php
-	   			$query01 = $bd->consultar($sql_contracto);
+	   			$query01 = $bd->consultar($sql_cliente);
 		 		while($row01=$bd->obtener_fila($query01,0)){
 					 echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
 			   }?></select></td>
         
-			   <td>status: </td>
+			   <td ><?php echo $leng['ubicacion']?>: </td>
+				<td id="contenido_ubic"><select name="ubicacion" id="ubicacion" style="width:120px;">
+					<option value="TODOS">TODOS</option>
+					<?php
+	   			$query01 = $bd->consultar($sql_ubicacion);
+		 		while($row01=$bd->obtener_fila($query01,0)){
+					 echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
+			   }?></select></td>
+			   		   <td>Estatus: </td>
 				<td><select name="status" id="status" style="width:120px;">
 					<option value="TODOS">TODOS</option>
 					<?php
@@ -95,27 +92,17 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 		 		while($row01=$bd->obtener_fila($query01,0)){
 					 echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
 			   }?></select></td>
-
       <td width="4%" id="cont_img"><img class="imgLink" src="imagenes/actualizar.png" border="0" onclick="Add_filtroX()"></td>
         </tr>
         <tr>
-		<td><?php echo $leng['estado']?>: </td>
-		<td><select name="estado" id="estado" style="width:120px;">
+		<td width="10%"><?php echo $leng['contrato']?>: </td>
+		<td width="14%"><select name="contrato" id="contrato" style="width:120px;">
 					<option value="TODOS">TODOS</option>
 					<?php
-	   			$query01 = $bd->consultar($sql_estado);
+	   			$query01 = $bd->consultar($sql_contracto);
 		 		while($row01=$bd->obtener_fila($query01,0)){
 					 echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
 			   }?></select></td>
-		<td><?php echo $leng['ciudad']?>: </td>
-		<td><select name="ciudad" id="ciudad" style="width:120px;">
-					<option value="TODOS">TODOS</option>
-					<?php
-	   			$query01 = $bd->consultar($sql_ciudad);
-		 		while($row01=$bd->obtener_fila($query01,0)){
-					 echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
-			   }?></select></td>
-
 		 <td>Documentos: </td>
 			<td><select name="documento" id="documento" style="width:120px;">
 					<option value="TODOS">TODOS</option>
@@ -130,17 +117,14 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
                     <option value="S"> SI </option>
                     <option value="N"> NO </option>
            </select></td>
-           <td>&nbsp;</td>
-      </tr>
-      <tr>
-					<td>Doc. Venc.: </td>
+		   <td>Doc. Venc.: </td>
 					<td><select name="doc_vencimiento" id="doc_vencimiento" style="width:120px;">
 										<option value="TODOS"> TODOS </option>
 												<option value="S"> SI </option>
 												<option value="N"> NO </option>
 							 </select></td>
-				
-
+      </tr>
+      <tr>
 		<td>Filtro <?php echo $leng['trabajador']?>.:</td>
 		<td id="select01">
 			<select id="paciFiltro" onchange="EstadoFiltro(this.value)" style="width:120px">
@@ -157,7 +141,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
             <td>&nbsp; <input type="hidden" name="Nmenu" id="Nmenu" value="<?php echo $Nmenu;?>" />
             <input type="hidden" name="mod" id="mod" value="<?php echo $mod;?>" />
             <input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol'];?>"/>
-            <input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente'];?>"/>
+            <input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
             <input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod'];?>"/>  </td>
       </tr>
 </table><hr /><div id="listar">&nbsp;</div>

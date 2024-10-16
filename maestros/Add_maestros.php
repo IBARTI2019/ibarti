@@ -35,6 +35,11 @@ if ($metodo == 'modificar') {
       $sql = " SELECT $tabla.codigo, $tabla.color, $tabla.descripcion,
           $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	$tabla.status, $tabla.inicial, $tabla.anula_vencimiento
           FROM $tabla WHERE codigo = '$codigo' ";
+    } else if ($tabla == 'ruta_de_ventas') {
+      $sql = " SELECT $tabla.codigo, $tabla.descripcion,$tabla.orden,$tabla.descripcion_global,
+	                $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
+				    $tabla.status
+             FROM $tabla WHERE codigo = '$codigo' ";
     } else {
       $sql = " SELECT $tabla.codigo, $tabla.descripcion,
 	                $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
@@ -44,10 +49,13 @@ if ($metodo == 'modificar') {
   }
   $query = $bd->consultar($sql);
   $result = $bd->obtener_fila($query, 0);
-
-  $codigo      = $result['codigo'];
+  
   $codigo_onblur = "";
   $descripcion = $result['descripcion'];
+  if ($tabla == 'ruta_de_ventas') {
+    $descripcionglobal= $result['descripcion_global'];
+  }
+  
   $campo01     = $result['campo01'];
   $campo02     = $result['campo02'];
   $campo03     = $result['campo03'];
@@ -60,7 +68,7 @@ if ($metodo == 'modificar') {
   if ($tabla == 'cargos') {
     $planificable      = $result['planificable'];
   }
-  if ($tabla == 'documentos' || $tabla == 'documentos_cl') {
+  if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas') {
     $orden      = $result['orden'];
   }
   if ($tabla == 'ficha_egreso_motivo') {
@@ -72,16 +80,37 @@ if ($metodo == 'modificar') {
     $anula_vencimiento = $result['anula_vencimiento'];
   }
   $readonly = 'readonly="readonly"';
+  $codigo_orden = "Add_ajax_maestros(this.value, 'ajax/validar_orden.php', 'Contenedor', '$tabla')";
 } else {
+  $readonly = '';
+  $codigo="";
+  if ($tabla == 'ruta_de_ventas') {
+    $sql_tipos = "SELECT max(codigo) as Codigo FROM ruta_de_ventas WHERE codigo > 0 ;";
+    $query_tipos = $bd->consultar($sql_tipos);
+    $result = $bd->obtener_fila($query_tipos, 0);
+    $codigo = $result['Codigo'] + 1;
+    $descripcionglobal= '';
+    $readonly = 'readonly="readonly"';
+  }
+  if ($tabla == 'subruta_de_ventas') {
+    $sql_tipos = "SELECT max(codigo) as Codigo FROM subruta_de_ventas WHERE codigo > 0 ;";
+    $query_tipos = $bd->consultar($sql_tipos);
+    $result = $bd->obtener_fila($query_tipos, 0);
+    $codigo = $result['Codigo'] + 1;
+    $readonly = 'readonly="readonly"';
+  }
+
   if ($tabla == 'cargos') {
     $sql_tipos = "SELECT codigo, descripcion FROM tipos_cargo WHERE status = 'T';";
     $query_tipos = $bd->consultar($sql_tipos);
   }
-  $readonly = '';
-  $codigo      = '';
-  $codigo_onblur = "Add_ajax_maestros(this.value, 'ajax/validar_maestros.php', 'Contenedor', '$tabla')";
-  $descripcion = '';
+
   $orden = '';
+  $codigo_onblur = "Add_ajax_maestros(this.value, 'ajax/validar_maestros.php', 'Contenedor', '$tabla')";
+  $codigo_orden = "Add_ajax_maestros(this.value, 'ajax/validar_orden.php', 'Contenedor', '$tabla')";
+ 
+  $descripcion = '';
+ 
   $kanban = 'F';
   $color = '';
   $inicial = 'F';
@@ -100,7 +129,7 @@ if ($metodo == 'modificar') {
   <table width="80%" align="center">
     <tr>
       <td class="etiqueta">C&oacute;digo:</td>
-      <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo; ?>" onblur="<?php echo $codigo_onblur; ?>" <?php echo $readonly; ?> />
+      <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo; ?> "  <?php echo $readonly; ?>/>
         Activo: <input name="activo" type="checkbox" <?php echo statusCheck("$status"); ?> value="T" /> 
         <?php
         if ($tabla == 'cargos') {
@@ -120,11 +149,20 @@ if ($metodo == 'modificar') {
     </tr>
     <tr>
       <td class="etiqueta">Descripci&oacute;n: </td>
-      <td id="input02"><input type="text" name="descripcion" maxlength="100" style="width:300px" value="<?php echo $descripcion; ?>" /><br />
+      <td id="input02"><input type="text" name="descripcion" maxlength="100" style="width:300px" value="<?php echo $descripcion; ?>"  /><br />
         <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
     </tr>
+   
     <?php
+    if ($tabla == 'ruta_de_ventas') {
+      echo  '<tr>
+            <td class="etiqueta">Descripcion Global: </td>
+            <td id="input03"><input type="text" name="descripcionglobal" maxlength="100" style="width:300px" value="'.$descripcionglobal.'" /><br />
+            <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
+            </td>
+          </tr>';
+    }
     if ($tabla == 'ficha_egreso_motivo') {
       echo  '<tr>
           <td class="etiqueta">Motivo:</td>
@@ -150,14 +188,18 @@ if ($metodo == 'modificar') {
             </td>    
           </tr>';
     }
-    if ($tabla == 'documentos' || $tabla == 'documentos_cl') {
+    if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas' ) {
       echo '<tr>
-            <td class="etiqueta">Orden:</td> 
-            <td>
-            <input type="number" name="orden" style="width:50px" value="' . $orden . '" /><br />
-            <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
-            </td>    
-          </tr>';
+      <td class="etiqueta">Orden:</td> 
+      <td  id="input04" > <input type="number" name="orden" style="width:50px" value="' . $orden . '" ';
+
+      if($tabla == 'ruta_de_ventas' ){
+        echo ' onchange="'.$codigo_orden.'" ';
+      }
+      echo ' />
+      <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
+      </td>    
+      </tr>';
     }
     if ($tabla == 'nov_status_kanban') {
       echo '<tr>
@@ -256,6 +298,7 @@ if ($metodo == 'modificar') {
   var input02 = new Spry.Widget.ValidationTextField("input02", "none", {
     validateOn: ["blur", "change"]
   });
+  
   var radio01_5 = new Spry.Widget.ValidationRadio("radio01_5", {
     validateOn: ["change", "blur"]
   });

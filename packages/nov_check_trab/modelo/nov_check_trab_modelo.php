@@ -34,7 +34,8 @@ class check_list
 		$this->datos   = array();
 		$sql = 'SELECT
 							novedades.codigo,
-							novedades.descripcion novedad
+							novedades.descripcion novedad,
+							novedades.cod_nov_agrupacion cod_agrupacion
 						FROM
 							novedades,
 							nov_tipo,

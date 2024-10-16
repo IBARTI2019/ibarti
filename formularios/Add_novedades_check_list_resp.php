@@ -6,7 +6,7 @@ $NmenuX = 435;
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report_t.php');
 $mod     = $_GET['mod'];
-$titulo  = "CHECK LIST RESPUESTA";
+$titulo  = "CHECK LIST RESPUESTA CLIENTES";
 $archivo = "novedades_check_list_resp";
 $metodo  = $_GET['metodo'];
 $href    = "../inicio.php?area=formularios/Cons_$archivo&Nmenu=$Nmenu&mod=$mod";
@@ -434,7 +434,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 			<?php if ($metodo == "modificar") { // echo statusCheck("$activo");
 				$sql   = "  SELECT nov_check_list_det.cod_check_list,
                            nov_check_list_det.cod_novedades, novedades.descripcion AS novedad,
-                           nov_check_list_det.cod_valor, nov_check_list_det.observacion
+                           nov_check_list_det.cod_valor, nov_check_list_det.observacion, novedades.cod_nov_agrupacion
                       FROM nov_check_list_det , novedades
                      WHERE nov_check_list_det.cod_check_list = '$codigo'
                        AND nov_check_list_det.cod_novedades = novedades.codigo ";
@@ -456,6 +456,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
     <tr>
       <td><textarea disabled="disabled" cols="55"  rows="1">' . $datos[2] . '</textarea>
 	      <input type="hidden" name="cod_valor_' . $cod_nov . '" value="' . $datos[0] . '" />
+		  <input type="hidden" name="cod_agrupacion_' . $cod_nov  . '" value="' . $datos[5] . '" />
 		  <input type="hidden" name="check_list[]" value="' . $cod_nov . '" /></td>
  <td>';
 					while ($datos02 = $bd->obtener_fila($query02, 0)) {
@@ -480,7 +481,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		<span class="art-button-wrapper">
 			<span class="art-button-l"> </span>
 			<span class="art-button-r"> </span>
-			<input type="submit" name="salvar" id="salvar" value="Guardar" class="readon art-button" />
+			<input type="button" name="salvar" id="salvar" class="readon art-button" onclick="Guardar()" value="Guardar" />
 		</span>&nbsp;
 		<span class="art-button-wrapper">
 			<span class="art-button-l"> </span>
@@ -501,7 +502,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 		<input name="href" type="hidden" value="<?php echo $href; ?>" />
 		<input type="hidden" name="descripcion" value="" />
 		<input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol']; ?>" />
-		<input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente']; ?>" />
+		<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente']; ?>" />
 		<input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod']; ?>" />
 	</div>
 </form>

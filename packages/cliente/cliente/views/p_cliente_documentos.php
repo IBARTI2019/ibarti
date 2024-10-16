@@ -78,7 +78,7 @@ $archivo = "area=packages/cliente/cliente/index&Nmenu=&codigo=$codigo&metodo=mod
 			if (file_exists("../../../../" . $link) && $link != null && $link != "") {
 
 				$img_ext =  imgExtension($img_src);
-				$img_src = 	'<a target="_blank" href="' . $img_src . '"><img class="imgLink" src="' . $img_ext . '" width="22px" height="22px" /></a>';
+				$img_src = 	'<a target="_blank" href="' . $img_src . '"><img src="' . $img_ext . '" width="22px" height="22px" /></a>';
 			} else {
 				$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 			}

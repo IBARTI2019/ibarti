@@ -6,11 +6,9 @@ require "../".class_bdI;
 require "../".Leng;
 $bd = new DataBase();
 
-
-$rol           = $_POST['rol'];
 $region        = $_POST['region'];
-$estado        = $_POST['estado'];
-$ciudad        = $_POST['ciudad'];
+$cliente        = $_POST['cliente'];
+$ubicacion        = $_POST['ubicacion'];
 $contrato      = $_POST['contrato'];
 $documento     = $_POST['documento'];
 $doc_check     = $_POST['doc_check'];
@@ -30,20 +28,16 @@ $trabajador    = $_POST['trabajador'];
 					AND ficha.cod_contracto = contractos.codigo
 					AND ficha.cod_ficha_status = ficha_status.codigo ";
 
-	if($rol != "TODOS"){
-		$where .= " AND roles.codigo = '$rol' ";
-	}
-
 	if($region != "TODOS"){
 		$where .= " AND regiones.codigo = '$region' ";
 	}
 
-	if($estado != "TODOS"){
-		$where .= " AND estados.codigo = '$estado' ";  // cambie AND asistencia.co_cont = '$contracto'
+	if($cliente != "TODOS"){
+		$where .= " AND ficha.cod_cliente = '$cliente' ";  // cambie AND asistencia.co_cont = '$contracto'
 	}
 
-	if($ciudad != "TODOS"){
-		$where  .= " AND ciudades.codigo = '$ciudad' ";
+	if($ubicacion != "TODOS"){
+		$where  .= " AND ficha.cod_ubicacion = '$ubicacion' ";
 	}
 
 	if($contrato != "TODOS"){

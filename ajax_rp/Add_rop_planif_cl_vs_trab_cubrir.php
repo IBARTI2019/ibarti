@@ -11,6 +11,7 @@ $region    = $_POST['region'];
 $estado    = $_POST['estado'];
 $cliente    = $_POST['cliente'];
 $ubicacion    = $_POST['ubicacion'];
+$maximo    = $_POST['maximo'];
 //$cargos  = $_POST['cargos'];
 
 $fecha_D   = conversion($_POST['fecha_desde']);
@@ -90,12 +91,13 @@ AND clientes_ubicacion.cod_cliente = clientes.codigo
 AND turno.factor = 'dis'
 $WHERE
 GROUP BY 5,7";
+
 $query2 = $bd->consultar($sql2);
 while($rows=$bd->obtener_name($query2)){
 	$result['excepcion'][] = $rows;
 }
 
-$sql = "SELECT regiones.codigo cod_region,regiones.descripcion region,
+$sql3 = "SELECT a.fecha, regiones.codigo cod_region,regiones.descripcion region,
 estados.codigo cod_estado,estados.descripcion estado,
 a.cod_cliente,clientes.abrev cliente,a.cod_ubicacion,clientes_ubicacion.descripcion ubicacion,
 SUM(a.cantidad) cantidad,SUM(a.cantidad*t.trab_cubrir) trab_neces
@@ -111,12 +113,17 @@ INNER JOIN dias_habiles ON t.cod_dia_habil = dias_habiles.codigo
 INNER JOIN dias_habiles_det ON dias_habiles_det.cod_dias_habiles = dias_habiles.codigo
 INNER JOIN dias_tipo ON (dias_habiles_det.cod_dias_tipo = dias_tipo.dia AND Dia_semana(a.fecha)= dias_tipo.descripcion) 
 OR (dias_habiles_det.cod_dias_tipo = dias_tipo.dia AND dias_tipo.tipo = 'D')
-OR (dias_habiles_det.cod_dias_tipo = dias_tipo.dia AND DATE_FORMAT(a.fecha,'%d') = dias_tipo.descripcion)
-WHERE a.fecha = '$fecha_D'
-$WHERE
-GROUP BY 5,7";
+OR (dias_habiles_det.cod_dias_tipo = dias_tipo.dia AND DATE_FORMAT(a.fecha,'%d') = dias_tipo.descripcion)";
 
-$query = $bd->consultar($sql);
+if($maximo == 'T'){
+	$sql3 .= " WHERE DATE_FORMAT(a.fecha, '%Y-%m') = DATE_FORMAT('$fecha_D', '%Y-%m') ";
+}else{
+	$sql3 .= " WHERE a.fecha = '$fecha_D' ";
+}
+
+$sql3 .= "$WHERE GROUP BY 1,6,8";
+
+$query = $bd->consultar($sql3);
 while($rows=$bd->obtener_name($query)){
 	$result['contrato'][] = $rows;
 }

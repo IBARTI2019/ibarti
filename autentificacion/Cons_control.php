@@ -1,6 +1,10 @@
 <?php 
 $Nmenu = '006';
 require_once('autentificacion/aut_verifica_menu.php');
+require_once('sql/sql_report.php');
+define("SPECIALCONSTANT", true);
+require("autentificacion/aut_config.inc.php");
+require Leng;
 
 $archivo = "control";
 $metodo  = "modificar";
@@ -23,7 +27,7 @@ if(isset($_GET['pagina'])){
     	<li class="TabbedPanelsTab">MENSAJERIA</li>
     	<li class="TabbedPanelsTab">SERVIDOR DE CORREO SALIENTE (SMTP)</li>
     	<li class="TabbedPanelsTab">NOTIFICACIONES</li>
-		<li class="TabbedPanelsTab">CONTROL RFDI</li>
+		<li class="TabbedPanelsTab">CONFIRMACIONES</li>
 		<li class="TabbedPanelsTab">OTROS</li>		
 	 </ul>				
 	  <div class="TabbedPanelsContentGroup">
@@ -32,7 +36,7 @@ if(isset($_GET['pagina'])){
          <div class="TabbedPanelsContent"><?php include("cont_mensajeria.php");?></div>
          <div class="TabbedPanelsContent"><?php include("cont_smtp.php");?></div>
 	     <div class="TabbedPanelsContent"><?php include("cont_notificaciones.php");?></div>
-		 <div class="TabbedPanelsContent"><?php include("Cons_RFID.php");?></div>
+		 <div class="TabbedPanelsContent"><?php include("cont_confirmaciones.php");?></div>
 		 <div class="TabbedPanelsContent"><?php include("cont_otros.php");?></div>
 	  </div>	 
  </div> 

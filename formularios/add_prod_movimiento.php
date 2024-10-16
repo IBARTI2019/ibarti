@@ -296,7 +296,7 @@ function Validar02(valor){
             <input name="usuario" type="hidden" value="<?php echo $usuario;?>" />
 	        <input name="href" type="hidden" value="<?php echo $archivo2;?>"/>
             <input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol'];?>"/>
-             <input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente'];?>"/>
+             <input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
              <input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod'];?>"/>
             </div>
 </body>

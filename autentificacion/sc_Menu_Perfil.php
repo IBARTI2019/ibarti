@@ -14,6 +14,8 @@ $href        = $_POST['href'];
 $usuario     = $_POST['usuario'];
 $orden       = $_POST['orden'];
 $status      = statusbd($_POST['status']);
+$cod_criticidad= $_POST['cod_criticidad'];
+// codcriticidad
 
 	if (isset($_POST['metodo'])) {
 	$i=$_POST['metodo'];
@@ -21,8 +23,8 @@ $status      = statusbd($_POST['status']);
 		case 'agregar':
 		
 				$sql = "INSERT INTO men_perfiles
-					           (codigo, descripcion, orden, status )		
-			            VALUES ('$codigo', '$descripcion', '$orden', '$status')";						  
+					           (codigo, descripcion, orden, status, cod_criticidad )		
+			            VALUES ('$codigo', '$descripcion', '$orden', '$status','$cod_criticidad')";						  
 			    $query = $bd->consultar($sql);	
 
 		break;
@@ -30,7 +32,7 @@ $status      = statusbd($_POST['status']);
 
 					$sql =" UPDATE men_perfiles SET   
 								   descripcion  = '$descripcion',    orden   = '$orden',
-								   status       = '$status'								    
+								   status       = '$status',	cod_criticidad = '$cod_criticidad'					    
 						    WHERE  codigo       = '$codigo'";
 			    $query = $bd->consultar($sql);	
 

@@ -8,14 +8,17 @@
 <?php
 include_once('../funciones/funciones.php');
 require("../autentificacion/aut_config.inc.php");
-require_once("../" . class_bd);
+require_once("../".class_bdI);
 $bd = new DataBase();
 //include_once('../funciones/mensaje_error.php');
 $tabla    = $_POST['tabla'];
 $tabla_id = 'codigo';
 
 $codigo      = $_POST['codigo'];
+
 $descripcion = $_POST['descripcion'];
+$descripcion_global=$_POST['descripcionglobal'];
+$cod_ruta=$_POST['cod_ruta'];
 $tipo = null;
 if (isset($_POST['tipo'])) {
 	$tipo = $_POST['tipo'];
@@ -40,6 +43,7 @@ $campo04 = $_POST['campo04'];
 $activo = 'F';
 if (isset($_POST['activo'])) {
 	$activo      = statusbd($_POST['activo']);
+	
 }
 $kanban = 'F';
 if (isset($_POST['kanban'])) {
@@ -120,12 +124,25 @@ if (isset($_POST['metodo'])) {
 					VALUES ('$codigo', '$descripcion', '$color',
 							'$campo01', '$campo02', '$campo03', '$campo04', 
 							'$usuario', '$date', '$usuario','$date' , '$activo', '$inicial', '$anula_vencimiento')";
-				} else {
+				} else if  ($tabla == 'ruta_de_ventas') {
+					$sql = "INSERT INTO $tabla (codigo, descripcion,descripcion_global, orden, campo01, campo02, campo03, campo04,
+					cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status) 
+					VALUES ('$codigo', '$descripcion','$descripcion_global', $orden,
+					'$campo01', '$campo02', '$campo03', '$campo04', 
+					'$usuario', '$date', '$usuario','$date' , '$activo')";
+				} else if  ($tabla == 'subruta_de_ventas') {
 					$sql = "INSERT INTO $tabla (codigo, descripcion, campo01, campo02, campo03, campo04,
-                                            cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status) 
-                                    VALUES ('$codigo', '$descripcion',
-									        '$campo01', '$campo02', '$campo03', '$campo04', 
-											'$usuario', '$date', '$usuario','$date' , '$activo')";
+					cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status, cod_ruta) 
+					VALUES ('$codigo', '$descripcion',
+					'$campo01', '$campo02', '$campo03', '$campo04', 
+					'$usuario', '$date', '$usuario','$date' , '$activo', $cod_ruta)";
+				} else {
+
+					$sql = "INSERT INTO $tabla (codigo, descripcion, campo01, campo02, campo03, campo04,
+					cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status) 
+					VALUES ('$codigo', '$descripcion',
+					'$campo01', '$campo02', '$campo03', '$campo04', 
+					'$usuario', '$date', '$usuario','$date' , '$activo')";
 				}
 			}
 			$query = $bd->consultar($sql);
@@ -140,15 +157,30 @@ if (isset($_POST['metodo'])) {
 					$query = $bd->consultar($sql_concepto);
 				}
 			}
-			echo $sql;
+			
 			break;
 		case 'modificar':
-			$sql = "UPDATE $tabla SET   
-						          codigo          = '$codigo',     descripcion    = '$descripcion',
+			$sql = "UPDATE $tabla SET descripcion    = '$descripcion',
 								  campo01     = '$campo01',    campo02        = '$campo02',
 								  campo03     = '$campo03',    campo04        = '$campo04', 
 						          cod_us_mod  = '$usuario',    fec_us_mod     = '$date',
-								  status      = '$activo'";
+								  status      = '$activo' ";
+			if ($tabla == 'subruta_de_ventas') {
+				$sql = "UPDATE $tabla SET   
+						          descripcion    = '$descripcion',
+								  campo01     = '$campo01',    campo02        = '$campo02',
+								  campo03     = '$campo03',    campo04        = '$campo04', 
+						          cod_us_mod  = '$usuario',    fec_us_mod     = '$date',
+								  status      = '$activo', cod_ruta = $cod_ruta ";
+			}						  
+			if ($tabla == 'ruta_de_ventas') {
+				$sql = "UPDATE $tabla SET codigo = '$codigo',descripcion_global = '$descripcion_global', descripcion= '$descripcion',orden='$orden',
+								  campo01     = '$campo01',    campo02        = '$campo02',
+								  campo03     = '$campo03',    campo04        = '$campo04', 
+						          cod_us_mod  = '$usuario',    fec_us_mod     = '$date',
+								  status      = '$activo' ";
+		       					  
+			}				  
 			if ($tabla == 'cargos') {
 				$sql .= " ,planificable = '$planificable', cod_tipo = $tipo ";
 			}

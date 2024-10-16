@@ -4,7 +4,7 @@ $metodo   = "actualizar";
 $titulo   = " Novedades ".$leng['cliente']."";
 $archivo  = "nov_clientes";
 require_once('autentificacion/aut_verifica_menu.php');
-	require_once('sql/sql_report_t.php');
+require_once('sql/sql_report_t.php');
 $archivo2 = "../inicio.php?area=maestros/Cons_$archivo&Nmenu=$Nmenu&mod=".$_GET['mod']."";
 $bd = new DataBase();
 ?>
@@ -31,35 +31,36 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO//
 	var campo01 = 1;
     var errorMessage = 'Debe Seleccionar Todo Los Campos';
 
-     if(cliente == '') {
+    if(cliente == '') {
      var errorMessage = 'Codigo Invalido';
 	 var campo01 = campo01+1;
 	}
 
-     if((ubicacion == '') ||  (ubicacion == 'TODOS')) {
-	 var campo01 = campo01+1;
-	}
-     if(nov_clasif == '') {
+    // if((ubicacion == '') ||  (ubicacion == 'TODOS')) {
+	//  var campo01 = campo01+1;
+	// }
+
+    if(nov_clasif == '') {
 	 var campo01 = campo01+1;
 	}
 
-     if(nov_tipo == '') {
+    if(nov_tipo == '') {
 	 var campo01 = campo01+1;
 	}
 
 	if(campo01 == 1){
 		var valor = "ajax/nov_clientes.php";
 		ajax=nuevoAjax();
-	ajax.open("POST", valor, true);
-	ajax.onreadystatechange=function(){
-		if (ajax.readyState==4){
-		document.getElementById("Contenedor01").innerHTML = ajax.responseText;
+		ajax.open("POST", valor, true);
+		ajax.onreadystatechange=function(){
+			if (ajax.readyState==4){
+			document.getElementById("Contenedor01").innerHTML = ajax.responseText;
+			}
 		}
-	}
-	ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-	ajax.send("cliente="+cliente+"&ubicacion="+ubicacion+"&nov_clasif="+nov_clasif+"&nov_tipo="+nov_tipo+"");
-	 }else{
-	toastr.info(errorMessage);
+		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		ajax.send("cliente="+cliente+"&ubicacion="+ubicacion+"&nov_clasif="+nov_clasif+"&nov_tipo="+nov_tipo+"");
+		}else{
+		toastr.info(errorMessage);
 	 }
 }
 
@@ -95,7 +96,7 @@ function llenar_nov_tipo(clasificacion){
    <tr>
    <tr>
            <td class="etiqueta"><?php echo $leng['cliente']?>:</td>
-			<td><select name="cliente" id="cliente" style="width:200px;" onchange="Add_Cl_Ubic(this.value, 'contenido_ubic', 'F', '200')">
+			<td><select name="cliente" id="cliente" style="width:200px;" onchange="Add_Cl_Ubic(this.value, 'contenido_ubic', 'T', '200')">
 					    <option value="TODOS">TODOS</option>
 					<?php
 	   			$query01 = $bd->consultar($sql_cliente);
@@ -103,7 +104,7 @@ function llenar_nov_tipo(clasificacion){
 					 echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
 			   }?></select></td>
 			<td class="etiqueta"><?php echo $leng['ubicacion']?>: </td>
-			<td id="contenido_ubic"><select name="ubicacion" id="ubicacion" style="width:200px;">
+			<td id="contenido_ubic"><select name="ubicacion" id="ubicacion" style="width:200px;" onchange="Add_filtroX()">
 					                        <option value="TODOS">TODOS</option>
                                     </select></td>
 </tr>

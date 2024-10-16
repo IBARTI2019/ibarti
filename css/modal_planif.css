@@ -89,6 +89,11 @@ table.tabla_planif {
     position:relative;
 }
 
+table.tabla_planif2 {
+    border-spacing: 0 !important;
+    border-collapse: separate !important;
+}
+
 .tabla_planif th, .tabla_planif td {
     border: 1px solid black;
     font-family: Verdana, Arial, Helvetica, sans-serif;

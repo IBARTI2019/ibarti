@@ -373,7 +373,7 @@ if($metodo == "agregar3"){
     <input name="proced" type="hidden" value="<?php echo $proced;?>" />
     <input name="href" type="hidden" value="<?php echo $href;?>"/>
     <input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol'];?>"/>
-    <input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente'];?>"/>
+    <input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente'];?>"/>
     <input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod'];?>"/>
   </div>
 </form>
@@ -435,7 +435,7 @@ if($metodo == "agregar3"){
      <td align="center">&nbsp;</td>
      </tr>';
    } */?>
-   <tr><td colspan="5"><input type="hidden" id="Nmenu" name="Nmenu" value="<?php // echo $Nmenu;?>" /><input type="hidden" id="mod" name="mod" value="<?php // echo $mod;?>" /><input type="hidden" name="href"  value="../inicio.php?area=<?php // echo $href;?>"/><input type="hidden" name="metodo" value="<?php // echo $metodo;?>"/><input type="hidden"  id="i" value="<?php // echo $i;?>"/><input type="hidden" name="proced2" id="proced2" value="<?php // echo $proced2;?>"/><input type="hidden" name="r_rol" id="r_rol" value="<?php // echo $_SESSION['r_rol'];?>"/><input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php // echo $_SESSION['r_cliente'];?>"/><input type="hidden" name="usuario" id="usuario" value="<?php // echo $_SESSION['usuario_cod'];?>"/></td></tr>
+   <tr><td colspan="5"><input type="hidden" id="Nmenu" name="Nmenu" value="<?php // echo $Nmenu;?>" /><input type="hidden" id="mod" name="mod" value="<?php // echo $mod;?>" /><input type="hidden" name="href"  value="../inicio.php?area=<?php // echo $href;?>"/><input type="hidden" name="metodo" value="<?php // echo $metodo;?>"/><input type="hidden"  id="i" value="<?php // echo $i;?>"/><input type="hidden" name="proced2" id="proced2" value="<?php // echo $proced2;?>"/><input type="hidden" name="r_rol" id="r_rol" value="<?php // echo $_SESSION['r_rol'];?>"/><input type="hidden" name="r_cliente" id="r_cliente" value="<?php // echo $_SESSION['r_cliente'];?>"/><input type="hidden" name="usuario" id="usuario" value="<?php // echo $_SESSION['usuario_cod'];?>"/></td></tr>
  </table></div></form></div> -->
 </body>
 </html>

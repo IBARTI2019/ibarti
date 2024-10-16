@@ -8,12 +8,28 @@ $archivo = "reportes/rp_nov_check_list_det.php?Nmenu=$Nmenu&mod=$mod";
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report.php');
 $bd = new DataBase();
+
+if ($_SESSION['r_cliente'] == "F") {
+	$sql_cliente    = "SELECT clientes.codigo, clientes.nombre
+						   FROM clientes WHERE clientes.status = 'T'
+						  ORDER BY 2 ASC ";
+  } else {
+	$sql_cliente = " SELECT clientes.codigo, clientes.nombre
+						 FROM clientes
+						WHERE clientes.status = 'T' AND 
+						clientes.codigo IN (SELECT DISTINCT clientes_ubicacion.cod_cliente
+						 FROM usuario_clientes, clientes_ubicacion
+						WHERE usuario_clientes.cod_usuario = '" . $_SESSION['usuario_cod'] . "'
+						  AND usuario_clientes.cod_ubicacion = clientes_ubicacion.codigo)
+					 ORDER BY 2 ASC ";
+  }
 ?>
 <script language="JavaScript" type="text/javascript">
 	function Add_filtroX() { // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 		var codigo = $("#codigo").val();
 		var clasif = $("#clasif").val();
 		var tipo = $("#tipo").val();
+		var agrupacion = $("#agrupacion").val();
 		var cliente = $("#cliente").val();
 		var ubicacion = $("#ubicacion").val();
 		var status = $("#status").val();
@@ -46,6 +62,7 @@ $bd = new DataBase();
 				"codigo": codigo,
 				"clasif": clasif,
 				"tipo": tipo,
+				"agrupacion": agrupacion,
 				"cliente": cliente,
 				"ubicacion": ubicacion,
 				"status": status,
@@ -142,6 +159,15 @@ $bd = new DataBase();
 			<td colspan="2">&nbsp;</td>
 		</tr>
 		<tr>
+			<td>Agrupacion:</td>
+			<td><select name="agrupacion" id="agrupacion" style="width:120px;">
+					<option value="TODOS">TODOS</option>
+					<?php
+					$query01 = $bd->consultar($sql_nov_agrupacion);
+					while ($row01 = $bd->obtener_fila($query01, 0)) {
+						echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
+					} ?>
+				</select></td>
 			<td>Código:</td>
 			<td><input style="width:120px;" name="codigo" id="codigo" type="text" /></td>
 			<td>Filtro <?php echo $leng['trab'] ?>.:</td>
@@ -157,7 +183,7 @@ $bd = new DataBase();
 			</td>
 
 			<td><?php echo $leng['trabajador'] ?>:</td>
-			<td colspan="3"><input id="stdName" type="text" style="width:300px" disabled="disabled" />
+			<td><input id="stdName" type="text" style="width:120px" disabled="disabled" />
 				<input type="hidden" name="trabajador" id="stdID" value="" />
 			</td>
 
@@ -165,7 +191,7 @@ $bd = new DataBase();
 				<input type="hidden" name="mod" id="mod" value="<?php echo $mod; ?>" />
 				<input type="hidden" name="archivo" id="archivo" value="<?php echo $archivo; ?>" />
 				<input type="hidden" name="r_rol" id="r_rol" value="<?php echo $_SESSION['r_rol']; ?>" />
-				<input type="hidden" name="r_cliente" id="r_cliente" valuee="<?php echo $_SESSION['r_cliente']; ?>" />
+				<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $_SESSION['r_cliente']; ?>" />
 				<input type="hidden" name="usuario" id="usuario" value="<?php echo $_SESSION['usuario_cod']; ?>" />
 			</td>
 

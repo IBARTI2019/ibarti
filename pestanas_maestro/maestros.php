@@ -3,6 +3,7 @@ $metodo = $_GET['metodo'];
 $titulo = $_GET['titulo'];
 $tabla   = $_GET['tb'];
 $archivo = $_GET['archivo'];
+
 $archivo2 = "../inicio.php?area=maestros/Cons_$archivo&Nmenu=".$_GET['Nmenu']."&mod=".$_GET['mod'].""; 
 
 if(isset($_GET['pagina'])){
