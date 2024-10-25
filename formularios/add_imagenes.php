@@ -90,7 +90,7 @@ $dst_h  = "280";
                 <div class="loaderAjax" id="loaderAjax">
                     <img src="">
                     <span>Publicando Fotografía...</span>
-                </div></td></tr>z
+                </div></td></tr>
 </table>	    
     <div class="inline-labels">
     <input type="hidden" size="4" id="x1" name="x1" /> 

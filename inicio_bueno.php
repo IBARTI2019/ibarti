@@ -25,6 +25,13 @@ require_once(class_bd);
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US" xml:lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Expires" content="0">
+
+<meta http-equiv="Last-Modified" content="0">
+
+<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+
+<meta http-equiv="Pragma" content="no-cache">
     <title>SISTEMA DE ASISTENCIA </title>
 
     <link rel="stylesheet" type="text/css"  href="style.css" media="screen" />

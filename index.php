@@ -6,6 +6,13 @@
     Base template (without user's data) checked by http://validator.w3.org : "This page is valid XHTML 1.0 Transitional"
     -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Expires" content="0">
+
+    <meta http-equiv="Last-Modified" content="0">
+
+    <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+
+    <meta http-equiv="Pragma" content="no-cache">
     <title>Ibarti</title>
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
     <!--[if IE 6]><link rel="stylesheet" href="style.ie6.css" type="text/css" media="screen" /><![endif]-->
