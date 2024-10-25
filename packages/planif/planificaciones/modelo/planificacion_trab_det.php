@@ -29,10 +29,10 @@ $result = array();
                         cod_turno   = '$turno',     cod_puesto_trabajo = '$puesto_trab',
                         cod_ficha   = '$ficha',
                         cod_us_mod  = '$usuario',    fec_us_mod = CURRENT_TIMESTAMP
-                 WHERE codigo = '$codigo'";
+                 WHERE codigo = '$codigo' AND fecha => CURRENT_DATE";
       }elseif ($metodo == "borrar") {
         $sql = "DELETE FROM planif_clientes_trab_det
-                 WHERE codigo = '$codigo' ";
+                 WHERE codigo = '$codigo' AND fecha => CURRENT_DATE ";
       }
 
 	 $query = $bd->consultar($sql);

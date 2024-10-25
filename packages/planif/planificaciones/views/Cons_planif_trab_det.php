@@ -61,7 +61,7 @@ if($datos_ap["vetado"] == "NO" ){
 				<th width="8%"><img src="imagenes/loading2.gif" width="30px" height="30px"/></th>
 			</tr>
 			<tr>
-				<td><input type="date" id="pl_trab_fecha" required min="<?php echo $datos_ap["fecha_inicio"];?>" max="<?php echo $datos_ap["fecha_fin"];?>">
+				<td><input type="date" id="pl_trab_fecha" required min="<?php echo date("Y-m-d")?>" max="<?php echo $datos_ap["fecha_fin"];?>">
 					<input type="hidden" id="pl_trab_ficha" value="<?php echo $datos_ap["cod_ficha"];?>" />
 					<input type="hidden" id="planif_cl_trab" value="<?php echo $cod_pl_trab;?>"	/>
 				</td>
