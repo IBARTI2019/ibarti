@@ -44,4 +44,5 @@ if(isset($_GET['pagina'])){
 <script language="JavaScript" type="text/javascript">
 var tp1 = new Spry.Widget.TabbedPanels("tp1", { defaultTab:<?php echo $pag;?>});
 var TabbedPanels = new Spry.Widget.TabbedPanels("TabbedPanels");
+
 </script>

@@ -77,6 +77,7 @@ function subirImagenS3marcaje(codigo) {
         
         formData.append("config", JSON.stringify(config));
         var message = "";
+    
         //hacemos la petici�n ajax  
         $.ajax({
             url: 'http://194.163.161.64:9090/docs/upload_marcaje/',
@@ -112,9 +113,12 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
      var cod_ficha =$("#stdID").val();;
     var cod_cliente=$("#cliente").val();
     var cod_ubicacion=$("#ubicacion").val();
-    var marcados=document.some_form['marcado'];
-    var ubi= document.some_form['enviar_ubicacion'];
+    var form = document.getElementsByName('some_form')[0];
+    var marcados=form['marcado'];
+    var ubi= form['enviar_ubicacion'];
     var proyecto= $("#cod_proyecto").val();
+
+    console.log(marcados)
     
     var lista=[];
     if (marcados.length >0 ){
@@ -523,19 +527,21 @@ function cargar_actividades(ficha,cliente,ubicacion,proyecto, realizado) {
 }
 function activarcheckbox() {
     let marcados=[];
-    marcados=document.some_form['marcado'];
-    let ubi= document.some_form['enviar_ubicacion'];
+    var form = document.getElementsByName('some_form')[0];
+    marcados=form['marcado'];
+    let ubi= form['enviar_ubicacion'];
    
+    console.log(marcados)
+
     if (marcados.length ===1 ){
-	    marcados=[document.some_form['marcado']];
+	    marcados=[form['marcado']];
     } else {
         if (marcados.length ===undefined ){
-          marcados=[document.some_form['marcado']];
+          marcados=[form['marcado']];
         } else {
-            marcados=document.some_form['marcado'];
+            marcados=form['marcado'];
         }
     }
-    ;
 
      if (marcados.length >=0 ){
 	    for(i=0;i<marcados.length;i++){

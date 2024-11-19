@@ -38,7 +38,13 @@ $bd2  = new DataBase2();
             <td width="35%" class="etiqueta" id="input02_3"> Huella:<br /><input type="text" id="huella" name="huella" 
                           style="width:350px" maxlength="64"/><input type="hidden" id="huella_old" name="huella_old"/></td>
 			      <td width="5%" class="etiqueta"><img src="imagenes/buscar.bmp" onclick="BuscarDatos('huella')" width="22px" height="22px" class="imgLink" /></td>
-              <td width="25%" class="etiqueta">Huellas Nuevas: <br /><select name="huella_new" id="huella_new" style="width:180px;" onchange="huellaX(this.value)"><option value="TODOS">TODOS</option>
+				  <td width="10%"><span class="art-button-wrapper">
+                    <span class="art-button-l"> </span>
+                    <span class="art-button-r"> </span>
+                    <input type="button"  name="submit" id="submit" value="Ingresar"  class="readon art-button" 
+                           onclick=" validarCedula('agregar','')"/>
+             </span></td>
+				  <td width="25%" class="etiqueta">Huellas Nuevas: <br /><select name="huella_new" id="huella_new" style="width:180px;" onchange="huellaX(this.value)"><option value="TODOS">TODOS</option>
 					<?php 
 
 					$sql_ch = "	SELECT v_ch_huella.huella, v_ch_huella.fecha FROM v_ch_huella ORDER BY fecha DESC ";
@@ -54,13 +60,7 @@ $bd2  = new DataBase2();
 							echo '<option value="'.$row01[0].'">'.$row01[1].'('.$row01[0].')</option>';						   									
 							}
 			   }?></select></td>     
-                 
-            <td width="10%"><span class="art-button-wrapper">
-                    <span class="art-button-l"> </span>
-                    <span class="art-button-r"> </span>
-                    <input type="button"  name="submit" id="submit" value="Ingresar"  class="readon art-button" 
-                           onclick=" validarCedula('agregar','')"/>
-             </span></td>
+                
  		</tr><?php       
         $query = $bd->consultar($sql01); 		   
         $i =0;

@@ -78,7 +78,7 @@ if (count($result) == 0) {
     <legend>Egreso Trabajador </legend>
     <table width="80%" align="center">
       <tr>
-        <td class="etiqueta">Fecha de Egreso:</td>
+        <td class="etiqueta">Fecha de Egreso :</td>
         <td id="fecha01_5">
 
           <input type="text" name="fec_egreso" size="15" value="<?php echo $fec_egreso; ?>" /><br />
@@ -277,8 +277,7 @@ if (count($result) == 0) {
         <td id="select10_5">
           <select name="status" style="width:200px;">
             <option value="<?php echo $cod_status; ?>"><?php echo $status; ?></option>
-            <?php $sql = " SELECT codigo, descripcion FROM ficha_status
-                                         WHERE status = 'T' AND ficha_status.codigo <> '$cod_status' ORDER BY 2 ASC ";
+            <?php $sql = "SELECT codigo, descripcion FROM ficha_status WHERE status = 'T' and ficha_status.codigo <> '$cod_status' ORDER BY 2 ASC";
             $query = $bd->consultar($sql);
             while ($datos = $bd->obtener_fila($query, 0)) {
             ?>
@@ -344,12 +343,13 @@ if (count($result) == 0) {
     useCharacterMasking: true,
     isRequired: false
   });
-
+  // aqui validacion de fecha01_05
   var fecha01_5 = new Spry.Widget.ValidationTextField("fecha01_5", "date", {
     format: "dd-mm-yyyy",
     hint: "DD-MM-AAAA",
     validateOn: ["blur", "change"],
-    useCharacterMasking: true
+    useCharacterMasking: true,
+    isRequired: false
   });
   var fecha02_5 = new Spry.Widget.ValidationTextField("fecha02_5", "date", {
     format: "dd-mm-yyyy",

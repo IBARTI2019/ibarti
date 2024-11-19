@@ -167,7 +167,7 @@ function Salir01(idX) { // CARGAR EL MODULO DE AGREGAR //
 	}
 }
 function Borrar01(idX) {  // CARGAR EL MODULO DE AGREGAR //
-	if (confirm("�Esta Seguro De Borrar Este Registro")) {
+	if (confirm("�Esta Seguro De Borrar Este Registro ")) {
 		var tabla = document.getElementById("tabla").value;
 		var valor = "sc_maestros/sc_maestros.php";
 		ajax = nuevoAjax();
@@ -179,7 +179,7 @@ function Borrar01(idX) {  // CARGAR EL MODULO DE AGREGAR //
 			}
 		}
 		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		ajax.send("codigo=" + idX + "&metodo=borrar&tabla=" + tabla + "&activo=f&descipcion=");
+		ajax.send("codigo=" + idX + "&metodo=borrar&tabla=" + tabla + "&activo=f&descripcion=");
 	}
 }
 function Procesar01(cod_prod,idX) {  // CARGAR EL MODULO DE AGREGAR //
