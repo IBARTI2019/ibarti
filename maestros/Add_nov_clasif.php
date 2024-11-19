@@ -34,7 +34,7 @@ if($metodo == 'modificar'){
 	$campo03       = '';
 	$campo04       = '';
 	$status        = 'T';
-	$check_list    = 'F';	
+	$check_list    = 'F';
 	}
 ?>
 <div id="Contenedor" class="mensaje"></div>
@@ -56,15 +56,16 @@ if($metodo == 'modificar'){
 		   <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
     </tr>	
-    <tr>
+  <tr>
 		<td class="etiqueta">Check List.: </td>
     <td> 
       <select name="check_list" id="check_list"> 
         <option value="F" <?php echo Select($check_list,"F");?>>No</option> 
-        <option value="T" <?php echo Select($check_list,"T");?>>Check List</option> 
+        <option value="T" <?php echo Select($check_list,"T");?>>Check List Clientes</option> 
+        <option value="E" <?php echo Select($check_list,"E");?>>Check List Trabajadores</option> 
         <option value="P" <?php echo Select($check_list,"P");?>>Check List Preingreso</option> 
       </select> 
-        </td>
+    </td>
 	</tr>
 	 <tr> 
          <td height="8" colspan="2" align="center"><hr></td>

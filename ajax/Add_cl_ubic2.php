@@ -7,7 +7,7 @@ $codigo      = $_POST['codigo'];
 $tamano      = $_POST['tamano'];
 $activar     = $_POST['activar'];
 
-if ($activar == "T") {
+if ($activar == "T" || $activar == "LL") {
 	$change =  'onchange="Add_filtroX()"';
 } else if ($activar == "P") {
 	$change = 'onchange="Add_Ub_puesto(this.value, \'contenido_puesto\', \'120\')"';
@@ -22,8 +22,14 @@ AND clientes_ubicacion.`status` = 'T'
 ORDER BY 2 ASC";
 
 $query = $bd->consultar($sql);
-echo '<select name="ubicacion" id="ubicacion" style="width:' . $tamano . 'px" ' . $change . ' required >
-<option value="TODOS">TODOS</option>';
+echo '<select name="ubicacion" id="ubicacion" style="width:' . $tamano . 'px" ' . $change . ' required >';
+
+if($activar == "LL"){
+	echo '<option value="">Seleccione</option>';
+}else{
+	echo '<option value="TODOS">TODOS</option>';
+}
+
 while ($row02 = $bd->obtener_fila($query, 0)) {
 	echo '<option value="' . $row02[0] . '">' . $row02[1] . '</option>';
 }

@@ -7,15 +7,17 @@ $result = array();
 $ficha     = $_POST['ficha'];
 $cliente     = $_POST['cliente'];
 $ubicacion     = $_POST['ubicacion'];
-$result  =  $confirmaciones->get_planif($ficha, $cliente, $ubicacion);
+$horario     = $_POST['horario'];
+$result  =  $confirmaciones->get_planif($ficha, $cliente, $ubicacion, $horario);
 $disabled = "";
 
 foreach ($result as  $datos) {
-    echo '<tr><td style="background=\'red\' !important;">' . $datos["ubicacion"] . '</td>
+    echo '<tr>
+        <td>' . $datos["cliente"] . '</td>
+        <td>' . $datos["ubicacion"] . '</td>
         <td>' . $datos["ficha"] . '</td>
         <td>' .  $datos["telefono"] . '</td>
         <td>' . $datos["ap_nombre"] . '</td>
-        <td>' . $datos["turno"] . '</td>
         <td>' . $datos["horario"] . '</td>
         <td>' . $datos["concepto"] . '</td>
         <td>' . $datos["hora_entrada"] . '</td>';

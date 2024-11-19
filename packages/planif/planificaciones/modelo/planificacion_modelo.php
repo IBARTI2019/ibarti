@@ -15,6 +15,52 @@ class Planificacion
 		$this->bd = new Database;
 	}
 
+	function get_confirmaciones_esp(){
+		$sql = " SELECT
+					horario_cl_ubicacion.codigo,
+					clientes_ubicacion.cod_cliente,
+					clientes.nombre cliente,
+					horario_cl_ubicacion.cod_cl_ubicacion cod_ubicacion,
+					clientes_ubicacion.descripcion ubicacion,
+					horario_cl_ubicacion.cod_horario,
+					horarios.nombre horario,
+					horario_cl_ubicacion.hora_entrada 
+				FROM
+					horario_cl_ubicacion,
+					clientes,
+					clientes_ubicacion,
+					horarios
+				WHERE
+					horario_cl_ubicacion.cod_cl_ubicacion = clientes_ubicacion.codigo 
+					AND horario_cl_ubicacion.cod_horario = horarios.codigo 
+					AND clientes_ubicacion.cod_cliente = clientes.codigo";
+	
+		$query = $this->bd->consultar($sql);
+
+		while ($datos = $this->bd->obtener_fila($query)) {
+			$this->datos[] = $datos;
+		}
+		return $this->datos;
+	}
+
+	function get_cargos_excl(){
+		$sql = " SELECT
+					cargos_excl_confirm.codigo,
+					cargos_excl_confirm.cod_cargo,
+					cargos.descripcion cargo
+				FROM
+					cargos_excl_confirm, cargos
+				WHERE 
+					cargos_excl_confirm.cod_cargo = cargos.codigo";
+	
+		$query = $this->bd->consultar($sql);
+
+		while ($datos = $this->bd->obtener_fila($query)) {
+			$this->datos[] = $datos;
+		}
+		return $this->datos;
+	}
+
 	function get_cliente($usuario, $r_cliente)
 	{
 		if ($r_cliente == "F") {

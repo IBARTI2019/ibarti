@@ -6,7 +6,7 @@ require_once('sql/sql_report_t.php');
 $bd = new DataBase();
 $archivo  = "novedades_check_list_resp";
 $vinculo  = "inicio.php?area=formularios/Add_$archivo&Nmenu=$Nmenu&mod=$mod";
-$titulo   = "NOVEDADES CHECK LIST REPUESTA ";
+$titulo   = "NOVEDADES CHECK LIST REPUESTA CLIENTES ";
 ?>
 <script language="JavaScript" type="text/javascript">
 	function Add_filtroX() { // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO//

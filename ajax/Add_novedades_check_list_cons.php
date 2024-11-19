@@ -27,6 +27,7 @@ $perfil     = $_POST['perfil'];
 $metodo      = "modificar";
 
 $where = " WHERE nov_check_list.cod_nov_clasif = nov_clasif.codigo
+				AND nov_clasif.campo04 = 'T'
 				AND nov_check_list.cod_nov_tipo   = nov_tipo.codigo
 				AND nov_clasif.codigo = nov_perfiles.cod_nov_clasif
                 AND nov_perfiles.cod_perfil = '$perfil'

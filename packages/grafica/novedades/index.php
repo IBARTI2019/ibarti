@@ -18,5 +18,6 @@ if(isset($_SESSION['usuario_cod'])){
 
 <!--<script type="text/javascript" src="libs/highcharts/highcharts.js"></script>-->
 <script type="text/javascript" src="libs/chartjs/Chart.min.js"></script>
+<script type="text/javascript" src="libs/chartjs/Chart.bundle.min.js"></script>
 <script type="text/javascript" src="packages/grafica/js/ib_chart.js"></script>
 <script type="text/javascript" src="packages/grafica/novedades/controllers/gNovedadesCtrl.js"></script>

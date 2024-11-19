@@ -4,6 +4,7 @@ $mod       = $_GET['mod'];
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report.php');
 $bd = new DataBase();
+$tabla   = "nov_check_list";
 $archivo  = "novedades_check_list";
 $vinculo  = "inicio.php?area=formularios/Add_$archivo&Nmenu=$Nmenu&mod=$mod";
 $titulo   = "NOVEDADES CHECK LIST INGRESOS";
@@ -129,6 +130,7 @@ $titulo   = "NOVEDADES CHECK LIST INGRESOS";
 
 				<td width="1%">&nbsp;<input type="hidden" name="Nmenu" id="Nmenu" value="<?php echo $Nmenu; ?>" />
 					<input type="hidden" name="mod" id="mod" value="<?php echo $mod; ?>" />
+					<input type="hidden" name="tabla" id="tabla" value="<?php echo $tabla; ?>" />
 					<input type="hidden" name="archivo" id="archivo" value="<?php echo $archivo; ?>" />
 					<input type="hidden" name="perfil" id="perfil" value="<?php echo $_SESSION['cod_perfil']; ?>" />
 				</td>

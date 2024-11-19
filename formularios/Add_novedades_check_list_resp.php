@@ -6,7 +6,7 @@ $NmenuX = 435;
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report_t.php');
 $mod     = $_GET['mod'];
-$titulo  = "CHECK LIST RESPUESTA";
+$titulo  = "CHECK LIST RESPUESTA CLIENTES";
 $archivo = "novedades_check_list_resp";
 $metodo  = $_GET['metodo'];
 $href    = "../inicio.php?area=formularios/Cons_$archivo&Nmenu=$Nmenu&mod=$mod";

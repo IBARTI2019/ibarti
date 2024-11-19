@@ -1,11 +1,13 @@
 <?php
-define("SPECIALCONSTANT", true);
 include_once('../../../../funciones/funciones.php');
 require "../../../../autentificacion/aut_config.inc.php";;
 require("../../../../libs/PHPMailer/enviar.php");
 require "../../../../" . class_bdI;
+
 $bd = new DataBase();
+
 $result = array();
+$vectorR=array();
 $result['error'] = false;
 
 $sql_smtp = "SELECT control.host_smtp,  control.puerto_smtp, control.protocolo_smtp,
@@ -23,8 +25,10 @@ foreach ($_POST as $nombre_campo => $valor) {
   $variables = "\$" . $nombre_campo . "='" . $valor . "';";
   eval($variables);
 }
+$vectorA = json_decode($vector, true);
 
 if (isset($codigo)) {
+  
   try {
     $sql_email_cliente = "SELECT clientes.email FROM planif_clientes_superv_trab_det pd, planif_clientes_superv_trab p, clientes 
     WHERE pd.cod_planif_cl_trab = p.codigo AND p.cod_cliente = clientes.codigo AND pd.codigo = '$codigo' ";
@@ -40,6 +44,7 @@ if (isset($codigo)) {
     $result['sql'] = $sql;
     
     
+    
   } catch (Exception $e) {
     $error =  $e->getMessage();
     $result['error'] = true;
@@ -47,5 +52,6 @@ if (isset($codigo)) {
     $bd->log_error("Aplicacion", "sc_marcaje_supervisor.php",  "$usuario", "$error", "$sql");
   }
 }
+ 
 print_r(json_encode($result));
 return json_encode($result);

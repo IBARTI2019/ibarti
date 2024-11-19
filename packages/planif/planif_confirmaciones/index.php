@@ -11,20 +11,32 @@
 $Nmenu = '4409';
 require "autentificacion/aut_config.inc.php";
 require Leng;
+require_once('autentificacion/aut_verifica_menu.php');
+require_once('sql/sql_report_t.php');
 if (isset($_SESSION['usuario_cod'])) {
-  require_once('autentificacion/aut_verifica_menu.php');
-  require_once('sql/sql_report.php');
   $us = $_SESSION['usuario_cod'];
 } else {
   $us = $_POST['usuario'];
 }
+
+$sql_horario = "SELECT
+                  horarios.codigo,
+                  horarios.nombre 
+                FROM
+                  horarios,
+                  conceptos 
+                WHERE
+                  horarios.`status` = 'T' 
+                  AND horarios.cod_concepto = conceptos.codigo 
+                  AND conceptos.asist_perfecta = 'T' 
+                ORDER BY 2 ASC;";
 ?>
 <div id="Cont_confirmaciones">
 
   <span class="etiqueta_title" id="title_confirmaciones">Confirmaciones</span>
   <table width="90%" align="center">
     <tr>
-      <td height="8" colspan="4" align="center">
+      <td height="8" colspan="7" align="center">
         <hr>
       </td>
     </tr>
@@ -42,6 +54,17 @@ if (isset($_SESSION['usuario_cod'])) {
       <td id="contenido_ubic">
         <select name="ubicacion" id="ubicacion" style="width:250px;">
           <option value="TODOS">TODOS</option>
+        </select>
+      </td>
+      <td class="etiqueta"><?php echo $leng["horario"];?>: </td>
+      <td>
+        <select name="horario" id="horario" multiple="multiple" style="width:170px;">
+          <?php
+          echo $select_cl;
+          $query02 = $bd->consultar($sql_horario);
+          while ($row02 = $bd->obtener_fila($query02, 0)) {
+            echo '<option value="' . $row02[0] . '">' . $row02[1] . '</option>';
+          } ?>
         </select>
       </td>
       <td>
@@ -62,26 +85,32 @@ if (isset($_SESSION['usuario_cod'])) {
         </select>
       </td>
       <td class="etiqueta">Trabajador:</td>
-      <td><input id="stdName" type="text" style="width:380px" disabled="disabled" />
+      <td colspan="3"><input id="stdName" type="text" style="width:380px" disabled="disabled" />
         <input type="hidden" name="trabajador" id="stdID" value="" onchange="Add_filtroX()" />
       </td>
       <td></td>
     </tr>
     <tr>
     <tr>
-      <td height="8" colspan="4" align="center">
+      <td height="8" colspan="7" align="center">
         <hr>
       </td>
     </tr>
+    <tr>
+      <td height="8" colspan="7" align="right">
+        <div id="estadistica" align="right"> </div>
+      </td>
+    </tr>
   </table>
+
     <table width="90%" class="tabla_planif">
       <thead>
         <tr>
+          <th><?php echo $leng["cliente"]; ?></th>
           <th><?php echo $leng["ubicacion"]; ?></th>
           <th><?php echo $leng["ficha"]; ?></th>
-          <th>Telefono</th>
+          <th>Tel&eacute;fono</th>
           <th><?php echo $leng["trabajador"]; ?></th>
-          <th><?php echo $leng["turno"]; ?></th>
           <th><?php echo $leng["horario"]; ?></th>
           <th><?php echo $leng["concepto"]; ?></th>
           <th>Hora entrada</th>
@@ -105,7 +134,7 @@ if (isset($_SESSION['usuario_cod'])) {
     }
     if (this.isModified) this.setValue("");
     if (this.value.length < 1) return;
-    return "autocompletar/tb/trabajador.php?q=" + this.text.value + "&filtro=" + filtroValue + ""
+    return "autocompletar/tb/trabajador_confirmaciones.php?q=" + this.text.value + "&filtro=" + filtroValue + ""
   });
   var time01 = new Spry.Widget.ValidationTextField("time01", "time", {format:"HH:mm:ss", hint:'HH:mm:ss', useCharacterMasking:true, validateOn:["change"],isRequired:true});
 </script>

@@ -180,6 +180,18 @@ function fnacimient($fecha)
 
 // calcular el status  de 1 o 0  ==> Activo  � Inactivo
 // AL CAMBIAR DEFINICION TAMBIEN AL ARCHIVO fr_hospital_cama_mantenimiento
+function statusrfid($valor){
+
+	if ( ($valor == 'T') or ($valor == 't') ) {
+		$status = 'Si';
+
+	}elseif (($valor == 'F') or ($valor == 'f')){
+		$status = 'No';
+	}else{
+		$status ='INDEFINIDO';
+	}
+	return $status;
+}
 		function statuscal($valor){
 
 			if ( ($valor == 'T') or ($valor == 't') ) {

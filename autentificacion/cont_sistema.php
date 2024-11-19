@@ -48,8 +48,7 @@ AND control.cod_hora_extras_n = hora_ex_n.codigo
 AND control.cod_rol = roles.codigo
 AND control.cod_superv_cargo = cargos.codigo
 AND control.cod_turno_dl = turno.codigo
-AND control.control_arma_linea = prod_lineas.codigo
-AND control.control_uniforme_linea = pl.codigo ";
+LIMIT 1";
 
 $query = $bd->consultar($sql);
 $result = $bd->obtener_fila($query, 0);

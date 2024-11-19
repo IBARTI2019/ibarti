@@ -119,13 +119,13 @@ if (count($result) == 0) {
     <legend>Egreso Trabajador </legend>
     <table width="80%" align="center">
       <tr>
-        <td class="etiqueta">Fecha de Egreso:</td>
+        <td class="etiqueta">Fecha de Egreso :</td>
         <td id="fecha01_5">
           <!--<input type="text" name="fec_egreso" size="15" value="<?php //echo $fec_egreso;
                                                                     ?>" readonly="readonly" /><br />
             <span class="textfieldRequiredMsg">La Fecha Es Requerida.</span>
             <span class="textfieldInvalidFormatMsg">El Formato Es Invalido</span></td>-->
-          <input type="text" name="fec_egreso" size="15" id="fec_egreso" required="required" value="<?php echo $fec_egreso; ?>" placeholder="DD-MM-YYYY">
+          <input type="text" name="fec_egreso" size="15" id="fec_egreso"  value="<?php echo $fec_egreso; ?>" placeholder="DD-MM-YYYY">
       </tr>
       <tr>
         <td class="etiqueta">Fecha Sistema de Egreso:</td>
@@ -338,8 +338,7 @@ if (count($result) == 0) {
         <td id="select10_5">
           <select name="status" style="width:200px;">
             <option value="<?php echo $cod_status; ?>"><?php echo $status; ?></option>
-            <?php $sql = " SELECT codigo, descripcion FROM ficha_status 
-                                         WHERE status = 'T' AND ficha_status.codigo <> '$cod_status' ORDER BY 2 ASC ";
+            <?php $sql = " SELECT codigo, descripcion FROM ficha_status WHERE status = 'T' and ficha_status.codigo <> '$cod_status' ORDER BY 2 ASC";
             $query = $bd->consultar($sql);
             while ($datos = $bd->obtener_fila($query, 0)) {
             ?>

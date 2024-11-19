@@ -144,6 +144,21 @@ function EstadoFiltro(valor) {
 		validar.disabled = "";
 	}
 }
+
+
+function EstadoFiltroTrab() {
+	filtroId = document.getElementById("paciFiltroTrab");
+	filtroIndice = filtroId.selectedIndex;
+	filtroValueTrab = filtroId.options[filtroIndice].value;
+
+	var validar = document.getElementById("stdNameTrab");
+	if (filtroValueTrab == '') {
+		validar.disabled = true;
+	} else {
+		validar.disabled = "";
+	}
+}
+
 function Salir01(idX) { // CARGAR EL MODULO DE AGREGAR //
     numX=1;
 	if (confirm("�Esta Seguro de Cerrar")) {
@@ -152,7 +167,7 @@ function Salir01(idX) { // CARGAR EL MODULO DE AGREGAR //
 	}
 }
 function Borrar01(idX) {  // CARGAR EL MODULO DE AGREGAR //
-	if (confirm("�Esta Seguro De Borrar Este Registro")) {
+	if (confirm("�Esta Seguro De Borrar Este Registro ")) {
 		var tabla = document.getElementById("tabla").value;
 		var valor = "sc_maestros/sc_maestros.php";
 		ajax = nuevoAjax();
@@ -164,7 +179,7 @@ function Borrar01(idX) {  // CARGAR EL MODULO DE AGREGAR //
 			}
 		}
 		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		ajax.send("codigo=" + idX + "&metodo=borrar&tabla=" + tabla + "&activo=f&descipcion=");
+		ajax.send("codigo=" + idX + "&metodo=borrar&tabla=" + tabla + "&activo=f&descripcion=");
 	}
 }
 function Procesar01(cod_prod,idX) {  // CARGAR EL MODULO DE AGREGAR //

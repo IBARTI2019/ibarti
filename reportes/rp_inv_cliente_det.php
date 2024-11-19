@@ -7,6 +7,7 @@ include_once('../' . Funcion);
 require_once("../" . class_bdI);
 require_once("../" . Leng);
 $bd = new DataBase();
+$bd2 = new DataBase();
 
 $cliente         = $_POST['cliente'];
 $ubicacion         = $_POST['ubicacion'];
@@ -75,7 +76,9 @@ if (isset($reporte)) {
 	clientes_ub_puesto.observ as cliente_puesto_observacion,
 	IF(clientes_ubicacion.latitud, 'SI', 'NO') geolocalizacion_ubicacion,
 	clientes_ubicacion.latitud latitud_ubicacion,
-	clientes_ubicacion.longitud longitud_ubicacion
+	clientes_ubicacion.longitud longitud_ubicacion,
+	clientes_ubicacion.status status_ubic,
+	clientes.codigo cod_cliente
 	FROM clientes_ubicacion 
 	LEFT JOIN clientes_ub_puesto ON clientes_ub_puesto.cod_cl_ubicacion = clientes_ubicacion.codigo, 
 	clientes, clientes_tipos, regiones , estados , ciudades
@@ -88,49 +91,52 @@ if (isset($reporte)) {
 		header("Content-Disposition:  filename=\"rp_$archivo.xls\";");
 
 		$query01  = $bd->consultar($sql);
-		echo "<table border=1>";
-		echo "<tr><th> " . $leng['region'] . " </th>
-		<th> " . $leng['estado'] . " </th>
-		<th> CIUDAD && MUNICIPIO </th>
-		<th> " . $leng['cliente'] . " </th>
-		<th> Tipo </th><th> " . $leng['rif'] . " </th>
-		<th> Contacto</th>
-		<th> Geolicalización Cliente </th>
-		<th> Latitud Cliente </th>
-		<th> Longitud Cliente </th>
-		<th> " . $leng['ubicacion'] . " </th>
-		<th> Puesto </th>
-		<th> Actividad </th>
-		<th> Observacion </th>
-		<th> Teléfono </th><th> " . $leng['correo'] . " </th>
-		<th> Dirección</th><th>Status</th>
-		<th> Geolicalización Ubicación </th>
-		<th> Latitud Ubicación </th>
-		<th> Longitud Ubicación </th></tr>";
-		while ($row01 = $bd->obtener_num($query01)) {
-			echo "<tr><td > " . $row01[0] . " </td>
-			<td>" . $row01[1] . "</td>
-			<td>" . $row01[2] . "</td>
-			<td>" . $row01[3] . "</td>
-			<td>" . $row01[5] . "</td>
-			<td>" . $row01[6] . "</td>
-			<td>" . $row01[7] . "</td>
-			<td>" . floatval($row01[8]) . "</td>
-			<td>" . floatval($row01[9]) . "</td>
-			<td>" . $row01[10] . "</td>
-			<td>" . $row01[15] . "</td>
-			<td>" . $row01[16] . "</td>
-			<td>" . $row01[17] . "</td>
-			<td>" . $row01[11] . "</td>
-			<td>" . $row01[12] . "</td>
-			<td>" . $row01[13] . "</td>
-			<td>" . statuscal($row01[14]) . "</td>
-			<td>" . $row01[18] . "</td>
-			<td>" . floatval($row01[19]) . "</td>
-			<td>" . floatval($row01[20]) . "</td>
-			
-		
+		$index = 0;
+		while ($row01 = $bd->obtener_fila($query01)) {
+			if ($index == 0){
+			echo "<table border=1>";
+			echo "<tr><th> " . $leng['region'] . " </th><th> " . $leng['estado'] . " </th><th> CIUDAD && MUNICIPIO </th><th> " . $leng['cliente'] . " </th>
+			<th> Tipo </th><th> " . $leng['rif'] . " </th>";
+	
+			$sql_contacts = "SELECT documento, nombres, cargo, telefono, correo FROM clientes_contactos WHERE cod_cliente = '". $row01["cod_cliente"]  ."'";
+			$queryContacts  = $bd2->consultar($sql_contacts);
+			$contact_index = 1;
+			while ($rowContact = $bd2->obtener_fila($queryContacts)) {
+				echo "<th> Documento Contacto ". $contact_index ." </th><th> Nombres Contacto " . $contact_index . " </th><th> Cargo Contacto ". $contact_index . " </th><th> Telefono Contacto " . $contact_index . " </th><th> Correo Contacto " . $contact_index . " </th>";
+				$contact_index += 1;
+			}
+			echo "<th> Contacto Ubicacion</th><th> Geolicalización Cliente </th><th> Latitud Cliente </th><th> Longitud Cliente </th><th> " . $leng['ubicacion'] . " </th>
+			<th> Puesto </th><th> Actividades del puesto </th><th> Observacion del puesto </th><th> Teléfono </th><th> " . $leng['correo'] . " </th><th> Dirección</th>
+			<th>Estatus</th><th> Geolicalización Ubicación </th><th> Latitud Ubicación </th><th> Longitud Ubicación </th><th> Estatus Ubicación </th></tr>";
+			}
+			echo "<tr><td > " . $row01["region"] . " </td>
+			<td>" . $row01["estado"] . "</td>
+			<td>" . $row01["ciudad"] . "</td>
+			<td>" . $row01["cliente"] . "</td>
+			<td>" . $row01["cliente_tipo"] . "</td>
+			<td>" . $row01["rif"] . "</td>";
+			$queryContacts  = $bd2->consultar($sql_contacts);
+			while ($rowContact = $bd2->obtener_fila($queryContacts)) {
+				echo "<td> ". $rowContact["documento"] ." </td><td> " . $rowContact["nombres"]  . " </td><td> " . $rowContact["cargo"]  . " </td><td> " . $rowContact["telefono"]  . " </td><td> " . $rowContact["correo"]  . " </td>";
+			}
+			echo "<td>" . $row01["contacto"] . "</td>
+			<td>" . $row01["geolocalizacion_cliente"] . "</td>
+			<td>" . floatval($row01["latitud_cliente"]) . "</td>
+			<td>" . floatval($row01["longitud_cliente"]) . "</td>
+			<td>" . $row01["ubicacion"] . "</td>
+			<td>" . $row01["cliente_puesto_nombre"] . "</td>
+			<td>" . $row01["cliente_puesto_actividades"] . "</td>
+			<td>" . $row01["cliente_puesto_observacion"] . "</td>
+			<td>" . $row01["telefono"] . "</td>
+			<td>" . $row01["email"] . "</td>
+			<td>" . $row01["direccion"] . "</td>
+			<td>" . statuscal($row01["status"]) . "</td>
+			<td>" . $row01["geolocalizacion_ubicacion"] . "</td>
+			<td>" . floatval($row01["latitud_ubicacion"]) . "</td>
+			<td>" . floatval($row01["longitud_ubicacion"]) . "</td>
+			<td>" . statuscal($row01["status_ubic"]) . "</td>
 			</tr>";
+			$index += 1;
 		}
 		echo "</table>";
 	}

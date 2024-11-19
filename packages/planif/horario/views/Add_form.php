@@ -16,6 +16,7 @@
   });
 </script>
 <?php
+include_once('../../../../funciones/funciones.php');
 require "../modelo/horario_modelo.php";
 require "../../../../".Leng;
 $horario = new Horario;
@@ -47,7 +48,7 @@ $concepto = $horario->get_concepto($hor['cod_concepto']);
       <tr>
        <td width="15%" class="etiqueta">C&oacute;digo:</td>
        <td width="35%"><input type="text" name="codigo" id="h_codigo" minlength="2" maxlength="11" required value="<?php echo $hor['codigo'];?>" />
-         Activo: <input name="activo" id="activo" type="checkbox" value="<?php echo statusCheck($hor['status']);?>" />
+         Activo: <input name="activo" id="activo" type="checkbox" <?php echo statusCheck($hor['status']);?> />
        </td>
        <td width="15%" class="etiqueta"><?php echo $leng['concepto']?>:</td>
        <td width="35%"><select name="concepto" id="h_concepto" style="width:200px" required>

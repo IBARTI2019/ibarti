@@ -54,7 +54,7 @@ if ($actividad != "TODOS") {
 }
 
 if ($realizado != "TODOS") {
-	if ($realizado != "S") {
+	if ($realizado == "S") {
 		$where   .= " AND pd.realizado = 'T' ";
 	} else if ($realizado == "N") {
 		$where   .= " AND pd.realizado = 'F' ";
@@ -65,7 +65,7 @@ $sql = "SELECT p.cod_ficha, CONCAT(f.apellidos, ' ', f.nombres) ap_nombre, p.cod
 p.cod_ubicacion, cu.descripcion ubicacion, DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') fecha, 
 TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
 pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad,
-pa.minutos, IF(pd.realizado='T','SI', 'NO') realizado, psod.observacion,  CONCAT(men_usuarios.nombre, ' ', men_usuarios.apellido) marcado_por
+pa.minutos, IF(pd.realizado='T','SI', 'NO') realizado, psod.observacion,  CONCAT(men_usuarios.nombre, ' ', men_usuarios.apellido) marcado_por, pd.link
 FROM planif_clientes_superv_trab p, planif_clientes_superv_trab_det pd
 LEFT JOIN planif_clientes_superv_trab_det_observ psod ON pd.codigo = psod.cod_det
 LEFT JOIN men_usuarios ON pd.cod_us_marcaje = men_usuarios.codigo, clientes cl, clientes_ubicacion cu, ficha f,
@@ -110,7 +110,13 @@ ORDER BY 1,8,3,5,7 ASC";
 		<td class="texto">' . longitud($datos["actividad"]) . '</td>
 		<td class="texto">' . longitud($datos["hora_inicio"]) . '</td>
 		<td class="texto">' . longitud($datos["hora_fin"]) . '</td>
-		<td class="texto">' . longitud($datos["realizado"]) . '</td>
+		<td class="texto">' . $datos["realizado"]; 
+	
+		if($datos["realizado"] == 'SI' && $datos["link"]){
+			echo '<a style="margin-left: 5px;" href="'.$datos["link"].'"><img style="margin: 0px; padding: 0px;" src="imagenes/consultar.png" alt="Ver Soporte" width="18px" height="18px" title="Ver Soporte" border="null" /></a>';
+		}
+		
+		echo '</td>
 		<td class="texto">' . $datos["marcado_por"] . '</td>
 		<td class="texto">' . longitud($datos["observacion"]) . '</td>
 		</tr>';
