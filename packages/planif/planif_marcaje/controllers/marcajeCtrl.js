@@ -115,7 +115,12 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
     var marcados=document.some_form['marcado'];
     var ubi= document.some_form['enviar_ubicacion'];
     var proyecto= $("#cod_proyecto").val();
-    
+
+    console.log("Marcados: ", marcados);
+    var listaName = document.getElementsByName('some_form')["marcado"];
+
+    console.log("Marcados por name: ", listaName);
+
     var lista=[];
     if (marcados.length >0 ){
 	    for(i=0;i<marcados.length;i++){
