@@ -4,7 +4,7 @@ require "../../../../autentificacion/aut_config.inc.php";
 require "../../../../" . class_bdI;
 
 $bd = new DataBase();
-$bd2 = new DataBase();
+
 $result = array();
 $vectorR=array();
 $result['error'] = false;
@@ -59,14 +59,15 @@ if (isset($codigo)) {
         clientes_ubicacion cu 
         " . $where . " ORDER BY hora_inicio ASC";
 
-    $query2 = $bd2->consultar($sql1);
+    $query2 = $bd->consultar($sql1);
    
       
     for ($i = 0; $i < count($vectorA); $i++) {
       $j=0;  
-      while($datos=$bd2->obtener_name($query2)){
+        foreach ($query2 as  $datos) {
           $numeroABuscar = $j;
           // Convertir el elemento a entero y comparar
+          $result['datos'] = [$i, $j, $vectorA[$i], $numeroABuscar, $datos["codigo"]];
           if ($vectorA[$i] == $numeroABuscar) {
               echo $datos["codigo"];
               $codigoV=$datos["codigo"];
