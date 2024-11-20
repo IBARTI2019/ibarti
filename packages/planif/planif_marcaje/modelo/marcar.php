@@ -1,7 +1,6 @@
 <?php
 include_once('../../../../funciones/funciones.php');
-require "../../../../autentificacion/aut_config.inc.php";;
-require("../../../../libs/PHPMailer/enviar.php");
+require "../../../../autentificacion/aut_config.inc.php";
 require "../../../../" . class_bdI;
 
 $bd = new DataBase();
@@ -9,18 +8,6 @@ $bd2 = new DataBase();
 $result = array();
 $vectorR=array();
 $result['error'] = false;
-
-$sql_smtp = "SELECT control.host_smtp,  control.puerto_smtp, control.protocolo_smtp,
-control.cuenta_smtp,control.password_smtp FROM control;";
-
-$query = $bd->consultar($sql_smtp);
-$result =$bd->obtener_fila($query,0);
-$host =$result['host_smtp'];
-$puerto =$result['puerto_smtp'];
-$protocolo =$result['protocolo_smtp'];
-$cuenta=$result['cuenta_smtp'];
-$password =$result['password_smtp'];
-
 foreach ($_POST as $nombre_campo => $valor) {
   $variables = "\$" . $nombre_campo . "='" . $valor . "';";
   eval($variables);
@@ -30,14 +17,47 @@ $vectorA = json_decode($vector, true);
 if (isset($codigo)) {
   
   try {
-    $sql_email_cliente = "SELECT clientes.email FROM planif_clientes_superv_trab_det pd, planif_clientes_superv_trab p, clientes 
-    WHERE pd.cod_planif_cl_trab = p.codigo AND p.cod_cliente = clientes.codigo AND pd.codigo = '$codigo' ";
-    $query_email_cliente  = $bd->consultar($sql_email_cliente);
-    $result =$bd->obtener_fila($query_email_cliente, 0);
-    $email =$result['email'];
 
-    //Formato de propiedades de la funcion enviar_mail_html($host,$puerto,$smtpSecure,$cuentaDeEnvio,$passwordCuentaDeEnvio,$nombre,$tema,$cuerpo,$cuerpoHtml,$cuentaDestino, $link) 
-    enviar_mail_html($host,$puerto,$protocolo,$cuenta,$password,'Comprobante','LEER',"", "TEST",$email, $link);
+    $where = " WHERE
+    p.codigo = pd.cod_planif_cl_trab
+    AND pd.cod_proyecto = pp.codigo
+    AND pd.cod_actividad = pa.codigo
+    ANd p.cod_ubicacion = cu.codigo
+    and pa.obligatoria='F'
+    AND DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d')
+    -- AND TIME(pd.fecha_fin) <= CURRENT_TIME()
+    AND p.cod_ficha = '$cod_ficha'  AND p.cod_cliente = '$cod_cliente' AND p.cod_ubicacion = '$cod_ubicacion'
+    -- AND  pp.codigo='$cod_proyecto'
+    ";
+    $sql1 = "SELECT
+    pd.codigo, cu.descripcion ubicacion, pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad, 
+    IF(pd.realizado = 'T', 'SI', 'NO') realizado, TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
+    pa.participantes,
+    (
+        SELECT
+            COUNT(b.codigo)
+        FROM
+            planif_clientes_superv_trab_det a,
+            planif_clientes_superv_trab_det_observ b
+        WHERE
+            a.codigo = b.cod_det
+        AND a.codigo = pd.codigo 
+    ) observaciones,
+    (SELECT
+            COUNT(b.codigo)
+            FROM
+                planif_clientes_superv_trab_det a,
+                planif_clientes_superv_trab_det_participantes b
+            WHERE
+                a.codigo = b.cod_det
+    AND a.codigo = pd.codigo) fichas
+    FROM
+        planif_clientes_superv_trab p,
+        planif_clientes_superv_trab_det pd,
+        planif_proyecto pp,
+        planif_actividad pa,
+        clientes_ubicacion cu 
+        " . $where . " ORDER BY hora_inicio ASC";
 
     $query2 = $bd2->consultar($sql1);
    
