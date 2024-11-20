@@ -5,7 +5,7 @@ require("../../../../libs/PHPMailer/enviar.php");
 require "../../../../" . class_bdI;
 
 $bd = new DataBase();
-
+$bd2 = new DataBase();
 $result = array();
 $vectorR=array();
 $result['error'] = false;
@@ -39,6 +39,25 @@ if (isset($codigo)) {
     //Formato de propiedades de la funcion enviar_mail_html($host,$puerto,$smtpSecure,$cuentaDeEnvio,$passwordCuentaDeEnvio,$nombre,$tema,$cuerpo,$cuerpoHtml,$cuentaDestino, $link) 
     enviar_mail_html($host,$puerto,$protocolo,$cuenta,$password,'Comprobante','LEER',"", "TEST",$email, $link);
 
+    $query2 = $bd2->consultar($sql1);
+   
+      
+    for ($i = 0; $i < count($vectorA); $i++) {
+      $j=0;  
+      while($datos=$bd2->obtener_name($query2)){
+          $numeroABuscar = $j;
+          // Convertir el elemento a entero y comparar
+          if ($vectorA[$i] == $numeroABuscar) {
+              echo $datos["codigo"];
+              $codigoV=$datos["codigo"];
+              $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '$codigoV'";
+              $query3 = $bd->consultar($sql);
+           }
+          $j=$j + 1;
+      }
+     
+    }  
+    
     $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '$codigo'";
     $query = $bd->consultar($sql);
     $result['sql'] = $sql;
