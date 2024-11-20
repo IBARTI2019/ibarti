@@ -67,6 +67,7 @@ if (isset($codigo)) {
         foreach ($query2 as  $datos) {
           $numeroABuscar = $j;
           // Convertir el elemento a entero y comparar
+          $result['datos'] = [$i, $j, $vectorA[$i], $numeroABuscar, $datos["codigo"]];
           if ($vectorA[$i] == $numeroABuscar) {
               echo $datos["codigo"];
               $codigoV=$datos["codigo"];
