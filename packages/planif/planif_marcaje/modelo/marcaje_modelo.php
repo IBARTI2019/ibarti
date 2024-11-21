@@ -78,6 +78,8 @@ function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto)
    
     {
         //  -- AND TIME(pd.fecha_fin) <= CURRENT_TIME()
+        //   AND pp.codigo='$proyecto'
+        
         $this->datos  = array();
         $where = " WHERE
         p.codigo = pd.cod_planif_cl_trab
@@ -86,7 +88,6 @@ function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto)
         ANd p.cod_ubicacion = cu.codigo
         and pa.obligatoria='F'
         AND DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d')
-        AND pp.codigo='$proyecto'
         AND p.cod_ficha = '$ficha' 
         ";
 
