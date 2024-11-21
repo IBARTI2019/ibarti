@@ -109,7 +109,7 @@ class Confirmaciones
     function get_estadistica($ficha, $cliente, $ubicacion, $horarios)
     {
         $this->datos  = array();
-        $this->data  = array("total" => 0, "confirm" => 0, "in_transport" => 0);
+        $this->data  = array("total" => 0, "confirm" => 0, "in_transport" => 0, "asistencia" => 0);
         $where = " WHERE a.fecha = CURRENT_DATE 
             AND a.cod_cliente = clientes.codigo 
             AND a.cod_ubicacion = clientes_ubicacion.codigo 
@@ -200,6 +200,23 @@ class Confirmaciones
         $this->datos = $this->bd->obtener_fila($query3, 0);
         $this->data["in_transport"] = $this->datos["total"];
 
+        $sql4 = "SELECT
+                COUNT(a.codigo) total
+            FROM
+                planif_clientes_trab_det a,
+                clientes,
+                clientes_ubicacion,
+                clientes_ub_puesto,
+                ficha,
+                turno,
+                horarios,
+                conceptos 
+            " . $where . " AND a.asistencia = 'T';";
+
+        $query4 = $this->bd->consultar($sql4);
+        $this->datos = $this->bd->obtener_fila($query4, 0);
+        $this->data["asistencia"] = $this->datos["total"];
+        
         return $this->data;
     }
 }
