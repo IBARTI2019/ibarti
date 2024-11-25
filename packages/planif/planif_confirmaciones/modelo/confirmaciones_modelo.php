@@ -83,8 +83,10 @@ class Confirmaciones
                     -- CONCAT( CURRENT_DATE, ' ', horarios.hora_entrada )) diff_min,
                     a.confirm,
                     a.in_transport,
+                    a.asistencia,
             		TIME(a.fec_confirm) fec_confirm,
-					TIME(a.fec_in_transport) fec_in_transport
+					TIME(a.fec_in_transport) fec_in_transport,
+                    TIME(a.fec_in_transport) fec_asistencia
                 FROM
                     planif_clientes_trab_det a,
                     clientes,
