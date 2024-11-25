@@ -86,7 +86,7 @@ class Confirmaciones
                     a.asistencia,
             		TIME(a.fec_confirm) fec_confirm,
 					TIME(a.fec_in_transport) fec_in_transport,
-                    TIME(a.fec_in_transport) fec_asistencia
+                    TIME(a.fec_asistencia) fec_asistencia
                 FROM
                     planif_clientes_trab_det a,
                     clientes,
