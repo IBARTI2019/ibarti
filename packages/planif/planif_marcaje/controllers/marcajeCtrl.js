@@ -121,13 +121,15 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
     console.log(marcados)
     
     var lista=[];
-    if (marcados.length >0 ){
+    if (marcados.length > 0 ){
 	    for(i=0;i<marcados.length;i++){
 		    if(marcados[i].checked){
                  lista.push(marcados[i].id);
 		    }
         }
-    } 
+    }else if(marcados){
+        lista.push(marcados.id);
+    }
     
     let vectorJSON = JSON.stringify(lista);
     
