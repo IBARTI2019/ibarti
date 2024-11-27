@@ -11,6 +11,7 @@ $horario     = $_POST['horario'];
 $data  =  $confirmaciones->get_estadistica($ficha, $cliente, $ubicacion, $horario);
 $porcentaje_asistenia = round((($data["confirm"] * 100) / $data["total"]));
 $porcentaje_transporte = round((($data["in_transport"] * 100) / $data["total"]));
+$porcentaje_asistencia = round((($data["asistencia"] * 100) / $data["total"]));
 echo '<table>
 <tr align="left">
     <td align="left">
@@ -32,6 +33,17 @@ echo '<table>
     </td>
     <td align="left">
         <b>  -  '. $porcentaje_transporte .'% </b>
+    </td>
+</tr>
+<tr align="left">
+    <td align="left">
+        <b> Asistencia: </b>
+    </td>
+    <td align="left">
+        <b> '.$data["asistencia"].'/'.$data["total"].'</b>
+    </td>
+    <td align="left">
+        <b>  -  '. $porcentaje_asistencia .'% </b>
     </td>
 </tr>
 </table>';

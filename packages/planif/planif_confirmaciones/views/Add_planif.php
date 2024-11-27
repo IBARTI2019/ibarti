@@ -33,4 +33,11 @@ foreach ($result as  $datos) {
             echo '<td class="fondo03">Sin confirmar';
         }
         echo '</td>';
+        echo '</td>';
+        if( $datos["asistencia"] == 'T'){
+            echo '<td class="fondo02">'.$datos["fec_asistencia"];
+        }else{
+            echo '<td class="fondo03">Sin asistir';
+        }
+        echo '</td>';
 }

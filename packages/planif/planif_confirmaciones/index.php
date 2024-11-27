@@ -116,6 +116,7 @@ $sql_horario = "SELECT
           <th>Hora entrada</th>
           <th>Hora de confirmacion</th>
           <th>Hora en transporte</th>
+          <th>Hora de asistencia</th>
         </tr>
       </thead>
       <tbody id="planificacion">

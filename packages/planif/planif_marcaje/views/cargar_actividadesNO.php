@@ -32,7 +32,7 @@ foreach ($resultNO as  $datos) {
              <td>' . $datos["realizado"] . '</td>';
 
     if ($datos["realizado"] == 'SI') {
-        echo '<td> <input type="checkbox" id="marcado" name="marcado"  checked disabled  width="15px" height="15px"></td> 
+        echo '<td> <input type="checkbox" id="'. $datos["codigo"] .'" name="marcado"  checked disabled  width="15px" height="15px"></td> 
         <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Participantes" onclick="openModalParticipantesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td>';
         if ($datos["participantes"] == 'T') {
             echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Observaciones" onclick="openModalObservacionesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td></tr>';
@@ -41,7 +41,7 @@ foreach ($resultNO as  $datos) {
         }
     } else {
         
-        echo '<td> <input type="checkbox" id="marcado" name="marcado" disabled  width="15px" height="15px"></td>';
+        echo '<td> <input type="checkbox" id="'. $datos["codigo"] .'" name="marcado" disabled  width="15px" height="15px"></td>';
         if($realizado == "true"){
             echo '<td><img src="imagenes/cerrar.bmp" ' . $disabled . ' alt="Realizado" title="Actividad Realizada" width="20px" height="20px" border="null"/></td>';
         }else{
