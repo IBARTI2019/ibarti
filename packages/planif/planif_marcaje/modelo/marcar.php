@@ -60,29 +60,14 @@ if (isset($codigo)) {
 
     $query2 = $bd->consultar($sql1);
    
-      
     for ($i = 0; $i < count($vectorA); $i++) {
-      $j=0;  
-        foreach ($query2 as  $datos) {
-          $numeroABuscar = $j;
-          // Convertir el elemento a entero y comparar
-          $result['datos'] = [$i, $j, $vectorA[$i], $numeroABuscar, $datos["codigo"]];
-          if ($vectorA[$i] == $numeroABuscar) {
-              echo $datos["codigo"];
-              $codigoV=$datos["codigo"];
-              $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '$codigoV'";
-              $query3 = $bd->consultar($sql);
-           }
-          $j=$j + 1;
-      }
-     
+      $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '". $vectorA[$i] ."'";
+      $query3 = $bd->consultar($sql);
     }  
     
     $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '$codigo'";
     $query = $bd->consultar($sql);
     $result['sql'] = $sql;
-    
-    
     
   } catch (Exception $e) {
     $error =  $e->getMessage();

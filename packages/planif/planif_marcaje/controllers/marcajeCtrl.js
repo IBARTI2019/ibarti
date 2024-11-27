@@ -124,7 +124,7 @@ function uploadActulizarS3marcaje(url,cod,archi,xusuario) {
     if (marcados.length >0 ){
 	    for(i=0;i<marcados.length;i++){
 		    if(marcados[i].checked){
-                 lista.push(i);
+                 lista.push(marcados[i].id);
 		    }
         }
     } 
