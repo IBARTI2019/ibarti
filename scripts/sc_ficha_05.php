@@ -109,28 +109,31 @@ if ($row > 0 )  {
                 $filax= $bd->num_fila($query);
 				
 				$posicion=-1;
-				while(($datos=$bd->obtener_fila($query,0)) && $posicion == -1) {
-					$campo_id = $datos["codigo"];	
-						if ( $campo_id == $fila[0]){
-                            $posicion =$n;
-						} else {
-							$n++;
-						}
-						
-				}
-				switch ($posicion) {
-					case 1:
-						$bloquear=0;
-						break;
-					case 2:
-						$bloquear=1;
-						break;
-					case 3:
-						$bloquear=1;
-						break;
-					case 4:
-						$bloquear=1;
-						break;	
+
+				if($status != "A"){
+					while(($datos=$bd->obtener_fila($query,0)) && $posicion == -1) {
+						$campo_id = $datos["codigo"];	
+							if ( $campo_id == $fila[0]){
+								$posicion =$n;
+							} else {
+								$n++;
+							}
+							
+					}
+					switch ($posicion) {
+						case 1:
+							$bloquear=0;
+							break;
+						case 2:
+							$bloquear=1;
+							break;
+						case 3:
+							$bloquear=1;
+							break;
+						case 4:
+							$bloquear=1;
+							break;	
+					}
 				}
 		    		
 		  // calcular la posicion del estatu  que tiene la ficha para ver si desactiva ficha
