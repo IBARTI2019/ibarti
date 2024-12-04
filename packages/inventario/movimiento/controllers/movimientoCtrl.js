@@ -187,10 +187,14 @@ function save_movimiento() {
 			type: 'post',
 			success: function(response) {
 				var resp = JSON.parse(response);
-				console.log(resp[0]);
-				stock_actual = resp[0];
-				$("#ped_cantidad").attr('disabled',false);
-				$("#ped_cantidad").attr('max',resp[0]);
+				if(resp){
+					console.log(resp[0]);
+					stock_actual = resp[0];
+					$("#ped_cantidad").attr('disabled',false);
+					$("#ped_cantidad").attr('max',resp[0]);
+				}else{
+					toastr.warning('Este producto no tiene disponibilidad!.');
+				}
 			},
 			error: function(xhr, ajaxOptions, thrownError) {
 				alert(xhr.status);
