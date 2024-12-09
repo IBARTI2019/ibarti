@@ -109,6 +109,7 @@ if ($row > 0 )  {
 				$posicion=-1;
 
 				if($status != "A"){
+					//TODO: Revisar esta logica
 					while(($datos=$bd->obtener_fila($query,0)) && $posicion == -1) {
 						$campo_id = $datos["codigo"];	
 							if ( $campo_id == $fila[0]){
@@ -123,10 +124,10 @@ if ($row > 0 )  {
 							$bloquear=0;
 							break;
 						case 2:
-							$bloquear=1;
+							$bloquear=0;
 							break;
 						case 3:
-							$bloquear=1;
+							$bloquear=0;
 							break;
 						case 4:
 							$bloquear=0;
