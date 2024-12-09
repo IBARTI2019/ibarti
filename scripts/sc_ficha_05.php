@@ -106,8 +106,6 @@ if ($row > 0 )  {
 				$query = $bd->consultar($sql);	 
 				$n = 1;
 				$bloquear=-1;
-                $filax= $bd->num_fila($query);
-				
 				$posicion=-1;
 
 				if($status != "A"){
@@ -131,7 +129,7 @@ if ($row > 0 )  {
 							$bloquear=1;
 							break;
 						case 4:
-							$bloquear=1;
+							$bloquear=0;
 							break;	
 					}
 				}
