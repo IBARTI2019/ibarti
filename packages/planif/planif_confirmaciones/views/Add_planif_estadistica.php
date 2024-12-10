@@ -15,7 +15,7 @@ $porcentaje_asistencia = round((($data["asistencia"] * 100) / $data["total"]));
 echo '<table>
 <tr align="left">
     <td align="left">
-        <b> Asistencia: </b>
+        <b> Asisto: </b>
     </td>
     <td align="left">
         <b> '.$data["confirm"].'/'.$data["total"].'</b>
