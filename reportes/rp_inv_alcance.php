@@ -272,9 +272,6 @@ $titulo  = " DOTACIONES DE ALCANCE ";
 				</tr>
 			</table>
 			<div id="modal_contenidoDetalle"></div>
-			<form action="" method="post" name="add_reporte_modal" id="add_reporte_modal" method="post" target="_blank">
-				<input type="hidden" name="contratacion" id="cod_contratacion_serv" value="">
-			</form>
 		</div>
 	</div>
 </div>

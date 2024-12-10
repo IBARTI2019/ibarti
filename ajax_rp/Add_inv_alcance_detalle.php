@@ -33,6 +33,7 @@ if($allFechas == false){
 // QUERY A MOSTRAR //
 $sql = " SELECT
 			ajuste_alcance.fecha,
+			ajuste_alcance.motivo,
 			ajuste_alcance.referencia,
 			prod_lineas.descripcion AS linea,
 			prod_sub_lineas.descripcion AS sub_linea,
@@ -58,6 +59,7 @@ ORDER BY 1 ASC;";
 			<tr>
 				<tr class="fondo00">
 				<th width="10%" class="etiqueta">Fecha</th>
+				<th width="24%" class="etiqueta">Motivo</th>
 				<th width="10%" class="etiqueta">Referencia</th>
 				<th width="12%" class="etiqueta">Serial </th>
 				<th width="24%" class="etiqueta">Producto </th>
@@ -80,6 +82,7 @@ ORDER BY 1 ASC;";
 				}
 				echo '<tr class="'.$fondo.'">
 				<td class="texto">'.$datos["fecha"].'</td>
+				<td class="texto">'.$datos["motivo"].'</td>
 				<td class="texto">'.$datos["referencia"].'</td>
 				<td class="texto">'.$datos["cod_producto"].'</td>
 				<td class="texto">'.$datos["producto"].'</td>
