@@ -513,7 +513,7 @@ $href2 = "'inicio.php?area=formularios/Add_novedades&Nmenu=$NmenuX&mod=$mod&meto
 	   ' . CheckX('' . $cod_valor . '', '' . $datos02[0] . '') . '/>';
 					}
 					echo '</td>
-      <td><textarea  name="observacion_' . $cod_nov . '" cols="50" rows="1">' . $datos[4] . '</textarea><img src="imagenes/nuevo.bmp" alt="Agregar Registro" title="Agregar Registro" width="20px" height="20px" border="null" class="imgLink" onclick="Vinculo(' . $href2 . $obsev . '\')"/> <img src="imagenes/nuevo2.bmp" alt="Agregar Registro Kanban" title="Agregar Registro Kanban" width="20px" height="20px" border="null" class="imgLink" onclick="Vinculo(' . $href2 . $obsev . '&kanban=true&menuNov='.$Nmenu.'&modNov='.$menu.'&checkList='.$codigo.'\')"/></td>
+      <td><textarea  name="observacion_' . $cod_nov . '" cols="50" rows="1">' . $datos[4] . '</textarea><img src="imagenes/nuevo.bmp" alt="Agregar Registro" title="Agregar Registro" width="20px" height="20px" border="null" class="imgLink" onclick="Vinculo(' . $href2 .'&checkList='.$codigo .'&novedad='.$cod_nov . $obsev . '\')"/> <img src="imagenes/nuevo2.bmp" alt="Agregar Registro Kanban" title="Agregar Registro Kanban" width="20px" height="20px" border="null" class="imgLink" onclick="Vinculo(' . $href2 . $obsev . '&kanban=true&menuNov='.$Nmenu.'&modNov='.$menu.'&checkList='.$codigo.'\')"/></td>
     </tr>';
 				}
 			} ?>

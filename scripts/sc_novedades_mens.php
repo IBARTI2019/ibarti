@@ -31,7 +31,7 @@ $metodo   = $_POST['metodo'];
 	$sql    = "$SELECT $proced('$metodo', '$codigo', '$novedad', '$cliente', 
 								'$ubicacion', '$trabajador', '$observacion', '$repuesta',
                                 '$campo01', '$campo02', '$campo03', '$campo04', 
-								'$usuario',  '$activo')";						  
+								'$usuario',  '$activo', NULL)";						  
 	 $query = $bd->consultar($sql);	  			   		
 
 	}

@@ -14,6 +14,7 @@ $ubicacion      = $_POST['ubicacion'];
 $observacion    = $_POST['observacion']; 
 $repuesta       = $_POST['repuesta']; 
 $activo         = $_POST['status'];
+$checklist       = $_POST['checklist']; 
 
 $campo01        = "";
 $campo02        = "";
@@ -25,14 +26,15 @@ $usuario  = $_POST['usuario'];
 $proced   = $_POST['proced'];
 $metodo   = $_POST['metodo'];
 
-	if(isset($_POST['proced'])){
+if(isset($_POST['proced'])){
 		
 	$sql    = "$SELECT $proced('$metodo', '$codigo', '$novedad', '$cliente', 
 								'$ubicacion', '$trabajador', '$observacion', '$repuesta',
                                 '$campo01', '$campo02', '$campo03', '$campo04', 
-								'$usuario',  '$activo')";						  
-	 $query = $bd->consultar($sql);	  			   		
+								'$usuario',  '$activo', '$checklist')";						  
+	$query = $bd->consultar($sql);	  			   		
 
-	}
+}
+	
  require_once('../funciones/sc_direccionar.php');  
 ?>

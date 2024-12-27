@@ -47,22 +47,22 @@ function Ingresar(){
 
  if(nov_status=='') {
   var campo01 = campo01+1;
-}
-if(campo01 == 1){
-  var valor = "scripts/sc_novedades_det.php";
-  ajax=nuevoAjax();
-  ajax.open("POST", valor, true);
-  ajax.onreadystatechange=function(){
-    if (ajax.readyState==4){
-      document.getElementById("Contendor01").innerHTML = ajax.responseText;
-      Novedades_Det();
-    }
   }
-  ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  ajax.send("codigo="+codigo+"&nov_status="+nov_status+"&observacion="+observ+"&fecha="+nov_fecha+"&hora="+nov_hora+"&href=&usuario="+usuario+"&proced="+proced+"&metodo=agregar");
-}else{
-	alert(errorMessage);
-}
+  if(campo01 == 1){
+    var valor = "scripts/sc_novedades_det.php";
+    ajax=nuevoAjax();
+    ajax.open("POST", valor, true);
+    ajax.onreadystatechange=function(){
+      if (ajax.readyState==4){
+        document.getElementById("Contendor01").innerHTML = ajax.responseText;
+        Novedades_Det();
+      }
+    }
+    ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    ajax.send("codigo="+codigo+"&nov_status="+nov_status+"&observacion="+observ+"&fecha="+nov_fecha+"&hora="+nov_hora+"&href=&usuario="+usuario+"&proced="+proced+"&metodo=agregar");
+  }else{
+    alert(errorMessage);
+  }
 }
 
 function Novedades_Det(){
@@ -102,11 +102,12 @@ require_once('autentificacion/aut_verifica_menu.php');
 $kanban = false;
 $proced      = "p_nov_proc";
 $proced2     = "p_nov_proc_det";
+$checkList = null;
 if($metodo == 'modificar'){
  $titulo = "MODIFICAR $titulo";
  $codigo = $_GET['codigo'];
  $bd = new DataBase();
- $sql = " SELECT nov_procesos.cod_novedad,
+ $sql = " SELECT nov_procesos.cod_novedad, nov_procesos.cod_checklist,
  novedades.descripcion AS novedad, nov_procesos.cod_cliente,
  clientes.nombre AS cliente, nov_procesos.cod_ubicacion,
  clientes_ubicacion.descripcion AS ubicacion,
@@ -133,6 +134,7 @@ if($metodo == 'modificar'){
  $cod_ficha     = $result['cod_ficha'];
  $trabajador    = $result['cod_ficha'].' - '.' ('.$result['cedula'].') '.$result['trabajador'];
  $cod_novedad   = $result['cod_novedad'];
+ $checklist       = $result['cod_checklist'];
  $novedad       = $result['novedad'];
  $cod_cliente   = $result['cod_cliente'];
  $cliente       = $result['cliente'];
@@ -176,14 +178,26 @@ if($metodo == "agregar2"){
   $cod_cliente   = $_GET['cl'];
   $cod_ubicacion = $_GET['ubic'];
   $observacion  = $_GET['observ'];
+  $cod_novedad  = $_GET['novedad'];
+
+  $sql = " SELECT novedades.descripcion AS novedad
+  FROM novedades
+  WHERE novedades.codigo = '$cod_novedad'";
+
+  $query = $bd->consultar($sql);
+  $result = $bd->obtener_fila($query,0);
+
+  $novedad    = $result['novedad'];
+
   if(isset($_GET['kanban'])){
     $kanban  = $_GET['kanban'];
   }
 
+  $checkList  = $_GET['checkList'];
+  
   if($kanban == true){
     $menuNov   = $_GET['menuNov'];
     $modNov = $_GET['modNov'];
-    $checkList  = $_GET['checkList'];
     $href = "../inicio.php?area=formularios/Add_novedades_check_list_resp&Nmenu=".$menuNov."&mod=".$modNov."&codigo=".$checkList."&metodo=modificar";
     $sql_nov_novedad_ing = "SELECT novedades.codigo, novedades.descripcion
                        FROM novedades , nov_perfiles, nov_clasif, nov_tipo
@@ -253,25 +267,31 @@ if($metodo == "agregar3"){
     </tr>
     <tr>
     	<td class="etiqueta" width="15%">Codigo:</td>
-    	<td width="35%"><input type="text" size="10" name="codigo" id="codigo" value="<?php echo $codigo;?>" readonly="readonly"/></td>
+    	<td width="35%">
+        <input type="text" size="10" name="codigo" id="codigo" value="<?php echo $codigo;?>" readonly="readonly"/>
+      </td>
+      <td class="etiqueta" width="15%">CheckList:</td>
+      <td width="35%">
+        <input type="text" size="10" name="checklist" id="checklist" value="<?php echo $checklist;?>" readonly="readonly"/>
+      </td>
+      </tr>
+      <tr>
       <td class="etiqueta" width="15%">Status:</td>
       <td width="35%"><input type="text" id="status" value="<?php echo $status;?>"/>
         <input type="hidden" size="26" name="status"  value="<?php echo $cod_status;?>"/></td>
-      </tr>
-      <tr>
+    
         <td class="etiqueta">Fecha De Sistema:</td>
         <td><input type="text" size="10" readonly="readonly" value="<?php echo $fecha_sist;?>"></td>
+        </tr>
+        <tr>
         <td class="etiqueta">Usuario Mod.:</td>
         <td><?php echo $us_mod;?></td>
-      </tr>
-      <tr>
-       <td colspan="2">&nbsp;</td>
        <td class="etiqueta">Fecha Ultima Mod.:</td>
        <td><input type="text" size="10" readonly="readonly" value="<?php echo $fec_us_mod;?>"></td>
      </tr>
      <tr>
       <td class="etiqueta">Novedad:</td>
-      <td id="select01"><select name="novedad" style="width:200px" required>
+      <td id="select01" colspan="3"><select name="novedad" style="width:600px" required>
        <option value="<?php echo $cod_novedad;?>"><?php echo $novedad;?></option>
        <?php
        $query = $bd->consultar($sql_nov_novedad_ing);
@@ -279,7 +299,7 @@ if($metodo == "agregar3"){
         ?>
         <option value="<?php echo $row02[0];?>"><?php echo $row02[1];?></option>
       <?php }?>
-    </select><br />
+    </select><br /><br />
     <span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
     <td colspan="2">&nbsp;</td>
   </tr>
