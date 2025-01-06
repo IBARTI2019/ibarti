@@ -21,8 +21,8 @@ $codigo  = htmlentities($codigo);
                                  '$cargo1', '$telefono1', '$email1','$contacto2', 
                                  '$cargo2', '$telefono2', '$email2','$contacto3', 
                                  '$cargo3', '$telefono3', '$email3')";
+    $result['sql'] = $sql;
    	 $query = $bd->consultar($sql);
-     $result['sql'] = $sql;
 
  		}catch (Exception $e) {
        $error =  $e->getMessage();
