@@ -141,15 +141,19 @@ function rotacionModalOpen(){
 	      var error      = error+1;
 	}
 	      if(error == 0){
+                  $("#rotarionModal").show();
                   var contenido = "modal_contenido_v_r";
                   ajax=nuevoAjax();
                         ajax.open("POST", "ajax/Add_verificaion_rotacion.php", true);
                         ajax.onreadystatechange=function(){
-                  if (ajax.readyState==4){
-                        document.getElementById(contenido).innerHTML = ajax.responseText;
-                        $("#rotarionModal").show();
-                  }
-                  }
+
+                              if (ajax.readyState==1 || ajax.readyState==2 || ajax.readyState==3){
+                                    document.getElementById(contenido).innerHTML = '<img src="imagenes/loading.gif" />';
+                              }
+                              if (ajax.readyState==4){
+                                    document.getElementById(contenido).innerHTML = ajax.responseText;
+                              }
+                        }
                   ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                   ajax.send("fecha_desde="+fecha_desde+"&quincena="+quincena+"&rol="+rol+"&nomina="+nomina+"&region="+region+"&estado="+estado+"&ciudad="+ciudad+"");
                  
