@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="css/modal_planif.css" type="text/css" media="screen" />
 <?php
 $Nmenu   = 544;
 $mod     =  $_GET['mod'];
@@ -25,7 +26,7 @@ $bd = new DataBase();
     </tr>
     <tr>
         <td class="etiqueta">Quincena:</td>
-		<td id="select01"><select name="quincena" style="width:250px;" required>
+		<td id="select01"><select name="quincena" id="quincena" style="width:250px;" required>
                     <option value="">Seleccione...</option>
                     <option value="01">Primera Quincena</option>
                     <option value="02">Segunda Quincena</option>
@@ -34,7 +35,7 @@ $bd = new DataBase();
 	 <tr>
   	<tr>
         <td class="etiqueta"><?php echo $leng['nomina']?>:</td>
-		<td><select name="nomina" style="width:250px;">
+		<td><select name="nomina" id="nomina" style="width:250px;">
      		        <option value="TODOS"> TODOS</option>
 		<?php $query02 = $bd->consultar($sql_contracto);
              while($row02=$bd->obtener_fila($query02,0)){
@@ -42,7 +43,7 @@ $bd = new DataBase();
              }?></select></td></tr>
   	<tr>
         <td class="etiqueta"><?php echo $leng['rol']?>:</td>
-		<td><select name="rol" style="width:250px;" required>
+		<td><select name="rol" id="rol" style="width:250px;" required>
 
 		<?php
 		echo $select_rol;
@@ -52,7 +53,7 @@ $bd = new DataBase();
              }?></select></td></tr>
     <tr>
         <td class="etiqueta"><?php echo $leng['region']?>:</td>
-		<td><select name="region" style="width:250px;">
+		<td><select name="region" id="region" style="width:250px;">
      		        <option value="TODOS"> TODOS</option>
 		<?php $query02 = $bd->consultar($sql_region);
              while($row02=$bd->obtener_fila($query02,0)){
@@ -60,7 +61,7 @@ $bd = new DataBase();
              }?></select></td></tr>
   	<tr>
         <td class="etiqueta"><?php echo $leng['estado']?></td>
-		<td><select name="estado" style="width:250px;">
+		<td><select name="estado" id="estado" style="width:250px;">
      		        <option value="TODOS"> TODOS</option>
 		<?php $query02 = $bd->consultar($sql_estado);
              while($row02=$bd->obtener_fila($query02,0)){
@@ -68,7 +69,7 @@ $bd = new DataBase();
              }?></select></td></tr>
   	<tr>
         <td class="etiqueta"><?php echo $leng['ciudad']?>:</td>
-		<td><select name="ciudad" style="width:250px;">
+		<td><select name="ciudad" id="ciudad" style="width:250px;">
      		        <option value="TODOS"> TODOS</option>
 		<?php $query02 = $bd->consultar($sql_ciudad);
              while($row02=$bd->obtener_fila($query02,0)){
@@ -90,6 +91,11 @@ $bd = new DataBase();
 
     <img class="imgLink" id="img_excel" src="imagenes/excel.gif" border="0"
     onclick="{$('#reporte').val('excel');$('#procesar').click();}" width="25px" title="imprimir a excel">
+    <span class="art-button-wrapper" onclick="rotacionModalOpen()">
+                    <span class="art-button-l"> </span>
+                    <span class="art-button-r"> </span>
+                <input type="button" id="comparar" value="Verificar Rotaciones" class="readon art-button" />
+                </span>
              <span class="art-button-wrapper">
                     <span class="art-button-l"> </span>
                     <span class="art-button-r"> </span>
@@ -97,3 +103,62 @@ $bd = new DataBase();
                 </span>
  			    <input name="usuario" type="hidden"  value="<?php echo $usuario;?>"/>
 		</div></form>
+
+
+
+<div id="rotarionModal" class="modal">
+	<div class="modal-content">
+		<div class="modal-header">
+			<span class="close" onclick="rotacionCloseModal()" >&times;</span>
+			<span id="modal_titulo">Verificación de rotaciones</span>
+		</div>
+		<div class="modal-body">
+			<div id="modal_contenido_v_r">
+			</div>
+		</div>
+	</div>
+</div>
+
+<script language="JavaScript" type="text/javascript">
+
+function rotacionModalOpen(){
+	var quincena         = $("#quincena").val();
+	var nomina     = $("#nomina").val();
+	var rol      = $("#rol").val();
+	var region       = $("#region").val();
+      var estado       = $("#estado").val();
+      var ciudad       = $("#ciudad").val();
+      var fecha_desde = $( "#fecha_desde").val();
+	var error = 0;
+      var errorMessage = ' Debe Seleccionar Un Campo ';
+
+      if( fechaValida(fecha_desde) !=  true && fecha_desde != ""){ 
+		var errorMessage = ' Campos De Fecha Incorrecto ';
+		var error = error+1;
+	}
+	if( quincena == ""){
+            var errorMessage = ' \n Debe seleccionar una quincena ';
+	      var error      = error+1;
+	}
+	      if(error == 0){
+                  var contenido = "modal_contenido_v_r";
+                  ajax=nuevoAjax();
+                        ajax.open("POST", "ajax/Add_verificaion_rotacion.php", true);
+                        ajax.onreadystatechange=function(){
+                  if (ajax.readyState==4){
+                        document.getElementById(contenido).innerHTML = ajax.responseText;
+                        $("#rotarionModal").show();
+                  }
+                  }
+                  ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                  ajax.send("fecha_desde="+fecha_desde+"&quincena="+quincena+"&rol="+rol+"&nomina="+nomina+"&region="+region+"&estado="+estado+"&ciudad="+ciudad+"");
+                 
+            }else{ 
+                  alert(errorMessage);
+            }
+      }
+
+function rotacionCloseModal(){
+    $("#rotarionModal").hide();
+}
+            </script>
