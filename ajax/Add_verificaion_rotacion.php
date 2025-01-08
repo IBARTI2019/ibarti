@@ -311,7 +311,7 @@ if ($quincena == "01"){
 				asistencia_quincenal02.d29, asistencia_quincenal02.d30,
 				asistencia_quincenal02.d31,
 				CASE WHEN 
-					CONCAT_WS(
+					SUBSTRING_INDEX(CONCAT_WS(
 						',',
 						COALESCE(
 							(SELECT c_final.abrev
@@ -425,7 +425,7 @@ if ($quincena == "01"){
 							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
 							WHERE REPLACE(asistencia_quincenal02.d31, ' ', '') = c1.abrev
 							LIMIT 1), 'B')
-					) = r.secuencia_repetida THEN
+					), ',', DATEDIFF('$fecha_H', '$fecha_D') + 1) = r.secuencia_repetida THEN
 							'SI'
 						ELSE
 							'NO'
@@ -487,7 +487,7 @@ if ($quincena == "01"){
 				) r ON asistencia_quincenal02.cod_ficha = r.cod_ficha
 			$where02
 		ORDER BY 1 ASC";
-
+// echo $sql;
 	echo "<table width='100%' border='0' align='center' class='tabla_sistema'>
 	<tr><th>".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
 			<th> ".$leng['region']." </th><th> ".$leng['estado']."  </th><th> ".$leng['ciudad']."  </th><th> Nómina  </th>
