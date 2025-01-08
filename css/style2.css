@@ -407,6 +407,10 @@ width:100%;
 	cursor:pointer;
 }
 
+.tabla_sistema tr.fondo03 {
+	background-color: red !important;
+}
+
 .tabla_sistema tr:nth-child(even) {
 	background-color:   #EAFFEA;
 }
@@ -414,7 +418,6 @@ width:100%;
 .tabla_sistema tr:nth-child(odd) {
 	background-color: #42FF42;
 }
-
 
 .tabla_sistema tr:hover {
 	background: yellow;

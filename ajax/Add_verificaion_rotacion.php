@@ -245,7 +245,7 @@ if ($quincena == "01"){
 			ORDER BY 1 ASC";
 
 
-		echo "<table width='100%' border='0' align='center' class='tabla_planif'>
+		echo "<table width='100%' border='0' align='center' class='tabla_sistema'>
 			<tr><th>".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
 					<th> ".$leng['region']." </th><th> ".$leng['estado']."  </th><th> ".$leng['ciudad']."  </th><th> Nómina  </th>
 					<th> 01 </th><th> 02 </th><th> 03 </th><th> 04 </th>
@@ -488,7 +488,7 @@ if ($quincena == "01"){
 			$where02
 		ORDER BY 1 ASC";
 
-	echo "<table width='100%' border='0' align='center' class='tabla_planif'>
+	echo "<table width='100%' border='0' align='center' class='tabla_sistema'>
 	<tr><th>".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
 			<th> ".$leng['region']." </th><th> ".$leng['estado']."  </th><th> ".$leng['ciudad']."  </th><th> Nómina  </th>
 			<th> 16 </th><th> 17 </th><th> 18 </th><th> 19 </th>
