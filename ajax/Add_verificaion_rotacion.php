@@ -239,7 +239,7 @@ if ($quincena == "01"){
 						cod_rotacion
 				) r ON p.cod_rotacion = r.cod_rotacion
 			WHERE
-				p.fecha_inicio = '$fecha_D'
+				p.fecha_inicio = '$fec_mensual'
 				) r ON asistencia_quincenal01.cod_ficha = r.cod_ficha
 				$where01
 			ORDER BY 1 ASC";
@@ -483,7 +483,7 @@ if ($quincena == "01"){
 						cod_rotacion
 				) r ON p.cod_rotacion = r.cod_rotacion
 			WHERE
-				p.fecha_inicio = '$fecha_D'
+				p.fecha_inicio = '$fec_mensual'
 				) r ON asistencia_quincenal02.cod_ficha = r.cod_ficha
 			$where02
 		ORDER BY 1 ASC";
