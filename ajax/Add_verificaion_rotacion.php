@@ -25,6 +25,8 @@ $dia1    = $fecha_N[2];
 $fecha_Inc_M  = mktime(0,0,0,$mes1,$dia1,$year1);
 $fec_mensual = "".$year1."-".$mes1."-01";
 
+// Obtener la fecha actual
+$fecha_actual = date("Y-m-d");
 
 $where01 = "WHERE asistencia_quincenal01.fec_mensual = '$fec_mensual'
 		AND r.cod_ubicacion = v_ficha.cod_ubicacion ";
@@ -62,6 +64,12 @@ if ($quincena == "01"){
 	$fecha_H = $year1.'-'.$mes1.'-15';
 	$fecha_D = $year1.'-'.$mes1.'-01';
 
+	// Verificar si $fecha_H es mayor que la fecha actual
+	if ($fecha_H > $fecha_actual) {
+		// Si $fecha_H es mayor, asignar la fecha de ayer
+		$fecha_H = date("Y-m-d", strtotime("-1 day"));
+	}
+
 	// QUERY A MOSTRAR //
 	$sql = " SELECT v_ficha.cod_ficha, v_ficha.cedula, v_ficha.ap_nombre,
 					v_ficha.rol,  v_ficha.region,
@@ -76,7 +84,7 @@ if ($quincena == "01"){
 					asistencia_quincenal01.d13, asistencia_quincenal01.d14,
 					asistencia_quincenal01.d15,
 					CASE WHEN 
-					CONCAT_WS(
+					SUBSTRING_INDEX(CONCAT_WS(
 						',',
 						COALESCE(
 							(SELECT c_final.abrev
@@ -183,7 +191,7 @@ if ($quincena == "01"){
 							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
 							WHERE REPLACE(asistencia_quincenal01.d15, ' ', '') = c1.abrev
 							LIMIT 1), 'B')
-					) = r.secuencia_repetida THEN
+					), ',', DATEDIFF( '$fecha_H', '$fecha_D' ) + 1) = r.secuencia_repetida THEN
 							'SI'
 						ELSE
 							'NO'
@@ -299,6 +307,11 @@ if ($quincena == "01"){
 		$fecha_H   = date("Y-m-d", $fec_desde);
 		$fecha_D   = $year1.'-'.$mes1.'-16';
 
+	// Verificar si $fecha_H es mayor que la fecha actual
+	if ($fecha_H > $fecha_actual) {
+		// Si $fecha_H es mayor, asignar la fecha de ayer
+		$fecha_H = date("Y-m-d", strtotime("-1 day"));
+	}
 
 	$sql = " SELECT v_ficha.cod_ficha, v_ficha.cedula, v_ficha.ap_nombre,
 				v_ficha.rol,  v_ficha.region,
