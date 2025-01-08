@@ -204,14 +204,6 @@ if ($quincena == "01"){
 				p.posicion_inicio,
 				p.cod_ubicacion,
 				r.secuencia_turnos,
-				-- Ajustar la secuencia para que comience desde posicion_inicio
-				TRIM(BOTH ',' FROM (
-					CONCAT(
-						SUBSTRING_INDEX(r.secuencia_turnos, ',', -((LENGTH(r.secuencia_turnos) - LENGTH(REPLACE(r.secuencia_turnos, ',', '')) + 1) - (p.posicion_inicio + 1) + 1)),
-						',',
-						SUBSTRING_INDEX(r.secuencia_turnos, ',', p.posicion_inicio - 1)
-					)
-				)) AS secuencia_ajustada,
 				-- Generar la secuencia repetida utilizando la secuencia ajustada
 				TRIM(BOTH ',' FROM (
 					SUBSTRING_INDEX(
@@ -454,17 +446,9 @@ if ($quincena == "01"){
 				p.posicion_inicio,
 				p.cod_ubicacion,
 				r.secuencia_turnos,
-				-- Ajustar la secuencia para que comience desde posicion_inicio
-				TRIM(BOTH ',' FROM (
-					CONCAT(
-						SUBSTRING_INDEX(r.secuencia_turnos, ',', -((LENGTH(r.secuencia_turnos) - LENGTH(REPLACE(r.secuencia_turnos, ',', '')) + 1) - (p.posicion_inicio + 1) + 1)),
-						',',
-						SUBSTRING_INDEX(r.secuencia_turnos, ',', p.posicion_inicio - 1)
-					)
-				)) AS secuencia_ajustada,
 				-- Generar la secuencia repetida utilizando la secuencia ajustada
 				TRIM(BOTH ',' FROM (
-					SUBSTRING_INDEX(
+					SUBSTRING_INDEX(CONCAT(SUBSTRING_INDEX(
 						REPEAT(
 							CONCAT(
 								TRIM(BOTH ',' FROM (
@@ -476,12 +460,12 @@ if ($quincena == "01"){
 								)),
 								','
 							), -- Repetir la secuencia ajustada separada por comas
-							CEIL((DATEDIFF('$fecha_H', '$fecha_D') + 1) / 
+							CEIL((DATEDIFF('$fecha_H', '$fec_mensual') + 1) / 
 							(LENGTH(r.secuencia_turnos) - LENGTH(REPLACE(r.secuencia_turnos, ',', '')) + 1)) -- Número de repeticiones necesarias
 						),
 						',',
-									DATEDIFF('$fecha_H', '$fecha_D') + 1  -- Longitud exacta en términos de opciones
-					)
+									DATEDIFF('$fecha_H', '$fec_mensual') + 1  -- Longitud exacta en términos de opciones
+					), ','),',',-(DATEDIFF( '$fecha_H', '$fecha_D' ) + 2 ))
 				)) AS secuencia_repetida
 			FROM
 				planif_clientes_trab p
