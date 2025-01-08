@@ -26,9 +26,11 @@ $fecha_Inc_M  = mktime(0,0,0,$mes1,$dia1,$year1);
 $fec_mensual = "".$year1."-".$mes1."-01";
 
 
-$where01 = "WHERE asistencia_quincenal01.fec_mensual = '$fec_mensual'";
+$where01 = "WHERE asistencia_quincenal01.fec_mensual = '$fec_mensual'
+		AND r.cod_ubicacion = v_ficha.cod_ubicacion ";
 
-$where02 = "WHERE asistencia_quincenal02.fec_mensual = '$fec_mensual' ";
+$where02 = "WHERE asistencia_quincenal02.fec_mensual = '$fec_mensual'
+		AND r.cod_ubicacion = v_ficha.cod_ubicacion ";
 
 if($nomina != "TODOS"){
 	$where01 .= " AND v_ficha.cod_contracto = '$nomina' ";
@@ -192,6 +194,7 @@ if ($quincena == "01"){
 				SELECT
 				p.cod_ficha,
 				p.posicion_inicio,
+				p.cod_ubicacion,
 				r.secuencia_turnos,
 				-- Ajustar la secuencia para que comience desde posicion_inicio
 				TRIM(BOTH ',' FROM (
@@ -436,6 +439,7 @@ if ($quincena == "01"){
 				SELECT
 				p.cod_ficha,
 				p.posicion_inicio,
+				p.cod_ubicacion,
 				r.secuencia_turnos,
 				-- Ajustar la secuencia para que comience desde posicion_inicio
 				TRIM(BOTH ',' FROM (
