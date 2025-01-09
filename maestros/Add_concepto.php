@@ -49,6 +49,40 @@ if($metodo == 'modificar'){
 	$activo       = 'T';
 	}
 ?>
+<script language="javascript">
+    function actualizarEquivalencia(concepto_equivalente) {
+        var usuario = $("#usuario").val();
+        var concepto = $("#codigo").val();
+        var status = 'F';
+        console.log('check' + concepto_equivalente);
+        if ($('#check' + concepto_equivalente).is(':checked')) {
+            status = 'T';
+        }
+        var parametros = {
+            concepto_equivalente: concepto_equivalente, concepto: concepto, estatus: status, usuario: usuario
+        };
+
+        $.ajax({
+            data: parametros,
+            url: 'packages/general/modelo/procesar_equivalencia_concepto.php',
+            type: 'post',
+            success: function (response) {
+                var resp = JSON.parse(response);
+                if (resp.error) {
+                    toastr.error(resp.mensaje);
+                } else {
+                    toastr.success('Actualizacion Exitosa!..');
+                }
+
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
+
+    }
+</script>
 
 <form action="sc_maestros/Concepto.php" method="post" name="Mod" id="Mod">
      <table width="70%" align="center">
@@ -60,7 +94,7 @@ if($metodo == 'modificar'){
          </tr>
     <tr>
       <td class="etiqueta" width="25%">C&oacute;digo:</td>
-      <td id="input01" width="75%"><input type="text" name="codigo" maxlength="12" style="width:120px"
+      <td id="input01" width="75%"><input type="text" name="codigo" id="codigo" maxlength="12" style="width:120px"
                                           value="<?php echo $codigo;?>" />
            Activo: <input name="activo" type="checkbox"  <?php echo statusCheck("$activo");?> value="T" /><br>
         <span class="textfieldRequiredMsg">La Descripcion es Requerida.</span>
@@ -137,6 +171,72 @@ if($metodo == 'modificar'){
             <input type="hidden"  name="region" value="" />
             <input type="hidden"  name="categoria" value="" /> 	</div>
 </form>
+<?php
+if($metodo == 'modificar' && $asist_diaria == 'T'){
+?>
+<br><br><br>
+<div align="center" class="etiqueta_title">Equivalencias de rotación</div>
+<div id="Cont_conceptosR" class="tabla_sistema">
+<?php
+    $result =array();
+    $sql = " SELECT
+            conceptos.codigo,
+            conceptos.abrev,
+            conceptos.descripcion,
+            IFNULL(ppc.cod_concepto_equivalente, 'NO') existe,
+            ppc.`status`
+        FROM
+            conceptos
+            LEFT JOIN equivalencias_conceptos ppc ON ppc.cod_concepto = '$codigo'
+            AND ppc.cod_concepto_equivalente = conceptos.codigo
+        WHERE
+            conceptos.`status` = 'T' AND conceptos.codigo != '$codigo'
+            AND conceptos.asist_diaria = 'T'
+            ORDER BY 2 ASC";
+      
+    $query         = $bd->consultar($sql);
+
+?>
+
+<table width="90%" border="0" align="center">
+	<tr>
+		</br>
+		<td colspan="4">
+			</hr>
+		</td>
+		</br>
+	</tr>
+	<tr>
+		<th width="15%">Código</th>
+        <th width="15%">Abreviatura</td>
+		<th width="60%">Descripción</td>
+		<th width="10%">Check</td>
+	</tr>
+	<?php
+	$i     = 0;
+	while ($datos_det = $bd->obtener_fila($query)) {
+		$i++;
+		$cod_det     = $datos_det['codigo'];
+		if ($datos_det['existe'] != 'NO' && $datos_det['status'] == 'T') {
+			$check = 'checked="checked"';
+		} else {
+			$check = '';
+		}
+		echo '<tr>
+  					<td>' . $i . '<input type="hidden" name="cod_det_concepto" id="cod_det_concepto' . $cod_det . '" value="' . $cod_det . '"></td>
+                    <td>' . $datos_det["abrev"] . '</td>
+					  <td>' . $datos_det["descripcion"] . '</td>
+					  <td><input type="checkbox" id="check' . $cod_det . '" value="' . $cod_det . '" name="check" value="T" ' . $check . ' onclick="actualizarEquivalencia(this.value)"></td>
+              </td>
+  				</tr>';
+	}
+	?>
+</table>
+</div>
+<?php
+}
+?>
+<br><br>
 </body>
 </html>
 <script language="javascript" type="text/javascript">
