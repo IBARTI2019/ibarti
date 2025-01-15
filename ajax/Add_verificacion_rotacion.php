@@ -143,7 +143,7 @@ if ($quincena == "01"){
 						COALESCE(asistencia_quincenal01.d13, 'B'),
 						COALESCE(asistencia_quincenal01.d14, 'B'),
 						COALESCE(asistencia_quincenal01.d15, 'B')
-					), ',', DATEDIFF('$fecha_H', '$fecha_D'') + 1), ' ', '')), 'SI', 'NO') AS cumple_rotacion
+					), ',', DATEDIFF('$fecha_H', '$fecha_D') + 1), ' ', '')), 'SI', 'NO') AS cumple_rotacion
 				FROM  asistencia_quincenal01
 				JOIN v_ficha ON asistencia_quincenal01.cod_ficha = v_ficha.cod_ficha
 				JOIN (
