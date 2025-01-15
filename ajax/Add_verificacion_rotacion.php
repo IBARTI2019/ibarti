@@ -1,8 +1,12 @@
 <?php
+define("SPECIALCONSTANT",true);
 include_once('../funciones/funciones.php');
 require "../autentificacion/aut_config.inc.php";
-require "../".class_bd;
+require "../".class_bdI;
 require "../".Leng;
+
+$bd = new DataBase();
+$bd2 = new DataBase();
 
 if(($_POST['fecha_desde'] == "")){
 	exit;
@@ -83,119 +87,25 @@ if ($quincena == "01"){
 					asistencia_quincenal01.d11, asistencia_quincenal01.d12,
 					asistencia_quincenal01.d13, asistencia_quincenal01.d14,
 					asistencia_quincenal01.d15,
-					CASE WHEN 
-					SUBSTRING_INDEX(CONCAT_WS(
+					REPLACE(SUBSTRING_INDEX(CONCAT_WS(
 						',',
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d01, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d02, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d03, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d04, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d05, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d06, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d07, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d08, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d09, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d10, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d11, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d12, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d13, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d14, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal01.d15, ' ', '') = c1.abrev
-							LIMIT 1), 'B')
-					), ',', DATEDIFF( '$fecha_H', '$fecha_D' ) + 1) = r.secuencia_repetida THEN
-							'SI'
-						ELSE
-							'NO'
-					END AS cumple_rotacion
+						COALESCE(asistencia_quincenal01.d01, 'B'),
+						COALESCE(asistencia_quincenal01.d02, 'B'),
+						COALESCE(asistencia_quincenal01.d03, 'B'),
+						COALESCE(asistencia_quincenal01.d04, 'B'),
+						COALESCE(asistencia_quincenal01.d05, 'B'),
+						COALESCE(asistencia_quincenal01.d06, 'B'),
+						COALESCE(asistencia_quincenal01.d07, 'B'),
+						COALESCE(asistencia_quincenal01.d08, 'B'),
+						COALESCE(asistencia_quincenal01.d09, 'B'),
+						COALESCE(asistencia_quincenal01.d10, 'B'),
+						COALESCE(asistencia_quincenal01.d11, 'B'),
+						COALESCE(asistencia_quincenal01.d12, 'B'),
+						COALESCE(asistencia_quincenal01.d13, 'B'),
+						COALESCE(asistencia_quincenal01.d14, 'B'),
+						COALESCE(asistencia_quincenal01.d15, 'B')
+					), ',', DATEDIFF('$fecha_H', '$fecha_D') + 1), ' ', '') AS asistencia_diaria,
+					r.secuencia_repetida
 				FROM  asistencia_quincenal01
 				JOIN v_ficha ON asistencia_quincenal01.cod_ficha = v_ficha.cod_ficha
 				JOIN (
@@ -246,7 +156,7 @@ if ($quincena == "01"){
 				) r ON asistencia_quincenal01.cod_ficha = r.cod_ficha
 				$where01
 			ORDER BY 1 ASC";
-
+	// echo $sql;
 
 		echo "<table width='100%' border='0' align='center' class='tabla_sistema'>
 			<tr><th>".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
@@ -259,14 +169,20 @@ if ($quincena == "01"){
 
 			$query = $bd->consultar($sql);
 			while ($datos = $bd->obtener_fila($query, 0)) {
-				$signo = "";
-				if ($datos["cumple_rotacion"] == "NO") {
-				echo '<tr class="color fondo03">';
-				} else {
-					echo '<tr>';
+				if(strpos($datos["asistencia_diaria"], 'B') !== false){
+					echo '<tr class="color fondo03">';
+				}else{
+					$sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
+					$query2 = $bd2->consultar($sql_verificacion);
+					$result = $bd->obtener_fila($query2, 0);
+					if ($result[0] == 0) {
+					echo '<tr class="color fondo03">';
+					} else {
+						echo '<tr>';
+					}
 				}
 				echo '
-				<td class="texto">' . $datos["cod_ficha"] . '</td>
+				<td class="texto">' . $result[0] . '</td>
 				<td class="texto">' . $datos["cedula"] . '</td>
 				<td class="texto">' . $datos["ap_nombre"] . '</td>
 				<td class="texto">' . $datos["rol"] . '</td>
@@ -318,126 +234,25 @@ if ($quincena == "01"){
 				asistencia_quincenal02.d27, asistencia_quincenal02.d28,
 				asistencia_quincenal02.d29, asistencia_quincenal02.d30,
 				asistencia_quincenal02.d31,
-				CASE WHEN 
-					SUBSTRING_INDEX(CONCAT_WS(
-						',',
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d16, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d17, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d18, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d19, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d20, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d21, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d22, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d23, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d24, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d25, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d26, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d27, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d28, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d29, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d30, ' ', '') = c1.abrev
-							LIMIT 1), 'B'),
-						COALESCE(
-							(SELECT c_final.abrev
-							FROM conceptos c1
-							JOIN horarios h1 ON c1.cod_horario = h1.codigo
-							JOIN conceptos c_final ON h1.cod_concepto = c_final.codigo
-							WHERE REPLACE(asistencia_quincenal02.d31, ' ', '') = c1.abrev
-							LIMIT 1), 'B')
-					), ',', DATEDIFF('$fecha_H', '$fecha_D') + 1) = r.secuencia_repetida THEN
-							'SI'
-						ELSE
-							'NO'
-					END AS cumple_rotacion
+				REPLACE(SUBSTRING_INDEX(CONCAT_WS(
+					',',
+					COALESCE(asistencia_quincenal01.d15, 'B'),
+					COALESCE(asistencia_quincenal01.d16, 'B'),
+					COALESCE(asistencia_quincenal01.d17, 'B'),
+					COALESCE(asistencia_quincenal01.d18, 'B'),
+					COALESCE(asistencia_quincenal01.d19, 'B'),
+					COALESCE(asistencia_quincenal01.d20, 'B'),
+					COALESCE(asistencia_quincenal01.d21, 'B'),
+					COALESCE(asistencia_quincenal01.d22, 'B'),
+					COALESCE(asistencia_quincenal01.d23, 'B'),
+					COALESCE(asistencia_quincenal01.d24, 'B'),
+					COALESCE(asistencia_quincenal01.d25, 'B'),
+					COALESCE(asistencia_quincenal01.d26, 'B'),
+					COALESCE(asistencia_quincenal01.d27, 'B'),
+					COALESCE(asistencia_quincenal01.d28, 'B'),
+					COALESCE(asistencia_quincenal01.d29, 'B')
+				), ',', DATEDIFF('$fecha_H', '$fecha_D') + 1), ' ', '') AS asistencia_diaria,
+				r.secuencia_repetida
 				FROM  asistencia_quincenal02
 				JOIN v_ficha ON asistencia_quincenal02.cod_ficha = v_ficha.cod_ficha
 				JOIN (
@@ -499,11 +314,17 @@ if ($quincena == "01"){
 	
 	$query = $bd->consultar($sql);
 	while ($datos = $bd->obtener_fila($query, 0)) {
-		$signo = "";
-		if ($datos["cumple_rotacion"] == "NO") {
-		echo '<tr class="color fondo03">';
-		} else {
-			echo '<tr>';
+		if(strpos($datos["asistencia_diaria"], 'B') !== false){
+			echo '<tr class="color fondo03">';
+		}else{
+			$sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
+			$query2 = $bd2->consultar($sql_verificacion);
+			$result = $bd->obtener_fila($query2, 0);
+			if ($result[0] == 0) {
+			echo '<tr class="color fondo03">';
+			} else {
+				echo '<tr>';
+			}
 		}
 		echo '
 		<td class="texto">' . $datos["cod_ficha"] . '</td>

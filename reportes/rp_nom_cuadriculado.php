@@ -144,7 +144,7 @@ function rotacionModalOpen(){
                   $("#rotarionModal").show();
                   var contenido = "modal_contenido_v_r";
                   ajax=nuevoAjax();
-                        ajax.open("POST", "ajax/Add_verificaion_rotacion.php", true);
+                        ajax.open("POST", "ajax/Add_verificacion_rotacion.php", true);
                         ajax.onreadystatechange=function(){
 
                               if (ajax.readyState==1 || ajax.readyState==2 || ajax.readyState==3){
