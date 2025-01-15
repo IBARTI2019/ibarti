@@ -213,7 +213,7 @@ if ($quincena == "01"){
 					$sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
 					echo $sql_verificacion;
 					$query2 = $bd2->consultar($sql_verificacion);
-					$result = $bd->obtener_fila($query2, 0);
+					$result = $bd2->obtener_fila($query2, 0);
 					if ($result[0] == 0) {
 					echo '<tr class="color fondo03">';
 					} else {
@@ -360,7 +360,7 @@ if ($quincena == "01"){
 			$sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
 			echo $sql_verificacion;
 			$query2 = $bd2->consultar($sql_verificacion);
-			$result = $bd->obtener_fila($query2, 0);
+			$result = $bd2->obtener_fila($query2, 0);
 			if ($result[0] == 0) {
 			echo '<tr class="color fondo03">';
 			} else {
