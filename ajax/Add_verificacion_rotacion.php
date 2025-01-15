@@ -17,9 +17,36 @@ $fecha_D         = conversion($_POST['fecha_desde']);
 $quincena       = $_POST['quincena'];
 $nomina          = $_POST['nomina'];
 $rol             = $_POST['rol'];
-$region          = $_POST['region'];
+
+if(isset($_POST['region'])){
+	$region          = $_POST['region'];
+}else{
+	$region = 'TODOS';
+}
+
+if(isset($_POST['estado'])){
 $estado          = $_POST['estado'];
+}else{
+	$estado = 'TODOS';
+}
+
+if(isset($_POST['ciudad'])){
 $ciudad          = $_POST['ciudad'];
+}else{
+	$ciudad = 'TODOS';
+}
+
+if(isset($_POST['cliente'])){
+$cliente          = $_POST['cliente'];
+}else{
+	$cliente = 'TODOS';
+}
+
+if(isset($_POST['ubicacion'])){
+$ubicacion          = $_POST['ubicacion'];
+}else{
+	$ubicacion = 'TODOS';
+}
 
 $fecha_N = explode("-", $fecha_D);
 $year1   = $fecha_N[0];
@@ -48,6 +75,7 @@ if($rol != "TODOS"){
 	$where02 .= " AND v_ficha.cod_rol = '$rol' ";
 }
 
+
 if($region != "TODOS"){
 	$where01 .= " AND v_ficha.cod_region = '$region' ";
 	$where02 .= " AND v_ficha.cod_region = '$region' ";
@@ -62,6 +90,17 @@ if($ciudad != "TODOS"){
 	$where01  .= " AND v_ficha.cod_ciudad = '$ciudad' ";
 	$where02  .= " AND v_ficha.cod_ciudad = '$ciudad' ";
 }
+
+if($cliente != "TODOS"){
+	$where01  .= " AND v_ficha.cod_cliente = '$cliente' ";
+	$where02  .= " AND v_ficha.cod_cliente = '$cliente' ";
+}
+
+if($ubicacion != "TODOS"){
+	$where01  .= " AND v_ficha.cod_ubicacion = '$ubicacion' ";
+	$where02  .= " AND v_ficha.cod_ubicacion = '$ubicacion' ";
+}
+
 
 if ($quincena == "01"){
 

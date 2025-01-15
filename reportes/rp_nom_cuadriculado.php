@@ -148,7 +148,7 @@ function rotacionModalOpen(){
                         ajax.onreadystatechange=function(){
 
                               if (ajax.readyState==1 || ajax.readyState==2 || ajax.readyState==3){
-                                    document.getElementById(contenido).innerHTML = '<img src="imagenes/loading.gif" />';
+                                    document.getElementById(contenido).innerHTML = '<img src="imagenes/loading.gif" /><h2>Este proceso puede tardar en finalizar, por favor tenga paciencia.. </h2>';
                               }
                               if (ajax.readyState==4){
                                     document.getElementById(contenido).innerHTML = ajax.responseText;
