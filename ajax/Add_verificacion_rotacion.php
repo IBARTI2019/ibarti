@@ -195,7 +195,7 @@ if ($quincena == "01"){
 				) r ON asistencia_quincenal01.cod_ficha = r.cod_ficha
 				$where01
 			ORDER BY 1 ASC";
-	echo $sql;
+	// echo $sql;
 
 		echo "<table width='100%' border='0' align='center' class='tabla_sistema'>
 			<tr><th>".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
