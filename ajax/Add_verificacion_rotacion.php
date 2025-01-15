@@ -357,15 +357,15 @@ if ($quincena == "01"){
 		if(strpos($datos["asistencia_diaria"], 'B') !== false){
 			echo '<tr class="color fondo03">';
 		}else{
-			$sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
-			echo $sql_verificacion;
-			$query2 = $bd2->consultar($sql_verificacion);
-			$result = $bd2->obtener_fila($query2, 0);
-			if ($result[0] == 0) {
-			echo '<tr class="color fondo03">';
-			} else {
+			// $sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
+			// echo $sql_verificacion;
+			// $query2 = $bd2->consultar($sql_verificacion);
+			// $result = $bd2->obtener_fila($query2, 0);
+			// if ($result[0] == 0) {
+			// echo '<tr class="color fondo03">';
+			// } else {
 				echo '<tr>';
-			}
+			// }
 		}
 		echo '
 		<td class="texto">' . $datos["cod_ficha"] . '</td>
