@@ -152,7 +152,7 @@ if ($quincena == "01"){
 				p.posicion_inicio,
 				p.cod_ubicacion,
 				r.secuencia_turnos,
-				
+				-- Generar la secuencia repetida utilizando la secuencia ajustada
 				TRIM(BOTH ',' FROM (
 					SUBSTRING_INDEX(
 						REPEAT(
@@ -165,12 +165,12 @@ if ($quincena == "01"){
 									)
 								)),
 								','
-							),
+							), -- Repetir la secuencia ajustada separada por comas
 							CEIL((DATEDIFF('$fecha_H', '$fecha_D') + 1) / 
-							(LENGTH(r.secuencia_turnos) - LENGTH(REPLACE(r.secuencia_turnos, ',', '')) + 1))
+							(LENGTH(r.secuencia_turnos) - LENGTH(REPLACE(r.secuencia_turnos, ',', '')) + 1)) -- Número de repeticiones necesarias
 						),
 						',',
-									DATEDIFF('$fecha_H', '$fecha_D') + 1  
+									DATEDIFF('$fecha_H', '$fecha_D') + 1  -- Longitud exacta en términos de opciones
 					)
 				)) AS secuencia_repetida
 			FROM
@@ -194,7 +194,7 @@ if ($quincena == "01"){
 				) r ON asistencia_quincenal01.cod_ficha = r.cod_ficha
 				$where01
 			ORDER BY 1 ASC";
-		echo $sql;
+	
 		echo "<table width='100%' border='0' align='center' class='tabla_sistema'>
 			<tr><th>".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
 					<th> ".$leng['region']." </th><th> ".$leng['estado']."  </th><th> ".$leng['ciudad']."  </th><th> Nómina  </th>
