@@ -212,6 +212,7 @@ if ($quincena == "01"){
 					echo '<tr class="color fondo03">';
 				}else{
 					$sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
+					echo $sql_verificacion;
 					$query2 = $bd2->consultar($sql_verificacion);
 					$result = $bd->obtener_fila($query2, 0);
 					if ($result[0] == 0) {
@@ -342,7 +343,7 @@ if ($quincena == "01"){
 				) r ON asistencia_quincenal02.cod_ficha = r.cod_ficha
 			$where02
 		ORDER BY 1 ASC";
-// echo $sql;
+echo $sql;
 	echo "<table width='100%' border='0' align='center' class='tabla_sistema'>
 	<tr><th>".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
 			<th> ".$leng['region']." </th><th> ".$leng['estado']."  </th><th> ".$leng['ciudad']."  </th><th> Nómina  </th>
@@ -357,6 +358,7 @@ if ($quincena == "01"){
 			echo '<tr class="color fondo03">';
 		}else{
 			$sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
+			echo $sql_verificacion;
 			$query2 = $bd2->consultar($sql_verificacion);
 			$result = $bd->obtener_fila($query2, 0);
 			if ($result[0] == 0) {
