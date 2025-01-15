@@ -126,7 +126,7 @@ if ($quincena == "01"){
 					asistencia_quincenal01.d11, asistencia_quincenal01.d12,
 					asistencia_quincenal01.d13, asistencia_quincenal01.d14,
 					asistencia_quincenal01.d15,
-					REPLACE(SUBSTRING_INDEX(CONCAT_WS(
+					IF(verificar_equivalencia(r.secuencia_repetida, REPLACE(SUBSTRING_INDEX(CONCAT_WS(
 						',',
 						COALESCE(asistencia_quincenal01.d01, 'B'),
 						COALESCE(asistencia_quincenal01.d02, 'B'),
@@ -143,8 +143,7 @@ if ($quincena == "01"){
 						COALESCE(asistencia_quincenal01.d13, 'B'),
 						COALESCE(asistencia_quincenal01.d14, 'B'),
 						COALESCE(asistencia_quincenal01.d15, 'B')
-					), ',', DATEDIFF('$fecha_H', '$fecha_D') + 1), ' ', '') AS asistencia_diaria,
-					r.secuencia_repetida
+					), ',', DATEDIFF('$fecha_H', '$fecha_D'') + 1), ' ', '')), 'SI', 'NO') AS cumple_rotacion
 				FROM  asistencia_quincenal01
 				JOIN v_ficha ON asistencia_quincenal01.cod_ficha = v_ficha.cod_ficha
 				JOIN (
@@ -207,19 +206,12 @@ if ($quincena == "01"){
 
 			$query = $bd->consultar($sql);
 			while ($datos = $bd->obtener_fila($query, 0)) {
-				if(strpos($datos["asistencia_diaria"], 'B') !== false){
-					echo '<tr class="color fondo03">';
-				}else{
-					$sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
-					echo $sql_verificacion;
-					$query2 = $bd2->consultar($sql_verificacion);
-					$result = $bd2->obtener_fila($query2, 0);
-					if ($result[0] == 0) {
-					echo '<tr class="color fondo03">';
-					} else {
-						echo '<tr>';
-					}
+				if ($datos['cumple_rotacion'] == 'SI') {
+					echo '<tr>';
+				} else {
+					echo '<tr class="color fondo03">';	
 				}
+
 				echo '
 				<td class="texto">' . $result[0] . '</td>
 				<td class="texto">' . $datos["cedula"] . '</td>
@@ -273,7 +265,7 @@ if ($quincena == "01"){
 				asistencia_quincenal02.d27, asistencia_quincenal02.d28,
 				asistencia_quincenal02.d29, asistencia_quincenal02.d30,
 				asistencia_quincenal02.d31,
-				REPLACE(SUBSTRING_INDEX(CONCAT_WS(
+				IF(verificar_equivalencia(r.secuencia_repetida, REPLACE(SUBSTRING_INDEX(CONCAT_WS(
 					',',
 					COALESCE(asistencia_quincenal02.d16, 'B'),
 					COALESCE(asistencia_quincenal02.d17, 'B'),
@@ -291,8 +283,7 @@ if ($quincena == "01"){
 					COALESCE(asistencia_quincenal02.d29, 'B'),
 					COALESCE(asistencia_quincenal02.d30, 'B'),
 					COALESCE(asistencia_quincenal02.d31, 'B')
-				), ',', DATEDIFF('$fecha_H', '$fecha_D') + 1), ' ', '') AS asistencia_diaria,
-				r.secuencia_repetida
+				), ',', DATEDIFF('$fecha_H', '$fecha_D') + 1), ' ', '')), 'SI', 'NO') AS cumple_rotacion
 				FROM  asistencia_quincenal02
 				JOIN v_ficha ON asistencia_quincenal02.cod_ficha = v_ficha.cod_ficha
 				JOIN (
@@ -354,19 +345,13 @@ if ($quincena == "01"){
 	
 	$query = $bd->consultar($sql);
 	while ($datos = $bd->obtener_fila($query, 0)) {
-		if(strpos($datos["asistencia_diaria"], 'B') !== false){
-			echo '<tr class="color fondo03">';
-		}else{
-			// $sql_verificacion = "CALL verificar_equivalencia('". $datos["secuencia_repetida"] ."','". $datos["asistencia_diaria"]."');";
-			// echo $sql_verificacion;
-			// $query2 = $bd2->consultar($sql_verificacion);
-			// $result = $bd2->obtener_fila($query2, 0);
-			// if ($result[0] == 0) {
-			// echo '<tr class="color fondo03">';
-			// } else {
-				echo '<tr>';
-			// }
+
+		if ($datos['cumple_rotacion'] == 'SI') {
+			echo '<tr>';
+		} else {
+			echo '<tr class="color fondo03">';	
 		}
+		
 		echo '
 		<td class="texto">' . $datos["cod_ficha"] . '</td>
 		<td class="texto">' . $datos["cedula"] . '</td>
