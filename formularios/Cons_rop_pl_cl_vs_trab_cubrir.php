@@ -158,9 +158,8 @@ function Add_Cl_Ubic_Sesion(valor, contenido, activar, tamano) {  // CARGAR  UBI
 						</td>
 						<td width="7%"><?php echo $leng['cliente']?>:</td>
 						<td width="14%"><select name="cliente" id="cliente" style="width:120px;" onchange="Add_Cl_Ubic_Sesion(this.value, 'contenido_ubic', 'T', '120')" required>
-
+							<option value="TODOS">TODOS</option>
 							<?php
-							echo $select_cl;
 							$query01 = $bd->consultar($sql_cliente);
 							while($row01=$bd->obtener_fila($query01,0)){
 								echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
