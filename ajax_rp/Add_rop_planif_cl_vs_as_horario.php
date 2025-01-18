@@ -58,7 +58,7 @@ $sql = "SELECT v_as_planif_horario.fec_diaria fecha,v_as_planif_horario.cod_ubic
 FROM v_as_planif_horario,  clientes_ubicacion , clientes , estados, horarios, control
 $WHERE_21
 $WHERE_22";
-$result["sql_fa"] = $sql;
+
 $qry  = $bd->consultar($sql);
 while($rows=$bd->obtener_name($qry)){
 	$result['asistencia'][] = $rows;
@@ -95,7 +95,7 @@ $query = $bd->consultar($sql);
 while($rows=$bd->obtener_name($query)){
 	$result['contrato'][] = $rows;
 }
-$result["sql_contrato"] = $sql;
+
 print_r(json_encode($result));
 return json_encode($result);
 

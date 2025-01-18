@@ -105,7 +105,7 @@ AND clientes_ubicacion.cod_cliente = clientes.codigo
 AND turno.factor = 'dis'
 $WHERE
 GROUP BY 5,7";
-
+echo $sql;
 $query2 = $bd->consultar($sql2);
 while($rows=$bd->obtener_name($query2)){
 	$result['excepcion'][] = $rows;
