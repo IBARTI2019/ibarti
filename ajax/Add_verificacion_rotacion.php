@@ -16,7 +16,12 @@ $fecha_D         = conversion($_POST['fecha_desde']);
 
 $quincena       = $_POST['quincena'];
 $nomina          = $_POST['nomina'];
-$rol             = $_POST['rol'];
+
+if(isset($_POST['rol'])){
+	$rol          = $_POST['rol'];
+}else{
+	$rol = 'TODOS';
+}
 
 if(isset($_POST['region'])){
 	$region          = $_POST['region'];
