@@ -28,9 +28,9 @@ if(isset($_POST['r_cliente'])){
 $r_cliente = $_POST['r_cliente'];
 	if($r_cliente  == "T"){
 		$WHERE  .= " AND a.cod_ubicacion IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
-		cod_usuario = '$usuario') ";
+		usuario_clientes.cod_usuario = '$usuario') ";
 		$WHERE_21  .= " AND v_as_planif_horario.cod_ubicacion  IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
-		cod_usuario = '$usuario') ";
+		usuario_clientes.cod_usuario = '$usuario') ";
 	}
 }
 
@@ -90,7 +90,7 @@ INNER JOIN estados ON cu.cod_estado = estados.codigo
 $WHERE
 GROUP BY a.cod_cliente, a.cod_ubicacion, h.codigo, a.fecha
 ORDER BY 1,4";
-
+echo $sql;
 $query = $bd->consultar($sql);
 while($rows=$bd->obtener_name($query)){
 	$result['contrato'][] = $rows;
