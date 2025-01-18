@@ -17,11 +17,7 @@ $fecha_D         = conversion($_POST['fecha_desde']);
 $quincena       = $_POST['quincena'];
 $nomina          = $_POST['nomina'];
 
-if(isset($_POST['rol'])){
-	$rol          = $_POST['rol'];
-}else{
-	$rol = 'TODOS';
-}
+$rol             = $_POST['rol'];
 
 if(isset($_POST['region'])){
 	$region          = $_POST['region'];
@@ -114,7 +110,7 @@ if($nomina != "TODOS"){
 	$where02 .= " AND v_ficha.cod_contracto = '$nomina' ";
 }
 
-if($rol != "TODOS"){
+if($rol != "TODOS" && $rol != ""){
 	$where01 .= " AND v_ficha.cod_rol = '$rol' ";
 	$where02 .= " AND v_ficha.cod_rol = '$rol' ";
 }
