@@ -112,7 +112,7 @@ if(isset($_SESSION['usuario_cod'])){
                     <span class="art-button-r"> </span>
                 <input type="reset" id="limpiar" value="Restablecer" class="readon art-button" />
                 </span>
- 			    <input name="usuario" type="hidden"  value="<?php echo $usuario;?>"/>
+ 			    <input name="usuario" id="usuario" type="hidden"  value="<?php echo $usuario;?>"/>
                        <input id="r_cliente" name="r_cliente" type="hidden"  value="<?php echo $r_cliente;?>"/>
                        <input id="r_rol" name="r_rol" type="hidden"  value="<?php echo $r_rol;?>"/>
 		</div></form>
