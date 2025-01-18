@@ -57,6 +57,8 @@ FROM v_as_planif_horario,  clientes_ubicacion , clientes , estados, horarios, co
 $WHERE_21
 $WHERE_22";
 
+echo $sql;
+
 $qry  = $bd->consultar($sql);
 while($rows=$bd->obtener_name($qry)){
 	$result['asistencia'][] = $rows;
@@ -89,6 +91,7 @@ $WHERE
 GROUP BY a.cod_cliente, a.cod_ubicacion, h.codigo, a.fecha
 ORDER BY 1,4";
 
+echo $sql;
 $query = $bd->consultar($sql);
 while($rows=$bd->obtener_name($query)){
 	$result['contrato'][] = $rows;
