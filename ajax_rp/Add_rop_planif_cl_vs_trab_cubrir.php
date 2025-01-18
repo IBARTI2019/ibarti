@@ -105,7 +105,7 @@ AND clientes_ubicacion.cod_cliente = clientes.codigo
 AND turno.factor = 'dis'
 $WHERE
 GROUP BY 5,7";
-echo $sql;
+
 $query2 = $bd->consultar($sql2);
 while($rows=$bd->obtener_name($query2)){
 	$result['excepcion'][] = $rows;
@@ -137,6 +137,7 @@ if($maximo == 'T'){
 
 $sql3 .= "$WHERE GROUP BY 1,6,8";
 
+echo $sql3;
 $query = $bd->consultar($sql3);
 while($rows=$bd->obtener_name($query)){
 	$result['contrato'][] = $rows;
