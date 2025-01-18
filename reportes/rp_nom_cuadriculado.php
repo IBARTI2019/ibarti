@@ -7,6 +7,17 @@ $archivo = "reportes/rp_nom_cuadriculado_det.php?Nmenu=$Nmenu&mod=$mod";
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report.php');
 $bd = new DataBase();
+
+if(isset($_SESSION['usuario_cod'])){
+	$usuario = $_SESSION['usuario_cod'];
+	$r_cliente = $_SESSION['r_cliente'];
+      $r_rol = $_SESSION['r_rol'];
+}else{
+	$usuario = $_POST['usuario'];
+	$r_cliente = $_POST['r_cliente'];
+      $r_rol = $_POST['r_rol'];
+}
+
 ?>
 <div align="center" class="etiqueta_title"> <?php echo $titulo;?></div>
 <br/>
@@ -102,6 +113,8 @@ $bd = new DataBase();
                 <input type="reset" id="limpiar" value="Restablecer" class="readon art-button" />
                 </span>
  			    <input name="usuario" type="hidden"  value="<?php echo $usuario;?>"/>
+                       <input id="r_cliente" name="r_cliente" type="hidden"  value="<?php echo $r_cliente;?>"/>
+                       <input id="r_rol" name="r_rol" type="hidden"  value="<?php echo $r_rol;?>"/>
 		</div></form>
 
 
@@ -129,6 +142,11 @@ function rotacionModalOpen(){
       var estado       = $("#estado").val();
       var ciudad       = $("#ciudad").val();
       var fecha_desde = $( "#fecha_desde").val();
+
+      var usuario       = $("#usuario").val();
+      var r_cliente       = $("#r_cliente").val();
+      var r_rol       = $("#r_rol").val();
+      
 	var error = 0;
       var errorMessage = ' Debe Seleccionar Un Campo ';
 
@@ -155,7 +173,7 @@ function rotacionModalOpen(){
                               }
                         }
                   ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                  ajax.send("fecha_desde="+fecha_desde+"&quincena="+quincena+"&rol="+rol+"&nomina="+nomina+"&region="+region+"&estado="+estado+"&ciudad="+ciudad+"");
+                  ajax.send("fecha_desde="+fecha_desde+"&quincena="+quincena+"&rol="+rol+"&nomina="+nomina+"&region="+region+"&estado="+estado+"&ciudad="+ciudad+ "&usuario=" + usuario + "&r_cliente=" + r_cliente + "&r_rol=" + r_rol + "");
                  
             }else{ 
                   alert(errorMessage);

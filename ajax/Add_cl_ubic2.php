@@ -6,20 +6,33 @@ $bd = new DataBase();
 $codigo      = $_POST['codigo'];
 $tamano      = $_POST['tamano'];
 $activar     = $_POST['activar'];
+$change = "";
 
 if ($activar == "T" || $activar == "LL") {
 	$change =  'onchange="Add_filtroX()"';
 } else if ($activar == "P") {
 	$change = 'onchange="Add_Ub_puesto(this.value, \'contenido_puesto\', \'120\')"';
 } else {
-	$change =  'onchange="Validar01(this.value)"';
+	if($activar != "F"){
+		$change =  'onchange="Validar01(this.value)"';
+	}
 }
 
 $sql = "SELECT clientes_ubicacion.codigo, clientes_ubicacion.descripcion
 FROM clientes_ubicacion 
 WHERE clientes_ubicacion.cod_cliente = '$codigo' 
-AND clientes_ubicacion.`status` = 'T'
-ORDER BY 2 ASC";
+AND clientes_ubicacion.`status` = 'T' ";
+
+if(isset($_POST['r_cliente'])){
+	$r_cliente	    = $_POST['r_cliente'];
+	$usuario = $_POST['usuario'];
+	if($r_cliente  == "T"){
+	$sql  .= " AND clientes_ubicacion.codigo IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
+		cod_usuario = '$usuario') ";
+	}
+}
+
+$sql .= " ORDER BY 2 ASC;";
 
 $query = $bd->consultar($sql);
 echo '<select name="ubicacion" id="ubicacion" style="width:' . $tamano . 'px" ' . $change . ' required >';

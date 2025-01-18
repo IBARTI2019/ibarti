@@ -65,6 +65,45 @@ $where01 = "WHERE asistencia_quincenal01.fec_mensual = '$fec_mensual'
 $where02 = "WHERE asistencia_quincenal02.fec_mensual = '$fec_mensual'
 		AND r.cod_ubicacion = v_ficha.cod_ubicacion ";
 
+if(isset($_POST['r_cliente'])){
+	$r_cliente	    = $_POST['r_cliente'];
+	$usuario = $_POST['usuario'];
+	if($r_cliente  == "T"){
+		$sql  .= " AND v_ficha.cod_ubicacion IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
+			cod_usuario = '$usuario') ";
+	}
+}
+
+
+if(isset($_POST['r_rol'])){
+	$r_rol	    = $_POST['r_rol'];
+	$usuario = $_POST['usuario'];
+	if($r_rol  == "T"){
+		$where01  .= " AND v_ficha.cod_ficha IN (
+			SELECT
+				tr.cod_ficha 
+			FROM
+				usuario_roles ur,
+				trab_roles tr
+			WHERE
+				ur.cod_usuario = '$usuario' 
+				AND tr.cod_rol = ur.cod_rol 
+				AND v_ficha.cod_ficha = tr.cod_ficha 
+			) ";
+		$where02  .= " AND v_ficha.cod_ficha IN (
+			SELECT
+				tr.cod_ficha 
+			FROM
+				usuario_roles ur,
+				trab_roles tr
+			WHERE
+				ur.cod_usuario = '$usuario' 
+				AND tr.cod_rol = ur.cod_rol 
+				AND v_ficha.cod_ficha = tr.cod_ficha 
+			) ";
+	}
+}
+
 if($nomina != "TODOS"){
 	$where01 .= " AND v_ficha.cod_contracto = '$nomina' ";
 	$where02 .= " AND v_ficha.cod_contracto = '$nomina' ";
@@ -74,7 +113,6 @@ if($rol != "TODOS"){
 	$where01 .= " AND v_ficha.cod_rol = '$rol' ";
 	$where02 .= " AND v_ficha.cod_rol = '$rol' ";
 }
-
 
 if($region != "TODOS"){
 	$where01 .= " AND v_ficha.cod_region = '$region' ";

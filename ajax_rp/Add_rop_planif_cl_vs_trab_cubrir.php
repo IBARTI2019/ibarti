@@ -7,6 +7,9 @@ require "../".class_bdI;
 require "../".Leng;
 $bd = new DataBase();
 
+$r_cliente	    = $_SESSION['r_cliente'];
+$usuario = $_SESSION['usuario_cod'];
+
 $region    = $_POST['region'];
 $estado    = $_POST['estado'];
 $cliente    = $_POST['cliente'];
@@ -30,6 +33,14 @@ $WHEREFA = " WHERE v_ficha_activo_det.cod_region = regiones.codigo
 AND  v_ficha_activo_det.cod_estado = estados.codigo
 AND  v_ficha_activo_det.cod_cliente = clientes_ubicacion.cod_cliente
 AND  v_ficha_activo_det.cod_ubicacion = clientes_ubicacion.codigo ";
+
+if($r_cliente  == "T"){
+	$WHERE  .= " AND clientes_ubicacion.codigo IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
+	cod_usuario = '$usuario') ";
+	$WHERE_FA  .= " AND v_ficha_activo_det.cod_ubicacion  IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
+	cod_usuario = '$usuario') ";
+}
+
 
 if($region != 'TODOS'){
 	$WHERE .= " AND clientes_ubicacion.cod_region = '$region' "; 

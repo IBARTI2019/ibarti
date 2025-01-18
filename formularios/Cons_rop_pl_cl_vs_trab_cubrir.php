@@ -6,8 +6,10 @@ $bd = new DataBase();
 if(isset($_SESSION['usuario_cod'])){
 	require_once('autentificacion/aut_verifica_menu.php');
 	$us = $_SESSION['usuario_cod'];
+	$r_cliente = $_SESSION['r_cliente'];
 }else{
 	$us = $_POST['usuario'];
+	$r_cliente = $_POST['r_cliente'];
 }
 $archivo = "reportes/rp_op_pl_cl_vs_trab_cubrir_det.php?Nmenu=$Nmenu&mod=$mod";
 $titulo = " Planificacion  De ".$leng['cliente']." A Cubrir VS ".$leng['trabajador']." Activos ";
@@ -42,7 +44,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 		var error      = error+1;
 	}
 
-/*
+	/*
 	if(( cargos ==  null ) && ( error ==  0 )){
 		var errorMessage = ' Debe Selecionar Un Cargo ';
 		var error      = error+1;
@@ -83,6 +85,34 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 		alert(errorMessage);
 	}
 }
+
+function Add_Cl_Ubic_Sesion(valor, contenido, activar, tamano) {  // CARGAR  UBICACION DE CLIENTE  Y tama�o  //
+	var error = 0;
+	var errorMessage = ' ';
+	if (valor == '') {
+		var error = error + 1;
+		errorMessage = errorMessage + ' \n Debe Seleccionar Un Cliente ';
+	}
+	var usuario         = $( "#usuario").val();
+	var r_cliente         = $( "#r_cliente").val();
+
+	if (error == 0) {
+		ajax = nuevoAjax();
+		ajax.open("POST", "ajax/Add_cl_ubic2.php", true);
+		ajax.onreadystatechange = function () {
+			if (ajax.readyState == 4) {
+				document.getElementById(contenido).innerHTML = ajax.responseText;
+				if (activar == "T") {
+				}
+			}
+		}
+		ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		ajax.send("codigo=" + valor + "&tamano=" + tamano + "&activar=" + activar + "&usuario=" + usuario + "&r_cliente=" + r_cliente + "");
+	} else {
+		alert(errorMessage);
+	}
+}
+
 </script>
 <div align="center" class="etiqueta_title"> Consulta <?php echo $titulo;?> </div>
 <div id="Contenedor01"></div>
@@ -120,13 +150,14 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 							<input type="hidden" name="body_cubrir" id="body_cubrir" value="" />
 							<input type="hidden" name="reporte" id="reporte" value=""/>
 							<input type="hidden" name="usuario" id="usuario" value="<?php echo $us;?>" />
+							<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo $r_cliente;?>" />
 
 							<input type="hidden" name="Nmenu" id="Nmenu" value="<?php echo $Nmenu;?>" />
 							<input type="hidden" name="mod" id="mod" value="<?php echo $mod;?>" />
 							<input type="hidden" name="archivo" id="archivo" value="<?php echo $archivo;?>" />
 						</td>
 						<td width="7%"><?php echo $leng['cliente']?>:</td>
-						<td width="14%"><select name="cliente" id="cliente" style="width:120px;" onchange="Add_Cl_Ubic(this.value, 'contenido_ubic', 'T', '120')" required>
+						<td width="14%"><select name="cliente" id="cliente" style="width:120px;" onchange="Add_Cl_Ubic_Sesion(this.value, 'contenido_ubic', 'T', '120')" required>
 
 							<?php
 							echo $select_cl;

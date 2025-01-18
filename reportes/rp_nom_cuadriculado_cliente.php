@@ -7,6 +7,16 @@ $archivo = "reportes/rp_nom_cuadriculado_cliente_det.php?Nmenu=$Nmenu&mod=$mod";
 require_once('autentificacion/aut_verifica_menu.php');
 require_once('sql/sql_report.php');
 $bd = new DataBase();
+
+if(isset($_SESSION['usuario_cod'])){
+	$usuario = $_SESSION['usuario_cod'];
+	$r_cliente = $_SESSION['r_cliente'];
+      $r_rol = $_SESSION['r_rol'];
+}else{
+	$usuario = $_POST['usuario'];
+	$r_cliente = $_POST['r_cliente'];
+      $r_rol = $_POST['r_rol'];
+}
 ?>
 <script language="JavaScript" type="text/javascript">
       function generatePDF() {
@@ -20,23 +30,28 @@ $bd = new DataBase();
       }
 
       function rotacionModalOpen(){
-	var quincena         = $("#quincena").val();
-	var nomina     = $("#nomina").val();
-	var rol      = $("#rol").val();
-	var cliente       = $("#cliente").val();
-      var ubicacion       = $("#ubicacion").val();
-      var fecha_desde = $( "#fecha_desde").val();
-	var error = 0;
-      var errorMessage = ' Debe Seleccionar Un Campo ';
+            var quincena         = $("#quincena").val();
+            var nomina     = $("#nomina").val();
+            var rol      = $("#rol").val();
+            var cliente       = $("#cliente").val();
+            var ubicacion       = $("#ubicacion").val();
+            var fecha_desde = $( "#fecha_desde").val();
 
-      if( fechaValida(fecha_desde) !=  true && fecha_desde != ""){ 
-		var errorMessage = ' Campos De Fecha Incorrecto ';
-		var error = error+1;
-	}
-	if( quincena == ""){
-            var errorMessage = ' \n Debe seleccionar una quincena ';
-	      var error      = error+1;
-	}
+            var usuario       = $("#usuario").val();
+            var r_cliente       = $("#r_cliente").val();
+            var r_rol       = $("#r_rol").val();
+
+            var error = 0;
+            var errorMessage = ' Debe Seleccionar Un Campo ';
+
+            if( fechaValida(fecha_desde) !=  true && fecha_desde != ""){ 
+                  var errorMessage = ' Campos De Fecha Incorrecto ';
+                  var error = error+1;
+            }
+            if( quincena == ""){
+                  var errorMessage = ' \n Debe seleccionar una quincena ';
+                  var error      = error+1;
+            }
 	      if(error == 0){
                   $("#rotarionModal").show();
                   var contenido = "modal_contenido_v_r";
@@ -52,7 +67,7 @@ $bd = new DataBase();
                               }
                         }
                   ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                  ajax.send("fecha_desde="+fecha_desde+"&quincena="+quincena+"&rol="+rol+"&nomina="+nomina+"&cliente="+cliente+"&ubicacion="+ubicacion+"");
+                  ajax.send("fecha_desde="+fecha_desde+"&quincena="+quincena+"&rol="+rol+"&nomina="+nomina+"&cliente="+cliente+"&ubicacion="+ubicacion + "&usuario=" + usuario + "&r_cliente=" + r_cliente + "&r_rol=" + r_rol + "");
                  
             }else{ 
                   alert(errorMessage);
@@ -61,6 +76,32 @@ $bd = new DataBase();
 
       function rotacionCloseModal(){
             $("#rotarionModal").hide();
+      }
+
+
+      function Add_Cl_Ubic_Sesion(valor, contenido, activar, tamano) {  // CARGAR  UBICACION DE CLIENTE  Y tama�o  //
+            var error = 0;
+            var errorMessage = ' ';
+            if (valor == '') {
+                  var error = error + 1;
+                  errorMessage = errorMessage + ' \n Debe Seleccionar Un Cliente ';
+            }
+            var usuario         = $( "#usuario").val();
+            var r_cliente         = $( "#r_cliente").val();
+
+            if (error == 0) {
+                  ajax = nuevoAjax();
+                  ajax.open("POST", "ajax/Add_cl_ubic2.php", true);
+                  ajax.onreadystatechange = function () {
+                        if (ajax.readyState == 4) {
+                              document.getElementById(contenido).innerHTML = ajax.responseText;
+                        }
+                  }
+                  ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                  ajax.send("codigo=" + valor + "&tamano=" + tamano + "&activar=" + activar + "&usuario=" + usuario + "&r_cliente=" + r_cliente + "");
+            } else {
+                  alert(errorMessage);
+            }
       }
 </script>
 <div align="center" class="etiqueta_title"> <?php echo $titulo;?></div>
@@ -107,7 +148,7 @@ $bd = new DataBase();
                    echo '<option value="'.$row02[0].'">'.$row02[1].'</option>';
              }?></select></td></tr>
         <td class="etiqueta"><?php echo $leng['cliente']?>:</td>
-		<td><select name="cliente"  id="cliente"  id="cliente" style="width:250px;" onchange="Add_Cl_Ubic(this.value, 'contenido_ubic', 'T', '250')">
+		<td><select name="cliente"  id="cliente"  id="cliente" style="width:250px;" onchange="Add_Cl_Ubic_Sesion(this.value, 'contenido_ubic', 'F', '250')">
      		        <option value="TODOS"> TODOS</option>
 		<?php $query02 = $bd->consultar($sql_cliente);
              while($row02=$bd->obtener_fila($query02,0)){
@@ -148,7 +189,9 @@ $bd = new DataBase();
                     <span class="art-button-r"> </span>
                 <input type="reset" id="limpiar" value="Restablecer" class="readon art-button" />
                 </span>
- 			    <input name="usuario" type="hidden"  value="<?php echo $usuario;?>"/>
+ 			    <input id="usuario" name="usuario" type="hidden"  value="<?php echo $usuario;?>"/>
+                       <input id="r_cliente" name="r_cliente" type="hidden"  value="<?php echo $r_cliente;?>"/>
+                       <input id="r_rol" name="r_rol" type="hidden"  value="<?php echo $r_rol;?>"/>
 		</div></form>
 
             <div id="rotarionModal" class="modal">

@@ -410,6 +410,7 @@ function Add_Cl_Ubic(valor, contenido, activar, tamano) {  // CARGAR  UBICACION 
 		alert(errorMessage);
 	}
 }
+
 function Add_Cl_Alcance(valor, contenido, activar, tamano) {  
 	var error = 0;
 	var errorMessage = ' ';
@@ -434,6 +435,7 @@ function Add_Cl_Alcance(valor, contenido, activar, tamano) {
 		alert(errorMessage);
 	}
 }
+
 function Add_Ub_puesto(valor, contenido, tamano) {  // CARGAR  UBICACION DE CLIENTE  Y tama�o  //
 	var error = 0;
 	var errorMessage = ' ';
