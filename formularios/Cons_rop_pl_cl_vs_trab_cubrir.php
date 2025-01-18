@@ -25,6 +25,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 	//var cargos    = $( "#cargos").val();
 	var cliente      = $( "#cliente").val();
 	var ubicacion    = $( "#ubicacion").val();
+	var r_cliente   = $( "#r_cliente").val();
 
 	if($('#maximo:checked').val()){
 		var maximo  = 'T';
@@ -59,7 +60,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 			"fecha_desde": fecha_desde,
 			"region": region, 		    "estado": estado,
 			"cliente": cliente, 		    "ubicacion": ubicacion,
-			"maximo": maximo,
+			"maximo": maximo, "r_cliente": r_cliente,
 			"Nmenu" : Nmenu,  			"mod" : mod,
 			"archivo": archivo, "usuario":usuario
 		};
