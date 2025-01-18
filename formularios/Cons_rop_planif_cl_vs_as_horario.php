@@ -26,6 +26,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 	var estado      = $( "#ESTADO").val();
 	var cliente     = $( "#CLIENTE").val();
 	var ubicacion   = $( "#ubicacion").val();
+	var r_cliente   = $( "#r_cliente").val();
 	var horario     = $( "#HORARIO").val();
 	var Nmenu       = $( "#Nmenu").val();
 	var usuario         = $( "#usuario").val();
@@ -61,6 +62,7 @@ function Add_filtroX(){  // CARGAR  ARCHIVO DE AJAX CON UN PARAMETRO //
 			"ubicacion":ubicacion,
 			"horario":horario,
 			"usuario":usuario,
+			"r_cliente": r_cliente,
 			"Nmenu" : Nmenu,
 			"mod" : mod,
 			"archivo": archivo

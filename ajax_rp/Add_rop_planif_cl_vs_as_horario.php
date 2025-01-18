@@ -4,7 +4,7 @@ include_once "../funciones/funciones.php";
 require "../autentificacion/aut_config.inc.php";
 require "../".class_bdI;
 require "../".Leng;
-$r_cliente	    = $_SESSION['r_cliente'];
+
 $bd = new DataBase();
 $cliente    = $_POST['cliente'];
 $ubicacion  = $_POST['ubicacion'];
@@ -24,12 +24,14 @@ AND v_as_planif_horario.cod_cliente = clientes.codigo
 AND clientes_ubicacion.cod_estado = estados.codigo 
 AND v_as_planif_horario.cod_cliente <> control.oesvica";
 
-
-if($r_cliente  == "T"){
-	$WHERE  .= " AND a.cod_ubicacion IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
-	cod_usuario = '$usuario') ";
-	$WHERE_21  .= " AND v_as_planif_horario.cod_ubicacion  IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
-	cod_usuario = '$usuario') ";
+if(isset($_POST['r_cliente'])){
+$r_cliente = $_POST['r_cliente'];
+	if($r_cliente  == "T"){
+		$WHERE  .= " AND a.cod_ubicacion IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
+		cod_usuario = '$usuario') ";
+		$WHERE_21  .= " AND v_as_planif_horario.cod_ubicacion  IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
+		cod_usuario = '$usuario') ";
+	}
 }
 
 if( $cliente != "TODOS"){
