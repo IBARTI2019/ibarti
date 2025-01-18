@@ -7,9 +7,6 @@ require "../".class_bdI;
 require "../".Leng;
 $bd = new DataBase();
 
-
-$usuario = $_SESSION['usuario_cod'];
-
 $region    = $_POST['region'];
 $estado    = $_POST['estado'];
 $cliente    = $_POST['cliente'];
@@ -36,6 +33,7 @@ AND  v_ficha_activo_det.cod_ubicacion = clientes_ubicacion.codigo ";
 
 if(isset($_POST['r_cliente'])){
 	$r_cliente	    = $_POST['r_cliente'];
+	$usuario	    = $_POST['usuario'];
 	if($r_cliente  == "T"){
 		$WHERE  .= " AND clientes_ubicacion.codigo IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
 		cod_usuario = '$usuario') ";
@@ -137,7 +135,6 @@ if($maximo == 'T'){
 
 $sql3 .= "$WHERE GROUP BY 1,6,8";
 
-echo $sql3;
 $query = $bd->consultar($sql3);
 while($rows=$bd->obtener_name($query)){
 	$result['contrato'][] = $rows;
