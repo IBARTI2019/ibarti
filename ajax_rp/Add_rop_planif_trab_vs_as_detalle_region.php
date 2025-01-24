@@ -70,8 +70,7 @@ INNER JOIN horarios h2 ON conceptos.cod_horario = h2.codigo
 $WHERE4) 
 ORDER BY 1 ASC ";
 
-echo $sql;
-	?>
+?>
 	<br>
 	<table width="100%" border="0" align="center">
 		<tr class="fondo00">

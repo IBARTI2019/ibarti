@@ -26,7 +26,7 @@ if( $region != "TODOS"){
 }
 
 if( $horario != "TODOS"){
-	$WHERE .= " AND h.codigo = '$horario' ";
+	$WHERE .= " AND h2.codigo = '$horario' ";
 	$WHERE_21 .= " AND v_as_planif_horario.cod_horario = '$horario' ";
 }
 
