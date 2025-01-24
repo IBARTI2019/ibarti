@@ -1515,3 +1515,75 @@ function rp_planif_trab_vs_asistencia(data, id_contenedor, callback) {
 		if (typeof (callback) == 'function') callback();
 	}
 }
+
+
+function rp_planif_trab_vs_asistencia_region(data, id_contenedor, callback) {
+	if (d3.select('#' + id_contenedor).node()) {
+		limpiarContenedor('id_contenedor');
+
+		res_horario = d3.nest()
+			.key((d) => d.cod_region).sortKeys(d3.ascending)
+			.key((d) => d.cod_horario).sortKeys(d3.ascending)
+			.key((d) => d.fecha).sortKeys(d3.ascending)
+			.entries(data['asistencia']);
+
+		map_res_horario = d3.map(res_horario, (d) => d.key);
+
+		res_horario_cont = d3.nest()
+			.key((d) => d.cod_region).sortKeys(d3.ascending)
+			.key((d) => d.cod_horario).sortKeys(d3.ascending)
+			.key((d) => d.fecha).sortKeys(d3.ascending)
+			.entries(data['servicio']);
+
+		d3.select('#' + id_contenedor).append('table').attr('id', 't_reporte').attr('width', '100%').attr('border', 0).attr('align', 'center');
+		d3.select('#t_reporte').append('thead').attr('id', 'thead');
+		d3.select('#t_reporte').append('thead').attr('id', 'tbody_pl_vs_as');
+		d3.select('#thead').append('tr').attr('class', 'fondo00').html('<th width="8%" class="etiqueta">Fecha</th><th width="20%" class="etiqueta">Region</th><th width="20%" class="etiqueta">Horario</th><th width="8%" class="etiqueta">Factor</th>');
+
+		d3.select('#tbody_pl_vs_as').selectAll('tr').data(data['servicio']).enter().append('tr')
+			.attr('title', (d) => 'Click para ver Detalles \n ' + d.region + ' \n ' + d.horario + ' \n ' + d.fecha)
+			.attr('class', (a) => {
+				sum_dia = 0; color = '';
+				if (map_res_horario.has(a.cod_region)) {
+					val_ubic_h = d3.map(map_res_horario.get(a.cod_region).values, (d) => d.key);
+					if (val_ubic_h.has(a.cod_horario)) {
+						val_ubic_f = d3.map(val_ubic_h.get(a.cod_horario).values, (d) => d.key);
+						if (val_ubic_f.has(a.fecha)) {
+							val_ubic_f.get(a.fecha).values.forEach((d) => { sum_dia += Number(d.valor) });
+						}
+						factor = sum_dia - a.cantidad;
+						color = validarFondo(factor);
+						return 'color ' + color;
+					} else {
+						factor = 0 - Number(a.cantidad);
+						color = validarFondo(factor);
+						return 'color ' + color;
+					}
+				} else {
+					factor = 0 - Number(a.cantidad);
+					color = validarFondo(factor);
+					return 'color ' + color;
+				}
+			}).html((a) => {
+				sum_dia = 0;
+				if (map_res_horario.has(a.cod_region)) {
+					val_ubic_h = d3.map(map_res_horario.get(a.cod_region).values, (d) => d.key);
+					if (val_ubic_h.has(a.cod_horario)) {
+						val_ubic_f = d3.map(val_ubic_h.get(a.cod_horario).values, (d) => d.key);
+						if (val_ubic_f.has(a.fecha)) {
+							val_ubic_f.get(a.fecha).values.forEach((d) => { sum_dia += Number(d.valor) });
+						}
+						factor = sum_dia - a.cantidad;
+						if (factor == 0) factor = 'OK';
+						return '<td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center" >' + a.region + '</td><td class="texto" id="center">' + factor + '</td>';
+					} else {
+						return '<td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center" >' + a.region + '</td><td class="texto" id="center">' + (0 - Number(a.cantidad)) + '</td>';
+					}
+				} else {
+					return '<td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center" >' + a.region + '</td><td class="texto" id="center">' + (0 - Number(a.cantidad)) + '</td>';
+				}
+			}).on("click", (d) => B_reporte(d));
+
+		if (typeof (callback) == 'function') callback();
+	}
+}
