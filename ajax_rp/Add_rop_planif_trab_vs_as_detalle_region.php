@@ -42,7 +42,7 @@ if(isset($_POST['r_cliente'])){
 
 
 // QUERY A MOSTRAR //
-$sql = "SELECT a.cod_ficha, ficha.cedula, CONCAT(ficha.apellidos,' ',ficha.nombres) trabajador, conceptos.abrev concepto, 
+$sql = "SELECT a.cod_ficha, cl.nombre cliente, cu.descripcion ubicacion, ficha.cedula, CONCAT(ficha.apellidos,' ',ficha.nombres) trabajador, conceptos.abrev concepto, 
 (SELECT v_asistencia.abrev FROM asistencia_apertura , v_asistencia,conceptos,horarios
  $WHERE1 ) concepto_asistencia 
 FROM planif_clientes_trab_det AS a INNER JOIN ficha ON a.cod_ficha = ficha.cod_ficha 
@@ -56,7 +56,7 @@ INNER JOIN horarios h2 ON conceptos.cod_horario = h2.codigo
 $WHERE2
 GROUP BY a.cod_ubicacion,a.cod_ficha,a.cod_turno,a.fecha 
 UNION ALL
-SELECT v_asistencia.cod_ficha, ficha.cedula, CONCAT(ficha.apellidos,' ',ficha.nombres) AS trabajador, '' concepto,
+SELECT v_asistencia.cod_ficha, v_asistencia.cliente, v_asistencia.ubicacion, ficha.cedula, CONCAT(ficha.apellidos,' ',ficha.nombres) AS trabajador, '' concepto,
  v_asistencia.abrev concepto_asistencia
  FROM asistencia_apertura , v_asistencia, ficha,conceptos,horarios 
 $WHERE3 AND v_asistencia.cod_ficha NOT IN (SELECT a.cod_ficha FROM planif_clientes_trab_det AS a 
@@ -74,8 +74,10 @@ ORDER BY 1 ASC ";
 	<br>
 	<table width="100%" border="0" align="center">
 		<tr class="fondo00">
-			<th width="15%" class="etiqueta"><?php echo $leng['ficha']?></th>
-			<th width="15%" class="etiqueta"><?php echo $leng['ci']?></th>
+			<th width="15%" class="etiqueta"><?php echo $leng['cliente']?></th>
+			<th width="15%" class="etiqueta"><?php echo $leng['ubicacion']?></th>
+			<th width="10%" class="etiqueta"><?php echo $leng['ficha']?></th>
+			<th width="10%" class="etiqueta"><?php echo $leng['ci']?></th>
 			<th width="30%" class="etiqueta"><?php echo $leng['trabajador']?></th>
 			<th width="10%" class="etiqueta">Planificacion</th>
 			<th width="10%" class="etiqueta">Asistencia</th>
@@ -93,6 +95,8 @@ ORDER BY 1 ASC ";
 				$valor = 0;
 			}
 			echo '<tr class="'.$fondo.'">
+			<td class="texto" id="center">'.$datos["cliente"].'</td>
+			<td class="texto" id="center">'.$datos["ubicacion"].'</td>
 			<td class="texto" id="center">'.$datos["cod_ficha"].'</td>
 			<td class="texto" id="center">'.$datos["cedula"].'</td>
 			<td class="texto" id="center">'.$datos["trabajador"].'</td>
