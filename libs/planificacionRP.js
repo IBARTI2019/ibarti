@@ -1577,10 +1577,10 @@ function rp_planif_trab_vs_asistencia_region(data, id_contenedor, callback) {
 						if (factor == 0) factor = 'OK';
 						return '<td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center" >' + a.region + '</td><td class="texto" id="center">' + factor + '</td>';
 					} else {
-						return '<td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center" >' + a.region + '</td><td class="texto" id="center">' + (0 - Number(a.cantidad)) + '</td>';
+						return '<td class="texto" id="center" >' + a.fecha + '<td class="texto" id="center" >' + a.region + '</td></td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center">' + (0 - Number(a.cantidad)) + '</td>';
 					}
 				} else {
-					return '<td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center" >' + a.region + '</td><td class="texto" id="center">' + (0 - Number(a.cantidad)) + '</td>';
+					return '<td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + a.region + '</td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center">' + (0 - Number(a.cantidad)) + '</td>';
 				}
 			}).on("click", (d) => B_reporte(d));
 
