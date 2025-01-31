@@ -105,6 +105,14 @@ if($datos_ap["vetado"] == "NO" ){
 </tr>
 <?php
 $i     = 0;
+date_default_timezone_set('America/Caracas');
+$fechaActual = date("Y-m-d"); // Obtiene la fecha actual en formato YYYY-MM-DD
+
+if (strtotime($fechaIngresada) > strtotime($fechaActual)) {
+    echo "La fecha ingresada es mayor que la fecha actual.";
+} else {
+    echo "La fecha ingresada NO es mayor que la fecha actual.";
+}
 foreach ($datos_det as $datos) {
 	$i     = $datos['codigo'];
 	echo '<tr>
@@ -137,9 +145,12 @@ foreach ($datos_det as $datos) {
 	if($datos_ap['vetado'] == "NO" ){  
 		echo '<img src="imagenes/actualizar.bmp" alt="Actualizar" title="Actualizar Registro" border="null" width="20px" height="20px" class="imgLink" onclick="save_planif_trab_det(\''.$i.'\',\'modificar\')"/>&nbsp;';
 	}
-	echo '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Registro" border="null" class="imgLink" width="20px" height="20px" onclick="save_planif_trab_det(\''.$i.'\',\'borrar\')"/></td>
+	if (strtotime($datos["fecha"]) > strtotime($fechaActual)){
+	echo '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Registro" border="null" class="imgLink" width="20px" height="20px" onclick="save_planif_trab_det(\''.$i.'\',\'borrar\')"/>';
+	}
+	echo '</td>
 	</tr>';
 }
 ?></table>
-<div />
+</div>
 </form>

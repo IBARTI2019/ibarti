@@ -91,7 +91,7 @@ class Planificacion
 
 	function replicar_rot($cliente, $ubic, $contratacion, $apertura, $usuario)
 	{
-		$sql = "CALL p_planif_serv_rotacion('$cliente','$ubic',$contratacion,$apertura,'$usuario');";
+		$sql = "CALL p_planif_serv_rotacion('$cliente',$ubic,$contratacion,$apertura,'$usuario');";
 		$query = $this->bd->consultar($sql);
 		return $query;
 	}
