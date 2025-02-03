@@ -374,8 +374,6 @@ if ($quincena == "01"){
 			$where02
 		ORDER BY 1 ASC";
 
-echo $sql;
-
 	echo "<table width='100%' border='0' align='center' class='tabla_sistema'>
 	<tr><th>".$leng['ficha']." </th><th> ".$leng['ci']."  </th><th> Nombres  </th><th> ".$leng['rol']."  </th>
 			<th> ".$leng['region']." </th><th> ".$leng['estado']."  </th><th> ".$leng['ciudad']."  </th><th> Nómina  </th>
