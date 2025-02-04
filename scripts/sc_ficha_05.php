@@ -75,7 +75,7 @@ if ($row > 0 )  {
 	
     if ($row1 > 0)  {
 		// Validar si la fecha de egreso esta en blanco
-		if ($fec_egreso == '0000-00-00') {
+		if ($fec_egreso == '0000-00-00' || $status != $row1[1]) {
 				$sql    = "$SELECT $proced('$metodo', '$codigo', '$fec_egreso', '$motivo',
                             '$color', '$preaviso','$p_fec_inicio','$p_fec_culminacion',
 							'$d_p_laboral', '$d_p_cumplido','$calculo', '$calculo_status',
@@ -83,6 +83,10 @@ if ($row > 0 )  {
 							'$banco','$importe','$entrega_uniforme', '$observacion',
 							'$observacion2', '$usuario', '$status', '$cod_motivo_egreso')";
 				$query = $bd->consultar($sql);
+				$mensaje = "Datos del Egreso actualizado con exito...";
+				echo '<script language="javascript">
+				alert("'.$mensaje.'");
+				</script>';
 		} else {
 			$mensaje = "Error , no puede actualizar el estatus de egreso a activo del trabajador";
 					echo '<script language="javascript">
