@@ -74,6 +74,7 @@ class Confirmaciones
                     IFNULL(
                         (SELECT hora_entrada FROM horario_cl_ubicacion
                             WHERE horario_cl_ubicacion.cod_cl_ubicacion = clientes_ubicacion.codigo 
+                            AND ficha.cod_cargo = horario_cl_ubicacion.cod_cargo
                             AND horario_cl_ubicacion.cod_horario = horarios.codigo), 
                         horarios.hora_entrada
                     ) hora_entrada,

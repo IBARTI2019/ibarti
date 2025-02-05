@@ -76,6 +76,19 @@ $bd = new DataBase();
         <option value="TODOS">TODOS</option>
       </select>
     </td>
+    <td class="etiqueta">Cargo:</td>
+    <td id="selectCargo">
+      <select name="cargo" id="cargo" style="width:120px;">
+        <option value="TODOS">TODOS</option>
+        <?php
+        $sql_cargo = "SELECT codigo, descripcion FROM cargos WHERE cargos.status = 'T' AND cargos.codigo NOT IN (SELECT cod_cargo FROM cargos_excl_confirm) ORDER BY 2;";
+        $query01 = $bd->consultar($sql_cargo);
+        while($row01=$bd->obtener_fila($query01,0)){
+          echo '<option value="'.$row01[0].'">'.$row01[1].'</option>';
+        }
+        ?>
+      </select>
+    </td>
     <td class="etiqueta"><?php echo $leng['horario']?>:</td>
     <td>
       <select name="horario" id="horario_conf" style="width:120px;">
@@ -102,7 +115,7 @@ $bd = new DataBase();
 <br>
 <br>
 <br>
-<table width="80%" align="center">
+ <table width="80%" align="center">
   <tr valign="top">                    
      <td height="23" colspan="9" class="etiqueta_title" align="center">CARGOS EXCLUIDOS</td>
    </tr>
@@ -126,7 +139,7 @@ $bd = new DataBase();
   </tr>
 </table>
 <table class="tabla_sistema" width="80%" border="0" align="center" id="cargos_excl">
-</table>
+</table> 
 <input name="usuario" type="hidden" value="<?php echo $usuario; ?>" />
 
 <script>
@@ -162,11 +175,12 @@ $bd = new DataBase();
 
   function addConfEsp() {
     var ubicacion = $("#ubicacion").val();
+    var cargo = $("#cargo").val();
     var horario = $("#horario_conf").val();
     var hora_entrada = $("#hora_entrada_conf").val();
     var usuario = $("#usuario").val();
-    if(ubicacion != "TODOS" && ubicacion != "" && horario != "TODOS" && horario != "" && hora_entrada != "" ){
-      var parametros = { "ubicacion": ubicacion, "horario": horario, "hora_entrada": hora_entrada, "usuario": usuario };
+    if(ubicacion != "TODOS" && ubicacion != "" && horario != "TODOS" && horario != "" && hora_entrada != "" && cargo != "TODOS" && cargo != ""){
+      var parametros = { "ubicacion": ubicacion, "cargo": cargo, "horario": horario, "hora_entrada": hora_entrada, "usuario": usuario };
       $.ajax({
         data: parametros,
         url: 'packages/planif/planificaciones/modelo/confirmaciones_esp.php',

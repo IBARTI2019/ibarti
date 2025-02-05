@@ -10,11 +10,11 @@ $result = array();
   }
 try {
     if($codigo == ""){
-      $sql = "INSERT INTO horario_cl_ubicacion (cod_cl_ubicacion, cod_horario, hora_entrada, usuario) VALUES ('$ubicacion','$horario', '$hora_entrada', '$usuario')";
+      $sql = "INSERT INTO horario_cl_ubicacion (cod_cl_ubicacion, cod_cargo, cod_horario, hora_entrada, usuario) VALUES ('$ubicacion', '$cargo', '$horario', '$hora_entrada', '$usuario')";
       $query = $bd->consultar($sql);
     }else{
       $sql = "UPDATE horario_cl_ubicacion SET hora_entrada = '$hora_entrada', usuario = '$usuario'
-              WHERE cod_cl_ubicacion = '$ubicacion', cod_horario = '$horario';";
+              WHERE cod_cl_ubicacion = '$ubicacion' AND cod_cargo = '$cargo' AND cod_horario = '$horario';";
      $query = $bd->consultar($sql);
     }
   $result['sql'] = $sql;
@@ -22,7 +22,7 @@ try {
      $error =  $e->getMessage();
      $result['error'] = true;
      $result['mensaje'] = $error;
-     $bd->log_error("Aplicacion", "sc_planificacion.php",  "$usuario", "$error", "$sql");
+     $bd->log_error("Aplicacion", "sc_confirmaciones_horarios.php",  "$usuario", "$error", "$sql");
  }
 
 	print_r(json_encode($result));

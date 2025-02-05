@@ -22,6 +22,8 @@ class Planificacion
 					clientes.nombre cliente,
 					horario_cl_ubicacion.cod_cl_ubicacion cod_ubicacion,
 					clientes_ubicacion.descripcion ubicacion,
+					horario_cl_ubicacion.cod_cargo,
+					cargos.descripcion cargo,
 					horario_cl_ubicacion.cod_horario,
 					horarios.nombre horario,
 					horario_cl_ubicacion.hora_entrada 
@@ -29,11 +31,15 @@ class Planificacion
 					horario_cl_ubicacion,
 					clientes,
 					clientes_ubicacion,
-					horarios
+					horarios,
+					cargos
 				WHERE
 					horario_cl_ubicacion.cod_cl_ubicacion = clientes_ubicacion.codigo 
 					AND horario_cl_ubicacion.cod_horario = horarios.codigo 
-					AND clientes_ubicacion.cod_cliente = clientes.codigo";
+					AND clientes_ubicacion.cod_cliente = clientes.codigo
+					AND horario_cl_ubicacion.cod_cargo = cargos.codigo
+				ORDER BY 2,4,6,8,10;
+				";
 	
 		$query = $this->bd->consultar($sql);
 
