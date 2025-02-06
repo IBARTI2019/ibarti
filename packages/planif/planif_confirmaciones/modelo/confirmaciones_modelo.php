@@ -29,6 +29,7 @@ class Confirmaciones
             AND turno.cod_horario = horarios.codigo 
             AND horarios.cod_concepto = conceptos.codigo 
             AND conceptos.asist_perfecta = 'T' 
+            AND cargos.codigo = ficha.cod_cargo
             AND ficha.cod_cargo NOT IN (SELECT cod_cargo FROM cargos_excl_confirm)
         ";
 
@@ -68,7 +69,7 @@ class Confirmaciones
                     ficha.telefono,
                     CONCAT( ficha.apellidos, ' ', ficha.nombres ) ap_nombre,
                     turno.descripcion turno,
-                    horarios.nombre horario,
+                    cargos.descripcion cargo,
                     conceptos.abrev concepto,
                     a.fecha,
                     IFNULL(
@@ -96,7 +97,8 @@ class Confirmaciones
                     ficha,
                     turno,
                     horarios,
-                    conceptos 
+                    conceptos,
+                    cargos
                 " . $where . " 
                 -- HAVING diff_min >= 0
                 -- HAVING ((diff_min > 60 AND diff_min < 120 AND confirm = 'F') OR (diff_min > 15 AND diff_min < 60 AND confirm = 'T' AND in_transport = 'F') OR (confirm = 'T' AND in_transport = 'T'))

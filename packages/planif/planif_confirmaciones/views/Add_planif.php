@@ -18,7 +18,7 @@ foreach ($result as  $datos) {
         <td>' . $datos["ficha"] . '</td>
         <td>' .  $datos["telefono"] . '</td>
         <td>' . $datos["ap_nombre"] . '</td>
-        <td>' . $datos["horario"] . '</td>
+        <td>' . $datos["cargo"] . '</td>
         <td>' . $datos["concepto"] . '</td>
         <td>' . $datos["hora_entrada"] . '</td>';
         if( $datos["confirm"] == 'T'){
