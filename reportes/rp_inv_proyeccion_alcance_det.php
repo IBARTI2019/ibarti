@@ -195,7 +195,7 @@ if ($reporte == 'excel') {
 			$vencido = "SI";
 		}
 		echo "<tr><td>" . $row01[0] . " </td><td>" . $row01[1] . "</td><td>" . $row01[2] . "</td><td>" . $row01[4] . "</td>
-			<td>" . $row01[5] . "</td><td>" . $row01[7] . "</td><td>" . $row01[9] . "</td><td>" . $row01[11] . "</td><td>" . $row01[13] . "</td><td>" . $row01[15] . "</td>
+			<td>" . $row01[5] . "</td><td>" . $row01[7] . "</td><td>" . $row01[9] . "</td><td>" . $row01[11] . "</td><td>" . $row01[12] . "</td><td>" . $row01[13] . "</td>
 			<td>" . $row01[14] . "</td><td>" . $row01[15] . "</td><td>" . ($row01[15] - $row01[14]) . "</td><td>" . $vencido . "</td></tr>";
 	}
 	echo "</table>";
