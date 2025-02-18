@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="css/modal_planif.css" type="text/css" media="screen" />
+<script type="text/javascript" src="funciones/modal.js"></script>
 <link rel="stylesheet" type="text/css" href="latest/stylesheets/autocomplete.css" />
 <link rel="stylesheet" href="css/modal_planif.css" type="text/css" media="screen" />
 <script type="text/javascript" src="latest/scripts/autocomplete.js"></script>
@@ -34,7 +36,9 @@ $sql_horario = "SELECT
 <div id="Cont_confirmaciones">
 
   <span class="etiqueta_title" id="title_confirmaciones">Confirmaciones</span>
+<br>
   <table width="90%" align="center">
+
     <tr>
       <td height="8" colspan="7" align="center">
         <hr>
@@ -52,13 +56,13 @@ $sql_horario = "SELECT
           } ?></select></td>
       <td class="etiqueta"><?php echo $leng["ubicacion"];?>: </td>
       <td id="contenido_ubic">
-        <select name="ubicacion" id="ubicacion" style="width:250px;">
+        <select name="ubicacion" id="ubicacion" style="width:250px;" onchange="Add_filtroX()">
           <option value="TODOS">TODOS</option>
         </select>
       </td>
       <td class="etiqueta"><?php echo $leng["horario"];?>: </td>
       <td>
-        <select name="horario" id="horario" multiple="multiple" style="width:170px;">
+        <select name="horario" id="horario" multiple="multiple" style="width:170px;" onchange="Add_filtroX()">
           <?php
           echo $select_cl;
           $query02 = $bd->consultar($sql_horario);
@@ -93,13 +97,23 @@ $sql_horario = "SELECT
     <tr>
     <tr>
       <td height="8" colspan="7" align="center">
-        <hr>
+      <hr>
       </td>
     </tr>
     <tr>
-      <td height="8" colspan="7" align="right">
-        <div id="estadistica" align="right"> </div>
+      <td height="8" colspan="4" align="right">
+      <div align="left">
+        <span class="art-button-wrapper" id="boton_close" style="display: none;">
+            <span class="art-button-l"> </span>
+            <span class="art-button-r"> </span>
+            <input type="button" value="Confirmar cuadre de servicio" onclick="onCloseService()" class="readon art-button" />
+          </span>&nbsp;
+      </div>
+  
       </td>
+      <td height="8" colspan="3" align="right">
+      <div id="estadistica" align="right"> </div>
+        </th>
     </tr>
   </table>
 
@@ -126,6 +140,19 @@ $sql_horario = "SELECT
 </div>
 
 <input name=" usuario" id="usuario" type="hidden" value="<?php echo $us; ?>" />
+
+<div id="myModal" class="modal">
+	<div class="modal-content">
+		<div class="modal-header">
+			<span class="close" onclick="cerrarModal()">&times;</span>
+			<span id="modal_titulo"></span>
+		</div>
+		<div class="modal-body">
+			<div id="modal_contenido"></div>
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
   filtroValue = $("#paciFiltro").val();
   new Autocomplete("stdName", function() {

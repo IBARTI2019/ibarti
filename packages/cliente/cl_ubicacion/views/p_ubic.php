@@ -345,7 +345,14 @@
 			</tr>
 			<tr>
 				<td class="etiqueta">Fecha Última Asistencia: </td>
-				<td><input type="text" name="fec_ult_asistencia" id="fec_ult_asistencia" maxlength="60" size="26" value="<?php echo $ubic['fec_ult_asistencia']; ?>" />
+				<td>
+					<input type="text" name="fec_ult_asistencia" id="fec_ult_asistencia" maxlength="60" size="26" value="<?php echo $ubic['fec_ult_asistencia']; ?>" />
+				</td>
+				<td>
+					Usa reconocimiento facial:
+				</td>
+				<td>
+					<input id="ub_reconocimiento_facial" type="checkbox" <?php echo statusCheck($ubic["reconocimiento_facial"]); ?> value="T" />
 				</td>
 			</tr>
 			<tr>

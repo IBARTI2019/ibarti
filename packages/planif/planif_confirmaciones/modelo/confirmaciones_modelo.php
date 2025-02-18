@@ -88,7 +88,10 @@ class Confirmaciones
                     a.asistencia,
             		TIME(a.fec_confirm) fec_confirm,
 					TIME(a.fec_in_transport) fec_in_transport,
-                    TIME(a.fec_asistencia) fec_asistencia
+                    TIME(a.fec_asistencia) fec_asistencia,
+                    a.cierre_confirmado,
+                    clientes_ubicacion.reconocimiento_facial,
+                    a.observacion
                 FROM
                     planif_clientes_trab_det a,
                     clientes,
@@ -223,5 +226,95 @@ class Confirmaciones
         $this->data["asistencia"] = $this->datos["total"];
         
         return $this->data;
+    }
+
+
+    function get_data_base($codigo)
+    {
+        $this->datos  = array();
+        $sql = "SELECT
+                    planif_clientes_trab_det.cod_ficha,
+                    v_ficha.ap_nombre,
+                    v_ficha.cliente,
+                    v_ficha.ubicacion,
+                    v_ficha.cargo,
+                    IFNULL(
+                        (
+                            SELECT
+                                hora_entrada 
+                            FROM
+                                horario_cl_ubicacion 
+                            WHERE
+                                horario_cl_ubicacion.cod_cl_ubicacion = planif_clientes_trab_det.cod_ubicacion 
+                                AND v_ficha.cod_cargo = horario_cl_ubicacion.cod_cargo
+                                AND horario_cl_ubicacion.cod_horario = horarios.codigo 
+                        ),
+                        horarios.hora_entrada 
+                    ) hora_entrada,
+                    planif_clientes_trab_det.observacion
+                FROM
+                    planif_clientes_trab_det,
+                    v_ficha,
+                    turno,
+                    horarios
+                WHERE
+                    planif_clientes_trab_det.codigo = $codigo 
+                    AND planif_clientes_trab_det.cod_ficha = v_ficha.cod_ficha 
+                    AND planif_clientes_trab_det.cod_turno = turno.codigo 
+                    AND turno.cod_horario = horarios.codigo;";
+
+        $query = $this->bd->consultar($sql);
+        return $this->datos = $this->bd->obtener_fila($query);
+    }
+
+    function planif_sin_verify($ubicacion, $horarios){
+        $this->datos  = array();
+
+        $where = " WHERE
+                    a.fecha = CURRENT_DATE 
+                    AND a.cod_ficha = ficha.cod_ficha 
+                    AND a.cod_turno = turno.codigo 
+                    AND turno.cod_horario = horarios.codigo 
+                    AND horarios.cod_concepto = conceptos.codigo 
+                    AND conceptos.asist_perfecta = 'T' 
+                    AND ficha.cod_cargo NOT IN ( SELECT cod_cargo FROM cargos_excl_confirm ) 
+                    AND a.cod_ubicacion = $ubicacion 
+                    AND ( a.observacion = '' OR a.observacion IS NULL ) 
+                    AND a.confirm = 'F' 
+                    AND a.asistencia = 'F'
+        ";
+
+
+        if($horarios != "" && $horarios != null){
+            if(!in_array("TODOS", $horarios)){
+                $i = 0;
+                foreach ($horarios as $value) {
+                    if ($i == 0) {
+                        $where .= " AND ((horarios.codigo  = " . $value . ") ";
+                    } else {
+                        $where .= " OR (horarios.codigo = " . $value .")";
+                    }
+                    $i++;
+                };
+                $where .= ") ";
+            }
+        }
+
+        $sql = "SELECT
+                    a.codigo
+                FROM
+                    planif_clientes_trab_det a,
+                    ficha,
+                    turno,
+                    horarios,
+                    conceptos
+                $where;";
+
+        $query = $this->bd->consultar($sql);
+        while ($datos = $this->bd->obtener_fila($query)) {
+            $this->datos[] = $datos;
+        }
+        return $this->datos;
+
     }
 }

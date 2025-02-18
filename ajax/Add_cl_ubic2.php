@@ -12,6 +12,8 @@ if ($activar == "T" || $activar == "LL") {
 	$change =  'onchange="Add_filtroX()"';
 } else if ($activar == "P") {
 	$change = 'onchange="Add_Ub_puesto(this.value, \'contenido_puesto\', \'120\')"';
+} else if ($activar == "C") {
+	$change = 'onchange="changeUbic(this.value)"';
 } else {
 	if($activar != "F"){
 		$change =  'onchange="Validar01(this.value)"';

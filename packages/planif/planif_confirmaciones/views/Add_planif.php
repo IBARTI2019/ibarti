@@ -10,10 +10,20 @@ $ubicacion     = $_POST['ubicacion'];
 $horario     = $_POST['horario'];
 $result  =  $confirmaciones->get_planif($ficha, $cliente, $ubicacion, $horario);
 $disabled = "";
+$respuesta = [
+    "html" => "",
+    "confirmado" => false
+];
 
 foreach ($result as  $datos) {
-    echo '<tr>
-        <td>' . $datos["cliente"] . '</td>
+    if($respuesta["confirmado"] == false){
+        $respuesta["confirmado"] = $datos["cierre_confirmado"] == 'T';
+    }
+
+    // Para obtener los codigos en la confimacion de cierre de asistencia
+    $respuesta["html"] .= '<input type="hidden" name="codigos[]" value="'.$datos["codigo"].'">';
+    $respuesta["html"] .=  '<tr>
+        <td>' . $datos["cliente"]. ' - '. $datos["cierre_confirmado"] . '</td>
         <td>' . $datos["ubicacion"] . '</td>
         <td>' . $datos["ficha"] . '</td>
         <td>' .  $datos["telefono"] . '</td>
@@ -21,23 +31,83 @@ foreach ($result as  $datos) {
         <td>' . $datos["cargo"] . '</td>
         <td>' . $datos["concepto"] . '</td>
         <td>' . $datos["hora_entrada"] . '</td>';
-        if( $datos["confirm"] == 'T'){
-            echo '<td class="fondo02">'.$datos["fec_confirm"];
+        if($datos["confirm"] == 'T'){
+            $respuesta["html"] .=  '<td class="fondo02">'.$datos["fec_confirm"];
         }else{
-            echo '<td class="fondo03">Sin confirmar';
+            $respuesta["html"] .=  '<td class="fondo03">Sin confirmar';
+            if($datos["cierre_confirmado"] = 'F' && $datos["reconocimiento_facial"] == 'F'){
+                if($datos["observacion"] == ''){
+                    $respuesta["html"] .=  '
+                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', false, '.$respuesta["confirmado"].')">
+                        <span class="art-button-wrapper">
+                            <span class="art-button-l"> </span>
+                            <span class="art-button-r"> </span>';
+                            if ($respuesta["confirmado"] == true){
+                                $respuesta["html"] .=  ' <input type="button" value="Ver observación" class="readon art-button" />';
+                            }else{
+                                $respuesta["html"] .=  ' <input type="button" value="Cargar observación" class="readon art-button" />';
+                            }
+                            $respuesta["html"] .=  '</span>&nbsp;
+                    </div>';
+                }else{
+                    $respuesta["html"] .=  '
+                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', true, '.$respuesta["confirmado"].')">
+                        <span class="art-button-wrapper">
+                            <span class="art-button-l"> </span>
+                            <span class="art-button-r"> </span>';
+                            if ($respuesta["confirmado"] == true){
+                                $respuesta["html"] .=  ' <input type="button" value="Ver observación" class="readon art-button" />';
+                            }else{
+                                $respuesta["html"] .=  ' <input type="button" value="Editar observación" class="readon art-button" />';
+                            }
+                            $respuesta["html"] .=  '</span>&nbsp;
+                    </div>';
+                }
+            }
         }
-        echo '</td>';
+        $respuesta["html"] .=  '</td>';
         if( $datos["in_transport"] == 'T'){
-            echo '<td class="fondo02">'.$datos["fec_in_transport"];
+            $respuesta["html"] .=  '<td class="fondo02">'.$datos["fec_in_transport"];
         }else{
-            echo '<td class="fondo03">Sin confirmar';
+            $respuesta["html"] .=  '<td class="fondo03">Sin confirmar';
         }
-        echo '</td>';
-        echo '</td>';
+        $respuesta["html"] .=  '</td>';
+        $respuesta["html"] .=  '</td>';
         if( $datos["asistencia"] == 'T'){
-            echo '<td class="fondo02">'.$datos["fec_asistencia"];
+            $respuesta["html"] .=  '<td class="fondo02">'.$datos["fec_asistencia"];
         }else{
-            echo '<td class="fondo03">Sin asistir';
+            $respuesta["html"] .=  '<td class="fondo03">Sin asistir';
+            if($datos["cierre_confirmado"] = 'F' && $datos["reconocimiento_facial"] == 'T'){
+                if($datos["observacion"] == ''){
+                    $respuesta["html"] .=  '
+                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', false, '.$respuesta["confirmado"].')">
+                        <span class="art-button-wrapper">
+                            <span class="art-button-l"> </span>
+                            <span class="art-button-r"> </span>';
+                            if ($respuesta["confirmado"] == true){
+                                $respuesta["html"] .=  ' <input type="button" value="Ver observación" class="readon art-button" />';
+                            }else{
+                                $respuesta["html"] .=  ' <input type="button" value="Cargar observación" class="readon art-button" />';
+                            }
+                            $respuesta["html"] .=  '</span>&nbsp;
+                    </div>';
+                }else{
+                    $respuesta["html"] .=  '
+                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', true, '.$respuesta["confirmado"].')">
+                        <span class="art-button-wrapper">
+                            <span class="art-button-l"> </span>
+                            <span class="art-button-r"> </span>';
+                            if ($respuesta["confirmado"] == true){
+                                $respuesta["html"] .=  ' <input type="button" value="Ver observación" class="readon art-button" />';
+                            }else{
+                                $respuesta["html"] .=  ' <input type="button" value="Editar observación" class="readon art-button" />';
+                            }
+                        $respuesta["html"] .=  '</span>&nbsp;
+                    </div>';
+                }
+            }
         }
-        echo '</td>';
+        $respuesta["html"] .=  '</td>';
 }
+
+print_r(json_encode($respuesta));

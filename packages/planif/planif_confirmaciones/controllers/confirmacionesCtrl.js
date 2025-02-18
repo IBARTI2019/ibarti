@@ -1,7 +1,6 @@
+var ajaxTimeController = setInterval(() => { refresh(); }, 30000);
 
-var ajaxTimeController = setInterval(()=>{ refresh();}, 30000);
-
-$(function() {
+$(function () {
     Add_filtroX();
 });
 
@@ -9,7 +8,7 @@ $(function() {
 function Add_filtroX() {
     clearInterval(ajaxTimeController);
     refresh();
-    ajaxTimeController = setInterval(()=>{ refresh(true);}, 30000);
+    ajaxTimeController = setInterval(() => { refresh(true); }, 30000);
 }
 
 function refresh(auto) {
@@ -17,7 +16,6 @@ function refresh(auto) {
     var cliente = $("#cliente").val();
     var ubicacion = $("#ubicacion").val();
     var horario = $("#horario").val();
-
     var parametros = {
         cliente, ficha, ubicacion, horario
     };
@@ -27,12 +25,22 @@ function refresh(auto) {
         url: 'packages/planif/planif_confirmaciones/views/Add_planif.php',
         type: 'post',
         beforeSend: function () {
-            if(!auto || auto == undefined){
+            if (!auto || auto == undefined) {
                 $("#planificacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
             }
         },
         success: function (response) {
-            $("#planificacion").html(response);
+            var resp = JSON.parse(response);
+            $("#planificacion").html(resp["html"]);
+            if (ubicacion != 'TODOS' && ubicacion != '' && horario && Array.isArray(horario) && resp["confirmado"] == false) {
+                if (!horario.includes('TODOS')) {
+                    $("#boton_close").show();
+                } else {
+                    $("#boton_close").hide();
+                }
+            } else {
+                $("#boton_close").hide();
+            }
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert(xhr.status);
@@ -68,8 +76,8 @@ function Add_Estadistica() {
 }
 
 function setConfirm(codigo, ap_nombre, in_transport) {
-    var h_confirm_index = $("#h_confirm"+codigo).val();
-    if(h_confirm_index){
+    var h_confirm_index = $("#h_confirm" + codigo).val();
+    if (h_confirm_index) {
         if (codigo) {
             if (confirm(`Esta seguro de que desea confirmar ${in_transport == 'T' ? 'que se encuentra en el transporte el trabajador' : 'la asistencia de el trabajador'} ${ap_nombre}. Esta operación es irreversible!.`)) {
                 var usuario = $("#usuario").val();
@@ -96,12 +104,124 @@ function setConfirm(codigo, ap_nombre, in_transport) {
                 });
             }
         }
-    }else{
+    } else {
         toastr.error("Debe definir la hora de confirmacion!..");
     }
 }
 
 function changeCliente(cliente) {
-    Add_Cl_Ubic(cliente, 'contenido_ubic', 'T', '120');
+    $("#boton_close").hide();
+    Add_Cl_Ubic(cliente, 'contenido_ubic', 'C', '120');
+    Add_filtroX();
+}
+
+
+
+function onCloseService() {
+    var usuario = $("#usuario").val();
+    var horario = $("#horario").val();
+    var parametros = { "usuario": usuario, "ubicacion": ubicacion, horario };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_confirmaciones/views/Add_verify_service.php',
+        type: 'post',
+        success: function (response) {
+            var resp = JSON.parse(response);
+            var codigos = [];
+            $('input[name="codigos[]"]').each(function () {
+                codigos.push($(this).val());
+            });
+            if (resp.length > 0) {
+                toastr.error("Existen anomalías sin observación!..");
+            } else {
+
+                if (confirm(`Esta seguro de que desea confirmar el cierre de este servicio. Esta operación es irreversible!.`)) {
+                    var usuario = $("#usuario").val();
+                    var parametros = {
+                        usuario, codigos: codigos
+                    };
+                    $.ajax({
+                        data: parametros,
+                        url: 'packages/planif/planif_confirmaciones/modelo/confirmar_cierre.php',
+                        type: 'post',
+                        success: function (response) {
+                            var resp = JSON.parse(response);
+                            if (resp.error) {
+                                toastr.error("A ocurrido un error al intentar confirmar el cierrre del servicio!..");
+                            } else {
+                                toastr.success("Cierre de servicio confirmado exitosamente!..");
+                                Add_filtroX();
+                            }
+                        },
+                        error: function (xhr, ajaxOptions, thrownError) {
+                            alert(xhr.status);
+                            alert(thrownError);
+                        }
+                    });
+                }
+            }
+            console.log(resp)
+            // ModalOpen();
+            $("#modal_titulo").text("Confirmar cuadre de servico");
+            $("#modal_contenido").html(response);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
+
+function onAddObservation(codigo, edit = false, confirmado) {
+    var usuario = $("#usuario").val();
+    var parametros = { "usuario": usuario, "codigo": codigo, "edit": edit, "confirmado": confirmado };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_confirmaciones/views/Add_planif_observacion.php',
+        type: 'post',
+        success: function (response) {
+            ModalOpen();
+            $("#modal_titulo").text("Confirmar cuadre de servico");
+            $("#modal_contenido").html(response);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
+
+function savePlanifObservation(codigo, edit) {
+    var usuario = $("#usuario").val();
+    var observacion = $("#observacion" + codigo).val();
+
+    var parametros = { "usuario": usuario, "observacion": observacion, "codigo": codigo };
+    $.ajax({
+        data: parametros,
+        url: 'packages/planif/planif_confirmaciones/modelo/save_planif_observacion.php',
+        type: 'post',
+        beforeSend: function () {
+            $("#boton_guardar_observacion").hide();
+            $("#loading_observacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+        },
+        success: function (response) {
+            $("#loading_observacion").hide();
+            $("#boton_guardar_observacion").show();
+            toastr.success("Observación guardada exitosamente!..");
+            if (!edit) {
+                cerrarModal();
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            $("#loading_observacion").hide();
+            $("#boton_guardar_observacion").show();
+            alert(xhr.status);
+            alert(thrownError);
+        }
+    });
+}
+
+function cerrarModal() {
+    $("#myModal").hide();
     Add_filtroX();
 }

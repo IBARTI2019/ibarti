@@ -20,7 +20,7 @@ $codigo  = htmlentities($codigo);
                                  '$campo04', '$usuario',  '$status', '$contacto1', 
                                  '$cargo1', '$telefono1', '$email1','$contacto2', 
                                  '$cargo2', '$telefono2', '$email2','$contacto3', 
-                                 '$cargo3', '$telefono3', '$email3')";
+                                 '$cargo3', '$telefono3', '$email3', '$reconocimiento_facial')";
     $result['sql'] = $sql;
    	 $query = $bd->consultar($sql);
 

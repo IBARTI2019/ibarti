@@ -60,7 +60,8 @@ class Ubicacion
 			'cod_zona' => '', 'email' => '', 'observacion' => '',
 			'latitud' => '', 'longitud' => '', 'direccion_google' => '',
 			'campo01' => '', 'campo02' => '', 'campo03' => '', 'campo04' => '',
-			'cod_us_ing' => '', 'fec_us_ing' => '', 'cod_us_mod' => '', 'fec_us_mod' => '', 'status' => ''
+			'cod_us_ing' => '', 'fec_us_ing' => '', 'cod_us_mod' => '', 'fec_us_mod' => '', 
+			'status' => '', 'reconocimiento_facial' => ''
 		);
 		return $this->datos;
 	}
@@ -86,7 +87,7 @@ class Ubicacion
 							SELECT MAX(asistencia_apertura.fec_diaria) FROM asistencia, asistencia_apertura 
 							WHERE asistencia.cod_as_apertura = asistencia_apertura.codigo
 								AND asistencia.cod_ubicacion = clientes_ubicacion.codigo LIMIT 1
-						) fec_ult_asistencia
+						) fec_ult_asistencia,  clientes_ubicacion.reconocimiento_facial
 	             FROM clientes_ubicacion, estados,  ciudades , regiones,
 								    nom_calendario, zonas
 	            WHERE clientes_ubicacion.cod_estado = estados.codigo

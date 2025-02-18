@@ -104,6 +104,7 @@ function save_ubic() {
 	var proced = "p_clientes_ubic";
 	var usuario = $("#usuario").val();
 	var metodo = $("#ub_metodo").val();
+	var reconocimiento_facial = Status($("#ub_reconocimiento_facial:checked").val());
 
 	if (error == 0) {
 		var parametros = "X";
@@ -114,23 +115,24 @@ function save_ubic() {
 			"calendario": calendario, "zona": zona,
 			"contacto": contacto,
 			"cargo": cargo, "telefono": telefono,
-			"email": email, 
+			"email": email,
 			"contacto1": contacto1,
 			"cargo1": cargo1, "telefono1": telefono1,
-			"email1": email1, 
+			"email1": email1,
 			"contacto2": contacto2,
 			"cargo2": cargo2, "telefono2": telefono2,
-			"email2": email2, 
+			"email2": email2,
 			"contacto3": contacto3,
 			"cargo3": cargo3, "telefono3": telefono3,
-			"email3": email3, 
+			"email3": email3,
 			"direccion": direccion,
 			"latitud": latitud, "longitud": longitud,
 			"observ": observ,
 			"proced": proced, "usuario": usuario,
 			"metodo": metodo, "cliente": cliente,
 			"campo01": campo01, "campo02": campo02,
-			"campo03": campo03, "campo04": campo04
+			"campo03": campo03, "campo04": campo04,
+			"reconocimiento_facial": reconocimiento_facial
 		};
 		console.log(parametros);
 		$.ajax({
