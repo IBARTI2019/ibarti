@@ -89,6 +89,7 @@ if(isset($reporte)){
 	GROUP BY v_ficha.cod_ficha, asistencia.cod_ubicacion
 	ORDER BY 1 ASC";
 	
+	echo $sql;
 	$titulo .= "QUINCENA $fecha_D HASTA ".conversion($fecha_H)."\n";
 
 	if($reporte== 'excel'){
@@ -189,7 +190,7 @@ if(isset($reporte)){
 				for ($day=16; $day <= 31; $day++) { 
 					$fecha = $year1.'-'.$mes1.'-'.$day;
 					$found_key = array_search($fecha, array_column($detalle, 'fec_diaria'));
-					if(($found_key != '' && $found_key != false) || ($found_key == 0 && gettype($found_key) == 'integer')){
+					if ($found_key !== false) {
 						echo "<td>".$detalle[$found_key]['abrev']."  </td>";
 					}else{
 						echo "<td></td>";
