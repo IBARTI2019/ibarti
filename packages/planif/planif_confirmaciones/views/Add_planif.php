@@ -35,10 +35,10 @@ foreach ($result as  $datos) {
             $respuesta["html"] .=  '<td class="fondo02">'.$datos["fec_confirm"];
         }else{
             $respuesta["html"] .=  '<td class="fondo03">Sin confirmar';
-            if($datos["cierre_confirmado"] = 'F' && $datos["reconocimiento_facial"] == 'F'){
-                if($datos["observacion"] == ''){
+            if($datos["cierre_confirmado"] = 'F'){
+                if($datos["cod_observacion_asisto"] == ''){
                     $respuesta["html"] .=  '
-                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', false, '.$respuesta["confirmado"].')">
+                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', false, '.json_encode($respuesta["confirmado"]).', false)">
                         <span class="art-button-wrapper">
                             <span class="art-button-l"> </span>
                             <span class="art-button-r"> </span>';
@@ -51,7 +51,7 @@ foreach ($result as  $datos) {
                     </div>';
                 }else{
                     $respuesta["html"] .=  '
-                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', true, '.$respuesta["confirmado"].')">
+                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', true, '.json_encode($respuesta["confirmado"]).', false)">
                         <span class="art-button-wrapper">
                             <span class="art-button-l"> </span>
                             <span class="art-button-r"> </span>';
@@ -78,9 +78,9 @@ foreach ($result as  $datos) {
         }else{
             $respuesta["html"] .=  '<td class="fondo03">Sin asistir';
             if($datos["cierre_confirmado"] = 'F' && $datos["reconocimiento_facial"] == 'T'){
-                if($datos["observacion"] == ''){
+                if($datos["cod_observacion_asistencia"] == null ){
                     $respuesta["html"] .=  '
-                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', false, '.$respuesta["confirmado"].')">
+                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', false, '.json_encode($respuesta["confirmado"]).', true)">
                         <span class="art-button-wrapper">
                             <span class="art-button-l"> </span>
                             <span class="art-button-r"> </span>';
@@ -93,7 +93,7 @@ foreach ($result as  $datos) {
                     </div>';
                 }else{
                     $respuesta["html"] .=  '
-                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', true, '.$respuesta["confirmado"].')">
+                    <div align="center" onclick="onAddObservation('.$datos["codigo"].', true, '.json_encode($respuesta["confirmado"]).', true)">
                         <span class="art-button-wrapper">
                             <span class="art-button-l"> </span>
                             <span class="art-button-r"> </span>';

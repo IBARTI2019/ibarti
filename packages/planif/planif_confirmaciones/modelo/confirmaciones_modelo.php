@@ -91,7 +91,8 @@ class Confirmaciones
                     TIME(a.fec_asistencia) fec_asistencia,
                     a.cierre_confirmado,
                     clientes_ubicacion.reconocimiento_facial,
-                    a.observacion
+                    a.cod_observacion_asisto,
+                    a.cod_observacion_asistencia
                 FROM
                     planif_clientes_trab_det a,
                     clientes,
@@ -228,6 +229,18 @@ class Confirmaciones
         return $this->data;
     }
 
+    function get_observaciones()
+    {
+        $this->datos  = array();
+
+        $sql = "SELECT codigo, descripcion FROM observaciones_asisto WHERE status = 'T';";
+
+        $query = $this->bd->consultar($sql);
+        while ($datos = $this->bd->obtener_fila($query)) {
+            $this->datos[] = $datos;
+        }
+        return $this->datos;
+    }
 
     function get_data_base($codigo)
     {
@@ -251,9 +264,16 @@ class Confirmaciones
                         ),
                         horarios.hora_entrada 
                     ) hora_entrada,
-                    planif_clientes_trab_det.observacion
+                    planif_clientes_trab_det.observacion,
+                    planif_clientes_trab_det.cod_observacion_asisto,
+                    observaciones_asisto.descripcion observacion_asisto,
+                    planif_clientes_trab_det.cod_observacion_asistencia,
+                    oas.descripcion observacion_asistencia,
+                    planif_clientes_trab_det.observacion_asistencia observacion_asistencia_ad
                 FROM
-                    planif_clientes_trab_det,
+                    planif_clientes_trab_det 
+                    LEFT JOIN observaciones_asisto ON planif_clientes_trab_det.cod_observacion_asisto = observaciones_asisto.codigo
+                    LEFT JOIN observaciones_asisto as oas ON planif_clientes_trab_det.cod_observacion_asistencia = oas.codigo,
                     v_ficha,
                     turno,
                     horarios
@@ -279,7 +299,7 @@ class Confirmaciones
                     AND conceptos.asist_perfecta = 'T' 
                     AND ficha.cod_cargo NOT IN ( SELECT cod_cargo FROM cargos_excl_confirm ) 
                     AND a.cod_ubicacion = $ubicacion 
-                    AND ( a.observacion = '' OR a.observacion IS NULL ) 
+                    AND ( a.cod_observacion_asisto = '' OR a.cod_observacion_asisto IS NULL ) 
                     AND a.confirm = 'F' 
                     AND a.asistencia = 'F'
         ";

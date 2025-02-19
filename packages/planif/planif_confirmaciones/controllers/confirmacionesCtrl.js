@@ -111,16 +111,17 @@ function setConfirm(codigo, ap_nombre, in_transport) {
 
 function changeCliente(cliente) {
     $("#boton_close").hide();
-    Add_Cl_Ubic(cliente, 'contenido_ubic', 'C', '120');
+    Add_Cl_Ubic(cliente, 'contenido_ubic', 'F', '120');
     Add_filtroX();
 }
-
 
 
 function onCloseService() {
     var usuario = $("#usuario").val();
     var horario = $("#horario").val();
-    var parametros = { "usuario": usuario, "ubicacion": ubicacion, horario };
+    var ubicacion = $("#ubicacion").val();
+    var parametros = { "usuario": usuario, "ubicacion": ubicacion, "horario": horario };
+
     $.ajax({
         data: parametros,
         url: 'packages/planif/planif_confirmaciones/views/Add_verify_service.php',
@@ -172,9 +173,10 @@ function onCloseService() {
     });
 }
 
-function onAddObservation(codigo, edit = false, confirmado) {
+function onAddObservation(codigo, edit = false, confirmado, asistencia) {
     var usuario = $("#usuario").val();
-    var parametros = { "usuario": usuario, "codigo": codigo, "edit": edit, "confirmado": confirmado };
+    var parametros = { "usuario": usuario, "codigo": codigo, "edit": edit, "confirmado": confirmado, "asistencia": asistencia };
+    console.log(parametros);
     $.ajax({
         data: parametros,
         url: 'packages/planif/planif_confirmaciones/views/Add_planif_observacion.php',
@@ -191,34 +193,39 @@ function onAddObservation(codigo, edit = false, confirmado) {
     });
 }
 
-function savePlanifObservation(codigo, edit) {
+function savePlanifObservation(codigo, edit, asistencia) {
     var usuario = $("#usuario").val();
     var observacion = $("#observacion" + codigo).val();
+    var observacion_asisto = $("#observacion_asisto" + codigo).val();
 
-    var parametros = { "usuario": usuario, "observacion": observacion, "codigo": codigo };
-    $.ajax({
-        data: parametros,
-        url: 'packages/planif/planif_confirmaciones/modelo/save_planif_observacion.php',
-        type: 'post',
-        beforeSend: function () {
-            $("#boton_guardar_observacion").hide();
-            $("#loading_observacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
-        },
-        success: function (response) {
-            $("#loading_observacion").hide();
-            $("#boton_guardar_observacion").show();
-            toastr.success("Observación guardada exitosamente!..");
-            if (!edit) {
-                cerrarModal();
+    if (observacion_asisto) {
+        var parametros = { "usuario": usuario, "observacion": observacion, "codigo": codigo, "observacion_asisto": observacion_asisto, 'asistencia': asistencia };
+        $.ajax({
+            data: parametros,
+            url: 'packages/planif/planif_confirmaciones/modelo/save_planif_observacion.php',
+            type: 'post',
+            beforeSend: function () {
+                $("#boton_guardar_observacion").hide();
+                $("#loading_observacion").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px">');
+            },
+            success: function (response) {
+                $("#loading_observacion").hide();
+                $("#boton_guardar_observacion").show();
+                toastr.success("Observación guardada exitosamente!..");
+                if (!edit) {
+                    cerrarModal();
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $("#loading_observacion").hide();
+                $("#boton_guardar_observacion").show();
+                alert(xhr.status);
+                alert(thrownError);
             }
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            $("#loading_observacion").hide();
-            $("#boton_guardar_observacion").show();
-            alert(xhr.status);
-            alert(thrownError);
-        }
-    });
+        });
+    } else {
+        toastr.error("Debe seleccionar una observación!..");
+    }
 }
 
 function cerrarModal() {

@@ -13,7 +13,10 @@ $confirmaciones   = new Confirmaciones;
 $codigo     = $_POST['codigo'];
 $edit     = $_POST['edit'];
 $confirmado     = $_POST['confirmado'];
+$asistencia = $_POST['asistencia'];
+
 $result  =  $confirmaciones->get_data_base($codigo);
+$observaciones  =  $confirmaciones->get_observaciones();
 
 echo '
 <br>
@@ -32,16 +35,48 @@ echo '
 <br>';
 
 echo '<table width="100%">
-<tr align="center">
+<tr>
     <td>
-            <label> Observación: </label> <br><br>
+        <form>
+            <label for="observacion_asisto">Observación:</label>
+            <select id="observacion_asisto'.$codigo.'" name="observacion_asisto">';
+                if($edit == 'true'){
+                    if($asistencia == 'true'){
+                        echo '<option value="'.$result["cod_observacion_asistencia"].'">'.$result["observacion_asistencia"].'</option>';
+                    }else{
+                        echo '<option value="'.$result["cod_observacion_asisto"].'">'.$result["observacion_asisto"].'</option>';
+                    }
+                }else{
+                    echo '<option value="">Seleccione</option>';
+                }
+                foreach ($observaciones as  $observacion) {
+                    if($asistencia == 'true'){
+                        if($edit == false || $observacion["codigo"] != $result["cod_observacion_asistencia"]){
+                            echo '<option value="'.$observacion["codigo"].'">'.$observacion["descripcion"].'</option>';
+                        }
+                    }else{
+                        if($edit == false || $observacion["codigo"] != $result["cod_observacion_asisto"]){
+                            echo '<option value="'.$observacion["codigo"].'">'.$observacion["descripcion"].'</option>';
+                        }
+                    }
+
+                }
+            echo '
+            </select>
+        </form>
+    </td>
+<tr>
+<tr align="center" id="contenedor_observ">
+    <td>
+        <br>
+        <label> Observación adicional: </label> <br><br>
         <div align="center">
-            <textarea name="observacion" id="observacion'.$codigo.'" cols="120" rows="6">'.$result["observacion"].'</textarea>
+            <textarea name="observacion" id="observacion'.$codigo.'" cols="120" rows="6">'.($asistencia == 'true' ? $result["observacion_asistencia_ad"] : $result["observacion"]).'</textarea>
         </div>
     </td>
 </tr>';
 
-if($confirmado == false){
+if($confirmado == false || $confirmado == 'false'){
     echo '<tr align="center">
 
         <td>
@@ -51,7 +86,7 @@ if($confirmado == false){
                 <span class="art-button-wrapper" id="boton_guardar_observacion">
                     <span class="art-button-l"> </span>
                     <span class="art-button-r"> </span>
-                    <input type="button" value="Guardar" class="readon art-button" onclick="savePlanifObservation('.$codigo.','.$edit.')" />
+                    <input type="button" value="Guardar" class="readon art-button" onclick="savePlanifObservation('.$codigo.','.$edit.', '.$asistencia.')" />
                 </span>&nbsp;
                 <img id="loading_observacion" src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px" style="display: none;">
             </div>
