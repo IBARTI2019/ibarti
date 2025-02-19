@@ -63,6 +63,7 @@ class Confirmaciones
         $sql = "SELECT
                     a.codigo,
                     clientes.nombre cliente,
+                    clientes.abrev abrev_cliente,
                     clientes_ubicacion.descripcion ubicacion,
                     a.cod_ficha ficha,
                     ficha.cedula,
