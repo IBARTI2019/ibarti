@@ -4,7 +4,7 @@
 	$tabla = "observaciones_asisto";
 	$bd = new DataBase();
 	$archivo = "observ_asisto";
-	$titulo = " OBSERVACIONES ASISTO "; 
+	$titulo = " OBSERVACIONES DE CONFIRMACIÓN "; 
 	$vinculo = "inicio.php?area=pestanas_maestro/maestros&Nmenu=".$_GET['Nmenu']."&mod=".$_GET['mod']."&titulo=$titulo&tb=$tabla&archivo=$archivo";
 ?>
 <div align="center" class="etiqueta_title"> CONSULTA GENERAL <?php echo $titulo;?> </div> <hr />
