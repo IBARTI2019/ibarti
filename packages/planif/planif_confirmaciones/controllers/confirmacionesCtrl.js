@@ -32,6 +32,7 @@ function refresh(auto) {
         success: function (response) {
             var resp = JSON.parse(response);
             $("#planificacion").html(resp["html"]);
+            console.log(ubicacion != 'TODOS', ubicacion != '', horario, Array.isArray(horario), resp["confirmado"] == false, resp["confirmado"]);
             if (ubicacion != 'TODOS' && ubicacion != '' && horario && Array.isArray(horario) && resp["confirmado"] == false) {
                 if (!horario.includes('TODOS')) {
                     $("#boton_close").show();
