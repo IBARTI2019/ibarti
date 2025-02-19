@@ -299,7 +299,14 @@ class Confirmaciones
                     AND conceptos.asist_perfecta = 'T' 
                     AND ficha.cod_cargo NOT IN ( SELECT cod_cargo FROM cargos_excl_confirm ) 
                     AND a.cod_ubicacion = $ubicacion 
-                    AND ( a.cod_observacion_asisto = '' OR a.cod_observacion_asisto IS NULL ) 
+                    AND a.cod_ubicacion = clientes_ubicacion.codigo 
+                    AND (
+                        ( a.cod_observacion_asisto = '' OR a.cod_observacion_asisto IS NULL ) 
+                        OR ( 
+                            clientes_ubicacion.reconocimiento_facial = 'T' 
+                            AND ( a.cod_observacion_asistencia = '' OR a.cod_observacion_asistencia IS NULL ) 
+                        ) 
+                    ) 
                     AND a.confirm = 'F' 
                     AND a.asistencia = 'F'
         ";
@@ -324,6 +331,7 @@ class Confirmaciones
                     a.codigo
                 FROM
                     planif_clientes_trab_det a,
+                    clientes_ubicacion,
                     ficha,
                     turno,
                     horarios,
