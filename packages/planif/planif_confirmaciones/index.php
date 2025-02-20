@@ -120,6 +120,7 @@ $sql_horario = "SELECT
     <table width="90%" class="tabla_planif">
       <thead>
         <tr>
+          <th><?php echo $leng["estado"]; ?></th>
           <th><?php echo $leng["cliente"]; ?></th>
           <th><?php echo $leng["ubicacion"]; ?></th>
           <th><?php echo $leng["ficha"]; ?></th>

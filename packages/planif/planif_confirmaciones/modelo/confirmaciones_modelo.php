@@ -23,6 +23,7 @@ class Confirmaciones
         $where = " WHERE a.fecha = CURRENT_DATE 
             AND a.cod_cliente = clientes.codigo 
             AND a.cod_ubicacion = clientes_ubicacion.codigo 
+            AND clientes_ubicacion.cod_estado = estados.codigo
             AND a.cod_puesto_trabajo = clientes_ub_puesto.codigo 
             AND a.cod_ficha = ficha.cod_ficha 
             AND a.cod_turno = turno.codigo 
@@ -62,6 +63,7 @@ class Confirmaciones
 
         $sql = "SELECT
                     a.codigo,
+                    estados.descripcion estado,
                     clientes.nombre cliente,
                     clientes.abrev abrev_cliente,
                     clientes_ubicacion.descripcion ubicacion,
@@ -103,7 +105,8 @@ class Confirmaciones
                     turno,
                     horarios,
                     conceptos,
-                    cargos
+                    cargos,
+                    estados
                 " . $where . " 
                 -- HAVING diff_min >= 0
                 -- HAVING ((diff_min > 60 AND diff_min < 120 AND confirm = 'F') OR (diff_min > 15 AND diff_min < 60 AND confirm = 'T' AND in_transport = 'F') OR (confirm = 'T' AND in_transport = 'T'))

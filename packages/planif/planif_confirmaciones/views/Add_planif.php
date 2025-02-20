@@ -23,6 +23,7 @@ foreach ($result as  $datos) {
     // Para obtener los codigos en la confimacion de cierre de asistencia
     $respuesta["html"] .= '<input type="hidden" name="codigos[]" value="'.$datos["codigo"].'">';
     $respuesta["html"] .=  '<tr>
+        <td>' . $datos["estado"].'</td>
         <td>' . $datos["abrev_cliente"].'</td>
         <td>' . $datos["ubicacion"] . '</td>
         <td>' . $datos["ficha"] . '</td>
