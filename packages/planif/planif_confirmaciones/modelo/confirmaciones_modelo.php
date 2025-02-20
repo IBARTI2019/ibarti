@@ -224,7 +224,7 @@ class Confirmaciones
                 turno,
                 horarios,
                 conceptos 
-            " . $where . " AND a.asistencia = 'T';";
+            " . $where . " AND a.asistencia = 'T' AND clientes_ubicacion.reconocimiento_facial = 'T';";
 
         $query4 = $this->bd->consultar($sql4);
         $this->datos = $this->bd->obtener_fila($query4, 0);
