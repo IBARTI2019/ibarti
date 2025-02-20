@@ -121,11 +121,7 @@ class Confirmaciones
 
     function get_estadistica($ficha, $cliente, $ubicacion, $horarios)
     {
-        $this->datos_total  = array();
-        $this->datos_asisto  = array();
-        $this->datos_tranporte  = array();
-        $this->datos_asistencia  = array();
-
+        $this->datos  = array();
         $this->data  = array("total" => 0, "confirm" => 0, "in_transport" => 0, "asistencia" => 0);
         $where = " WHERE a.fecha = CURRENT_DATE 
             AND a.cod_cliente = clientes.codigo 
@@ -180,8 +176,25 @@ class Confirmaciones
                 " . $where . ";";
 
         $query = $this->bd->consultar($sql);
-        $this->datos_total = $this->bd->obtener_fila($query, 0);
-        $this->data["total"] = $this->datos_total["total"];
+        $this->datos = $this->bd->obtener_fila($query, 0);
+        $this->data["total"] = $this->datos["total"];
+
+        $sql = "SELECT
+                COUNT(a.codigo) total
+            FROM
+                planif_clientes_trab_det a,
+                clientes,
+                clientes_ubicacion,
+                clientes_ub_puesto,
+                ficha,
+                turno,
+                horarios,
+                conceptos 
+            " . $where . " AND clientes_ubicacion.reconocimiento_facial = 'T';";
+
+        $query = $this->bd->consultar($sql);
+        $this->datos = $this->bd->obtener_fila($query, 0);
+        $this->data["total_asistencia"] = $this->datos["total"];
 
         $sql2 = "SELECT
                 COUNT(a.codigo) total
@@ -197,8 +210,8 @@ class Confirmaciones
             " . $where . " AND a.confirm = 'T';";
 
         $query2 = $this->bd->consultar($sql2);
-        $this->datos_asisto = $this->bd->obtener_fila($query2, 0);
-        $this->data["confirm"] = $this->datos_asisto["total"];
+        $this->datos = $this->bd->obtener_fila($query2, 0);
+        $this->data["confirm"] = $this->datos["total"];
 
         $sql3 = "SELECT
                 COUNT(a.codigo) total
@@ -214,8 +227,8 @@ class Confirmaciones
             " . $where . " AND a.in_transport = 'T';";
 
         $query3 = $this->bd->consultar($sql3);
-        $this->datos_transporte = $this->bd->obtener_fila($query3, 0);
-        $this->data["in_transport"] = $this->datos_transporte["total"];
+        $this->datos = $this->bd->obtener_fila($query3, 0);
+        $this->data["in_transport"] = $this->datos["total"];
 
         $sql4 = "SELECT
                 COUNT(a.codigo) total
@@ -231,8 +244,8 @@ class Confirmaciones
             " . $where . " AND a.asistencia = 'T' AND clientes_ubicacion.reconocimiento_facial = 'T';";
 
         $query4 = $this->bd->consultar($sql4);
-        $this->datos_asistencia = $this->bd->obtener_fila($query4, 0);
-        $this->data["asistencia"] = $this->datos_asistencia["total"];
+        $this->datos = $this->bd->obtener_fila($query4, 0);
+        $this->data["asistencia"] = $this->datos["total"];
         
         return $this->data;
     }
