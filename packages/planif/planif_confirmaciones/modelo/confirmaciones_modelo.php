@@ -121,7 +121,11 @@ class Confirmaciones
 
     function get_estadistica($ficha, $cliente, $ubicacion, $horarios)
     {
-        $this->datos  = array();
+        $this->datos_total  = array();
+        $this->datos_asisto  = array();
+        $this->datos_tranporte  = array();
+        $this->datos_asistencia  = array();
+
         $this->data  = array("total" => 0, "confirm" => 0, "in_transport" => 0, "asistencia" => 0);
         $where = " WHERE a.fecha = CURRENT_DATE 
             AND a.cod_cliente = clientes.codigo 
@@ -176,8 +180,8 @@ class Confirmaciones
                 " . $where . ";";
 
         $query = $this->bd->consultar($sql);
-        $this->datos = $this->bd->obtener_fila($query, 0);
-        $this->data["total"] = $this->datos["total"];
+        $this->datos_total = $this->bd->obtener_fila($query, 0);
+        $this->data["total"] = $this->datos_total["total"];
 
         $sql2 = "SELECT
                 COUNT(a.codigo) total
@@ -193,8 +197,8 @@ class Confirmaciones
             " . $where . " AND a.confirm = 'T';";
 
         $query2 = $this->bd->consultar($sql2);
-        $this->datos = $this->bd->obtener_fila($query2, 0);
-        $this->data["confirm"] = $this->datos["total"];
+        $this->datos_asisto = $this->bd->obtener_fila($query2, 0);
+        $this->data["confirm"] = $this->datos_asisto["total"];
 
         $sql3 = "SELECT
                 COUNT(a.codigo) total
@@ -210,8 +214,8 @@ class Confirmaciones
             " . $where . " AND a.in_transport = 'T';";
 
         $query3 = $this->bd->consultar($sql3);
-        $this->datos = $this->bd->obtener_fila($query3, 0);
-        $this->data["in_transport"] = $this->datos["total"];
+        $this->datos_transporte = $this->bd->obtener_fila($query3, 0);
+        $this->data["in_transport"] = $this->datos_transporte["total"];
 
         $sql4 = "SELECT
                 COUNT(a.codigo) total
@@ -227,8 +231,8 @@ class Confirmaciones
             " . $where . " AND a.asistencia = 'T' AND clientes_ubicacion.reconocimiento_facial = 'T';";
 
         $query4 = $this->bd->consultar($sql4);
-        $this->datos = $this->bd->obtener_fila($query4, 0);
-        $this->data["asistencia"] = $this->datos["total"];
+        $this->datos_asistencia = $this->bd->obtener_fila($query4, 0);
+        $this->data["asistencia"] = $this->datos_asistencia["total"];
         
         return $this->data;
     }
