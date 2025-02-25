@@ -31,6 +31,7 @@ class Confirmaciones
             AND horarios.cod_concepto = conceptos.codigo 
             AND conceptos.asist_perfecta = 'T' 
             AND cargos.codigo = ficha.cod_cargo
+            AND ficha.cod_ficha_status = control.ficha_activo
             AND ficha.cod_cargo NOT IN (SELECT cod_cargo FROM cargos_excl_confirm)
         ";
 
@@ -106,7 +107,8 @@ class Confirmaciones
                     horarios,
                     conceptos,
                     cargos,
-                    estados
+                    estados,
+                    control
                 " . $where . " 
                 -- HAVING diff_min >= 0
                 -- HAVING ((diff_min > 60 AND diff_min < 120 AND confirm = 'F') OR (diff_min > 15 AND diff_min < 60 AND confirm = 'T' AND in_transport = 'F') OR (confirm = 'T' AND in_transport = 'T'))
@@ -132,6 +134,7 @@ class Confirmaciones
             AND turno.cod_horario = horarios.codigo 
             AND horarios.cod_concepto = conceptos.codigo 
             AND conceptos.asist_perfecta = 'T' 
+            AND ficha.cod_ficha_status = control.ficha_activo
             AND ficha.cod_cargo NOT IN (SELECT cod_cargo FROM cargos_excl_confirm)
         ";
 
@@ -172,7 +175,8 @@ class Confirmaciones
                     ficha,
                     turno,
                     horarios,
-                    conceptos 
+                    conceptos,
+                    control
                 " . $where . ";";
 
         $query = $this->bd->consultar($sql);
@@ -189,7 +193,8 @@ class Confirmaciones
                 ficha,
                 turno,
                 horarios,
-                conceptos 
+                conceptos,
+                control
             " . $where . " AND clientes_ubicacion.reconocimiento_facial = 'T';";
 
         $query = $this->bd->consultar($sql);
@@ -206,7 +211,8 @@ class Confirmaciones
                 ficha,
                 turno,
                 horarios,
-                conceptos 
+                conceptos,
+                control
             " . $where . " AND a.confirm = 'T';";
 
         $query2 = $this->bd->consultar($sql2);
@@ -223,7 +229,8 @@ class Confirmaciones
                 ficha,
                 turno,
                 horarios,
-                conceptos 
+                conceptos,
+                control
             " . $where . " AND a.in_transport = 'T';";
 
         $query3 = $this->bd->consultar($sql3);
@@ -240,7 +247,8 @@ class Confirmaciones
                 ficha,
                 turno,
                 horarios,
-                conceptos 
+                conceptos,
+                control
             " . $where . " AND a.asistencia = 'T' AND clientes_ubicacion.reconocimiento_facial = 'T';";
 
         $query4 = $this->bd->consultar($sql4);
@@ -318,6 +326,7 @@ class Confirmaciones
                     AND turno.cod_horario = horarios.codigo 
                     AND horarios.cod_concepto = conceptos.codigo 
                     AND conceptos.asist_perfecta = 'T' 
+                    AND ficha.cod_ficha_status = control.ficha_activo
                     AND ficha.cod_cargo NOT IN ( SELECT cod_cargo FROM cargos_excl_confirm ) 
                     AND a.cod_ubicacion = $ubicacion 
                     AND a.cod_ubicacion = clientes_ubicacion.codigo 
@@ -356,7 +365,8 @@ class Confirmaciones
                     ficha,
                     turno,
                     horarios,
-                    conceptos
+                    conceptos,
+                    control
                 $where;";
 
         $query = $this->bd->consultar($sql);
