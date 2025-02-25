@@ -14,9 +14,11 @@ $trabajador = $_POST['trabajador'];
 $cliente	= $_POST['cliente'];
 $ubicacion	= $_POST['ubicacion'];
 $restri	    = $_SESSION['r_cliente'];
+$usuario = $_SESSION['usuario_cod'];
 $fecha_D    = conversion($_POST['fecha_desde']);
 $fecha_H    = conversion($_POST['fecha_hasta']);
 $almacen    = $_POST['almacen'];
+
 
 	$where = "  WHERE DATE_FORMAT(prod_dotacion.fec_dotacion, '%Y-%m-%d') BETWEEN  \"$fecha_D\" AND \"$fecha_H\"
    	              AND prod_dotacion.codigo = prod_dotacion_det.cod_dotacion
@@ -28,6 +30,12 @@ $almacen    = $_POST['almacen'];
 			      AND productos.cod_sub_linea = prod_sub_lineas.codigo
 				  AND v_ficha.cod_ficha = prod_dotacion.cod_ficha 
 			     ";
+
+	if($restri  == "T"){
+		$where  .= " AND prod_dotacion.cod_ubicacion IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
+		usuario_clientes.cod_usuario = '$usuario') ";
+	}
+
 
 	if($rol != "TODOS"){
 		$where .= " AND v_ficha.cod_rol = '$rol' ";
@@ -103,7 +111,6 @@ $almacen    = $_POST['almacen'];
           $where
         GROUP BY prod_dotacion.codigo,cod_ajuste,prod_dotacion_det.cod_producto
 ORDER BY 2 ASC ";
-
 ?>
 
 <table width="100%" border="0" align="center">

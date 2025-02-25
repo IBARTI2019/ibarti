@@ -25,7 +25,7 @@ AND clientes_ubicacion.cod_estado = estados.codigo
 AND v_as_planif_horario.cod_cliente <> control.oesvica";
 
 if(isset($_POST['r_cliente'])){
-$r_cliente = $_POST['r_cliente'];
+	$r_cliente = $_POST['r_cliente'];
 	if($r_cliente  == "T"){
 		$WHERE  .= " AND a.cod_ubicacion IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
 		usuario_clientes.cod_usuario = '$usuario') ";

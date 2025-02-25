@@ -25,6 +25,7 @@ $ubicacion	= $_POST['ubicacion'];
 $almacen	= $_POST['almacen'];
 $reporte         = $_POST['reporte'];
 $restri	    = $_SESSION['r_cliente'];
+$usuario = $_SESSION['usuario_cod'];
 $archivo         = "rp_inv_dotacion_".$fecha."";
 $titulo          = "  DOTACION TRABAJADOR \n";
 $almacen     = $_POST['almacen'];
@@ -39,6 +40,11 @@ if(isset($reporte)){
 				AND productos.cod_talla = tallas.codigo
 				AND productos.cod_sub_linea = prod_sub_lineas.codigo
 				AND v_ficha.cod_ficha = prod_dotacion.cod_ficha ";
+
+	if($restri  == "T"){
+		$where  .= " AND prod_dotacion.cod_ubicacion IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
+		usuario_clientes.cod_usuario = '$usuario') ";
+	}
 
 	if($rol != "TODOS"){
 		$where .= " AND v_ficha.cod_rol = '$rol' ";
