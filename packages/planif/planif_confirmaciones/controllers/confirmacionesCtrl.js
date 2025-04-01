@@ -2,6 +2,7 @@ var ajaxTimeController = setInterval(() => { refresh(); }, 30000);
 
 $(function () {
     $("#boton_close").hide();
+    $("#documento_form").hide();
     Add_filtroX();
     document.getElementById('documento_close').addEventListener('change', function (e) {
         var fileName = e.target.files[0] ? e.target.files[0].name : 'Ningún documento cargado';
