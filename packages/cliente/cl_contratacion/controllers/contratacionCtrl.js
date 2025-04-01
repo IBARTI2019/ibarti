@@ -123,7 +123,11 @@ function validar_contratacion_det(id, metodo) {
 				} else {
 					$("#modal_cont_ap").show();
 					$("#cont_ap_fecha").attr("min", content[0]['fecha_min']);
-					$("#cont_ap_fecha").attr("max", content[0]['fecha_max']);
+					
+					var fechaMax = new Date(content[0]['fecha_max']);
+					fechaMax.setDate(fechaMax.getDate() + 1);
+					var nuevaFechaMax = fechaMax.toISOString().split('T')[0];
+					$("#cont_ap_fecha").attr("max", nuevaFechaMax);
 				}
 
 			},

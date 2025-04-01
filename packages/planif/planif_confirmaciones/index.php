@@ -8,6 +8,36 @@
   .marcar {
     text-decoration: line-through;
   }
+
+  .file-upload-wrapper {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+  }
+
+  .file-upload-button {
+    padding: 8px 15px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .file-upload-button:hover {
+    background: #45a049;
+  }
+
+  .file-upload-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
 </style>
 <?php
 $Nmenu = '4409';
@@ -36,7 +66,7 @@ $sql_horario = "SELECT
 <div id="Cont_confirmaciones">
 
   <span class="etiqueta_title" id="title_confirmaciones">Confirmaciones</span>
-<br>
+  <br>
   <table width="90%" align="center">
 
     <tr>
@@ -44,23 +74,23 @@ $sql_horario = "SELECT
         <hr>
       </td>
     </tr>
-        <tr>
+    <tr>
 
-      <td class="etiqueta"><?php echo $leng["cliente"];?>:</td>
+      <td class="etiqueta"><?php echo $leng["cliente"]; ?>:</td>
       <td><select name="cliente" id="cliente" style="width:250px;" onchange="changeCliente(this.value)" required>
-      <?php
+          <?php
           echo $select_cl;
           $query01 = $bd->consultar($sql_cliente);
           while ($row01 = $bd->obtener_fila($query01, 0)) {
             echo '<option value="' . $row01[0] . '">' . $row01[1] . '</option>';
           } ?></select></td>
-      <td class="etiqueta"><?php echo $leng["ubicacion"];?>: </td>
+      <td class="etiqueta"><?php echo $leng["ubicacion"]; ?>: </td>
       <td id="contenido_ubic">
         <select name="ubicacion" id="ubicacion" style="width:250px;" onchange="Add_filtroX()">
           <option value="TODOS">TODOS</option>
         </select>
       </td>
-      <td class="etiqueta"><?php echo $leng["horario"];?>: </td>
+      <td class="etiqueta"><?php echo $leng["horario"]; ?>: </td>
       <td>
         <select name="horario" id="horario" multiple="multiple" style="width:170px;" onchange="Add_filtroX()">
           <?php
@@ -72,7 +102,7 @@ $sql_horario = "SELECT
         </select>
       </td>
       <td>
-        <img class="imgLink" id="img_actualizar" src="imagenes/actualizar.png" border="0" onclick=" Add_filtroX()"  />
+        <img class="imgLink" id="img_actualizar" src="imagenes/actualizar.png" border="0" onclick=" Add_filtroX()" />
       </td>
     </tr>
     <tr>
@@ -97,66 +127,77 @@ $sql_horario = "SELECT
     <tr>
     <tr>
       <td height="8" colspan="7" align="center">
-      <hr>
+        <hr>
       </td>
     </tr>
     <tr>
-      <td height="8" colspan="4" align="right">
-      <div align="left">
-        <span class="art-button-wrapper" id="boton_close" style="display: none;">
+      <td height="8" align="right" colspan="4">
+        <div align="left" style="display: inline-block;">
+          <span class="art-button-wrapper" id="boton_close" style="display: none;">
             <span class="art-button-l"> </span>
             <span class="art-button-r"> </span>
-            <input type="button" value="Confirmar cuadre de servicio" onclick="onCloseService()" class="readon art-button" />
+            <input type="button" value="Confirmar cuadre de servicio" onclick="onCloseService()"
+              class="readon art-button" />
           </span>&nbsp;
-      </div>
-  
+          <form id="documento_form" enctype="multipart/form-data" style="display: inline-block;">
+            <span class="art-button-wrapper">
+              <span class="art-button-l"> </span>
+              <span class="art-button-r"> </span>
+              <input type="button" value="Cargar documento" onclick="cargarDocumento()" class="readon art-button" />
+            </span>&nbsp;
+            <label class="file-upload-wrapper">
+              <input name="images" type="file" id="documento_close" class="file-upload-input">
+              <span id="file-name" class="file-name">Ningún documento cargado</span>
+            </label>
+          </form>
+        </div>
       </td>
       <td height="8" colspan="3" align="right">
-      <div id="estadistica" align="right"> </div>
-        </th>
+        <div id="estadistica" align="right"> </div>
+      </td>
     </tr>
   </table>
 
-    <table width="90%" class="tabla_planif">
-      <thead>
-        <tr>
-          <th><?php echo $leng["estado"]; ?></th>
-          <th><?php echo $leng["cliente"]; ?></th>
-          <th><?php echo $leng["ubicacion"]; ?></th>
-          <th><?php echo $leng["ficha"]; ?></th>
-          <th>Tel&eacute;fono</th>
-          <th><?php echo $leng["trabajador"]; ?></th>
-          <th><?php echo $leng["concepto"]; ?></th>
-          <th>Hora entrada</th>
-          <th>Hora de confirmacion</th>
-          <th>Hora en transporte</th>
-          <th>Hora de asistencia</th>
-        </tr>
-      </thead>
-      <tbody id="planificacion">
+  <table width="90%" class="tabla_planif">
+    <thead>
+      <tr>
+        <th><?php echo $leng["estado"]; ?></th>
+        <th><?php echo $leng["cliente"]; ?></th>
+        <th><?php echo $leng["ubicacion"]; ?></th>
+        <th><?php echo $leng["ficha"]; ?></th>
+        <th>Tel&eacute;fono</th>
+        <th><?php echo $leng["trabajador"]; ?></th>
+        <th><?php echo $leng["concepto"]; ?></th>
+        <th>Hora entrada</th>
+        <th>Hora de confirmacion</th>
+        <th>Hora en transporte</th>
+        <th>Hora de asistencia</th>
+      </tr>
+    </thead>
+    <tbody id="planificacion">
 
-      </tbody>
-    </table>
+    </tbody>
+  </table>
 </div>
 
 <input name=" usuario" id="usuario" type="hidden" value="<?php echo $us; ?>" />
 
 <div id="myModal" class="modal">
-	<div class="modal-content">
-		<div class="modal-header">
-			<span class="close" onclick="cerrarModal()">&times;</span>
-			<span id="modal_titulo"></span>
-		</div>
-		<div class="modal-body">
-			<div id="modal_contenido"></div>
-		</div>
-	</div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="cerrarModal()">&times;</span>
+      <span id="modal_titulo"></span>
+    </div>
+    <div class="modal-body">
+      <div id="modal_contenido"></div>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript">
   filtroValue = $("#paciFiltro").val();
-  new Autocomplete("stdName", function() {
-    this.setValue = function(id) {
+  new Autocomplete("stdName", function () {
+    this.setValue = function (id) {
       document.getElementById("stdID").value = id; // document.getElementsByName("stdID")[0].value = id;
       Add_filtroX();
     }
@@ -164,5 +205,5 @@ $sql_horario = "SELECT
     if (this.value.length < 1) return;
     return "autocompletar/tb/trabajador_confirmaciones.php?q=" + this.text.value + "&filtro=" + filtroValue + ""
   });
-  var time01 = new Spry.Widget.ValidationTextField("time01", "time", {format:"HH:mm:ss", hint:'HH:mm:ss', useCharacterMasking:true, validateOn:["change"],isRequired:true});
+  var time01 = new Spry.Widget.ValidationTextField("time01", "time", { format: "HH:mm:ss", hint: 'HH:mm:ss', useCharacterMasking: true, validateOn: ["change"], isRequired: true });
 </script>

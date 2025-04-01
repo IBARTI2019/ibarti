@@ -2,8 +2,15 @@ var ajaxTimeController = setInterval(() => { refresh(); }, 30000);
 
 $(function () {
     Add_filtroX();
+    document.getElementById('documento_close').addEventListener('change', function (e) {
+        var fileName = e.target.files[0] ? e.target.files[0].name : 'Ningún documento cargado';
+        document.getElementById('file-name').textContent = fileName;
+    });
 });
 
+function cargarDocumento() {
+    $('#documento_close').click();
+}
 
 function Add_filtroX() {
     clearInterval(ajaxTimeController);
@@ -36,11 +43,14 @@ function refresh(auto) {
             if (ubicacion != 'TODOS' && ubicacion != '' && horario && Array.isArray(horario) && resp["confirmado"] == false) {
                 if (!horario.includes('TODOS')) {
                     $("#boton_close").show();
+                    $("#documento_form").show();
                 } else {
                     $("#boton_close").hide();
+                    $("#documento_form").hide();
                 }
             } else {
                 $("#boton_close").hide();
+                $("#documento_form").hide();
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {
@@ -112,17 +122,81 @@ function setConfirm(codigo, ap_nombre, in_transport) {
 
 function changeCliente(cliente) {
     $("#boton_close").hide();
-    Add_Cl_Ubic(cliente, 'contenido_ubic', 'F', '120');
+    $("#documento_form").hide();
+    Add_Cl_Ubic(cliente, 'contenido_ubic', 'T', '120');
     Add_filtroX();
 }
 
 
+function showMessage(message) {
+    $(".messages").html("").show();
+    $(".messages").html(message);
+}
+
+function subirDocumentoS3(archivo) {
+    var horario = $("#horario").val();
+    var ubicacion = $("#ubicacion").val();
+    const fechaActual = new Date();
+
+    const year = fechaActual.getFullYear();
+    const mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
+    const dia = String(fechaActual.getDate()).padStart(2, '0');
+
+    var doc = ubicacion + "_" + horario;
+
+    var config = [
+        {
+            folder: "cuadres_" + year + mes + dia,
+            key: doc
+        }
+    ]
+
+
+    var formData = new FormData();
+    // formData.append("images", archivo);
+    formData.append("config", JSON.stringify(config));
+    var message = "";
+
+    $.ajax({
+        url: 'http://194.163.161.64:9090/docs/upload_marcaje/',
+        type: 'POST',
+        data: formData,
+        //necesario para subir archivos via ajax
+        cache: false,
+        contentType: false,
+        processData: false,
+        //mientras enviamos el archivo
+        beforeSend: function () {
+            message = $("<span class='before'>Subiendo la imagen, por favor espere...</span>");
+            showMessage(message)
+        },
+        //una vez finalizado correctamente
+
+        success: function (data) {
+            closeService(data.data.image[0]);
+        },
+        //si ha ocurrido un error
+        error: function () {
+            message = $("<span class='error'>Ha ocurrido un error.</span>");
+            showMessage(message);
+        }
+    });
+}
+
 function onCloseService() {
+    const archivo = $("#documento_close")[0].files[0];
+    if (archivo) {
+        subirDocumentoS3(archivo);
+    } else {
+        closeService();
+    }
+}
+
+function closeService(documentUrl) {
     var usuario = $("#usuario").val();
     var horario = $("#horario").val();
     var ubicacion = $("#ubicacion").val();
-    var parametros = { "usuario": usuario, "ubicacion": ubicacion, "horario": horario };
-
+    var parametros = { "usuario": usuario, "ubicacion": ubicacion, "horario": horario, documentUrl };
     $.ajax({
         data: parametros,
         url: 'packages/planif/planif_confirmaciones/views/Add_verify_service.php',
@@ -140,7 +214,7 @@ function onCloseService() {
                 if (confirm(`Esta seguro de que desea confirmar el cierre de este servicio. Esta operación es irreversible!.`)) {
                     var usuario = $("#usuario").val();
                     var parametros = {
-                        usuario, codigos: codigos
+                        usuario, codigos: codigos, documentUrl
                     };
                     $.ajax({
                         data: parametros,
@@ -151,6 +225,7 @@ function onCloseService() {
                             if (resp.error) {
                                 toastr.error("A ocurrido un error al intentar confirmar el cierrre del servicio!..");
                             } else {
+                                $('#documento_form')[0].reset();
                                 toastr.success("Cierre de servicio confirmado exitosamente!..");
                                 Add_filtroX();
                             }
@@ -233,3 +308,4 @@ function cerrarModal() {
     $("#myModal").hide();
     Add_filtroX();
 }
+
