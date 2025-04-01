@@ -198,7 +198,11 @@ function closeService(documentUrl) {
     var usuario = $("#usuario").val();
     var horario = $("#horario").val();
     var ubicacion = $("#ubicacion").val();
+    if (!documentUrl) {
+        documentUrl = "";
+    }
     var parametros = { "usuario": usuario, "ubicacion": ubicacion, "horario": horario, documentUrl };
+
     $.ajax({
         data: parametros,
         url: 'packages/planif/planif_confirmaciones/views/Add_verify_service.php',
