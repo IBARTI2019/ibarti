@@ -18,7 +18,7 @@ $turno   =   $modelo->get_turno('');
      </tr>
     	<tr>
 					<th width="10%">Posicion</th>
-					<th width="30%"><?php echo $leng["horario"];?></th>
+					<th width="30%"><?php echo $leng["turno"];?></th>
 			    <th width="45%">Detalle:</th>
 			    <th width="10%"><img src="imagenes/loading2.gif" width="30px" height="30px"/></th>
 			</tr>
