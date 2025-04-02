@@ -13,9 +13,17 @@ if (isset($_POST['codigos'])) {
     $usuario = $_POST['usuario'];
     $documentUrl = $_POST['documentUrl'];
 
+    if (!empty($documentUrl)) {
+      $documento = "T";
+    }else{
+      $documento = "F";
+    }
+
     $codigos_str = implode(",", $codigos);
 
-    $sql    = "UPDATE planif_clientes_trab_det SET cierre_confirmado = 'T', cod_us_cierre = '$usuario', fec_cierre = CURRENT_TIMESTAMP, documento_cierre = '$documentUrl' WHERE codigo IN ($codigos_str) AND cierre_confirmado = 'F';";
+    $sql    = "UPDATE planif_clientes_trab_det 
+    SET cierre_confirmado = 'T', cod_us_cierre = '$usuario', fec_cierre = CURRENT_TIMESTAMP, documento = '$documento', documento_cierre = '$documentUrl' 
+    WHERE codigo IN ($codigos_str) AND cierre_confirmado = 'F';";
     $query = $bd->consultar($sql);
     $result['sql'] = $sql;
   } catch (Exception $e) {
