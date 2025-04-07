@@ -1,3 +1,11 @@
+<?php
+if (isset($_SESSION['usuario_cod'])) {
+	require_once('autentificacion/aut_verifica_menu.php');
+	$us = $_SESSION['usuario_cod'];
+} else {
+	$us = $_POST['usuario'];
+}
+?>
 <script language="javascript">
 	$("#cont_ap_form").on('submit', function(evt) {
 		evt.preventDefault();
@@ -16,8 +24,8 @@
 		<div class="modal-body">
 			<div id="loading_save_cont" hidden="true">
 				<img border="null" width="50px" height="50px" src="imagenes/loading3.gif" title="Procesando"/>
-				<h1>Este proceso puede tardar en finalizar, por favor tenga paciencia.. </h1>
-				<h3>No intente generar mas actualizaciones hasta que este proceso finalice.</h3>
+				<h1>Este proceso puede tardar en finalizar; por favor, tenga paciencia.</h1>
+				<h3>No intente generar más actualizaciones hasta que este proceso haya finalizado.</h3>
 			</div>
 			<form action="" method="post" name="cont_ap_form" id="cont_ap_form">
 				<div><span class="etiqueta">A partir de que fecha desea se aplique esta actualizacion?..</span></div>
@@ -49,3 +57,4 @@
 </div>
 <div id="Cont_contratacion"></div>
 <input type="hidden" id="cont_cliente" value="<?php echo $_POST['codigo']; ?>">
+<input name="usuario" id="usuario" type="hidden" value="<?php echo $us; ?>" />

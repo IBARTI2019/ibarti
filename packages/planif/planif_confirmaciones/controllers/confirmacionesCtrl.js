@@ -155,7 +155,7 @@ function subirDocumentoS3(archivo) {
 
 
     var formData = new FormData();
-    // formData.append("images", archivo);
+    formData.append("images", archivo);
     formData.append("config", JSON.stringify(config));
     var message = "";
 

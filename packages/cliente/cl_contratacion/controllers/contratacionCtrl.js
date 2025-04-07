@@ -144,7 +144,7 @@ function validar_contratacion_det(id, metodo) {
 
 function save_contratacion_det(fecha_inicio) {
 
-	if (confirm("Estas seguro(a) de que deseas aplicar esta ectualizacion?..")) {
+	if (confirm("Estas seguro(a) de que deseas aplicar esta actualización?..")) {
 		var error = 0;
 		var fecha = '';
 		var errorMessage = ' ';
