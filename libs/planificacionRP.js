@@ -1415,30 +1415,31 @@ function rp_planif_serv_vs_contratacion_horario(data, id_contenedor, callback) {
 				}
 			}
 
-		/* 	res_horario.forEach((b) => {
-				sum_dia = 0;
-				color = '';
-				clases = '';
-				if (b.key === a.cod_ubicacion) {
-					b.values.forEach(c => {
-						val_ubic_h = d3.map(map_res_horario_cont.get(a.cod_ubicacion).values, (d) => d.key);
-						if (!val_ubic_h.has(c.key) && (ubicaciones.indexOf(a.cod_ubicacion) === -1 || fechas.indexOf(a.fecha) === -1 || horarios.indexOf(c.key) === -1)) {
-							ubicaciones.push(a.cod_ubicacion);
-							fechas.push(a.fecha);
-							horarios.push(c.key);
-							val_ubic_f = d3.map(c.values, (f) => f.key);
-							if (val_ubic_f.has(a.fecha)) {
-								sum_dia = 0;
-								val_ubic_f.get(a.fecha).values.forEach(e => { sum_dia += Number(e.valor) });
-								color = validarFondo(sum_dia);
-								clases = 'color ' + color;
-								$('#tbody_pl_vs_as').append('<tr class="' + clases + '"> <td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + val_ubic_f.get(a.fecha).values[0].horario + '</td><td class="texto" id="center" >' + a.estado + '</td><td class="texto" id="center" >' + a.cliente + '</td><td class="texto" id="center" >' + a.ubicacion + '</td><td class="texto" id="center" >' + sum_dia + '</td>');
-							}
+			res_horario.forEach((ubicacion) => {
+				ubicacion.values.forEach((horario) => {
+					horario.values.forEach((fecha) => {
+						// Verificar si esta combinación (ubicación, horario, fecha) existe en los contratos
+						const existeEnContratos = data['contrato'].some(contrato => 
+							contrato.cod_ubicacion === ubicacion.key &&
+							contrato.cod_horario === horario.key &&
+							contrato.fecha === fecha.key
+						);
+			
+						if (!existeEnContratos) {
+							// Calcular el total para esta fecha
+							let sum_dia = 0;
+							fecha.values.forEach((registro) => {
+								sum_dia += Number(registro.valor);
+							});
+			
+							const color = validarFondo(sum_dia);
+							const clases = 'color ' + color;
+			
+							$('#tbody_pl_vs_as').append('<tr class="' + clases + '"> <td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + val_ubic_f.get(a.fecha).values[0].horario + '</td><td class="texto" id="center" >' + a.estado + '</td><td class="texto" id="center" >' + a.cliente + '</td><td class="texto" id="center" >' + a.ubicacion + '</td><td class="texto" id="center" >' + sum_dia + '</td>');
 						}
-					})
-
-				}
-			}); */
+					});
+				});
+			});
 		});
 
 		if (typeof (callback) == 'function') callback();
