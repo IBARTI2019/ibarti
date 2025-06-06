@@ -1,7 +1,7 @@
 <?php
 $metodo = $_GET['metodo'];
 $titulo = $_GET['titulo'];
-$tabla   = $_GET['tb'];
+$tabla = $_GET['tb'];
 $archivo = $_GET['archivo'];
 $archivo2 = "../inicio.php?area=maestros/Cons_$archivo&Nmenu=" . $_GET['Nmenu'] . "&mod=" . $_GET['mod'] . "";
 
@@ -49,33 +49,33 @@ if ($metodo == 'modificar') {
   }
   $query = $bd->consultar($sql);
   $result = $bd->obtener_fila($query, 0);
-  
+
   $codigo_onblur = "";
   $descripcion = $result['descripcion'];
   if ($tabla == 'ruta_de_ventas') {
-    $descripcionglobal= $result['descripcion_global'];
+    $descripcionglobal = $result['descripcion_global'];
   }
-  
-  $campo01     = $result['campo01'];
-  $campo02     = $result['campo02'];
-  $campo03     = $result['campo03'];
-  $campo04     = $result['campo04'];
-  $status      = $result['status'];
+
+  $campo01 = $result['campo01'];
+  $campo02 = $result['campo02'];
+  $campo03 = $result['campo03'];
+  $campo04 = $result['campo04'];
+  $status = $result['status'];
   $kanban = 'F';
   if ($tabla == 'nov_tipo') {
-    $kanban      = $result['kanban'];
+    $kanban = $result['kanban'];
   }
   if ($tabla == 'cargos') {
-    $planificable      = $result['planificable'];
+    $planificable = $result['planificable'];
   }
   if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas') {
-    $orden      = $result['orden'];
+    $orden = $result['orden'];
   }
   if ($tabla == 'ficha_egreso_motivo') {
-    $motivo      = $result['motivo'];
+    $motivo = $result['motivo'];
   }
   if ($tabla == 'nov_status_kanban') {
-    $color      = $result['color'];
+    $color = $result['color'];
     $inicial = $result['inicial'];
     $anula_vencimiento = $result['anula_vencimiento'];
   }
@@ -83,13 +83,13 @@ if ($metodo == 'modificar') {
   $codigo_orden = "Add_ajax_maestros(this.value, 'ajax/validar_orden.php', 'Contenedor', '$tabla')";
 } else {
   $readonly = '';
-  $codigo="";
+  $codigo = "";
   if ($tabla == 'ruta_de_ventas') {
     $sql_tipos = "SELECT max(codigo) as Codigo FROM ruta_de_ventas WHERE codigo > 0 ;";
     $query_tipos = $bd->consultar($sql_tipos);
     $result = $bd->obtener_fila($query_tipos, 0);
     $codigo = $result['Codigo'] + 1;
-    $descripcionglobal= '';
+    $descripcionglobal = '';
     $readonly = 'readonly="readonly"';
   }
   if ($tabla == 'subruta_de_ventas') {
@@ -108,18 +108,18 @@ if ($metodo == 'modificar') {
   $orden = '';
   $codigo_onblur = "Add_ajax_maestros(this.value, 'ajax/validar_maestros.php', 'Contenedor', '$tabla')";
   $codigo_orden = "Add_ajax_maestros(this.value, 'ajax/validar_orden.php', 'Contenedor', '$tabla')";
- 
+
   $descripcion = '';
- 
+
   $kanban = 'F';
   $color = '';
   $inicial = 'F';
   $anula_vencimiento = 'F';
-  $campo01     = '';
-  $campo02     = '';
-  $campo03     = '';
-  $campo04     = '';
-  $status      = 'T';
+  $campo01 = '';
+  $campo02 = '';
+  $campo03 = '';
+  $campo04 = '';
+  $status = 'T';
 }
 ?>
 <div id="Contenedor" class="mensaje"></div>
@@ -129,18 +129,20 @@ if ($metodo == 'modificar') {
   <table width="80%" align="center">
     <tr>
       <td class="etiqueta">C&oacute;digo:</td>
-      <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px" value="<?php echo $codigo; ?> "  <?php echo $readonly; ?>/>
-        Activo: <input name="activo" type="checkbox" <?php echo statusCheck("$status"); ?> value="T" /> 
+      <td id="input01"><input type="text" name="codigo" maxlength="11" style="width:120px"
+          value="<?php echo $codigo; ?> " <?php echo $readonly; ?> pattern="^\S+$"
+          title="El código no puede contener espacios en blanco" oninput="this.value = this.value.replace(/\s/g, '')" />
+        Activo: <input name="activo" type="checkbox" <?php echo statusCheck("$status"); ?> value="T" />
         <?php
         if ($tabla == 'cargos') {
           echo 'Planificable: <input name="planificable" type="checkbox" ' . statusCheck("$planificable") . ' value="T"/>';
         }
         if ($tabla == 'nov_tipo') {
-          echo 'Kanban: <input name="kanban" type="checkbox" '. statusCheck("$kanban") .' value="T" />';
+          echo 'Kanban: <input name="kanban" type="checkbox" ' . statusCheck("$kanban") . ' value="T" />';
         }
         if ($tabla == 'nov_status_kanban') {
-          echo 'Inicial por defecto: <input name="inicial" type="checkbox" '. statusCheck("$inicial") .' value="T" />';
-          echo 'Anula vencimiento: <input name="anula_vencimiento" type="checkbox" '. statusCheck("$anula_vencimiento") .' value="T" />';
+          echo 'Inicial por defecto: <input name="inicial" type="checkbox" ' . statusCheck("$inicial") . ' value="T" />';
+          echo 'Anula vencimiento: <input name="anula_vencimiento" type="checkbox" ' . statusCheck("$anula_vencimiento") . ' value="T" />';
         }
         ?>
         <br />
@@ -149,26 +151,27 @@ if ($metodo == 'modificar') {
     </tr>
     <tr>
       <td class="etiqueta">Descripci&oacute;n: </td>
-      <td id="input02"><input type="text" name="descripcion" maxlength="100" style="width:300px" value="<?php echo $descripcion; ?>"  /><br />
+      <td id="input02"><input type="text" name="descripcion" maxlength="100" style="width:300px"
+          value="<?php echo $descripcion; ?>" /><br />
         <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
       </td>
     </tr>
-   
+
     <?php
     if ($tabla == 'ruta_de_ventas') {
-      echo  '<tr>
+      echo '<tr>
             <td class="etiqueta">Descripcion Global: </td>
-            <td id="input03"><input type="text" name="descripcionglobal" maxlength="100" style="width:300px" value="'.$descripcionglobal.'" /><br />
+            <td id="input03"><input type="text" name="descripcionglobal" maxlength="100" style="width:300px" value="' . $descripcionglobal . '" /><br />
             <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
             </td>
           </tr>';
     }
     if ($tabla == 'ficha_egreso_motivo') {
-      echo  '<tr>
+      echo '<tr>
           <td class="etiqueta">Motivo:</td>
           <td id="radio01_5" class="texto">
-            Renuncia <input type="radio" name="motivo" value="R" style="width:auto"' .  CheckX($motivo, 'R') . ' />
-            Despido <input type="radio" name="motivo" value="D" style="width:auto"' .  CheckX($motivo, 'D') . ' /><br />
+            Renuncia <input type="radio" name="motivo" value="R" style="width:auto"' . CheckX($motivo, 'R') . ' />
+            Despido <input type="radio" name="motivo" value="D" style="width:auto"' . CheckX($motivo, 'D') . ' /><br />
             <span class="radioRequiredMsg">Debe seleccionar un Campo.</span>
           </td>
         </tr>';
@@ -188,13 +191,13 @@ if ($metodo == 'modificar') {
             </td>    
           </tr>';
     }
-    if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas' ) {
+    if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas') {
       echo '<tr>
       <td class="etiqueta">Orden:</td> 
       <td  id="input04" > <input type="number" name="orden" style="width:50px" value="' . $orden . '" ';
 
-      if($tabla == 'ruta_de_ventas' ){
-        echo ' onchange="'.$codigo_orden.'" ';
+      if ($tabla == 'ruta_de_ventas') {
+        echo ' onchange="' . $codigo_orden . '" ';
       }
       echo ' />
       <span class="textfieldRequiredMsg">El Campo es Requerido...</span>
@@ -205,7 +208,7 @@ if ($metodo == 'modificar') {
       echo '<tr>
             <td class="etiqueta">Color:</td> 
             <td>
-              <input name="color"  type="color" value="'.$color.'" >
+              <input name="color"  type="color" value="' . $color . '" >
             </td>    
           </tr>';
     }
@@ -218,7 +221,7 @@ if ($metodo == 'modificar') {
   </table>
   <?php
   if ($tabla == 'asistencia_clasif') {
-  ?>
+    ?>
     <legend>CONCEPTOS ASOCIADOS</legend>
     <table width="80%" align="center" class="tabla_sistema">
       <tr>
@@ -252,9 +255,9 @@ if ($metodo == 'modificar') {
 
       while ($datos = $bd->obtener_fila($query, 0)) {
         if ($datos[3] == 'NO') {
-          $checkX   = '';
+          $checkX = '';
         } else {
-          $checkX        = 'checked="checked"';
+          $checkX = 'checked="checked"';
         }
         echo '<tr>
           <td> ' . $datos[0] . '</td>
@@ -266,7 +269,7 @@ if ($metodo == 'modificar') {
 
       ?>
     </table>
-  <?php
+    <?php
   }
   ?>
   <div align="center">
@@ -298,7 +301,7 @@ if ($metodo == 'modificar') {
   var input02 = new Spry.Widget.ValidationTextField("input02", "none", {
     validateOn: ["blur", "change"]
   });
-  
+
   var radio01_5 = new Spry.Widget.ValidationRadio("radio01_5", {
     validateOn: ["change", "blur"]
   });
