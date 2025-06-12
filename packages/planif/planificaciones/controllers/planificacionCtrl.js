@@ -248,7 +248,7 @@ function newPlanifIA() {
 		if (confirm("Esta seguro(a) de que desea planificar una nueva apertura mensual con IA?..")) {
 			var parametros = { "cod_apertura": apertura, "cod_contratacion": contratacion, "cod_cliente": cliente, "cod_ubic": ubic, "cod_usuario": usuario };
 			$.ajax({
-				url: 'http://localhost:8000/api/v1/planificar',
+				url: 'http://84.46.244.183:8000/api/v1/planificar',
 				type: 'post',
 				contentType: 'application/json',
 				dataType: 'json',
@@ -258,7 +258,13 @@ function newPlanifIA() {
 				},
 				success: function (response) {
 					$("#cont_planif_det").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px"> Procesando respuesta de la IA..');
-					save_planif_ia(response);
+					console.log(response)
+					if (response.status == 'error') {
+						cargar_planif_det(ubic);
+						toastr.error(response.message);
+					} else {
+						save_planif_ia(response);
+					}
 				},
 				error: function (xhr, ajaxOptions, thrownError) {
 					cargar_planif_det(ubic);
@@ -346,15 +352,15 @@ function save_planif_ia(base_data) {
 		success: function (response) {
 			console.log("Respuesta recibida:", response);
 			if (response.error) {
-				alert("Error: " + response.mensaje);
+				toastr.error("Error: " + response.mensaje);
 			} else {
-				alert("Planificación guardada exitosamente");
+				toastr.success("Planificación guardada exitosamente");
 				cargar_planif_det(ubic);
 			}
 		},
 		error: function (xhr, ajaxOptions, thrownError) {
 			console.error("Error en la petición:", xhr, thrownError);
-			alert("Error al guardar: " + thrownError);
+			toastr.error("Error al guardar: " + thrownError);
 			cargar_planif_det(ubic);
 		}
 	});
