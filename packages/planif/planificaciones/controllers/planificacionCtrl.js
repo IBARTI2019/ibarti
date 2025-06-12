@@ -241,6 +241,125 @@ function replicar_rot() {
 	}
 }
 
+
+function newPlanifIA() {
+	ubic = $("#planf_ubicacion").val();
+	if (apertura && ubic && contratacion) {
+		if (confirm("Esta seguro(a) de que desea planificar una nueva apertura mensual con IA?..")) {
+			var parametros = { "cod_apertura": apertura, "cod_contratacion": contratacion, "cod_cliente": cliente, "cod_ubic": ubic, "cod_usuario": usuario };
+			$.ajax({
+				url: 'http://localhost:8000/api/v1/planificar',
+				type: 'post',
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify(parametros),
+				beforeSend: function () {
+					$("#cont_planif_det").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px"> Espere a que la IA analize los requerimientos, tenga paciencia, esto puede tardar varios minutos..');
+				},
+				success: function (response) {
+					$("#cont_planif_det").html('<img src="imagenes/loading3.gif" border="null" class="imgLink" width="30px" height="30px"> Procesando respuesta de la IA..');
+					save_planif_ia(response);
+				},
+				error: function (xhr, ajaxOptions, thrownError) {
+					cargar_planif_det(ubic);
+					alert(xhr.status);
+					alert(thrownError);
+				}
+			});
+			/*
+			var response = {
+				"base": [
+					{
+						"cod_planif_cl": 1602,
+						"cod_ubicacion": 328,
+						"cod_puesto_trabajo": "195",
+						"cod_ficha": "000024",
+						"cod_rotacion": 22,
+						"posicion_inicio": 1,
+						"posicion_fin": 2,
+						"fecha_inicio": "2025-06-11",
+						"fecha_fin": "2025-06-30"
+					},
+					{
+						"cod_planif_cl": 1602,
+						"cod_ubicacion": 328,
+						"cod_puesto_trabajo": "195",
+						"cod_ficha": "004258",
+						"cod_rotacion": 22,
+						"posicion_inicio": 3,
+						"posicion_fin": 4,
+						"fecha_inicio": "2025-06-11",
+						"fecha_fin": "2025-06-30"
+					},
+					{
+						"cod_planif_cl": 1602,
+						"cod_ubicacion": 328,
+						"cod_puesto_trabajo": "195",
+						"cod_ficha": "005672",
+						"cod_rotacion": 22,
+						"posicion_inicio": 5,
+						"posicion_fin": 6,
+						"fecha_inicio": "2025-06-11",
+						"fecha_fin": "2025-06-30"
+					}
+				],
+				"modificaciones": [],
+				"meta": {
+					"estrategia": "Continuidad de rotación 22 con posiciones iniciales 1, 3 y 5",
+					"cobertura_requerimientos": "100%",
+					"recursos_utilizados": "3 fichas"
+				}
+			}
+			save_planif_ia(response);
+			*/
+		}
+	} else {
+		toastr.error("Debe seleccionar todos los datos");
+	}
+}
+
+
+function save_planif_ia(base_data) {
+	var ubic = $("#planf_ubicacion").val();
+
+	// Preparamos los parámetros correctamente
+	var parametros = {
+		"cod_cliente": cliente,
+		"cod_ubic": ubic,
+		"cod_apertura": apertura,
+		"metodo": "insertar_asignaciones",
+		"cod_usuario": usuario,
+		// Convertimos los arrays a JSON string
+		"base_data": JSON.stringify(base_data.base),  // Solo la parte de 'base'
+		"modificaciones_data": JSON.stringify(base_data.modificaciones || [])  // Solo la parte de 'modificaciones'
+	};
+
+	$.ajax({
+		data: parametros,
+		url: 'packages/planif/planificaciones/modelo/planificacion_ia.php',
+		type: 'post',
+		dataType: 'json',  // Esperamos una respuesta JSON
+		beforeSend: function () {
+			// Mostrar loader o mensaje de procesamiento
+			console.log("Enviando datos...");
+		},
+		success: function (response) {
+			console.log("Respuesta recibida:", response);
+			if (response.error) {
+				alert("Error: " + response.mensaje);
+			} else {
+				alert("Planificación guardada exitosamente");
+				cargar_planif_det(ubic);
+			}
+		},
+		error: function (xhr, ajaxOptions, thrownError) {
+			console.error("Error en la petición:", xhr, thrownError);
+			alert("Error al guardar: " + thrownError);
+			cargar_planif_det(ubic);
+		}
+	});
+}
+
 function cargar_contratacion_det(ubic) {
 	var parametros = {
 		"codigo": contratacion, "ubicacion": ubic,
@@ -805,7 +924,7 @@ function RE_reporte(detalle) {
 					}
 					$("#RP").html('');
 				}
-				
+
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
 				alert(xhr.status);
@@ -851,7 +970,7 @@ function B_reporte(detalle) {
 					}
 					$("#RP").html('');
 				}
-				
+
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
 				alert(xhr.status);
