@@ -24,7 +24,7 @@ echo '</br><div align="center" class="etiqueta_title">Planificacion Detalle</div
 	<span class="art-button-wrapper">
 		<span class="art-button-l"> </span>
 		<span class="art-button-r"> </span>
-		<input type="button" id="newPlanifIBARTIIA" value="Planificar Nueva Apertura Mensual Con IA" onClick="newPlanifIA()" class="readon art-button" />
+		<input type="button" id="newPlanifIBARTIIA" value="Planificar Con IA" onClick="newPlanifIA()" class="readon art-button" />
 	</span>
 </div>
 <div align="right"><span class="etiqueta">Ultima Modificacion: </span> ' . $mod["fecha"] . ' (' . $mod["us_mod"] . ')</div>
