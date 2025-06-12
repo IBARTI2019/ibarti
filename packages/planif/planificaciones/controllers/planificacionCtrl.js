@@ -248,7 +248,7 @@ function newPlanifIA() {
 		if (confirm("Esta seguro(a) de que desea planificar una nueva apertura mensual con IA?..")) {
 			var parametros = { "cod_apertura": apertura, "cod_contratacion": contratacion, "cod_cliente": cliente, "cod_ubic": ubic, "cod_usuario": usuario };
 			$.ajax({
-				url: 'http://localhost:8000/api/v1/planificar',
+				url: 'http://84.46.244.183:8000/api/v1/planificar',
 				type: 'post',
 				contentType: 'application/json',
 				dataType: 'json',
