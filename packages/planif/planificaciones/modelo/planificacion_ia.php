@@ -52,7 +52,7 @@ if (isset($_POST['metodo']) && $metodo == "insertar_asignaciones") {
                 $sql_upsert = "INSERT INTO planif_clientes_trab (
                                 cod_planif_cl, cod_cliente, cod_ubicacion, cod_puesto_trabajo,
                                 cod_ficha, cod_rotacion, posicion_inicio, posicion_fin,
-                                fecha_inicio, fecha_fin, cod_us_ing, fec_us_ing
+                                fecha_inicio, fecha_fin, cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod
                               ) VALUES (
                                 '" . $bd->escape($asig['cod_planif_cl']) . "', 
                                 '" . $bd->escape($cod_cliente) . "', 
@@ -65,6 +65,8 @@ if (isset($_POST['metodo']) && $metodo == "insertar_asignaciones") {
                                 '" . $bd->escape($asig['fecha_inicio']) . "', 
                                 '" . $bd->escape($asig['fecha_fin']) . "', 
                                 '" . $bd->escape($cod_usuario) . "', 
+                                NOW(),
+                                '" . $bd->escape($cod_usuario) . "', 
                                 NOW()
                               )
                               ON DUPLICATE KEY UPDATE
@@ -72,7 +74,7 @@ if (isset($_POST['metodo']) && $metodo == "insertar_asignaciones") {
                                 cod_rotacion = VALUES(cod_rotacion),
                                 posicion_inicio = VALUES(posicion_inicio),
                                 posicion_fin = VALUES(posicion_fin),
-                                cod_us_mod = VALUES(cod_us_ing),
+                                cod_us_mod = VALUES(cod_us_mod),
                                 fec_us_mod = NOW()";
 
                 $bd->consultar($sql_upsert);
