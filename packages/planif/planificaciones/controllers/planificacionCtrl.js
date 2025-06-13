@@ -272,52 +272,6 @@ function newPlanifIA() {
 					alert(thrownError);
 				}
 			});
-			/*
-			var response = {
-				"base": [
-					{
-						"cod_planif_cl": 1602,
-						"cod_ubicacion": 328,
-						"cod_puesto_trabajo": "195",
-						"cod_ficha": "000024",
-						"cod_rotacion": 22,
-						"posicion_inicio": 1,
-						"posicion_fin": 2,
-						"fecha_inicio": "2025-06-11",
-						"fecha_fin": "2025-06-30"
-					},
-					{
-						"cod_planif_cl": 1602,
-						"cod_ubicacion": 328,
-						"cod_puesto_trabajo": "195",
-						"cod_ficha": "004258",
-						"cod_rotacion": 22,
-						"posicion_inicio": 3,
-						"posicion_fin": 4,
-						"fecha_inicio": "2025-06-11",
-						"fecha_fin": "2025-06-30"
-					},
-					{
-						"cod_planif_cl": 1602,
-						"cod_ubicacion": 328,
-						"cod_puesto_trabajo": "195",
-						"cod_ficha": "005672",
-						"cod_rotacion": 22,
-						"posicion_inicio": 5,
-						"posicion_fin": 6,
-						"fecha_inicio": "2025-06-11",
-						"fecha_fin": "2025-06-30"
-					}
-				],
-				"modificaciones": [],
-				"meta": {
-					"estrategia": "Continuidad de rotación 22 con posiciones iniciales 1, 3 y 5",
-					"cobertura_requerimientos": "100%",
-					"recursos_utilizados": "3 fichas"
-				}
-			}
-			save_planif_ia(response);
-			*/
 		}
 	} else {
 		toastr.error("Debe seleccionar todos los datos");
@@ -356,6 +310,11 @@ function save_planif_ia(base_data) {
 			} else {
 				toastr.success("Planificación guardada exitosamente");
 				cargar_planif_det(ubic);
+				alert(
+					"Cobertura de requerimientos: " + response.meta.cobertura_requerimientos 
+					+ "\n\nEstrategia: " + response.meta.estrategia
+					+"\n\nRecursos utilizados: " + response.meta.recursos_utilizados
+				)
 			}
 		},
 		error: function (xhr, ajaxOptions, thrownError) {
