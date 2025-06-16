@@ -216,24 +216,24 @@ AND ficha_egreso.fec_egreso='$fec_egreso'";
 				'$observacion2', '$usuario', '$status', '$cod_motivo_egreso')";
 				$query = $bd->consultar($sql);
 			} else {
-				if ($fec_egreso == '0000-00-00') {
-					$mensaje = "Datos Registrados con exitos...";
-					echo '<script language="javascript">
+				// if ($fec_egreso == '0000-00-00') {
+				$mensaje = "Datos Registrados con exitos...";
+				echo '<script language="javascript">
 						alert("' . $mensaje . '");
 						</script>';
-					$sql = "$SELECT $proced('$metodo', '$codigo', '$fec_egreso', '$motivo',
+				$sql = "$SELECT $proced('$metodo', '$codigo', '$fec_egreso', '$motivo',
 					'$color', '$preaviso','$p_fec_inicio','$p_fec_culminacion',
 					'$d_p_laboral', '$d_p_cumplido','$calculo', '$calculo_status',
 					'$fec_calculo', '$fec_posible_pago', '$fec_pago', '$cheque',
 					'$banco','$importe','$entrega_uniforme', '$observacion',
 					'$observacion2', '$usuario', '$status', '$cod_motivo_egreso')";
-					$query = $bd->consultar($sql);
-				} else {
-					$mensaje = "Error, el trabajador esta en proceso de liquidacion... ";
-					echo '<script language="javascript">
-						alert("' . $mensaje . '");
-						</script>';
-				}
+				$query = $bd->consultar($sql);
+				// } else {
+				// 	$mensaje = "Error, el trabajador esta en proceso de liquidacion... ";
+				// 	echo '<script language="javascript">
+				// 		alert("' . $mensaje . '");
+				// 		</script>';
+				// }
 			}
 
 		}
