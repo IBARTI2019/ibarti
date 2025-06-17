@@ -100,16 +100,19 @@ AND ficha_egreso.fec_egreso='$fec_egreso'";
 			$n = 0;
 			$fila = $bd->obtener_fila($query1, 0);
 
-			$sql = "SELECT ficha_status.codigo
-				FROM ficha_status
-	   			WHERE  ficha_status.codigo <> '' ORDER BY codigo asc";
-			$query = $bd->consultar($sql);
+			/* 			$sql = "SELECT ficha_status.codigo
+							FROM ficha_status
+							   WHERE  ficha_status.codigo <> '' ORDER BY codigo asc";
+						$query = $bd->consultar($sql);
+			 */
 			$n = 1;
 			$bloquear = -1;
-			$filax = $bd->num_fila($query);
-
+			// $filax = $bd->num_fila($query);
+			
 			$posicion = -1;
 
+						
+			/* 			
 			if ($status != "A") {
 				while (($datos = $bd->obtener_fila($query, 0)) && $posicion == -1) {
 					$campo_id = $datos["codigo"];
@@ -118,7 +121,6 @@ AND ficha_egreso.fec_egreso='$fec_egreso'";
 					} else {
 						$n++;
 					}
-
 				}
 				switch ($posicion) {
 					case 1:
@@ -134,7 +136,8 @@ AND ficha_egreso.fec_egreso='$fec_egreso'";
 						$bloquear = 1;
 						break;
 				}
-			}
+			}  
+			*/
 
 			// calcular la posicion del estatu  que tiene la ficha para ver si desactiva ficha
 			// 1 activo no desactiva 
