@@ -69,7 +69,7 @@ AND ficha_egreso.fec_egreso='$fec_egreso'";
 	if ($row > 0) {
 		$sqlegreso = "SELECT cod_ficha,cod_ficha_status from ficha ,control             
         WHERE ficha.cod_ficha = '$codigo'
-        AND ficha.cod_ficha_status = control.ficha_activo";
+        AND ficha.cod_ficha_status != control.ficha_activo";
 		$query1 = $bd->consultar($sqlegreso);
 		$row1 = $bd->num_fila($query1);
 
