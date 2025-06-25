@@ -69,13 +69,13 @@ AND ficha_egreso.fec_egreso='$fec_egreso'";
 	if ($row > 0) {
 		$sqlegreso = "SELECT cod_ficha,cod_ficha_status from ficha ,control             
         WHERE ficha.cod_ficha = '$codigo'
-        AND ficha.cod_ficha_status != control.ficha_activo";
+        AND ficha.cod_ficha_status = control.ficha_activo";
 		$query1 = $bd->consultar($sqlegreso);
 		$row1 = $bd->num_fila($query1);
 
 		if ($row1 > 0) {
 			// Validar si la fecha de egreso esta en blanco
-			if ($fec_egreso == '0000-00-00') {
+			// if ($fec_egreso == '0000-00-00') {
 				$sql = "$SELECT $proced('$metodo', '$codigo', '$fec_egreso', '$motivo',
                             '$color', '$preaviso','$p_fec_inicio','$p_fec_culminacion',
 							'$d_p_laboral', '$d_p_cumplido','$calculo', '$calculo_status',
@@ -83,12 +83,12 @@ AND ficha_egreso.fec_egreso='$fec_egreso'";
 							'$banco','$importe','$entrega_uniforme', '$observacion',
 							'$observacion2', '$usuario', '$status', '$cod_motivo_egreso')";
 				$query = $bd->consultar($sql);
-			} else {
-				$mensaje = "Error , no puede actualizar el estatus de egreso a activo del trabajador";
-				echo '<script language="javascript">
-					alert("' . $mensaje . '");
-						</script>';
-			}
+			// } else {
+			// 	$mensaje = "Error , no puede actualizar el estatus de egreso a activo del trabajador";
+			// 	echo '<script language="javascript">
+			// 		alert("' . $mensaje . '");
+			// 			</script>';
+			// }
 
 		} else {
 			//obtener el codigo del status de la ficha para ver sis esta bloqueado
