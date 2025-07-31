@@ -101,7 +101,7 @@ if (isset($reporte)) {
 						 nov_check_list_det.valor_max,  nov_valores.factor,
 					     nov_check_list_det.observacion, nov_check_list.fec_us_mod,
 						 nov_status.descripcion AS nov_status,
-					   IF(ISNULL(nov_agrupacion.descripcion),'N/A',nov_agrupacion.descripcion) agrupacion
+					   IF(ISNULL(nov_agrupacion.descripcion),'N/A',nov_agrupacion.descripcion) agrupacion, CONCAT(ficha.apellidos, ' ', ficha.nombres) AS trabajador
                     FROM nov_check_list , nov_check_list_det LEFT JOIN nov_agrupacion ON nov_check_list_det.cod_nov_agrupacion = nov_agrupacion.codigo, 
 						 novedades, nov_clasif , nov_tipo, nov_valores, clientes ,
 					 	 clientes_ubicacion , ficha , nov_status
@@ -114,7 +114,7 @@ if (isset($reporte)) {
 					  nov_tipo.descripcion AS tipo, nov_check_list.observacion,
 					  nov_check_list.repuesta,
 				Sum(nov_check_list_det.valor) AS check_list_valor, Sum(nov_check_list_det.valor_max) AS valor_max,
-                nov_check_list.fec_us_mod, nov_status.descripcion AS nov_status
+                nov_check_list.fec_us_mod, nov_status.descripcion AS nov_status, CONCAT(ficha.apellidos, ' ', ficha.nombres) AS trabajador
            FROM nov_check_list , nov_check_list_det LEFT JOIN nov_agrupacion ON nov_check_list_det.cod_nov_agrupacion = nov_agrupacion.codigo, 
 		   		nov_clasif ,  nov_tipo, clientes , clientes_ubicacion , ficha , nov_status
         $where2
@@ -131,13 +131,13 @@ if (isset($reporte)) {
 
 			echo "<table border=1>
 	      <tr><th>Código </th><th>Fecha </th><th> Supervisor </th><th> " . $leng['cliente'] . " </th>
-	           <th> " . $leng['ubicacion'] . " </th><th> Clasificación </th><th> Tipo </th><th> Agrupacion </th><th> CHECK LIST </th>
+	           <th> " . $leng['ubicacion'] . " </th><th> " . $leng['trabajador'] . " </th><th> Clasificación </th><th> Tipo </th><th> Agrupacion </th><th> CHECK LIST </th>
 			   <th> Abreviatura </th><th> Valor </th><th> Valor MAX</th><th> % Cumplimiento </th>
 			   <th> Factor </th><th> Observación </th><th> Fec. Ult. Modificación </th><th> Status </th></tr>";
 
 			while ($row01 = $bd->obtener_num($query01)) {
 				echo "<tr><td>" . $row01[0] . "</td><td>" . $row01[1] . "</td><td>" . $row01[2] . "</td><td>" . $row01[3] . "</td>
-		           <td>" . $row01[4] . "</td><td>" . $row01[5] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td>
+		           <td>" . $row01[4] . "</td><td>" . $row01[16] . "</td><td>" . $row01[5] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td>
 		           <td>" . $row01[15] . "</td><td>" . $row01[8] . "</td><td>" . $row01[9] . "</td><td>" . $row01[10] . "</td>
 				   <td>" . Redondear2d(($row01[9] * 100) / $row01[10]) . "</td>
 				   <td>" . $row01[11] . "</td><td>" . $row01[12] . "</td><td>" . $row01[13] . "</td><td>" . $row01[14] . "</td></tr>";
@@ -149,14 +149,14 @@ if (isset($reporte)) {
 
 			echo "<table border=1>
 	      <tr><th>Código </th><th>Fecha </th><th> Supervisor </th><th> " . $leng['cliente'] . " </th>
-	          <th> " . $leng['ubicacion'] . " </th><th> Clasificación </th> <th> Tipo </th><th> Observación </th>
+	          <th> " . $leng['ubicacion'] . " </th><th> " . $leng['trabajador'] . " </th><th> Clasificación </th> <th> Tipo </th><th> Observación </th>
 			  <th>Respuesta </th>
 			  <th> Valor CHECK LIST</th><th> Valor MAX</th><th> % Cumplimiento </th><th> Fec. Última Modificación </th>
 			  <th> Status </th></tr>";
 
 			while ($row01 = $bd->obtener_num($query01)) {
 				echo "<tr><td>" . $row01[0] . "</td><td>" . $row01[1] . "</td><td>" . $row01[2] . "</td><td>" . $row01[3] . "</td>
-		           <td>" . $row01[4] . "</td><td>" . $row01[5] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td> <td>" . $row01[8] . "</td>
+		           <td>" . $row01[4] . "</td><td>" . $row01[13] . "</td><td>" . $row01[5] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td> <td>" . $row01[8] . "</td>
 				   <td>" . $row01[9] . "</td><td>" . $row01[10] . "</td><td>" . Redondear2d(($row01[9] * 100) / $row01[10]) . "</td>
 				   <td>" . $row01[11] . "</td><td>" . $row01[12] . "</td></tr>";
 			}
