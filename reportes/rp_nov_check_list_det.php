@@ -101,8 +101,9 @@ if (isset($reporte)) {
 						 nov_check_list_det.valor_max,  nov_valores.factor,
 					     nov_check_list_det.observacion, nov_check_list.fec_us_mod,
 						 nov_status.descripcion AS nov_status,
-					   IF(ISNULL(nov_agrupacion.descripcion),'N/A',nov_agrupacion.descripcion) agrupacion, CONCAT(ficha.apellidos, ' ', ficha.nombres) AS trabajador
-                    FROM nov_check_list , nov_check_list_det LEFT JOIN nov_agrupacion ON nov_check_list_det.cod_nov_agrupacion = nov_agrupacion.codigo, 
+					   IF(ISNULL(nov_agrupacion.descripcion),'N/A',nov_agrupacion.descripcion) agrupacion, CONCAT(ft.apellidos, ' ', ft.nombres) AS trabajador
+                    FROM nov_check_list , nov_check_list_det LEFT JOIN nov_agrupacion ON nov_check_list_det.cod_nov_agrupacion = nov_agrupacion.codigo
+					 LEFT JOIN ficha ft ON nov_check_list_det.cod_ficha_trab = ft.codigo, 
 						 novedades, nov_clasif , nov_tipo, nov_valores, clientes ,
 					 	 clientes_ubicacion , ficha , nov_status
                   $where
@@ -114,8 +115,9 @@ if (isset($reporte)) {
 					  nov_tipo.descripcion AS tipo, nov_check_list.observacion,
 					  nov_check_list.repuesta,
 				Sum(nov_check_list_det.valor) AS check_list_valor, Sum(nov_check_list_det.valor_max) AS valor_max,
-                nov_check_list.fec_us_mod, nov_status.descripcion AS nov_status, CONCAT(ficha.apellidos, ' ', ficha.nombres) AS trabajador
-           FROM nov_check_list , nov_check_list_det LEFT JOIN nov_agrupacion ON nov_check_list_det.cod_nov_agrupacion = nov_agrupacion.codigo, 
+                nov_check_list.fec_us_mod, nov_status.descripcion AS nov_status, CONCAT(ft.apellidos, ' ', ft.nombres) AS trabajador
+           FROM nov_check_list , nov_check_list_det LEFT JOIN nov_agrupacion ON nov_check_list_det.cod_nov_agrupacion = nov_agrupacion.codigo
+		   		LEFT JOIN ficha ft ON nov_check_list_det.cod_ficha_trab = ft.codigo, 
 		   		nov_clasif ,  nov_tipo, clientes , clientes_ubicacion , ficha , nov_status
         $where2
        GROUP BY nov_check_list.codigo
