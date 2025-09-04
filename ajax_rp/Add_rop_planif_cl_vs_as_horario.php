@@ -88,7 +88,6 @@ FROM
 $WHERE_21
 $WHERE_22";
 
-echo $sql;
 $qry  = $bd->consultar($sql);
 while($rows=$bd->obtener_name($qry)){
 	$result['asistencia'][] = $rows;
