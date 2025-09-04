@@ -16,37 +16,49 @@ $fecha_H    = conversion($_POST['fecha_hasta']);
 $result = array();
 
 $WHERE = " WHERE a.fecha BETWEEN \"$fecha_D\" AND \"$fecha_H\" AND a.`status`='T' ";
-$WHERE_21 =" WHERE v_as_planif_horario.fec_diaria BETWEEN \"$fecha_D\" AND \"$fecha_H\"";
+$WHERE_21 =" WHERE asistencia_apertura.fec_diaria BETWEEN  \"$fecha_D\" AND \"$fecha_H\"";
 
-$WHERE_22 = " AND v_as_planif_horario.cod_horario = horarios.codigo
-AND v_as_planif_horario.cod_ubicacion   = clientes_ubicacion.codigo
-AND v_as_planif_horario.cod_cliente = clientes.codigo
-AND clientes_ubicacion.cod_estado = estados.codigo 
-AND v_as_planif_horario.cod_cliente <> control.oesvica";
+$WHERE_22 = " AND asistencia.cod_as_apertura = asistencia_apertura.codigo
+AND asistencia.cod_concepto = conceptos.codigo
+AND conceptos.cod_horario <> '9999'
+AND conceptos.cod_horario = horarios.codigo
+AND asistencia.cod_cliente = clientes.codigo
+AND asistencia.cod_ubicacion = clientes_ubicacion.codigo
+AND clientes_ubicacion.cod_estado = estados.codigo
+AND asistencia.cod_cliente <> control.oesvica
+AND conceptos.asist_perfecta = 'T'
+GROUP BY
+asistencia_apertura.fec_diaria,
+asistencia.cod_cliente,
+asistencia.cod_ubicacion,
+conceptos.cod_horario
+ORDER BY
+  asistencia_apertura.fec_diaria DESC
+";
 
 if(isset($_POST['r_cliente'])){
 	$r_cliente = $_POST['r_cliente'];
 	if($r_cliente  == "T"){
 		$WHERE  .= " AND a.cod_ubicacion IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
 		usuario_clientes.cod_usuario = '$usuario') ";
-		$WHERE_21  .= " AND v_as_planif_horario.cod_ubicacion  IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
+		$WHERE_21  .= " AND asistencia.cod_ubicacion  IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
 		usuario_clientes.cod_usuario = '$usuario') ";
 	}
 }
 
 if( $cliente != "TODOS"){
 	$WHERE .= " AND a.cod_cliente = '$cliente' ";
-	$WHERE_21 .= " AND v_as_planif_horario.cod_cliente = '$cliente' ";
+	$WHERE_21 .= " AND asistencia.cod_cliente = '$cliente' ";
 }
 
 if( $ubicacion != "TODOS"){
 	$WHERE .= " AND a.cod_ubicacion = '$ubicacion' ";
-	$WHERE_21 .= " AND v_as_planif_horario.cod_ubicacion = '$ubicacion' ";
+	$WHERE_21 .= " AND asistencia.cod_ubicacion = '$ubicacion' ";
 }
 
 if( $horario != "TODOS"){
 	$WHERE .= " AND h.codigo = '$horario' ";
-	$WHERE_21 .= " AND v_as_planif_horario.cod_horario = '$horario' ";
+	$WHERE_21 .= " AND horarios.codigo = '$horario' ";
 }
 
 if( $estado != "TODOS"){
@@ -54,8 +66,25 @@ if( $estado != "TODOS"){
 	$WHERE_21 .= " AND clientes_ubicacion.cod_estado = '$estado' ";
 }
 
-$sql = "SELECT v_as_planif_horario.fec_diaria fecha,v_as_planif_horario.cod_ubicacion, clientes_ubicacion.descripcion AS ubicacion,v_as_planif_horario.cod_horario,horarios.nombre AS horario, estados.descripcion AS estado, v_as_planif_horario.cod_cliente, clientes.nombre cliente, v_as_planif_horario.valor
-FROM v_as_planif_horario,  clientes_ubicacion , clientes , estados, horarios, control
+$sql = "SELECT
+  asistencia_apertura.fec_diaria AS fec_diaria,
+  asistencia.cod_cliente AS cod_cliente,
+  clientes.nombre cliente,
+  asistencia.cod_ubicacion AS cod_ubicacion,
+  clientes_ubicacion.descripcion AS ubicacion,
+  conceptos.cod_horario AS cod_horario,
+  horarios.nombre horario,
+  estados.descripcion AS estado,
+  count(conceptos.valor) AS valor
+FROM
+  asistencia,
+  asistencia_apertura,
+  estados,
+  clientes,
+  clientes_ubicacion,
+  conceptos,
+  horarios,
+  control
 $WHERE_21
 $WHERE_22";
 
