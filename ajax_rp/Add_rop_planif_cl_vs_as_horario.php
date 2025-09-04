@@ -21,7 +21,7 @@ $WHERE_21 =" WHERE asistencia_apertura.fec_diaria BETWEEN  \"$fecha_D\" AND \"$f
 $WHERE_22 = " AND asistencia.cod_as_apertura = asistencia_apertura.codigo
 AND asistencia.cod_concepto = conceptos.codigo
 AND conceptos.cod_horario <> '9999'
-AND conceptos.codigo = horarios.cod_concepto
+AND conceptos.cod_horario = horarios.codigo
 AND asistencia.cod_cliente = clientes.codigo
 AND asistencia.cod_ubicacion = clientes_ubicacion.codigo
 AND clientes_ubicacion.cod_estado = estados.codigo
