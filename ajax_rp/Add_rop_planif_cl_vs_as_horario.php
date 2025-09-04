@@ -67,7 +67,7 @@ if( $estado != "TODOS"){
 }
 
 $sql = "SELECT
-  asistencia_apertura.fec_diaria AS fec_diaria,
+  asistencia_apertura.fec_diaria AS fecha,
   asistencia.cod_cliente AS cod_cliente,
   clientes.nombre cliente,
   asistencia.cod_ubicacion AS cod_ubicacion,
