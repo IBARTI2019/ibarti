@@ -1365,7 +1365,7 @@ function rp_planif_contratacion_vs_trab_cubrir(data, id_contenedor, callback) {
 
 function rp_planif_serv_vs_contratacion_horario(data, id_contenedor, callback) {
 	if (d3.select('#' + id_contenedor).node()) {
-		limpiarContenedor('id_contenedor');
+		limpiarContenedor(id_contenedor);
 
 		res_horario = d3.nest()
 			.key((d) => d.cod_ubicacion).sortKeys(d3.ascending)
@@ -1414,57 +1414,30 @@ function rp_planif_serv_vs_contratacion_horario(data, id_contenedor, callback) {
 					$('#tbody_pl_vs_as').append('<tr class="' + clases + '"><td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center" >' + a.estado + '</td><td class="texto" id="center" >' + a.cliente + '</td><td class="texto" id="center" >' + a.ubicacion + '</td><td class="texto" id="center" >' + (0 - Number(a.cantidad)) + '</td></tr>');
 				}
 			}
+		});
 
-/* 			res_horario.forEach((ubicacion) => {
-				ubicacion.values.forEach((horario) => {
-					horario.values.forEach((fecha) => {
-						// Verificar si esta combinación (ubicación, horario, fecha) existe en los contratos
-						const existeEnContratos = data['contrato'].some(contrato => 
-							contrato.cod_ubicacion === ubicacion.key &&
-							contrato.cod_horario === horario.key &&
-							contrato.fecha === fecha.key
-						);
+		data['asistencia'].forEach((a) => {
+			var encontrado = false;
 			
-						if (!existeEnContratos) {
-							// Calcular el total para esta fecha
-							let sum_dia = 0;
-							fecha.values.forEach((registro) => {
-								sum_dia += Number(registro.valor);
-							});
-			
-							const color = validarFondo(sum_dia);
-							const clases = 'color ' + color;
-			
-							$('#tbody_pl_vs_as').append('<tr class="' + clases + '"> <td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + val_ubic_f.get(a.fecha).values[0].horario + '</td><td class="texto" id="center" >' + a.estado + '</td><td class="texto" id="center" >' + a.cliente + '</td><td class="texto" id="center" >' + a.ubicacion + '</td><td class="texto" id="center" >' + sum_dia + '</td>');
-						}
-					});
-				});
-			});
- */
-		/* 	res_horario.forEach((b) => {
-				sum_dia = 0;
-				color = '';
-				clases = '';
-				if (b.key === a.cod_ubicacion) {
-					b.values.forEach(c => {
-						val_ubic_h = d3.map(map_res_horario_cont.get(a.cod_ubicacion).values, (d) => d.key);
-						if (!val_ubic_h.has(c.key) && (ubicaciones.indexOf(a.cod_ubicacion) === -1 || fechas.indexOf(a.fecha) === -1 || horarios.indexOf(c.key) === -1)) {
-							ubicaciones.push(a.cod_ubicacion);
-							fechas.push(a.fecha);
-							horarios.push(c.key);
-							val_ubic_f = d3.map(c.values, (f) => f.key);
-							if (val_ubic_f.has(a.fecha)) {
-								sum_dia = 0;
-								val_ubic_f.get(a.fecha).values.forEach(e => { sum_dia += Number(e.valor) });
-								color = validarFondo(sum_dia);
-								clases = 'color ' + color;
-								$('#tbody_pl_vs_as').append('<tr class="' + clases + '"> <td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + val_ubic_f.get(a.fecha).values[0].horario + '</td><td class="texto" id="center" >' + a.estado + '</td><td class="texto" id="center" >' + a.cliente + '</td><td class="texto" id="center" >' + a.ubicacion + '</td><td class="texto" id="center" >' + sum_dia + '</td>');
-							}
-						}
-					})
-
+			// Verificar si existe en contrato
+			if (map_res_horario_cont.has(a.cod_ubicacion)) {
+				val_ubic_h_cont = d3.map(map_res_horario_cont.get(a.cod_ubicacion).values, (d) => d.key);
+				if (val_ubic_h_cont.has(a.cod_horario)) {
+					val_ubic_f_cont = d3.map(val_ubic_h_cont.get(a.cod_horario).values, (d) => d.key);
+					if (val_ubic_f_cont.has(a.fecha)) {
+						encontrado = true;
+					}
 				}
-			}); */
+			}
+			
+			// Si no se encuentra en contrato, agregar a la tabla
+			if (!encontrado) {
+				var factor = Number(a.valor); // Sobrante = valor de asistencia (no hay contrato)
+				var color = validarFondo(factor);
+				var clases = 'color ' + color;
+				
+				$('#tbody_pl_vs_as').append('<tr class="' + clases + '"><td class="texto" id="center" >' + a.fecha + '</td><td class="texto" id="center" >' + a.horario + '</td><td class="texto" id="center" >' + a.estado + '</td><td class="texto" id="center" >' + a.cliente + '</td><td class="texto" id="center" >' + a.ubicacion + '</td><td class="texto" id="center" >' + factor + '</td></tr>');
+			}
 		});
 
 		if (typeof (callback) == 'function') callback();
