@@ -20,6 +20,11 @@ $rotacion = $modelo->get_rotacion('');
 <input type="button" id="newPlanifIBARTIIA" value="Planificar Con IA" onClick="newPlanifIA()" class="readon art-button" />
 </span> */
 
+/* 	<span class="art-button-wrapper">
+		<span class="art-button-l"> </span>
+		<span class="art-button-r"> </span>
+		<input type="button" id="newPlanifIBARTIIA" value="Planificar Con IA" onClick="newPlanifIA()" class="readon art-button" />
+	</span> */
 echo '</br><div align="center" class="etiqueta_title">Planificacion Detalle</div>
 <div align="right">
 	<span class="art-button-wrapper">
@@ -27,7 +32,6 @@ echo '</br><div align="center" class="etiqueta_title">Planificacion Detalle</div
 		<span class="art-button-r"> </span>
 		<input type="button" id="replicar" value="Replicar Rotacion" onClick="replicar_rot()" class="readon art-button" />
 	</span>
-
 </div>
 <div align="right"><span class="etiqueta">Ultima Modificacion: </span> ' . $mod["fecha"] . ' (' . $mod["us_mod"] . ')</div>
 <div align="right"><span class="etiqueta">Nro. de Trabajadores sin planificar: <h6 id="cantidad_sin_planif"></h6></div>
