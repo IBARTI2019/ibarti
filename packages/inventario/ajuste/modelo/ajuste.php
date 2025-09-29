@@ -123,7 +123,7 @@ if(isset($_POST['metodo'])){
           "trabajador" => $header['trabajador'],
           "descripcion" => $header['descripcion'],
           "telefono" => $header['telefono'],
-          "anulado" => true, // Siempre true para anulación
+          "anulado" => "T",
           "detalle" => $detalle
         );
 

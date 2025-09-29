@@ -171,7 +171,7 @@ if(isset($_POST['proced'])){
 			"trabajador" => $header['trabajador'],
 			"descripcion" => $header['descripcion'],
 			"telefono" => $header['telefono'],
-			"anulado" => $header['anulado'] == 'F' ? false : true,
+			"anulado" => $header['anulado'],
 			"detalle" => $detalle
 		);
 
