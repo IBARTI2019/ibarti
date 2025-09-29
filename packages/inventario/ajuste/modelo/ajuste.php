@@ -74,6 +74,71 @@ if(isset($_POST['metodo'])){
        '$total', '$us', CURRENT_TIMESTAMP, '$us', CURRENT_TIMESTAMP,'T'); ";
        $result['sql'][]=$sql;
        $bd->consultar($sql);
+
+      // Enviar data al webhook si es anulación de dotación
+      if ($tipo == "ANU_DOT") {
+        $codigo_dotacion = $referencia; // referencia es el código de la dotación
+
+        // Query header data
+        $sql_header = "SELECT DATE_FORMAT(prod_dotacion.fec_dotacion,'%Y-%m-%d %H:%i:%s') fec_dotacion,
+                        v_ficha.cod_ficha, v_ficha.cedula, v_ficha.nombres AS trabajador,
+                        prod_dotacion.descripcion, v_ficha.telefono, prod_dotacion.anulado
+        FROM prod_dotacion, v_ficha
+        WHERE prod_dotacion.cod_ficha = v_ficha.cod_ficha AND prod_dotacion.codigo = '$codigo_dotacion'";
+        $query_header = $bd->consultar($sql_header);
+        $header = $bd->obtener_fila($query_header, 0);
+
+        // Query detalle data
+        $sql_det = "SELECT prod_lineas.codigo cod_linea, prod_lineas.descripcion linea,
+                    prod_dotacion_det.cod_producto,
+                    CONCAT(productos.descripcion,' ',tallas.descripcion) producto,
+                    prod_dotacion_det.cantidad,
+                    prod_sub_lineas.codigo cod_sub_linea, prod_sub_lineas.descripcion sub_linea
+        FROM prod_dotacion_det, productos, prod_lineas, prod_sub_lineas, tallas
+        WHERE prod_dotacion_det.cod_dotacion = '$codigo_dotacion'
+        AND prod_dotacion_det.cod_producto = productos.item
+        AND productos.cod_linea = prod_lineas.codigo
+        AND productos.cod_sub_linea = prod_sub_lineas.codigo
+        AND productos.cod_talla = tallas.codigo";
+        $query_det = $bd->consultar($sql_det);
+
+        $detalle = array();
+        while($det = $bd->obtener_fila($query_det, 0)){
+          $detalle[] = array(
+            "cod_linea" => $det['cod_linea'],
+            "linea" => $det['linea'],
+            "cod_producto" => $det['cod_producto'],
+            "producto" => $det['producto'],
+            "cantidad" => (int)$det['cantidad'],
+            "cod_sub_linea" => $det['cod_sub_linea'],
+            "sub_linea" => $det['sub_linea']
+          );
+        }
+
+        // Build JSON payload
+        $payload = array(
+          "fec_dotacion" => $header['fec_dotacion'],
+          "cod_ficha" => $header['cod_ficha'],
+          "cedula" => $header['cedula'],
+          "trabajador" => $header['trabajador'],
+          "descripcion" => $header['descripcion'],
+          "telefono" => $header['telefono'],
+          "anulado" => true, // Siempre true para anulación
+          "detalle" => $detalle
+        );
+
+        $json_payload = json_encode($payload);
+
+        // Send to webhook
+        $url = 'http://212.56.33.4:5678/webhook/dotaciones';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+      }
      }
 
      foreach($ped_reng as $obj) {
