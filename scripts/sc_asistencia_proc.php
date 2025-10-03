@@ -72,6 +72,8 @@ if (isset($_POST['metodo'])) {
 					$query = $bd->consultar($sql);
 					$mensaje = "SE CERRO CORRECTAMENTE LA ASISTENCIA";
 
+					// Temporalmente comentado para depurar
+					/*
 					error_log("Iniciando envío de webhooks para asistencias. Apertura: $apertura, Fecha: $fec_diaria");
 
 					// Enviar webhook para cada asistencia registrada
@@ -134,6 +136,7 @@ if (isset($_POST['metodo'])) {
 						}
 						error_log("Total asistencias procesadas: $count");
 					}
+					*/
 				} else {
 					$mensaje = "HAY CONCEPTOS DE REPLICAR EN LAS ASISTENCIA \n  ASISTENCIA NO CERRADA";
 				}
