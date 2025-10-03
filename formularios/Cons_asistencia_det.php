@@ -260,7 +260,7 @@
 				}
 				if (ajax.readyState == 4) {
 					document.getElementById("Contendor01").innerHTML = ajax.responseText;
-					setInterval(alert("" + document.getElementById("mensaje_aj").value + ""), Reload(), 1000);
+					// setInterval(alert("" + document.getElementById("mensaje_aj").value + ""), Reload(), 1000);
 				}
 			}
 			ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
