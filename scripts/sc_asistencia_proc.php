@@ -95,6 +95,7 @@ if (isset($_POST['metodo'])) {
 					echo "SQL para asistencias: $sql_asistencias";
 	
 					$query_asistencias = $bd->consultar($sql_asistencias);
+					echo "Resultado de la consulta de asistencias: " . ($query_asistencias ? 'Éxito' : 'Fallo');
 					if ($query_asistencias) {
 						$count = 0;
 						while ($asistencia = $bd->obtener_fila($query_asistencias, 0)) {
