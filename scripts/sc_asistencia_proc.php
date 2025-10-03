@@ -73,10 +73,6 @@ if (isset($_POST['metodo'])) {
 					$bd2 = new DataBase();
 					$mensaje = "SE CERRO CORRECTAMENTE LA ASISTENCIA";
 
-					// Temporalmente comentado para depurar
-				
-					echo "Iniciando envío de webhooks para asistencias. Apertura: $apertura, Fecha: $fec_diaria";
-
 					// Enviar webhook para cada asistencia registrada
 					$sql_asistencias = "SELECT
 									asistencia.cod_ficha,
@@ -92,8 +88,6 @@ if (isset($_POST['metodo'])) {
 									INNER JOIN conceptos ON asistencia.cod_concepto = conceptos.codigo
 								WHERE
 									asistencia.cod_as_apertura = '$apertura';";
-
-					echo "SQL para asistencias: $sql_asistencias";
 	
 					try {
 						$query_asistencias = $bd2->consultar($sql_asistencias);
@@ -101,12 +95,11 @@ if (isset($_POST['metodo'])) {
 						echo "Error en consulta SQL: " . $e->getMessage();
 						$query_asistencias = false;
 					}
-					echo "Resultado de la consulta de asistencias: " . ($query_asistencias ? 'Éxito' : 'Fallo');
+
 					if ($query_asistencias) {
 						$count = 0;
 						while ($asistencia = $bd2->obtener_fila($query_asistencias, 0)) {
 							$count++;
-							echo "Procesando asistencia $count: " . json_encode($asistencia);
 							$payload = array(
 								"fechaguardia" => $asistencia['fechaguardia'],
 								"cod_ficha" => $asistencia['cod_ficha'],
@@ -115,7 +108,7 @@ if (isset($_POST['metodo'])) {
 								"telefono" => $asistencia['telefono']
 							);
 							$json_payload = json_encode($payload);
-							echo "Payload JSON: $json_payload";
+
 							$url = 'http://212.56.33.4:5678/webhook/asistencia';
 							try {
 								$ch = curl_init($url);
@@ -130,8 +123,6 @@ if (isset($_POST['metodo'])) {
 									$response = curl_exec($ch);
 									if (curl_errno($ch)) {
 										echo "Error en curl: " . curl_error($ch);
-									} else {
-										echo "Respuesta del webhook: $response";
 									}
 									curl_close($ch);
 								}
@@ -139,7 +130,6 @@ if (isset($_POST['metodo'])) {
 								echo "Excepción en curl: " . $e->getMessage();
 							}
 						}
-						echo "Total asistencias procesadas: $count";
 					}
 				} else {
 					$mensaje = "HAY CONCEPTOS DE REPLICAR EN LAS ASISTENCIA \n  ASISTENCIA NO CERRADA";
