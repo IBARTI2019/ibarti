@@ -70,8 +70,7 @@ if (isset($_POST['metodo'])) {
 				if ($concepto_rep == 0) {
 					$sql    = "$SELECT $proced('$metodo', '$apertura', '$fec_diaria', '$rol', '$contracto', '$usuario')";
 					$query = $bd->consultar($sql);
-					$bd->liberar($query);
-
+					$bd2 = new DataBase();
 					$mensaje = "SE CERRO CORRECTAMENTE LA ASISTENCIA";
 
 					// Temporalmente comentado para depurar
@@ -97,7 +96,7 @@ if (isset($_POST['metodo'])) {
 					echo "SQL para asistencias: $sql_asistencias";
 	
 					try {
-						$query_asistencias = $bd->consultar($sql_asistencias);
+						$query_asistencias = $bd2->consultar($sql_asistencias);
 					} catch (Exception $e) {
 						echo "Error en consulta SQL: " . $e->getMessage();
 						$query_asistencias = false;
@@ -105,7 +104,7 @@ if (isset($_POST['metodo'])) {
 					echo "Resultado de la consulta de asistencias: " . ($query_asistencias ? 'Éxito' : 'Fallo');
 					if ($query_asistencias) {
 						$count = 0;
-						while ($asistencia = $bd->obtener_fila($query_asistencias, 0)) {
+						while ($asistencia = $bd2->obtener_fila($query_asistencias, 0)) {
 							$count++;
 							echo "Procesando asistencia $count: " . json_encode($asistencia);
 							$payload = array(
