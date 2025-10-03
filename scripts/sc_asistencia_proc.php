@@ -93,7 +93,7 @@ if (isset($_POST['metodo'])) {
 									asistencia.cod_as_apertura = '$apertura';";
 
 					error_log("SQL para asistencias: $sql_asistencias");
-	/*
+	
 					$query_asistencias = $bd->consultar($sql_asistencias);
 					if (!$query_asistencias) {
 						error_log("Error en consulta de asistencias: " . $bd->error());
@@ -136,7 +136,6 @@ if (isset($_POST['metodo'])) {
 						}
 						error_log("Total asistencias procesadas: $count");
 					}
-					*/
 				} else {
 					$mensaje = "HAY CONCEPTOS DE REPLICAR EN LAS ASISTENCIA \n  ASISTENCIA NO CERRADA";
 				}
@@ -184,4 +183,4 @@ if (isset($_POST['metodo'])) {
 			break;
 	}
 }
-require_once('../funciones/sc_direccionar.php');
+// require_once('../funciones/sc_direccionar.php');
