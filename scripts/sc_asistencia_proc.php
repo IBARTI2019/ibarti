@@ -73,7 +73,7 @@ if (isset($_POST['metodo'])) {
 					$mensaje = "SE CERRO CORRECTAMENTE LA ASISTENCIA";
 
 					// Temporalmente comentado para depurar
-					/*
+				
 					error_log("Iniciando envío de webhooks para asistencias. Apertura: $apertura, Fecha: $fec_diaria");
 
 					// Enviar webhook para cada asistencia registrada
@@ -93,7 +93,7 @@ if (isset($_POST['metodo'])) {
 									asistencia.cod_as_apertura = '$apertura';";
 
 					error_log("SQL para asistencias: $sql_asistencias");
-
+	/*
 					$query_asistencias = $bd->consultar($sql_asistencias);
 					if (!$query_asistencias) {
 						error_log("Error en consulta de asistencias: " . $bd->error());
