@@ -37,7 +37,6 @@ if (isset($_POST['metodo'])) {
 			$query = $bd->consultar($sql);
 			$row01 = $bd->obtener_fila($query, 0);
 			$trab  = $row01[0];
-			$bd->liberar($query);
 
 			$sql = " SELECT COUNT(DISTINCT(asistencia.cod_ficha)) AS trab_reportados
 		        FROM trab_roles,ficha, asistencia , asistencia_apertura, control
@@ -52,7 +51,6 @@ if (isset($_POST['metodo'])) {
 			$query   = $bd->consultar($sql);
 			$row01   = $bd->obtener_fila($query, 0);
 			$trab_as = $row01[0];
-			$bd->liberar($query);
 
 			$sql = " SELECT COUNT(DISTINCT(asistencia.cod_ficha)) AS concepto_rep
 		        FROM trab_roles,ficha, asistencia , asistencia_apertura, control
@@ -67,13 +65,13 @@ if (isset($_POST['metodo'])) {
 			$query   = $bd->consultar($sql);
 			$row01   = $bd->obtener_fila($query, 0);
 			$concepto_rep = $row01[0];
-			$bd->liberar($query);
 
 			if ($trab == $trab_as) {
 				if ($concepto_rep == 0) {
 					$sql    = "$SELECT $proced('$metodo', '$apertura', '$fec_diaria', '$rol', '$contracto', '$usuario')";
 					$query = $bd->consultar($sql);
 					$bd->liberar($query);
+
 					$mensaje = "SE CERRO CORRECTAMENTE LA ASISTENCIA";
 
 					// Temporalmente comentado para depurar
