@@ -70,7 +70,71 @@ if (isset($_POST['metodo'])) {
 				if ($concepto_rep == 0) {
 					$sql    = "$SELECT $proced('$metodo', '$apertura', '$fec_diaria', '$rol', '$contracto', '$usuario')";
 					$query = $bd->consultar($sql);
+					$bd2 = new DataBase();
 					$mensaje = "SE CERRO CORRECTAMENTE LA ASISTENCIA";
+
+					// Enviar webhook para cada asistencia registrada
+					$sql_asistencias = "SELECT
+									asistencia.cod_ficha,
+									CONCAT(ficha.nombres, ' ', ficha.apellidos) AS trabajador,
+									ficha.telefono,
+									conceptos.descripcion turno,
+									'$fec_diaria' AS fechaguardia
+								FROM
+									asistencia
+									INNER JOIN asistencia_apertura ON  asistencia.cod_as_apertura = asistencia_apertura.codigo AND asistencia_apertura.fec_diaria = '$fec_diaria'
+									INNER JOIN ficha ON asistencia.cod_ficha = ficha.cod_ficha AND ficha.cod_contracto = '$contracto'
+									INNER JOIN trab_roles ON ficha.cod_ficha = trab_roles.cod_ficha AND trab_roles.cod_rol = '$rol'
+									INNER JOIN conceptos ON asistencia.cod_concepto = conceptos.codigo
+								WHERE
+									asistencia.cod_as_apertura = '$apertura';";
+	
+					try {
+						$query_asistencias = $bd2->consultar($sql_asistencias);
+					} catch (Exception $e) {
+						// echo "Error en consulta SQL: " . $e->getMessage();
+						$query_asistencias = false;
+					}
+					// echo "Resultado de la consulta de asistencias: " . ($query_asistencias ? 'Éxito' : 'Fallo');
+					if ($query_asistencias) {
+						$count = 0;
+						while ($asistencia = $bd2->obtener_fila($query_asistencias, 0)) {
+							$count++;
+							// echo "Procesando asistencia $count: " . json_encode($asistencia);
+							$payload = array(
+								"fechaguardia" => $asistencia['fechaguardia'],
+								"cod_ficha" => $asistencia['cod_ficha'],
+								"trabajador" => $asistencia['trabajador'],
+								"turno" => $asistencia['turno'],
+								"telefono" => $asistencia['telefono']
+							);
+							$json_payload = json_encode($payload);
+							// echo "Payload JSON: $json_payload";
+							$url = 'http://212.56.33.4:5678/webhook/asistencia';
+							try {
+								$ch = curl_init($url);
+								if (!$ch) {
+									// echo "Error inicializando curl";
+								} else {
+									curl_setopt($ch, CURLOPT_POST, true);
+									curl_setopt($ch, CURLOPT_POSTFIELDS, $json_payload);
+									curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+									curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+									curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Timeout de 10 segundos
+									$response = curl_exec($ch);
+									if (curl_errno($ch)) {
+										// echo "Error en curl: " . curl_error($ch);
+									} else {
+										// echo "Respuesta del webhook: $response";
+									}
+									curl_close($ch);
+								}
+							} catch (Exception $e) {
+								// echo "Excepción en curl: " . $e->getMessage();
+							}
+						}
+						// echo "Total asistencias procesadas: $count";
+					}
 				} else {
 					$mensaje = "HAY CONCEPTOS DE REPLICAR EN LAS ASISTENCIA \n  ASISTENCIA NO CERRADA";
 				}
@@ -118,4 +182,4 @@ if (isset($_POST['metodo'])) {
 			break;
 	}
 }
-require_once('../funciones/sc_direccionar.php');
+// require_once('../funciones/sc_direccionar.php');
