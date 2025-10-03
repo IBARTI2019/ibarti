@@ -74,7 +74,7 @@ if (isset($_POST['metodo'])) {
 
 					// Temporalmente comentado para depurar
 				
-					error_log("Iniciando envío de webhooks para asistencias. Apertura: $apertura, Fecha: $fec_diaria");
+					echo "Iniciando envío de webhooks para asistencias. Apertura: $apertura, Fecha: $fec_diaria";
 
 					// Enviar webhook para cada asistencia registrada
 					$sql_asistencias = "SELECT
@@ -92,16 +92,16 @@ if (isset($_POST['metodo'])) {
 								WHERE
 									asistencia.cod_as_apertura = '$apertura';";
 
-					error_log("SQL para asistencias: $sql_asistencias");
+					echo "SQL para asistencias: $sql_asistencias";
 	
 					$query_asistencias = $bd->consultar($sql_asistencias);
 					if (!$query_asistencias) {
-						error_log("Error en consulta de asistencias: " . $bd->error());
+						echo "Error en consulta de asistencias: " . $bd->error();
 					} else {
 						$count = 0;
 						while ($asistencia = $bd->obtener_fila($query_asistencias, 0)) {
 							$count++;
-							error_log("Procesando asistencia $count: " . json_encode($asistencia));
+							echo "Procesando asistencia $count: " . json_encode($asistencia);
 							$payload = array(
 								"fechaguardia" => $asistencia['fechaguardia'],
 								"cod_ficha" => $asistencia['cod_ficha'],
@@ -110,12 +110,12 @@ if (isset($_POST['metodo'])) {
 								"telefono" => $asistencia['telefono']
 							);
 							$json_payload = json_encode($payload);
-							error_log("Payload JSON: $json_payload");
+							echo "Payload JSON: $json_payload";
 							$url = 'http://212.56.33.4:5678/webhook/asistencia';
 							try {
 								$ch = curl_init($url);
 								if (!$ch) {
-									error_log("Error inicializando curl");
+									echo "Error inicializando curl";
 								} else {
 									curl_setopt($ch, CURLOPT_POST, true);
 									curl_setopt($ch, CURLOPT_POSTFIELDS, $json_payload);
@@ -124,17 +124,17 @@ if (isset($_POST['metodo'])) {
 									curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Timeout de 10 segundos
 									$response = curl_exec($ch);
 									if (curl_errno($ch)) {
-										error_log("Error en curl: " . curl_error($ch));
+										echo "Error en curl: " . curl_error($ch);
 									} else {
-										error_log("Respuesta del webhook: $response");
+										echo "Respuesta del webhook: $response";
 									}
 									curl_close($ch);
 								}
 							} catch (Exception $e) {
-								error_log("Excepción en curl: " . $e->getMessage());
+								echo "Excepción en curl: " . $e->getMessage();
 							}
 						}
-						error_log("Total asistencias procesadas: $count");
+						echo "Total asistencias procesadas: $count";
 					}
 				} else {
 					$mensaje = "HAY CONCEPTOS DE REPLICAR EN LAS ASISTENCIA \n  ASISTENCIA NO CERRADA";
