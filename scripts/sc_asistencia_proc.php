@@ -94,7 +94,12 @@ if (isset($_POST['metodo'])) {
 
 					echo "SQL para asistencias: $sql_asistencias";
 	
-					$query_asistencias = $bd->consultar($sql_asistencias);
+					try {
+						$query_asistencias = $bd->consultar($sql_asistencias);
+					} catch (Exception $e) {
+						echo "Error en consulta SQL: " . $e->getMessage();
+						$query_asistencias = false;
+					}
 					echo "Resultado de la consulta de asistencias: " . ($query_asistencias ? 'Éxito' : 'Fallo');
 					if ($query_asistencias) {
 						$count = 0;
