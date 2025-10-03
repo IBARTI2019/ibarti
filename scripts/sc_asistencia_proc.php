@@ -72,6 +72,8 @@ if (isset($_POST['metodo'])) {
 					$query = $bd->consultar($sql);
 					$mensaje = "SE CERRO CORRECTAMENTE LA ASISTENCIA";
 
+					error_log("Iniciando envío de webhooks para asistencias. Apertura: $apertura, Fecha: $fec_diaria");
+
 					// Enviar webhook para cada asistencia registrada
 					$sql_asistencias = "SELECT
 									asistencia.cod_ficha,
@@ -87,25 +89,50 @@ if (isset($_POST['metodo'])) {
 									INNER JOIN conceptos ON asistencia.cod_concepto = conceptos.codigo
 								WHERE
 									asistencia.cod_as_apertura = '$apertura';";
+
+					error_log("SQL para asistencias: $sql_asistencias");
+
 					$query_asistencias = $bd->consultar($sql_asistencias);
-					while ($asistencia = $bd->obtener_fila($query_asistencias, 0)) {
-						$payload = array(
-							"fechaguardia" => $asistencia['fechaguardia'],
-							"cod_ficha" => $asistencia['cod_ficha'],
-							"trabajador" => $asistencia['trabajador'],
-							"turno" => $asistencia['turno'],
-							"telefono" => $asistencia['telefono']
-						);
-						print_r($payload);
-						$json_payload = json_encode($payload);
-						$url = 'http://212.56.33.4:5678/webhook/asistencia';
-						$ch = curl_init($url);
-						curl_setopt($ch, CURLOPT_POST, true);
-						curl_setopt($ch, CURLOPT_POSTFIELDS, $json_payload);
-						curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-						curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-						$response = curl_exec($ch);
-						curl_close($ch);
+					if (!$query_asistencias) {
+						error_log("Error en consulta de asistencias: " . $bd->error());
+					} else {
+						$count = 0;
+						while ($asistencia = $bd->obtener_fila($query_asistencias, 0)) {
+							$count++;
+							error_log("Procesando asistencia $count: " . json_encode($asistencia));
+							$payload = array(
+								"fechaguardia" => $asistencia['fechaguardia'],
+								"cod_ficha" => $asistencia['cod_ficha'],
+								"trabajador" => $asistencia['trabajador'],
+								"turno" => $asistencia['turno'],
+								"telefono" => $asistencia['telefono']
+							);
+							$json_payload = json_encode($payload);
+							error_log("Payload JSON: $json_payload");
+							$url = 'http://212.56.33.4:5678/webhook/asistencia';
+							try {
+								$ch = curl_init($url);
+								if (!$ch) {
+									error_log("Error inicializando curl");
+								} else {
+									curl_setopt($ch, CURLOPT_POST, true);
+									curl_setopt($ch, CURLOPT_POSTFIELDS, $json_payload);
+									curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+									curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+									curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Timeout de 10 segundos
+									$response = curl_exec($ch);
+									if (curl_errno($ch)) {
+										error_log("Error en curl: " . curl_error($ch));
+									} else {
+										error_log("Respuesta del webhook: $response");
+									}
+									curl_close($ch);
+								}
+							} catch (Exception $e) {
+								error_log("Excepción en curl: " . $e->getMessage());
+							}
+						}
+						error_log("Total asistencias procesadas: $count");
 					}
 				} else {
 					$mensaje = "HAY CONCEPTOS DE REPLICAR EN LAS ASISTENCIA \n  ASISTENCIA NO CERRADA";
