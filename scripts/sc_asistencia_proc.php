@@ -70,6 +70,7 @@ if (isset($_POST['metodo'])) {
 				if ($concepto_rep == 0) {
 					$sql    = "$SELECT $proced('$metodo', '$apertura', '$fec_diaria', '$rol', '$contracto', '$usuario')";
 					$query = $bd->consultar($sql);
+					$bd->obtener_fila($query, 0);
 					$mensaje = "SE CERRO CORRECTAMENTE LA ASISTENCIA";
 
 					// Temporalmente comentado para depurar
