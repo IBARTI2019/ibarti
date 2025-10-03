@@ -96,6 +96,7 @@ if (isset($_POST['metodo'])) {
 							"turno" => $asistencia['turno'],
 							"telefono" => $asistencia['telefono']
 						);
+						print_r($payload);
 						$json_payload = json_encode($payload);
 						$url = 'http://212.56.33.4:5678/webhook/asistencia';
 						$ch = curl_init($url);
