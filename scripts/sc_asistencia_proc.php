@@ -78,7 +78,7 @@ if (isset($_POST['metodo'])) {
 									asistencia.cod_ficha,
 									CONCAT(ficha.nombres, ' ', ficha.apellidos) AS trabajador,
 									ficha.telefono,
-									conceptos.descripcion turno,
+									horarios.nombre turno,
 									'$fec_diaria' AS fechaguardia
 								FROM
 									asistencia
@@ -86,6 +86,7 @@ if (isset($_POST['metodo'])) {
 									INNER JOIN ficha ON asistencia.cod_ficha = ficha.cod_ficha AND ficha.cod_contracto = '$contracto'
 									INNER JOIN trab_roles ON ficha.cod_ficha = trab_roles.cod_ficha AND trab_roles.cod_rol = '$rol'
 									INNER JOIN conceptos ON asistencia.cod_concepto = conceptos.codigo
+									INNER JOIN horarios ON conceptos.cod_horario = horarios.codigo
 								WHERE
 									asistencia.cod_as_apertura = '$apertura';";
 	
