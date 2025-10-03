@@ -13,9 +13,10 @@ foreach ($_POST as $nombre_campo => $valor) {
   eval($variables);
 }
 $vectorA = json_decode($vector, true);
+$linksA = isset($links) ? json_decode($links, true) : [];
 
 if (isset($codigo)) {
-  
+
   try {
 
     $where = " WHERE
@@ -29,7 +30,7 @@ if (isset($codigo)) {
     AND p.cod_ficha = '$cod_ficha'  AND p.cod_cliente = '$cod_cliente' AND p.cod_ubicacion = '$cod_ubicacion'
     AND  pp.codigo='$cod_proyecto'";
     $sql1 = "SELECT
-    pd.codigo, cu.descripcion ubicacion, pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad, 
+    pd.codigo, cu.descripcion ubicacion, pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad,
     IF(pd.realizado = 'T', 'SI', 'NO') realizado, TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
     pa.participantes,
     (
@@ -40,7 +41,7 @@ if (isset($codigo)) {
             planif_clientes_superv_trab_det_observ b
         WHERE
             a.codigo = b.cod_det
-        AND a.codigo = pd.codigo 
+        AND a.codigo = pd.codigo
     ) observaciones,
     (SELECT
             COUNT(b.codigo)
@@ -55,20 +56,23 @@ if (isset($codigo)) {
         planif_clientes_superv_trab_det pd,
         planif_proyecto pp,
         planif_actividad pa,
-        clientes_ubicacion cu 
+        clientes_ubicacion cu
         " . $where . " ORDER BY hora_inicio ASC";
 
     $query2 = $bd->consultar($sql1);
-   
+
+    // Update each activity with its corresponding link if available
     for ($i = 0; $i < count($vectorA); $i++) {
-      $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '". $vectorA[$i] ."'";
+      $cod = $vectorA[$i];
+      $link = isset($linksA[$cod]) ? $linksA[$cod] : (isset($link) ? $link : '');
+      $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '$cod'";
       $query3 = $bd->consultar($sql);
-    }  
-    
+    }
+
     $sql    = "UPDATE planif_clientes_superv_trab_det SET realizado = 'T',link='$link', cod_us_marcaje = '$usuario' WHERE codigo = '$codigo'";
     $query = $bd->consultar($sql);
     $result['sql'] = $sql;
-    
+
   } catch (Exception $e) {
     $error =  $e->getMessage();
     $result['error'] = true;

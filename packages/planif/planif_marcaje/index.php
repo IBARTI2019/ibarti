@@ -193,16 +193,6 @@ if (isset($_SESSION['usuario_cod'])) {
 <div align="center" class="etiqueta_title"><?php echo $titulo;?> </div><hr />
 <div id="Contenedor01" class="mensaje"></div>
 <form name="some_form" enctype="multipart/form-data" class="formulario" >
-<table width="100%" id="table_file_soporte">
-  
-     <td 
-      width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>">
-      <input name="images" type="file" id="imagen"  value="Subir Imagen"  onfocus="activarcheckbox()"/>
-      <span id="correo_ubicacion" >¿Enviar a Correo de <?php echo $leng['ubicacion']?>?<input id="enviar_ubicacion" name="enviar_ubicacion" disabled type="checkbox" style="width: 100px;"/></span>
-      </div>
-    </td>
-  
-</table>
 <table width="100%" class="tabla_sistema">
           <thead>
             <tr>
@@ -213,6 +203,7 @@ if (isset($_SESSION['usuario_cod'])) {
               <th>Hora Inicio Hora Fin</th>
               <th>Realizado</th>
               <th>Marcar</th>
+              <th>Archivo</th>
               <th>Participantes</th>
               <th>Observaciones</th>
             </tr>
