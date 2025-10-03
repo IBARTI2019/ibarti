@@ -73,16 +73,20 @@ if (isset($_POST['metodo'])) {
 					$mensaje = "SE CERRO CORRECTAMENTE LA ASISTENCIA";
 
 					// Enviar webhook para cada asistencia registrada
-					$sql_asistencias = "SELECT asistencia.cod_ficha,
-					                       CONCAT(ficha.nombres, ' ', ficha.apellidos) AS trabajador,
-					                       ficha.telefono,
-					                       IFNULL(turno.descripcion, 'DIURNO') AS turno,
-					                       CONCAT('$fec_diaria', ' ', TIME(asistencia.fec_us_ing)) AS fechaguardia
-					                FROM asistencia
-					                LEFT JOIN ficha ON asistencia.cod_ficha = ficha.cod_ficha
-					                LEFT JOIN planif_clientes_trab_det pctd ON pctd.cod_ficha = asistencia.cod_ficha AND pctd.fecha = '$fec_diaria'
-					                LEFT JOIN turno ON pctd.cod_turno = turno.codigo
-					                WHERE asistencia.cod_as_apertura = '$apertura'";
+					$sql_asistencias = "SELECT
+									asistencia.cod_ficha,
+									CONCAT(ficha.nombres, ' ', ficha.apellidos) AS trabajador,
+									ficha.telefono,
+									conceptos.descripcion turno,
+									CONCAT('$fec_diaria', ' ', TIME(asistencia.fec_us_ing)) AS fechaguardia
+								FROM
+									asistencia
+									INNER JOIN asistencia_apertura ON  asistencia.cod_as_apertura = asistencia_apertura.codigo AND asistencia_apertura.fec_diaria = '$fec_diaria'
+									INNER JOIN ficha ON asistencia.cod_ficha = ficha.cod_ficha AND ficha.cod_contracto = '$contracto'
+									INNER JOIN trab_roles ON ficha.cod_ficha = trab_roles.cod_ficha AND trab_roles.cod_rol = '$rol'
+									INNER JOIN conceptos ON asistencia.cod_concepto = conceptos.codigo
+								WHERE
+									asistencia.cod_as_apertura = '$apertura';";
 					$query_asistencias = $bd->consultar($sql_asistencias);
 					while ($asistencia = $bd->obtener_fila($query_asistencias, 0)) {
 						$payload = array(
