@@ -83,7 +83,7 @@ if (isset($_POST['metodo'])) {
 									CONCAT(ficha.nombres, ' ', ficha.apellidos) AS trabajador,
 									ficha.telefono,
 									conceptos.descripcion turno,
-									CONCAT('$fec_diaria', ' ', TIME(asistencia.fec_us_ing)) AS fechaguardia
+									'$fec_diaria' AS fechaguardia
 								FROM
 									asistencia
 									INNER JOIN asistencia_apertura ON  asistencia.cod_as_apertura = asistencia_apertura.codigo AND asistencia_apertura.fec_diaria = '$fec_diaria'
