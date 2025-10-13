@@ -32,9 +32,13 @@ foreach ($resultNO as  $datos) {
              <td>' . $datos["realizado"] . '</td>';
 
     if ($datos["realizado"] == 'SI') {
-        echo '<td> <input type="checkbox" id="'. $datos["codigo"] .'" name="marcado"  checked disabled  width="15px" height="15px"></td>
-        <td><input type="file" name="archivo[' . $datos["codigo"] . ']" disabled /></td>
-        <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Participantes" onclick="openModalParticipantesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td>';
+        echo '<td> <input type="checkbox" id="'. $datos["codigo"] .'" name="marcado"  checked disabled  width="15px" height="15px"></td><td>';
+        if (!empty($datos["link"])) {
+            echo '<img class="imgLink" src="imagenes/pdf.gif" alt="Ver Archivo" title="Ver Archivo de Actividad" onclick="verArchivo(\'' . $datos["link"] . '\')" width="20px" height="20px" style="cursor:pointer;">';
+        } else {
+            echo 'Sin archivo';
+        }
+        echo '</td><td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Participantes" onclick="openModalParticipantesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td>';
         if ($datos["participantes"] == 'T') {
             echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Observaciones" onclick="openModalObservacionesNO(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td></tr>';
         } else {

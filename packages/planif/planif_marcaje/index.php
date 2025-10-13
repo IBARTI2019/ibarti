@@ -88,6 +88,7 @@ if (isset($_SESSION['usuario_cod'])) {
         <th>Hora Inicio <br> Hora Fin</th>
         <th>Realizado</th>
         <th>Marcar</th>
+        <th>Archivo</th>
         <th>Observaciones</th>
         <th>Participantes</th>
       </tr>
@@ -208,6 +209,9 @@ if (isset($_SESSION['usuario_cod'])) {
       width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>">
       <input name="images" type="file" id="imagen"  value="Subir Imagen"  onchange="enableMarking()"/>
       <span id="correo_ubicacion" >¿Enviar a Correo de <?php echo $leng['ubicacion']?>?<input id="enviar_ubicacion" name="enviar_ubicacion" disabled type="checkbox" style="width: 100px;"/></span>
+      <span id="mainFileViewer" style="display:none; margin-left:10px;">
+          <img class="imgLink" src="imagenes/pdf.gif" alt="Ver Archivo Principal" title="Ver Archivo Principal Cargado" onclick="verArchivoPrincipal()" width="20px" height="20px" style="cursor:pointer;">
+      </span>
       </div>
     </td>
   
