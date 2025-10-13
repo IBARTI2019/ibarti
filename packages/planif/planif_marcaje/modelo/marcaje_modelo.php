@@ -39,7 +39,7 @@ class Marcaje
 
         $sql = "SELECT
             pd.codigo, cu.descripcion ubicacion, pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad, 
-            IF(pd.realizado = 'T', 'SI', 'NO') realizado, TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
+            IF(pd.realizado = 'T', 'SI', 'NO') realizado, pd.link, TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
             pa.participantes,
             (
                 SELECT
@@ -101,7 +101,7 @@ function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto)
 
         $sql = "SELECT
             pd.codigo, cu.descripcion ubicacion, pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad, 
-            IF(pd.realizado = 'T', 'SI', 'NO') realizado, TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
+            IF(pd.realizado = 'T', 'SI', 'NO') realizado, pd.link, TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
             pa.participantes,
             (
                 SELECT

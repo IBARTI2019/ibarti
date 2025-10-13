@@ -363,6 +363,11 @@ function markActivitiesBatch() {
         "<span class='success'>Los archivos han sido guardados con exito...</span>"
       );
       $("#imagen").val("");
+      // Show main file viewer if main file was uploaded
+      var mainFileInput = document.getElementById("imagen");
+      if (mainFileInput && mainFileInput.uploadedUrl) {
+        $("#mainFileViewer").show();
+      }
       Add_filtroX();
       cerrarModalfile();
     },
@@ -908,6 +913,19 @@ function updateLoadingProgress(progress) {
 
 function hideLoadingOverlay() {
   $("#loadingOverlay").hide();
+}
+
+function verArchivo(url) {
+  if (url) {
+    window.open(url, "_blank");
+  }
+}
+
+function verArchivoPrincipal() {
+  var mainFileInput = document.getElementById("imagen");
+  if (mainFileInput && mainFileInput.uploadedUrl) {
+    window.open(mainFileInput.uploadedUrl, "_blank");
+  }
 }
 
 function enviaremail(auxcliente, auxubicacion) {
