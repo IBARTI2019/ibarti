@@ -23,6 +23,15 @@ if (isset($_SESSION['usuario_cod'])) {
 ?>
 <div id="Cont_marcaje">
 
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; max-width: 400px;">
+      <img src="imagenes/loading3.gif" style="width: 50px; height: 50px; margin-bottom: 15px;">
+      <div id="loadingMessage">Procesando archivos...</div>
+      <div id="loadingProgress" style="margin-top: 10px; font-size: 14px; color: #666;"></div>
+    </div>
+  </div>
+
   <span class="etiqueta_title" id="title_horario">Marcaje de Supervisor</span>
   <table width="90%" align="center">
     <tr>
@@ -193,11 +202,11 @@ if (isset($_SESSION['usuario_cod'])) {
 <div align="center" class="etiqueta_title"><?php echo $titulo;?> </div><hr />
 <div id="Contenedor01" class="mensaje"></div>
 <form name="some_form" enctype="multipart/form-data" class="formulario" >
-<table width="100%" id="table_file_soporte">
+  <table width="100%" id="table_file_soporte">
   
-     <td 
+     <td
       width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>">
-      <input name="images" type="file" id="imagen"  value="Subir Imagen"  onfocus="activarcheckbox()"/>
+      <input name="images" type="file" id="imagen"  value="Subir Imagen"  onchange="enableMarking()"/>
       <span id="correo_ubicacion" >¿Enviar a Correo de <?php echo $leng['ubicacion']?>?<input id="enviar_ubicacion" name="enviar_ubicacion" disabled type="checkbox" style="width: 100px;"/></span>
       </div>
     </td>
@@ -213,6 +222,7 @@ if (isset($_SESSION['usuario_cod'])) {
               <th>Hora Inicio Hora Fin</th>
               <th>Realizado</th>
               <th>Marcar</th>
+              <th>Archivo</th>
               <th>Participantes</th>
               <th>Observaciones</th>
             </tr>
@@ -227,7 +237,7 @@ if (isset($_SESSION['usuario_cod'])) {
                 <span class="art-button-wrapper" id="imgMostrar"  style="display:none">
                     <span class="art-button-l"> </span>
                     <span class="art-button-r"> </span> 
-                      <input type="button" id="subir_img" value="Subir Archivo"  class="readon art-button" 
+                      <input type="button" id="subir_img" value="Subir Archivos"  class="readon art-button" 
                              onClick="subirImagenS3marcaje()"   /></span> 
                 <br/>
                  <br/>
