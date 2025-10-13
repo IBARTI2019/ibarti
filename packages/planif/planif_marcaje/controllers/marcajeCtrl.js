@@ -75,89 +75,271 @@ function showMessage(message) {
 }
 
 function subirImagenS3marcaje(codigo) {
-  //informaci�n del formulario
+  //informacin del formulario
+  var form = document.getElementsByName("some_form")[0];
+  var marcados = form["marcado"];
+  var hasMarkedActivities = false;
+  var missingFiles = [];
+  var filesToUpload = [];
+
+  if (marcados.length > 0) {
+    for (i = 0; i < marcados.length; i++) {
+      if (marcados[i].checked) {
+        hasMarkedActivities = true;
+        var fileInput =
+          marcados[i].parentElement.nextElementSibling.querySelector(
+            'input[type="file"]'
+          );
+        if (!fileInput.files[0]) {
+          missingFiles.push(marcados[i].id);
+        } else {
+          filesToUpload.push({
+            codigo: marcados[i].id,
+            file: fileInput.files[0],
+            isMainFile: false,
+          });
+        }
+      }
+    }
+  } else if (marcados && marcados.checked) {
+    hasMarkedActivities = true;
+    var fileInput =
+      marcados.parentElement.nextElementSibling.querySelector(
+        'input[type="file"]'
+      );
+    if (!fileInput.files[0]) {
+      missingFiles.push(marcados.id);
+    } else {
+      filesToUpload.push({
+        codigo: marcados.id,
+        file: fileInput.files[0],
+        isMainFile: false,
+      });
+    }
+  }
+
+  if (!hasMarkedActivities) {
+    toastr.error("Debe marcar al menos una actividad obligatoria");
+    return;
+  }
+
+  if (missingFiles.length > 0) {
+    toastr.error(
+      "Debe cargar archivos para todas las actividades marcadas: " +
+        missingFiles.join(", ")
+    );
+    return;
+  }
+
+  // Add main file if exists - this is required for marking
+  var mainFileInput = document.getElementById("imagen");
+  if (!mainFileInput.files[0]) {
+    toastr.error(
+      "Debe cargar el archivo principal antes de marcar actividades"
+    );
+    return;
+  }
+
+  filesToUpload.unshift({
+    codigo: $("#cod_det2").val(),
+    file: mainFileInput.files[0],
+    isMainFile: true,
+  });
+
   if (
     confirm(
       "¿Esta seguro de continuar con el registro del marcaje?. Esta operación es irreversible!?"
     )
   ) {
-    var formData = new FormData($(".formulario")[0]);
-    var folder = $("#stdID").val();
-    var doc = $("#cod_det2").val();
-    var usuario = $("#usuario").val();
-    var nombre = ci + "_" + doc;
-    var config = [
-      {
-        folder: folder,
-        key: doc,
-      },
-    ];
+    // Show loading overlay
+    showLoadingOverlay("Iniciando carga de archivos...");
 
-    formData.append("config", JSON.stringify(config));
-    var message = "";
-
-    //hacemos la petici�n ajax
-    $.ajax({
-      url: "http://194.163.161.64:9090/docs/upload_marcaje/",
-      type: "POST",
-      // Form data
-      //datos del formulario
-      data: formData,
-      //necesario para subir archivos via ajax
-      cache: false,
-      contentType: false,
-      processData: false,
-      //mientras enviamos el archivo
-      beforeSend: function () {
-        message = $(
-          "<span class='before'>Subiendo la imagen, por favor espere...</span>"
-        );
-        showMessage(message);
-      },
-      //una vez finalizado correctamente
-
-      success: function (data) {
-        uploadActulizarS3marcaje(data.data.image[0], folder, doc, usuario);
-      },
-      //si ha ocurrido un error
-      error: function () {
-        message = $("<span class='error'>Ha ocurrido un error.</span>");
-        showMessage(message);
-      },
-    });
+    // Start uploading files one by one
+    uploadFilesSequentially(filesToUpload, 0);
   }
 }
 
-function uploadActulizarS3marcaje(urls, cod, archi, xusuario) {
+function uploadFilesSequentially(files, index) {
+  if (index >= files.length) {
+    // All files uploaded, now mark activities
+    markActivitiesBatch();
+    return;
+  }
+
+  var fileData = files[index];
+  var formData = new FormData();
+  formData.append("images", fileData.file);
+  formData.append("codigo", fileData.codigo);
+
+  var usuario = $("#usuario").val();
+  var ficha = $("#stdID").val();
+  var cliente = $("#cliente").val();
+  var ubicacion = $("#ubicacion").val();
+  var proyecto = $("#cod_proyecto").val();
+
+  formData.append("usuario", usuario);
+  formData.append("ficha", ficha);
+  formData.append("cliente", cliente);
+  formData.append("ubicacion", ubicacion);
+  formData.append("proyecto", proyecto);
+
+  $.ajax({
+    url: "http://194.163.161.64:9090/docs/upload_marcaje/",
+    type: "POST",
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    beforeSend: function () {
+      updateLoadingMessage(
+        "Subiendo archivo " + (index + 1) + " de " + files.length + "..."
+      );
+    },
+    success: function (data) {
+      console.log("Upload response for file " + (index + 1) + ":", data);
+      // Store the uploaded file info
+      fileData.uploadedUrl = data.data.image[0];
+      console.log(
+        "Stored URL for " + fileData.codigo + ":",
+        fileData.uploadedUrl
+      );
+      // Store URL on the actual file input element for later reference
+      if (fileData.isMainFile) {
+        document.getElementById("imagen").uploadedUrl = data.data.image[0];
+        console.log(
+          "Main file URL stored:",
+          document.getElementById("imagen").uploadedUrl
+        );
+      } else {
+        // Find the corresponding file input and store the URL
+        var fileInputs = document.querySelectorAll(
+          'input[type="file"][name^="archivo["]'
+        );
+        for (var j = 0; j < fileInputs.length; j++) {
+          var inputName = fileInputs[j].getAttribute("name");
+          var codigoMatch = inputName.match(/archivo\[(\d+)\]/);
+          if (codigoMatch && codigoMatch[1] == fileData.codigo) {
+            fileInputs[j].uploadedUrl = data.data.image[0];
+            console.log(
+              "Activity file URL stored for " + fileData.codigo + ":",
+              fileInputs[j].uploadedUrl
+            );
+            break;
+          }
+        }
+      }
+      // Continue with next file
+      uploadFilesSequentially(files, index + 1);
+    },
+    error: function () {
+      showMessage(
+        "<span class='error'>Error al subir archivo " + (index + 1) + "</span>"
+      );
+    },
+  });
+}
+
+function markActivitiesBatch() {
+  var form = document.getElementsByName("some_form")[0];
+  var marcados = form["marcado"];
+  var usuario = $("#usuario").val();
   var cod_ficha = $("#stdID").val();
   var cod_cliente = $("#cliente").val();
   var cod_ubicacion = $("#ubicacion").val();
-  var form = document.getElementsByName("some_form")[0];
-  var marcados = form["marcado"];
-  var ubi = form["enviar_ubicacion"];
   var proyecto = $("#cod_proyecto").val();
 
-  console.log(marcados);
-
   var lista = [];
+  var links = {};
+
+  console.log("Starting markActivitiesBatch");
+  console.log("Form marcados:", marcados);
+
+  // Get main file URL if exists
+  var mainFileUrl = "";
+  var mainFileInput = document.getElementById("imagen");
+  if (mainFileInput && mainFileInput.uploadedUrl) {
+    mainFileUrl = mainFileInput.uploadedUrl;
+    console.log("Main file URL:", mainFileUrl);
+  }
+
+  // Collect marked activities and their links
   if (marcados.length > 0) {
     for (i = 0; i < marcados.length; i++) {
       if (marcados[i].checked) {
         lista.push(marcados[i].id);
+        console.log("Processing checked activity:", marcados[i].id);
+        // Find the corresponding uploaded file
+        var fileInput =
+          marcados[i].parentElement.nextElementSibling.querySelector(
+            'input[type="file"]'
+          );
+        console.log("File input found:", fileInput);
+        console.log(
+          "File input uploadedUrl:",
+          fileInput ? fileInput.uploadedUrl : "undefined"
+        );
+        if (fileInput && fileInput.uploadedUrl) {
+          // Each activity gets its own file URL
+          links[marcados[i].id] = fileInput.uploadedUrl;
+          console.log(
+            "Using activity-specific URL for",
+            marcados[i].id,
+            ":",
+            fileInput.uploadedUrl
+          );
+        } else {
+          // If no specific file, use main file URL for mandatory activities
+          links[marcados[i].id] = mainFileUrl;
+          console.log(
+            "Using main file URL for",
+            marcados[i].id,
+            ":",
+            mainFileUrl
+          );
+        }
       }
     }
-  } else if (marcados) {
+  } else if (marcados && marcados.checked) {
     lista.push(marcados.id);
+    console.log("Processing single checked activity:", marcados.id);
+    var fileInput =
+      marcados.parentElement.nextElementSibling.querySelector(
+        'input[type="file"]'
+      );
+    console.log("File input found:", fileInput);
+    console.log(
+      "File input uploadedUrl:",
+      fileInput ? fileInput.uploadedUrl : "undefined"
+    );
+    if (fileInput && fileInput.uploadedUrl) {
+      links[marcados.id] = fileInput.uploadedUrl;
+      console.log(
+        "Using activity-specific URL for",
+        marcados.id,
+        ":",
+        fileInput.uploadedUrl
+      );
+    } else {
+      links[marcados.id] = mainFileUrl;
+      console.log("Using main file URL for", marcados.id, ":", mainFileUrl);
+    }
   }
+
+  console.log("Final lista:", lista);
+  console.log("Final links:", links);
 
   let vectorJSON = JSON.stringify(lista);
 
-  // For multiple files, send map of cod to url
+  // Add main file URL to links if it exists
+  if (mainFileUrl) {
+    links[$("#cod_det2").val()] = mainFileUrl;
+  }
+
   var parametros = {
-    links: JSON.stringify(urls), // JSON string of cod:url map
-    codigo: archi,
-    doc: archi,
-    usuario: xusuario,
+    links: JSON.stringify(links),
+    codigo: $("#cod_det2").val(),
+    doc: $("#cod_det2").val(),
+    usuario: usuario,
     vector: vectorJSON,
     cod_ficha: cod_ficha,
     cod_cliente: cod_cliente,
@@ -165,38 +347,32 @@ function uploadActulizarS3marcaje(urls, cod, archi, xusuario) {
     cod_proyecto: proyecto,
   };
 
+  console.log("Sending parameters to marcar.php:", parametros);
+
   $.ajax({
     url: "packages/planif/planif_marcaje/modelo/marcar.php",
     type: "POST",
     data: parametros,
-    //        cache: false,
-    //      contentType: false,
-    //     processData: false,
-
-    beforeSend: function () {},
-    //una vez finalizado correctamente
+    beforeSend: function () {
+      updateLoadingMessage("Guardando marcaje...");
+    },
     success: function (data) {
-      message = $(
+      console.log("Response from marcar.php:", data);
+      hideLoadingOverlay();
+      showMessage(
         "<span class='success'>Los archivos han sido guardados con exito...</span>"
       );
-      showMessage(message);
-      //enviar correo a ubicacion
-      if (ubi.checked) {
-        message = $("<span class='enviando email, por favor espere...</span>");
-        showMessage(message);
-        // enviaremail(cod_cliente,cod_ubicacion);
-      }
       $("#imagen").val("");
       Add_filtroX();
+      cerrarModalfile();
     },
-    //si ha ocurrido un error
     error: function () {
-      message = $("<span class='error'>Ha ocurrido un error.</span>");
-      showMessage(message);
+      hideLoadingOverlay();
+      showMessage(
+        "<span class='error'>Ha ocurrido un error al guardar el marcaje.</span>"
+      );
     },
   });
-
-  cerrarModalfile();
 }
 
 function changeCliente(cliente) {
@@ -599,7 +775,7 @@ function cargar_actividades(ficha, cliente, ubicacion, proyecto, realizado) {
     },
   });
 }
-function activarcheckbox() {
+function enableMarking() {
   let marcados = [];
   var form = document.getElementsByName("some_form")[0];
   marcados = form["marcado"];
@@ -624,6 +800,116 @@ function activarcheckbox() {
   }
   ubi.disabled = false;
 }
+
+function activarcheckbox() {
+  enableMarking();
+}
+function enableFileInput(checkbox) {
+  var fileInput =
+    checkbox.parentElement.nextElementSibling.querySelector(
+      'input[type="file"]'
+    );
+  if (checkbox.checked) {
+    fileInput.disabled = false;
+    fileInput.required = true;
+  } else {
+    fileInput.disabled = true;
+    fileInput.required = false;
+    fileInput.value = "";
+  }
+}
+
+function subirImagenActividad(codigo) {
+  var fileInput = document.querySelector(
+    'input[name="archivo[' + codigo + ']"]'
+  );
+  if (!fileInput.files[0]) {
+    toastr.error("Debe seleccionar un archivo para esta actividad");
+    return;
+  }
+
+  var formData = new FormData();
+  formData.append("images", fileInput.files[0]);
+  formData.append("codigo", codigo);
+
+  var usuario = $("#usuario").val();
+  var ficha = $("#stdID").val();
+  var cliente = $("#cliente").val();
+  var ubicacion = $("#ubicacion").val();
+  var proyecto = $("#cod_proyecto").val();
+
+  formData.append("usuario", usuario);
+  formData.append("ficha", ficha);
+  formData.append("cliente", cliente);
+  formData.append("ubicacion", ubicacion);
+  formData.append("proyecto", proyecto);
+
+  $.ajax({
+    url: "http://194.163.161.64:9090/docs/upload_marcaje/",
+    type: "POST",
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false,
+    beforeSend: function () {
+      toastr.info("Subiendo archivo...");
+    },
+    success: function (data) {
+      // Marcar la actividad como realizada
+      marcarActividad(codigo, data.data.image[0], usuario);
+    },
+    error: function () {
+      toastr.error("Error al subir el archivo");
+    },
+  });
+}
+
+function marcarActividad(codigo, link, usuario) {
+  var parametros = {
+    codigo: codigo,
+    usuario: usuario,
+    link: link,
+  };
+
+  $.ajax({
+    data: parametros,
+    url: "packages/planif/planif_marcaje/modelo/marcar.php",
+    type: "post",
+    success: function (response) {
+      var resp = JSON.parse(response);
+      if (resp.error) {
+        toastr.error("Error al marcar la actividad");
+      } else {
+        toastr.success("Actividad marcada exitosamente");
+        // Recargar actividades
+        Add_filtroX();
+      }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert(xhr.status);
+      alert(thrownError);
+    },
+  });
+}
+
+function showLoadingOverlay(message) {
+  $("#loadingMessage").text(message);
+  $("#loadingProgress").text("");
+  $("#loadingOverlay").show();
+}
+
+function updateLoadingMessage(message) {
+  $("#loadingMessage").text(message);
+}
+
+function updateLoadingProgress(progress) {
+  $("#loadingProgress").text(progress);
+}
+
+function hideLoadingOverlay() {
+  $("#loadingOverlay").hide();
+}
+
 function enviaremail(auxcliente, auxubicacion) {
   if (auxubicacion && auxcliente) {
     if (

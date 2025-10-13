@@ -42,8 +42,8 @@ foreach ($resultNO as  $datos) {
         }
     } else {
 
-        echo '<td> <input type="checkbox" id="'. $datos["codigo"] .'" name="marcado" disabled  width="15px" height="15px"></td>
-        <td><input type="file" name="archivo[' . $datos["codigo"] . ']" /></td>';
+       echo '<td> <input type="checkbox" id="'. $datos["codigo"] .'" name="marcado" disabled onchange="enableFileInput(this)" width="15px" height="15px"></td>
+       <td><input type="file" name="archivo[' . $datos["codigo"] . ']" disabled /></td>';
         if($realizado == "true"){
             echo '<td><img src="imagenes/cerrar.bmp" ' . $disabled . ' alt="Realizado" title="Actividad Realizada" width="20px" height="20px" border="null"/></td>';
         }else{
