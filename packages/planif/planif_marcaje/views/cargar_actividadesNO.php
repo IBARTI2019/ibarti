@@ -9,6 +9,7 @@ $cliente     = $_POST['auxcliente'];
 $ubicacion     = $_POST['auxubicacion'];
 $proyecto      =$_POST['auxproyecto'];
 $realizado      = $_POST['realizado'];
+$codigo      = $_POST['codigo'];
 
 $resultNO = $marcaje->get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto, $codigo);
 
