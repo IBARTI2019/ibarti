@@ -58,7 +58,8 @@ class Marcaje
                         planif_clientes_superv_trab_det_participantes b
                     WHERE
                         a.codigo = b.cod_det
-            AND a.codigo = pd.codigo) fichas
+            AND a.codigo = pd.codigo) fichas,
+            p.codigo cod_planif
             FROM
                 planif_clientes_superv_trab p,
                 planif_clientes_superv_trab_det pd,
@@ -74,7 +75,7 @@ class Marcaje
         return $this->datos;
     }
 
-function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto)
+function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto, $codigo = '')
    
     {
         //  -- AND TIME(pd.fecha_fin) <= CURRENT_TIME()
@@ -98,6 +99,11 @@ function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto)
         if ($ubicacion != 'TODOS' && $ubicacion != "" && $ubicacion != null) {
             $where .= " AND p.cod_ubicacion = '$ubicacion'";
         }
+
+        if ($codigo != 'TODOS' && $codigo != "" && $codigo != null) {
+            $where .= " AND p.codigo = '$codigo'";
+        }
+        
 
         $sql = "SELECT
             pd.codigo, cu.descripcion ubicacion, pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad, 

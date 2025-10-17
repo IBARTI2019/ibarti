@@ -82,6 +82,17 @@ function subirImagenS3marcaje(codigo) {
   var missingFiles = [];
   var filesToUpload = [];
 
+  var needToMark = false;
+  var activityFileInputs = document.querySelectorAll(
+    'input[type="file"][name^="archivo["]'
+  );
+  for (var j = 0; j < activityFileInputs.length; j++) {
+    if (!activityFileInputs[j].uploadedUrl) {
+      needToMark = true;
+      break;
+    }
+  }
+
   if (marcados.length > 0) {
     for (i = 0; i < marcados.length; i++) {
       if (marcados[i].checked) {
@@ -90,14 +101,16 @@ function subirImagenS3marcaje(codigo) {
           marcados[i].parentElement.nextElementSibling.querySelector(
             'input[type="file"]'
           );
-        if (!fileInput.files[0]) {
-          missingFiles.push(marcados[i].id);
-        } else {
-          filesToUpload.push({
-            codigo: marcados[i].id,
-            file: fileInput.files[0],
-            isMainFile: false,
-          });
+        if (fileInput) {
+          if (!fileInput.files[0]) {
+            missingFiles.push(marcados[i].id);
+          } else {
+            filesToUpload.push({
+              codigo: marcados[i].id,
+              file: fileInput.files[0],
+              isMainFile: false,
+            });
+          }
         }
       }
     }
@@ -118,7 +131,7 @@ function subirImagenS3marcaje(codigo) {
     }
   }
 
-  if (!hasMarkedActivities) {
+  if (needToMark && !hasMarkedActivities) {
     toastr.error("Debe marcar al menos una actividad obligatoria");
     return;
   }
@@ -621,7 +634,8 @@ function openModalObservacionesdos(
   xcliente,
   xubicacion,
   xproyecto,
-  realizado
+  realizado,
+  cod_planif
 ) {
   $("#cod_det2").val(codigo);
   $("#cod_proyecto").val(xproyecto);
@@ -634,7 +648,14 @@ function openModalObservacionesdos(
     $("#table_file_soporte").show();
     $("#table_boton_subir").show();
   }
-  cargar_actividades(xficha, xcliente, xubicacion, xproyecto, realizado);
+  cargar_actividades(
+    xficha,
+    xcliente,
+    xubicacion,
+    xproyecto,
+    realizado,
+    cod_planif
+  );
 }
 
 function cerrarModalObservaciones() {
@@ -753,13 +774,21 @@ function cargar_observacionesNO(codigo) {
   });
 }
 
-function cargar_actividades(ficha, cliente, ubicacion, proyecto, realizado) {
+function cargar_actividades(
+  ficha,
+  cliente,
+  ubicacion,
+  proyecto,
+  realizado,
+  codigo = ""
+) {
   var parametros = {
     auxficha: ficha,
     auxcliente: cliente,
     auxubicacion: ubicacion,
     auxproyecto: proyecto,
     realizado,
+    codigo: codigo,
   };
 
   $.ajax({
