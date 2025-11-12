@@ -27,6 +27,10 @@ if (isset($_POST['orden'])) {
 	$orden = $_POST['orden'];
 }
 
+if (isset($_POST['requiere_video'])) {
+	$requiere_video = $_POST['requiere_video'];
+}
+
 if (isset($_POST['conceptos'])) {
 	$conceptos = $_POST['conceptos'];
 } else {
@@ -100,7 +104,13 @@ if (isset($_POST['metodo'])) {
 							'$campo01', '$campo02', '$campo03', '$campo04', 
 							'$usuario', '$date', '$usuario','$date' , '$activo', '$planificable')";
 			} else {
-				if ($tabla == 'documentos' || $tabla == 'documentos_cl') {
+				if ($tabla == 'documentos'){
+				$sql = "INSERT INTO $tabla (codigo, descripcion, orden, requiere_video, campo01, campo02, campo03, campo04,
+                                            cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status) 
+                                    VALUES ('$codigo', '$descripcion', $orden, '$requiere_video',
+									        '$campo01', '$campo02', '$campo03', '$campo04', 
+											'$usuario', '$date', '$usuario','$date' , '$activo')";
+				} else if($tabla == 'documentos_cl') {
 					$sql = "INSERT INTO $tabla (codigo, descripcion, orden, campo01, campo02, campo03, campo04,
                                             cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod, status) 
                                     VALUES ('$codigo', '$descripcion', $orden,
@@ -185,6 +195,9 @@ if (isset($_POST['metodo'])) {
 				$sql .= " ,planificable = '$planificable', cod_tipo = $tipo ";
 			}
 			if ($tabla == 'documentos' || $tabla == 'documentos_cl') {
+				if ($tabla == 'documentos') {
+					$sql .= " ,requiere_video = '$requiere_video' ";
+				}
 				$sql .= " ,orden = $orden ";
 			}
 			if ($tabla == 'ficha_egreso_motivo') {
@@ -223,7 +236,7 @@ if (isset($_POST['metodo'])) {
                
 	}
 }
-require_once('../funciones/sc_direccionar.php');
+// require_once('../funciones/sc_direccionar.php');
 ?>
 
 <body>

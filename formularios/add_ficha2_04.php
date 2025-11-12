@@ -1,3 +1,4 @@
+<script type="text/javascript" src="upload/functions.js"></script>
 <?php
 //	require_once('autentificacion/aut_verifica_menu.php');
 $metodo = 'agregar';
@@ -32,7 +33,8 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 					ficha_documentos.fec_us_mod,
 					documentos.descripcion,
 					control.url_doc,
-					documentos.orden 
+					documentos.orden,
+					documentos.requiere_video
 				FROM
 					documentos,
 					ficha_documentos,
@@ -51,7 +53,8 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 					'' AS fec_us_mod,
 					documentos.descripcion,
 					control.url_doc,
-					documentos.orden 
+					documentos.orden,
+					documentos.requiere_video
 				FROM
 					documentos,
 					control 
@@ -77,18 +80,48 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				extract($datos);
 				$img_src = $link;
 				$borrarDoc = "";
-				if ($img_src) {
-					$img_ext =  imgExtension($img_src);
-					$img_src = 	'<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\')" width="22px" height="22px"  />';
+				if ($link) {
+					if ($requiere_video == 'T') {
+						// Si requiere video y tiene link, muestra icono de video y llama a openModalVideo
+						// openModalDocument manejará ambos casos (video y documento)
+						$img_src = '<img src="imagenes/video_icon.png" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\', \'T\')" width="22px" height="22px" style="cursor: pointer;" />';
+					} else {
+						// Si es un documento normal, usa la lógica original para PDFs/Imágenes
+						$img_ext = imgExtension($link);
+						$img_src = '<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\', \'N\')" width="22px" height="22px" style="cursor: pointer;" />';
+					}
+
 					if($admin_rrhh == 'T'){
 						$borrarDoc = '<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Documento" width="22" height="22" border="null" onclick="BorrarDocumento(\''.$cod_documento.'\')"/>';
 					}
 				} else {
-					$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
+					$img_src = '<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
-				$subir = "Vinculo('inicio.php?area=formularios/add_imagenes_doc&ficha=$cod_ficha&ci=$cedula&doc=$cod_documento')";
-				// 	<td>oookoko  xxx </td>
-				//
+
+				if ($requiere_video == 'T') {
+					// Opción para subir Video (Input File)
+					// Agregamos un input file y un icono que lo activa (usando una función JavaScript que debemos definir).
+					//  />
+					$upload_element = '
+					<input type="file" 
+					id="upload_video_' . $cod_documento . '" 
+					name="upload_video_' . $cod_documento . '" 
+					accept="video/*" 
+					style="display:none;" 
+					 onchange="subirVideoS3(\'' .$codigo. '\', \'' . $cod_documento . '\')"/> 
+					
+					<img class="ImgLink" 
+					src="imagenes/subir.gif" 
+					width="22px" height="22px" 
+					title="Subir Video"
+					onclick="$(\'#upload_video_' . $cod_documento . '\').click();" />';
+				} else {
+					// Opción para subir Imágenes/Archivos (Redirección con Vinculo)
+					$subir = "Vinculo('inicio.php?area=formularios/add_imagenes_doc&ficha=$codigo&ci=$cedula&doc=$cod_documento')";
+					$upload_element = '<a target="_blank" onClick="' . $subir . '">
+					<img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" title="Subir Imagen/Archivo" /></a>';
+				}
+
 				echo '
 					<tr>
 						<td class="texto">' . longitudMax($descripcion) . '</td>
@@ -96,10 +129,7 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 						                            ' . CheckX($checks, 'S') . '/>NO <input type = "radio" name="documento' . $cod_documento . '"
 													value = "N" style="width:auto" disabled="disabled" ' . CheckX($checks, 'N') . '/><input type="hidden"                                                     name="documento_old' . $cod_documento . '" value = "' . $checks . '"/></td>
 						<td><textarea name="observ_doc' . $cod_documento . '" cols="20" rows="1">' . $observacion . '</textarea></td>
-						<td>' . $img_src . ' - <a target="_blank" onClick="' . $subir . '">
-						<img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" /></a>'. $borrarDoc . '
-						</td>
-						
+						<td>' . $img_src . ' - ' . $upload_element . $borrarDoc . '</td>
 						<td class="texto">SI <input type = "radio" name="vencimiento' . $cod_documento . '"  value = "S" style="width:auto"
 																				' . CheckX($vencimiento, 'S') . '/>NO <input type = "radio"
 																				name="vencimiento' . $cod_documento . '" value = "N" style="width:auto"
@@ -159,11 +189,20 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 		});
 	}
 
-	function openModalDocument(documentName, link) {	
-		console.log(documentName, link)	
+	function openModalDocument(documentName, link, isVideo) {		
 		$("#myModalDocument").show();
 		$("#titleDocument").html(documentName);
-		var contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+		var contenido = "";
+		if (isVideo == 'T') {
+			// Contenido para Video: usar etiqueta <video>
+			contenido = '<video width="100%" height="auto" controls autoplay>'
+				+ '<source src="' + link + '" type="video/mp4">'
+				+ 'Tu navegador no soporta la etiqueta de video.'
+				+ '</video>';
+		} else {
+			// Contenido para Documentos (PDF/Imagen)
+			contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+		}
 		$("#modal_documento_cont").html(contenido);
 		/* 	
 			$("#modal_documento_cont").html("<img src='imagenes/loading.gif' /> Procesando, espere por favor...");
@@ -182,6 +221,21 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 				}
 			}); 
 		*/
+	}
+
+	function cerrarModalDocument(refresh) {
+		var modalContent = $("#modal_documento_cont");
+		var videoElement = modalContent.find('video')[0];
+
+		// 1. Detener la reproducción si hay un elemento <video>
+		if (videoElement) {
+			videoElement.pause();
+			videoElement.currentTime = 0; // Opcional: rebobinar al inicio
+		}
+
+		// 2. Limpiar el contenido para liberar recursos (especialmente si es un video grande)
+		modalContent.empty();
+		$("#myModalDocument").hide();
 	}
 
 	function showMessage(message) {
@@ -227,7 +281,4 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 		return bytes.buffer;
 	}
 
-	function cerrarModalDocument(refresh) {
-		$("#myModalDocument").hide();
-	}
 </script>

@@ -1,9 +1,12 @@
+<script type="text/javascript" src="upload/functions.js"></script>
 <?php
 //	require_once('autentificacion/aut_verifica_menu.php');
 $proced      = "p_fichas_04";
 $metodo       = "agregar";
 $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&metodo=modificar";
 ?>
+<link rel="stylesheet" href="css/modal_planif.css" type="text/css" media="screen" />
+
 <form action="scripts/sc_ficha_04.php" method="post" name="add" id="add">
 	<hr>
 	<legend>Documento Trabajador </legend>
@@ -29,7 +32,8 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 				ficha_documentos.fec_us_mod,
 				documentos.descripcion,
 				control.url_doc,
-				documentos.orden 
+				documentos.orden,
+				documentos.requiere_video
 				FROM
 				documentos,
 				ficha_documentos,
@@ -48,7 +52,8 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 				'' AS fec_us_mod,
 				documentos.descripcion,
 				control.url_doc,
-				documentos.orden 
+				documentos.orden,
+				documentos.requiere_video
 				FROM
 				documentos,
 				control 
@@ -71,15 +76,44 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 		while ($datos = $bd->obtener_fila($query, 0)) {
 			extract($datos);
 			$img_src = $link;
-			if ($img_src) {
-				$img_ext =  imgExtension($img_src);
-				$img_src = 	'<a target="_blank" href="' . $img_src . '"><img src="' . $img_ext . '" width="22px" height="22px" /></a>';
+			if ($link) {
+				if ($requiere_video == 'T') {
+					// Si requiere video y tiene link, muestra icono de video y llama a openModalVideo
+					// openModalDocument manejará ambos casos (video y documento)
+					$img_src = '<img src="imagenes/video_icon.png" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\', \'T\')" width="22px" height="22px" style="cursor: pointer;" />';
+				} else {
+					// Si es un documento normal, usa la lógica original para PDFs/Imágenes
+					$img_ext = imgExtension($link);
+					$img_src = '<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\', \'N\')" width="22px" height="22px" style="cursor: pointer;" />';
+				}
 			} else {
-				$img_src = 	'<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
+				$img_src = '<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 			}
-			$subir = "Vinculo('inicio.php?area=formularios/add_imagenes_doc&ficha=$cod_ficha&ci=$cedula&doc=$cod_documento')";
-			// 	<td>oookoko  xxx </td>
-			//
+
+			if ($requiere_video == 'T') {
+				// Opción para subir Video (Input File)
+				// Agregamos un input file y un icono que lo activa (usando una función JavaScript que debemos definir).
+				//  />
+				$upload_element = '
+				<input type="file" 
+				id="upload_video_' . $cod_documento . '" 
+				name="upload_video_' . $cod_documento . '" 
+				accept="video/*" 
+				style="display:none;" 
+					onchange="subirVideoS3(\'' .$codigo. '\', \'' . $cod_documento . '\')"/> 
+				
+				<img class="ImgLink" 
+				src="imagenes/subir.gif" 
+				width="22px" height="22px" 
+				title="Subir Video"
+				onclick="$(\'#upload_video_' . $cod_documento . '\').click();" />';
+			} else {
+				// Opción para subir Imágenes/Archivos (Redirección con Vinculo)
+				$subir = "Vinculo('inicio.php?area=formularios/add_imagenes_doc&ficha=$codigo&ci=$cedula&doc=$cod_documento')";
+				$upload_element = '<a target="_blank" onClick="' . $subir . '">
+				<img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" title="Subir Imagen/Archivo" /></a>';
+			}
+
 			echo '
 					<tr>
 						<td class="texto">' . longitudMax($descripcion) . '</td>
@@ -90,8 +124,7 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 													  name="documento_old' . $cod_documento . '" value = "' . $checks . '"/></td>
 						<td><textarea name="observ_doc' . $cod_documento . '" cols="20" rows="1"
 						                disabled="disabled">' . $observacion . '</textarea></td>
-						<td>' . $img_src . ' / <a target="_blank" onClick="' . $subir . '"><img class="ImgLink" src="imagenes/subir.gif"
-						                                                                 width="22px" height="22px" /></a></td>
+				<td>' . $img_src . ' - ' . $upload_element . '</td>
 
 					 <td class="texto">SI <input type = "radio" name="vencimiento' . $cod_documento . '"  value = "S" style="width:auto"
 					 														 disabled="disabled" ' . CheckX($vencimiento, 'S') . '/>NO <input type = "radio"
@@ -120,6 +153,19 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 
 </form>
 
+<div id="myModalDocument" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="cerrarModalDocument()">&times;</span>
+      <span id='titleDocument'>Documento</span>
+    </div>
+    <div class="modal-body">
+      <div id="modal_documento_cont">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script language="javascript" type="text/javascript">
 	function spryFecVenc(ValorN) {
 		//	alert(ValorN);
@@ -130,5 +176,37 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 			validateOn: ["blur", "change"],
 			useCharacterMasking: true
 		});
+	}
+
+	function openModalDocument(documentName, link, isVideo) {		
+		$("#myModalDocument").show();
+		$("#titleDocument").html(documentName);
+		var contenido = "";
+		if (isVideo == 'T') {
+			// Contenido para Video: usar etiqueta <video>
+			contenido = '<video width="100%" height="auto" controls autoplay>'
+				+ '<source src="' + link + '" type="video/mp4">'
+				+ 'Tu navegador no soporta la etiqueta de video.'
+				+ '</video>';
+		} else {
+			// Contenido para Documentos (PDF/Imagen)
+			contenido = '<embed src="' + link + '" type="application/pdf" width="100%" height="800px"><noembed><p>Su navegador no admite archivos PDF.<a href="' + link + '">Descargue el archivo en su lugar</a></p></noembed></embed>';
+		}
+		$("#modal_documento_cont").html(contenido);
+	}
+
+	function cerrarModalDocument(refresh) {
+		var modalContent = $("#modal_documento_cont");
+		var videoElement = modalContent.find('video')[0];
+
+		// 1. Detener la reproducción si hay un elemento <video>
+		if (videoElement) {
+			videoElement.pause();
+			videoElement.currentTime = 0; // Opcional: rebobinar al inicio
+		}
+
+		// 2. Limpiar el contenido para liberar recursos (especialmente si es un video grande)
+		modalContent.empty();
+		$("#myModalDocument").hide();
 	}
 </script>

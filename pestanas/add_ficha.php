@@ -1,3 +1,6 @@
+<link rel="stylesheet" type="text/css" href="libs/toastr.css">
+<script type="text/javascript" src="libs/toastr.js"></script>
+
 <?php
 $Nmenu = 409;
 require_once('autentificacion/aut_verifica_menu.php');
