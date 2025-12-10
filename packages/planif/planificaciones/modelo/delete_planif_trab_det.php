@@ -12,7 +12,7 @@ foreach($_POST as $nombre_campo => $valor){
 }
   try {
 
-    $sql = "CALL p_planif_delete('$cliente','$ubicacion','$ficha','$apertura')";
+    $sql = "CALL p_planif_delete('$cliente','$ubicacion','$puesto','$ficha','$apertura')";
     $query = $bd->consultar($sql);
     $result['sql'] = $sql;
 
