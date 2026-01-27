@@ -70,7 +70,7 @@ if ($tipo == "TODOS" || $tipo == 'DOT') {
 		$where_alcance ";
 }
 
-$sql .= " ORDER BY fecha ASC ";
+$sql .= " ORDER BY 1 ASC ";
 //echo $sql;
 $query = $bd->consultar($sql);
 while ($rows = $bd->obtener_name($query)) {
