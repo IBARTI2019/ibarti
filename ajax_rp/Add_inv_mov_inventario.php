@@ -17,12 +17,12 @@ $result = array();
 $where = " WHERE ajuste_reng.cod_almacen = almacenes.codigo AND ajuste_reng.cod_producto = productos.item
 AND ajuste.codigo = ajuste_reng.cod_ajuste AND ajuste.cod_tipo = prod_mov_tipo.codigo 
 AND prod_sub_lineas.codigo = productos.cod_sub_linea AND tallas.codigo = productos.cod_talla
-AND ajuste.fecha BETWEEN '$fecha_D' AND '$fecha_H' ";
+AND ajuste.fec_us_ing BETWEEN '$fecha_D' AND '$fecha_H' ";
 
 $where_alcance = " WHERE ajuste_alcance.codigo =ajuste_alcance_reng.cod_ajuste
 AND ajuste_alcance_reng.cod_almacen = almacenes.codigo
-ANd ajuste_alcance_reng.cod_producto = productos.item
-AND ajuste_alcance.fecha BETWEEN '$fecha_D' AND '$fecha_H' ";
+AND ajuste_alcance_reng.cod_producto = productos.item
+AND ajuste_alcance.fec_us_ing BETWEEN '$fecha_D' AND '$fecha_H' ";
 
 if ($almacen != "TODOS") {
 	$where .= " AND ajuste_reng.cod_almacen = '$almacen' ";
