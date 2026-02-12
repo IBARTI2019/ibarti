@@ -19,8 +19,8 @@ if ($metodo == 'modificar') {
     $query_tipos = $bd->consultar($sql_tipos);
   } else {
     if ($tabla == 'documentos'){
-      $sql = " SELECT $tabla.codigo, $tabla.descripcion, $tabla.orden,  $tabla.requiere_video,
-	                $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
+      $sql = " SELECT $tabla.codigo, $tabla.descripcion, $tabla.orden,  $tabla.requiere_video, 
+              $tabla.es_recibo_pago, $tabla.campo01, $tabla.campo02, $tabla.campo03, $tabla.campo04,	               
 				    $tabla.status
              FROM $tabla WHERE codigo = '$codigo' ";
     } 
@@ -77,6 +77,7 @@ if ($metodo == 'modificar') {
   if ($tabla == 'documentos' || $tabla == 'documentos_cl' || $tabla == 'ruta_de_ventas') {
     if($tabla == 'documentos'){
       $requiere_video = $result['requiere_video'];
+      $es_recibo_pago = $result['es_recibo_pago'];
     }
     $orden = $result['orden'];
   }
@@ -116,6 +117,7 @@ if ($metodo == 'modificar') {
 
   $orden = '';
   $requiere_video = 'F';
+  $es_recibo_pago = 'F';
   $codigo_onblur = "Add_ajax_maestros(this.value, 'ajax/validar_maestros.php', 'Contenedor', '$tabla')";
   $codigo_orden = "Add_ajax_maestros(this.value, 'ajax/validar_orden.php', 'Contenedor', '$tabla')";
 
@@ -221,7 +223,14 @@ if ($metodo == 'modificar') {
             <td>
            <input name="requiere_video" type="checkbox"' .statusCheck("$requiere_video"). ' value="T" />
            </td>
-           </tr>';
+           </tr>
+            <tr>
+           <td class="etiqueta">Para recibos de pago:</td> 
+            <td>
+           <input name="es_recibo_pago" type="checkbox"' .statusCheck("$es_recibo_pago"). ' value="T" />
+           </td>
+           </tr>
+           ';
         }
     }
     if ($tabla == 'nov_status_kanban') {
