@@ -33,7 +33,8 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 				documentos.descripcion,
 				control.url_doc,
 				documentos.orden,
-				documentos.requiere_video
+				documentos.requiere_video,
+				documentos.es_recibo_pago
 				FROM
 				documentos,
 				ficha_documentos,
@@ -53,7 +54,8 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 				documentos.descripcion,
 				control.url_doc,
 				documentos.orden,
-				documentos.requiere_video
+				documentos.requiere_video,
+				documentos.es_recibo_pago
 				FROM
 				documentos,
 				control 
@@ -75,43 +77,49 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 		$query = $bd->consultar($sql);
 		while ($datos = $bd->obtener_fila($query, 0)) {
 			extract($datos);
-			$img_src = $link;
-			if ($link) {
-				if ($requiere_video == 'T') {
-					// Si requiere video y tiene link, muestra icono de video y llama a openModalVideo
-					// openModalDocument manejará ambos casos (video y documento)
-					$img_src = '<img src="imagenes/video_icon.png" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\', \'T\')" width="22px" height="22px" style="cursor: pointer;" />';
+			$borrarDoc = "";
+			$img_src = "";
+			if ($es_recibo_pago == 'T'){
+				$upload_element = '<img class="ImgLink" src="imagenes/subir.gif" onclick="openModalRecibosPagos( \'' . $codigo . '\')" width="22px" height="22px" title="Generar Recibo" />';
+			}else{
+				$img_src = $link;
+				if ($link) {
+					if ($requiere_video == 'T') {
+						// Si requiere video y tiene link, muestra icono de video y llama a openModalVideo
+						// openModalDocument manejará ambos casos (video y documento)
+						$img_src = '<img src="imagenes/video_icon.png" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\', \'T\')" width="22px" height="22px" style="cursor: pointer;" />';
+					} else {
+						// Si es un documento normal, usa la lógica original para PDFs/Imágenes
+						$img_ext = imgExtension($link);
+						$img_src = '<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\', \'N\')" width="22px" height="22px" style="cursor: pointer;" />';
+					}
 				} else {
-					// Si es un documento normal, usa la lógica original para PDFs/Imágenes
-					$img_ext = imgExtension($link);
-					$img_src = '<img src="' . $img_ext . '" onclick="openModalDocument(\'' . $descripcion . '\', \'' . $link . '\', \'N\')" width="22px" height="22px" style="cursor: pointer;" />';
+					$img_src = '<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
 				}
-			} else {
-				$img_src = '<img src="imagenes/img-no-disponible_p.png" width="22px" height="22px" />';
-			}
 
-			if ($requiere_video == 'T') {
-				// Opción para subir Video (Input File)
-				// Agregamos un input file y un icono que lo activa (usando una función JavaScript que debemos definir).
-				//  />
-				$upload_element = '
-				<input type="file" 
-				id="upload_video_' . $cod_documento . '" 
-				name="upload_video_' . $cod_documento . '" 
-				accept="video/*" 
-				style="display:none;" 
-					onchange="subirVideoS3(\'' .$codigo. '\', \'' . $cod_documento . '\')"/> 
-				
-				<img class="ImgLink" 
-				src="imagenes/subir.gif" 
-				width="22px" height="22px" 
-				title="Subir Video"
-				onclick="$(\'#upload_video_' . $cod_documento . '\').click();" />';
-			} else {
-				// Opción para subir Imágenes/Archivos (Redirección con Vinculo)
-				$subir = "Vinculo('inicio.php?area=formularios/add_imagenes_doc&ficha=$codigo&ci=$cedula&doc=$cod_documento')";
-				$upload_element = '<a target="_blank" onClick="' . $subir . '">
-				<img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" title="Subir Imagen/Archivo" /></a>';
+				if ($requiere_video == 'T') {
+					// Opción para subir Video (Input File)
+					// Agregamos un input file y un icono que lo activa (usando una función JavaScript que debemos definir).
+					//  />
+					$upload_element = '
+					<input type="file" 
+					id="upload_video_' . $cod_documento . '" 
+					name="upload_video_' . $cod_documento . '" 
+					accept="video/*" 
+					style="display:none;" 
+						onchange="subirVideoS3(\'' .$codigo. '\', \'' . $cod_documento . '\')"/> 
+					
+					<img class="ImgLink" 
+					src="imagenes/subir.gif" 
+					width="22px" height="22px" 
+					title="Subir Video"
+					onclick="$(\'#upload_video_' . $cod_documento . '\').click();" />';
+				} else {
+					// Opción para subir Imágenes/Archivos (Redirección con Vinculo)
+					$subir = "Vinculo('inicio.php?area=formularios/add_imagenes_doc&ficha=$codigo&ci=$cedula&doc=$cod_documento')";
+					$upload_element = '<a target="_blank" onClick="' . $subir . '">
+					<img class="ImgLink" src="imagenes/subir.gif" width="22px" height="22px" title="Subir Imagen/Archivo" /></a>';
+				}
 			}
 
 			echo '
@@ -152,6 +160,86 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 	</div>
 
 </form>
+
+<div id="myModalRecibosPago" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="cerrarModalRecibosPago()">&times;</span>
+      <span id='titleRecibosPago'>Generar Recibo de Pago</span>
+    </div>
+    <div class="modal-body">
+      <div id="modal_recibos_pago_cont">
+        <input type="hidden" id="ficha_recibo" value="" />
+        <table width="100%" align="center">
+          <tr>
+            <td class="etiqueta">Año:</td>
+            <td>
+                <select id="ano_recibo" style="width: 120px;">
+					<option value="">Año...</option>
+					<?php
+						 // Obtener año de ingreso desde $fec_ingreso (formato DD-MM-YYYY)
+						if (!empty($fec_ingreso)) {
+							$fecha_parts = explode('-', $fec_ingreso);
+							$ano_ingreso = intval($fecha_parts[2]);
+						} else {
+							$ano_ingreso = date('Y') - 5; // Valor por defecto si no hay fecha
+						}
+						
+						$ano_actual = intval(date('Y'));
+						
+						// Generar opciones desde año_ingreso hasta año_actual
+						for($i = $ano_ingreso; $i <= $ano_actual; $i++) {
+							echo '<option value="'.$i.'">'.$i.'</option>';
+						}
+					?>
+              	</select>
+            </td>
+          </tr>
+		<tr>
+            <td class="etiqueta">Mes:</td>
+            <td>
+                <select id="mes_recibo" style="width: 120px;">
+					<option value="">Mes...</option>
+					<option value="01">Enero</option>
+					<option value="02">Febrero</option>
+					<option value="03">Marzo</option>
+					<option value="04">Abril</option>
+					<option value="05">Mayo</option>
+					<option value="06">Junio</option>
+					<option value="07">Julio</option>
+					<option value="08">Agosto</option>
+					<option value="09">Septiembre</option>
+					<option value="10">Octubre</option>
+					<option value="11">Noviembre</option>
+					<option value="12">Diciembre</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="etiqueta">Quincena:</td>
+            <td>
+              <select id="quincena_recibo" style="width: 250px;">
+                <option value="">Seleccione...</option>
+                <option value="01">Primera Quincena</option>
+                <option value="02">Segunda Quincena</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center" style="padding-top: 15px;">
+              <span class="art-button-wrapper">
+                <span class="art-button-l"> </span>
+                <span class="art-button-r"> </span>
+                <input type="button" name="generar_recibo" id="generar_recibo" value="Generar Recibo" class="readon art-button" onclick="generarReciboPago()" />
+              </span>
+            </td>
+          </tr>
+        </table>
+        <div id="recibo_generado" style="padding-top: 15px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="myModalDocument" class="modal">
   <div class="modal-content">
@@ -208,5 +296,111 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 		// 2. Limpiar el contenido para liberar recursos (especialmente si es un video grande)
 		modalContent.empty();
 		$("#myModalDocument").hide();
+	}
+
+	// Funciones para Modal de Recibos de Pago
+	function openModalRecibosPagos(ficha) {
+		$("#myModalRecibosPago").show();
+		$("#ficha_recibo").val(ficha);
+		$("#recibo_generado").html("");
+		
+		// Resetear selects
+		$("#ano_recibo").val("");
+		$("#mes_recibo").val("");
+		$("#quincena_recibo").val("");
+	}
+
+	function cerrarModalRecibosPago() {
+		$("#myModalRecibosPago").hide();
+		$("#recibo_generado").html("");
+	}
+
+	function generarReciboPago() {
+		var ficha = $("#ficha_recibo").val();
+		var ano = $("#ano_recibo").val();
+		var mes = $("#mes_recibo").val();
+		var quincena = $("#quincena_recibo").val();
+		
+		if (!ano || !mes || !quincena) {
+			alert('Por favor, complete todos los campos para generar el recibo.');
+			return;
+		}
+		
+		var mesNum = parseInt(mes);
+		if (mesNum < 1 || mesNum > 12) {
+			alert('Por favor, seleccione un mes válido.');
+			return;
+		}
+
+		$("#generar_recibo").prop('disabled', true);
+		$("#generar_recibo").val('Generando...');
+		$("#generar_recibo").css('opacity', '0.6');
+
+		$("#recibo_generado").html("<img src='imagenes/loading.gif' /> Generando recibo, por favor espere...");
+		
+		var mesesNombre = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+		var nombreMes = mesesNombre[parseInt(mes) - 1];
+		var nombreQuincena = (quincena === '01') ? '1era Quincena' : '2da Quincena';
+
+		$.ajax({
+			url: 'http://190.120.252.243:4500/pdf-recibos/',
+			type: 'POST',
+			data: { id: ficha, ano: ano, mes: nombreMes, quincena: nombreQuincena, email: '' },
+			success: function(data) {
+				downloadReciboPago(ficha);
+				var mensaje = '<div style="padding: 15px; background-color: #d4edda; color: #155724; border-radius: 5px; text-align: center;">' +
+				'  <strong>Recibo Generado Exitosamente</strong><br/><br/>' +
+				'  Ficha: <strong>' + ficha + '</strong><br/>' +
+				'  Período: <strong>' + nombreMes + ' ' + ano + '</strong><br/>' +
+				'  Quincena: <strong>' + nombreQuincena + '</strong>' +
+				'</div>';
+				$("#recibo_generado").html(mensaje);
+				habilitarBotonGenerar();
+			},
+			error: function() {
+				alert('Error al intentar generar el recibo');
+				$("#recibo_generado").html("");
+			}
+		});
+	}
+
+	function habilitarBotonGenerar() {
+		$("#generar_recibo").prop('disabled', false);
+		$("#generar_recibo").val('Generar Recibo');
+		$("#generar_recibo").css('opacity', '1');
+	}
+
+	function downloadReciboPago(ficha) {
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', 'http://190.120.252.243:4500/dowload-file-recibo/', true);
+		xhr.responseType = 'blob';
+		xhr.setRequestHeader('Content-Type', 'application/json');
+		
+		xhr.onload = function() {
+			if (this.status === 200) {
+				var blob = this.response;
+				var url = window.URL.createObjectURL(blob);
+				var link = document.createElement('a');
+				link.href = url;
+				link.download = 'recibo_pago_' + ficha + '.pdf';
+				document.body.appendChild(link);
+				link.click();
+				link.remove();
+				window.URL.revokeObjectURL(url);
+			} else {
+				// Para errores, intentar leer el blob como texto
+				var reader = new FileReader();
+				reader.onload = function() {
+					alert('Error al descargar el recibo: ' + reader.result);
+				};
+				reader.readAsText(this.response);
+			}
+		};
+		
+		xhr.onerror = function() {
+			alert('Error de conexión al descargar el recibo');
+		};
+		
+		xhr.send(JSON.stringify({ "ficha": ficha }));
 	}
 </script>
