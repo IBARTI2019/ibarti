@@ -513,7 +513,7 @@ if ($metodo == 'modificar') {
 				url: 'sc_maestros/sc_novedades.php',
 				type: 'post',
 				success: function(response) {
-					location.href = href.replace('../', '');
+					// location.href = href.replace('../', '');
 				},
 				error: function(xhr, ajaxOptions, thrownError) {
 					alert(xhr.status);
