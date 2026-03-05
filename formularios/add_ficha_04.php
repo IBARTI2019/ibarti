@@ -371,22 +371,26 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 	}
 
 	function downloadReciboPago(ficha) {
-    	$.ajax({
+		$.ajax({
 			url: 'http://190.120.252.243:4500/dowload-file-recibo/',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({ "ficha": ficha }),
 			xhrFields: {
-				responseType: 'blob' // Mantenemos esto para que el PDF no se corrompa
+				responseType: 'blob' // Indispensable para PDF
+			},
+			// Esta función evita que jQuery intente leer 'responseText'
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+				return xhr;
 			},
 			success: function(data, status, xhr) {
-				// Importante: Usamos 'data' directamente porque ya es el Blob
-				// gracias al responseType: 'blob'
+				// En jQuery 2.1.1 con responseType blob, 'data' es el Blob directamente
 				var blob = data;
 				
-				// Verificación de seguridad: ¿Es realmente un PDF?
-				if (blob.type !== 'application/pdf') {
-					console.error("El servidor no envió un PDF, envió: " + blob.type);
+				if (blob.size === 0) {
+					alert("El archivo está vacío.");
+					return;
 				}
 
 				var url = window.URL.createObjectURL(blob);
@@ -397,15 +401,15 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 				document.body.appendChild(link);
 				link.click();
 				
-				// Limpieza inmediata
-				$(link).remove();
-				window.URL.revokeObjectURL(url);
+				// Limpieza
+				setTimeout(function() {
+					$(link).remove();
+					window.URL.revokeObjectURL(url);
+				}, 100);
 			},
 			error: function(xhr, status, error) {
-				// Si hay error y el responseType es blob, 
-				// no podemos leer xhr.responseText directamente.
-				alert('Error al descargar el PDF. Revisa la consola para más detalles.');
-				console.error("Detalle del error:", error);
+				console.error("Error en la descarga:", error);
+				alert("No se pudo descargar el recibo. Verifique la conexión.");
 			}
 		});
 	}
