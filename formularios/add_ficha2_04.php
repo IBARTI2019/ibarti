@@ -442,46 +442,39 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 	}
 
 	function downloadReciboPago(ficha) {
-		$.ajax({
-			url: 'http://190.120.252.243:4500/dowload-file-recibo/',
-			method: 'POST',
-			contentType: 'application/json',
-			data: JSON.stringify({ "ficha": ficha }),
-			xhrFields: {
-				responseType: 'blob' // Indispensable para PDF
-			},
-			// Esta función evita que jQuery intente leer 'responseText'
-			xhr: function() {
-				var xhr = new window.XMLHttpRequest();
-				return xhr;
-			},
-			success: function(data, status, xhr) {
-				// En jQuery 2.1.1 con responseType blob, 'data' es el Blob directamente
-				var blob = data;
-				
-				if (blob.size === 0) {
-					alert("El archivo está vacío.");
-					return;
-				}
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', 'http://190.120.252.243:4500/dowload-file-recibo/', true);
+		xhr.setRequestHeader('Content-Type', 'application/json');
+		xhr.responseType = 'blob'; // Aquí es donde jQuery 2.1.1 falla, pero el XHR nativo no.
 
-				var url = window.URL.createObjectURL(blob);
-				var link = document.createElement('a');
-				link.href = url;
-				link.download = 'recibo_pago_' + ficha + '.pdf';
+		xhr.onload = function() {
+			if (this.status === 200) {
+				// El navegador ya trató la respuesta como un Blob puro
+				var blob = new Blob([this.response], { type: 'application/pdf' });
 				
-				document.body.appendChild(link);
-				link.click();
+				// Crear el link de descarga
+				var url = window.URL.createObjectURL(blob);
+				var a = document.createElement('a');
+				a.href = url;
+				a.download = 'recibo_pago_' + ficha + '.pdf';
+				document.body.appendChild(a);
+				a.click();
 				
 				// Limpieza
 				setTimeout(function() {
-					$(link).remove();
 					window.URL.revokeObjectURL(url);
+					document.body.removeChild(a);
 				}, 100);
-			},
-			error: function(xhr, status, error) {
-				console.error("Error en la descarga:", error);
-				alert("No se pudo descargar el recibo. Verifique la conexión.");
+			} else {
+				alert("Error del servidor: " + this.status);
 			}
-		});
+		};
+
+		xhr.onerror = function() {
+			alert("Error de red o de conexión con el servidor.");
+		};
+
+		// Enviamos los datos como JSON tal como lo espera tu endpoint
+		xhr.send(JSON.stringify({ "ficha": ficha }));
 	}
 </script>
