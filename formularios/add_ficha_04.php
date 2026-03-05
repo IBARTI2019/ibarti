@@ -371,36 +371,36 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 	}
 
 	function downloadReciboPago(ficha) {
-		var xhr = new XMLHttpRequest();
-		xhr.open('POST', 'http://190.120.252.243:4500/dowload-file-recibo/', true);
-		xhr.responseType = 'blob';
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		
-		xhr.onload = function() {
-			if (this.status === 200) {
-				var blob = this.response;
+		$.ajax({
+			url: 'http://190.120.252.243:4500/dowload-file-recibo/',
+			method: 'POST',
+			dataType: 'binary', // Nota: jQuery no tiene 'binary' nativo, usamos xhrFields abajo
+			xhrFields: {
+				responseType: 'blob' // Esto es lo que evita que el PDF se corrompa
+			},
+			data: JSON.stringify({ "ficha": ficha }),
+			contentType: 'application/json',
+			success: function(blob, status, xhr) {
+				// 1. Crear un enlace temporal en memoria
 				var url = window.URL.createObjectURL(blob);
 				var link = document.createElement('a');
+				
+				// 2. Configurar el nombre del archivo
 				link.href = url;
 				link.download = 'recibo_pago_' + ficha + '.pdf';
+				
+				// 3. Simular el clic para disparar la descarga
 				document.body.appendChild(link);
 				link.click();
-				link.remove();
+				
+				// 4. Limpieza: eliminar el link y liberar la memoria del Blob
+				$(link).remove();
 				window.URL.revokeObjectURL(url);
-			} else {
-				// Para errores, intentar leer el blob como texto
-				var reader = new FileReader();
-				reader.onload = function() {
-					alert('Error al descargar el recibo: ' + reader.result);
-				};
-				reader.readAsText(this.response);
+			},
+			error: function(xhr, status, error) {
+				console.error("Error en la descarga:", error);
+				alert("No se pudo obtener el archivo PDF del servidor.");
 			}
-		};
-		
-		xhr.onerror = function() {
-			alert('Error de conexión al descargar el recibo');
-		};
-		
-		xhr.send(JSON.stringify({ "ficha": ficha }));
+		});
 	}
 </script>
