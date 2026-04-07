@@ -213,15 +213,15 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
             <td>
                 <select id="mes_recibo" style="width: 120px;">
 					<option value="">Mes...</option>
-					<option value="01">Enero</option>
-					<option value="02">Febrero</option>
-					<option value="03">Marzo</option>
-					<option value="04">Abril</option>
-					<option value="05">Mayo</option>
-					<option value="06">Junio</option>
-					<option value="07">Julio</option>
-					<option value="08">Agosto</option>
-					<option value="09">Septiembre</option>
+					<option value="1">Enero</option>
+					<option value="2">Febrero</option>
+					<option value="3">Marzo</option>
+					<option value="4">Abril</option>
+					<option value="5">Mayo</option>
+					<option value="6">Junio</option>
+					<option value="7">Julio</option>
+					<option value="8">Agosto</option>
+					<option value="9">Septiembre</option>
 					<option value="10">Octubre</option>
 					<option value="11">Noviembre</option>
 					<option value="12">Diciembre</option>
@@ -233,8 +233,8 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
             <td>
               <select id="quincena_recibo" style="width: 250px;">
                 <option value="">Seleccione...</option>
-                <option value="01">Primera Quincena</option>
-                <option value="02">Segunda Quincena</option>
+                <option value="1">Primera Quincena</option>
+                <option value="2">Segunda Quincena</option>
               </select>
             </td>
           </tr>
@@ -403,36 +403,51 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 			return;
 		}
 
+		// Deshabilitar botón mientras se verifica el archivo
 		$("#generar_recibo").prop('disabled', true);
-		$("#generar_recibo").val('Generando...');
+		$("#generar_recibo").val('Verificando...');
 		$("#generar_recibo").css('opacity', '0.6');
 
-		$("#recibo_generado").html("<img src='imagenes/loading.gif' /> Generando recibo, por favor espere...");
+		$("#recibo_generado").html("<img src='imagenes/loading.gif' /> Verificando recibo, por favor espere...");
 		
 		var mesesNombre = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 		var nombreMes = mesesNombre[parseInt(mes) - 1];
 		var nombreQuincena = (quincena === '01') ? '1era Quincena' : '2da Quincena';
+		
+		// Construir la URL del archivo en S3
+		var urlS3 = 'https://ibarti-expedientes-prod.s3.us-east-2.amazonaws.com/' + ficha + '/Recibo_' + ano + '-' + mes + '-' + quincena + '.pdf';
+		
+		descargarReciboDesdeS3(urlS3, ficha, ano, mes, quincena, nombreMes, nombreQuincena);
+	}
 
-		$.ajax({
-			url: 'http://190.120.252.243:4500/pdf-recibos/',
-			type: 'POST',
-			data: { id: ficha, ano: ano, mes: nombreMes, quincena: nombreQuincena, email: '' },
-			success: function(data) {
-				downloadReciboPago(ficha);
-				var mensaje = '<div style="padding: 15px; background-color: #d4edda; color: #155724; border-radius: 5px; text-align: center;">' +
-				'  <strong>Recibo Generado Exitosamente</strong><br/><br/>' +
+	function descargarReciboDesdeS3(urlS3, ficha, ano, mes, quincena, nombreMes, nombreQuincena) {
+		// Mostrar mensaje de descarga
+		$("#recibo_generado").html(
+			'<div style="padding: 15px; background-color: #d4edda; color: #155724; border-radius: 5px; text-align: center;">' +
+			'  <strong>¡Recibo Encontrado!</strong><br/><br/>' +
+			'  <img src="imagenes/loading.gif" /> Descargando recibo...<br/><br/>' +
+			'  Ficha: <strong>' + ficha + '</strong><br/>' +
+			'  Período: <strong>' + nombreMes + ' ' + ano + '</strong><br/>' +
+			'  Quincena: <strong>' + nombreQuincena + '</strong>' +
+			'</div>'
+		);
+		
+		// Iniciar la descarga del PDF
+		window.open(urlS3, '_blank');
+		
+		// Actualizar mensaje después de un breve momento
+		setTimeout(function() {
+			$("#recibo_generado").html(
+				'<div style="padding: 15px; background-color: #d4edda; color: #155724; border-radius: 5px; text-align: center;">' +
+				'  <strong>Recibo Descargado Exitosamente</strong><br/><br/>' +
 				'  Ficha: <strong>' + ficha + '</strong><br/>' +
 				'  Período: <strong>' + nombreMes + ' ' + ano + '</strong><br/>' +
-				'  Quincena: <strong>' + nombreQuincena + '</strong>' +
-				'</div>';
-				$("#recibo_generado").html(mensaje);
-				habilitarBotonGenerar();
-			},
-			error: function() {
-				alert('Error al intentar generar el recibo');
-				$("#recibo_generado").html("");
-			}
-		});
+				'  Quincena: <strong>' + nombreQuincena + '</strong><br/><br/>' +
+				'  <small>El recibo se ha abierto en una nueva pestaña.</small>' +
+				'</div>'
+			);
+			habilitarBotonGenerar();
+		}, 2000);
 	}
 
 	function habilitarBotonGenerar() {
