@@ -315,7 +315,7 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 		$("#recibo_generado").html("");
 	}
 
-	function generarReciboPago() {
+		function generarReciboPago() {
 		var ficha = $("#ficha_recibo").val();
 		var ano = $("#ano_recibo").val();
 		var mes = $("#mes_recibo").val();
@@ -332,36 +332,51 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 			return;
 		}
 
+		// Deshabilitar botón mientras se verifica el archivo
 		$("#generar_recibo").prop('disabled', true);
-		$("#generar_recibo").val('Generando...');
+		$("#generar_recibo").val('Verificando...');
 		$("#generar_recibo").css('opacity', '0.6');
 
-		$("#recibo_generado").html("<img src='imagenes/loading.gif' /> Generando recibo, por favor espere...");
+		$("#recibo_generado").html("<img src='imagenes/loading.gif' /> Verificando recibo, por favor espere...");
 		
 		var mesesNombre = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 		var nombreMes = mesesNombre[parseInt(mes) - 1];
 		var nombreQuincena = (quincena === '01') ? '1era Quincena' : '2da Quincena';
+		
+		// Construir la URL del archivo en S3
+		var urlS3 = 'https://ibarti-expedientes-prod.s3.us-east-2.amazonaws.com/RECIBOS-' + ficha + '/Recibo_' + ano + '-' + mes + '-' + quincena + '.pdf';
+		
+		descargarReciboDesdeS3(urlS3, ficha, ano, mes, quincena, nombreMes, nombreQuincena);
+	}
 
-		$.ajax({
-			url: 'http://190.120.252.243:4500/pdf-recibos/',
-			type: 'POST',
-			data: { id: ficha, ano: ano, mes: nombreMes, quincena: nombreQuincena, email: '' },
-			success: function(data) {
-				downloadReciboPago(ficha);
-				var mensaje = '<div style="padding: 15px; background-color: #d4edda; color: #155724; border-radius: 5px; text-align: center;">' +
-				'  <strong>Recibo Generado Exitosamente</strong><br/><br/>' +
+	function descargarReciboDesdeS3(urlS3, ficha, ano, mes, quincena, nombreMes, nombreQuincena) {
+		// Mostrar mensaje de descarga
+		$("#recibo_generado").html(
+			'<div style="padding: 15px; background-color: #d4edda; color: #155724; border-radius: 5px; text-align: center;">' +
+			'  <strong>¡Recibo Encontrado!</strong><br/><br/>' +
+			'  <img src="imagenes/loading.gif" /> Descargando recibo...<br/><br/>' +
+			'  Ficha: <strong>' + ficha + '</strong><br/>' +
+			'  Período: <strong>' + nombreMes + ' ' + ano + '</strong><br/>' +
+			'  Quincena: <strong>' + nombreQuincena + '</strong>' +
+			'</div>'
+		);
+		
+		// Iniciar la descarga del PDF
+		window.open(urlS3, '_blank');
+		
+		// Actualizar mensaje después de un breve momento
+		setTimeout(function() {
+			$("#recibo_generado").html(
+				'<div style="padding: 15px; background-color: #d4edda; color: #155724; border-radius: 5px; text-align: center;">' +
+				'  <strong>Recibo Descargado Exitosamente</strong><br/><br/>' +
 				'  Ficha: <strong>' + ficha + '</strong><br/>' +
 				'  Período: <strong>' + nombreMes + ' ' + ano + '</strong><br/>' +
-				'  Quincena: <strong>' + nombreQuincena + '</strong>' +
-				'</div>';
-				$("#recibo_generado").html(mensaje);
-				habilitarBotonGenerar();
-			},
-			error: function() {
-				alert('Error al intentar generar el recibo');
-				$("#recibo_generado").html("");
-			}
-		});
+				'  Quincena: <strong>' + nombreQuincena + '</strong><br/><br/>' +
+				'  <small>El recibo se ha abierto en una nueva pestaña.</small>' +
+				'</div>'
+			);
+			habilitarBotonGenerar();
+		}, 2000);
 	}
 
 	function habilitarBotonGenerar() {

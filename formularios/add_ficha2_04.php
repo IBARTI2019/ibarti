@@ -415,7 +415,7 @@ $admin_rrhh	    = $_SESSION['admin_rrhh'];
 		var nombreQuincena = (quincena === '01') ? '1era Quincena' : '2da Quincena';
 		
 		// Construir la URL del archivo en S3
-		var urlS3 = 'https://ibarti-expedientes-prod.s3.us-east-2.amazonaws.com/' + ficha + '/Recibo_' + ano + '-' + mes + '-' + quincena + '.pdf';
+		var urlS3 = 'https://ibarti-expedientes-prod.s3.us-east-2.amazonaws.com/RECIBOS-' + ficha + '/Recibo_' + ano + '-' + mes + '-' + quincena + '.pdf';
 		
 		descargarReciboDesdeS3(urlS3, ficha, ano, mes, quincena, nombreMes, nombreQuincena);
 	}
