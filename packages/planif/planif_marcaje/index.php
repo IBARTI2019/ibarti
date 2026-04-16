@@ -6,6 +6,80 @@
   .marcar {
     text-decoration: line-through;
   }
+
+  /* Estilos para filas */
+    .realizada-row {
+        background-color: #e8f5e9;
+        opacity: 0.85;
+    }
+    
+    .obligatory-row {
+        background-color: #ffebee;
+        border-left: 3px solid #f44336;
+    }
+    
+    /* Estilos para badges */
+    .obligatory-badge {
+        background-color: #f44336;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 10px;
+        margin-left: 8px;
+    }
+    
+    /* Estilos para inputs de archivo */
+    .obligatory-file {
+        border: 1px solid #f44336;
+        background-color: #fff3f3;
+        padding: 4px;
+    }
+    
+    .optional-file {
+        border: 1px solid #ccc;
+        padding: 4px;
+    }
+    
+    .file-status {
+        font-size: 11px;
+        font-weight: bold;
+        margin-left: 10px;
+        white-space: nowrap;
+    }
+    
+    /* Botón de subir */
+    #subir_img {
+        transition: all 0.3s ease;
+        padding: 8px 20px;
+        font-size: 14px;
+    }
+    
+    #subir_img:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    #subir_img:enabled {
+        cursor: pointer;
+        opacity: 1;
+        background-color: #4CAF50 !important;
+        color: white !important;
+    }
+    
+    /* Tooltips */
+    [title] {
+        cursor: help;
+    }
+    
+    /* Mejoras visuales para los íconos */
+    .imgLink {
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .imgLink:hover {
+        transform: scale(1.1);
+    }
 </style>
 <?php
 $Nmenu = '4406';
@@ -84,13 +158,10 @@ if (isset($_SESSION['usuario_cod'])) {
         <th>Código</th>
         <th>Ubicación</th>
         <th>Proyecto</th>
-        <th>Actividad</th>
-        <th>Hora Inicio <br> Hora Fin</th>
-        <th>Realizado</th>
+        <th>Hora Inicio</th>
+        <th>Hora Fin</th>
+        <th>Estatus</th>
         <th>Marcar</th>
-        <th>Archivo</th>
-        <th>Observaciones</th>
-        <th>Participantes</th>
       </tr>
     </thead>
     <tbody id="actividades">
@@ -203,19 +274,16 @@ if (isset($_SESSION['usuario_cod'])) {
 <div align="center" class="etiqueta_title"><?php echo $titulo;?> </div><hr />
 <div id="Contenedor01" class="mensaje"></div>
 <form name="some_form" enctype="multipart/form-data" class="formulario" >
-  <table width="100%" id="table_file_soporte">
-  
-     <td
-      width="100%"><div id="contenedorImagen"><img id="fotografia" class="fotografia" src="<?php echo $img_src?>">
-      <input name="images" type="file" id="imagen"  value="Subir Imagen"  onchange="enableMarking()"/>
-      <span id="correo_ubicacion" >¿Enviar a Correo de <?php echo $leng['ubicacion']?>?<input id="enviar_ubicacion" name="enviar_ubicacion" disabled type="checkbox" style="width: 100px;"/></span>
-      <span id="mainFileViewer" style="display:none; margin-left:10px;">
-          <img class="imgLink" src="imagenes/pdf.gif" alt="Ver Archivo Principal" title="Ver Archivo Principal Cargado" onclick="verArchivoPrincipal()" width="20px" height="20px" style="cursor:pointer;">
-      </span>
-      </div>
-    </td>
-  
-</table>
+    <table width="100%">
+        <tr>
+          <td align="center">
+            <label>
+              <input type="checkbox" id="enviar_correo" name="enviar_correo">
+              <strong>Enviar correo a la ubicación</strong>
+            </label>
+          </td>
+        </tr>
+      </table>
 <table width="100%" class="tabla_sistema">
           <thead>
             <tr>
@@ -238,16 +306,14 @@ if (isset($_SESSION['usuario_cod'])) {
   <table width="100%" id="table_boton_subir">
   <tr><td 
        width="100%"><div align="center"  ><br/>
-                <span class="art-button-wrapper" id="imgMostrar"  style="display:none">
+                <span class="art-button-wrapper" id="imgMostrar">
                     <span class="art-button-l"> </span>
                     <span class="art-button-r"> </span> 
-                      <input type="button" id="subir_img" value="Subir Archivos"  class="readon art-button" 
-                             onClick="subirImagenS3marcaje()"   /></span> 
+                      <input type="button" id="subir_img" value="📤 Subir Archivos y Marcar Actividades"  class="readon art-button" 
+                             onClick="subirImagenS3marcaje()"  
+                             disabled style="opacity: 0.5;" /></span> 
                 <br/>
                  <br/>
-   
-                   
-       
     </div>
     </td></tr>     
 </table>

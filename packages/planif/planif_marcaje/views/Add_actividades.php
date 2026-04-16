@@ -2,58 +2,36 @@
 require "../modelo/marcaje_modelo.php";
 require "../../../../" . Leng;
 
-$marcaje   = new Marcaje;
+$marcaje = new Marcaje;
 $result = array();
-$ficha     = $_POST['ficha'];
-$cliente     = $_POST['cliente'];
-$ubicacion     = $_POST['ubicacion'];
-$result  =  $marcaje->get_actividades($ficha, $cliente, $ubicacion);
+$ficha = $_POST['ficha'];
+$cliente = $_POST['cliente'];
+$ubicacion = $_POST['ubicacion'];
+$result = $marcaje->get_actividades($ficha, $cliente, $ubicacion);
 
-$disabled = "";
-
-$disabled = "";
-	
-foreach ($result as  $datos) {
-    if ($datos["realizado"] == 'SI') {
+foreach ($result as $datos) {
+    $proyectoRealizado = ($datos["realizado"] == 'SI');
+    
+    if ($proyectoRealizado) {
         echo '<tr class="marcar">';
-        $disabled = 'disabled = "disabled"';
     } else {
         echo '<tr>';
-        $disabled = "";
     }
 
     echo '<td>' . $datos["codigo"] . '</td>
       <td>' . $datos["ubicacion"] . '</td>
-             <td>' . $datos["proyecto"] . '</td>
-       <td>' . $datos["actividad"] . '</td>
-       <td>' . $datos["hora_inicio"] . ' </br> ' . $datos["hora_fin"] . '</td>
-             <td>' . $datos["realizado"] . '</td>';
+      <td>' . $datos["proyecto"] . '</td>
+      <td>' . $datos["hora_inicio"] . '</td>
+      <td>' . $datos["hora_fin"] . '</td>';
 
-    if ($datos["realizado"] == 'SI') {
-        echo '<td><img src="imagenes/cerrar.bmp" alt="Realizado" title="Actividad Realizada" width="20px" height="20px" border="null"/ onclick="openModalObservacionesdos(' . $datos["codigo"] . ',\'' .$ficha . '\',\''. $cliente .'\','. $ubicacion .',\''. $datos["cod_proyecto"] .'\', true,' . $datos["cod_planif"] . ')"></a></td>
-        <td>';
-        if (!empty($datos["link"])) {
-            echo '<img class="imgLink" src="imagenes/pdf.gif" alt="Ver Archivo" title="Ver Archivo de Actividad" onclick="verArchivo(\'' . $datos["link"] . '\')" width="20px" height="20px" style="cursor:pointer;">';
-        } else {
-            echo 'Sin archivo';
-        }
-        echo '</td>
-        <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Marcar" onclick="openModalObservaciones(' . $datos["codigo"] . ')" width="20px" height="20px">(' . $datos["observaciones"] . ')</td>';
-        if ($datos["participantes"] == 'T') {
-            echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Participantes" onclick="openModalParticipantes(' . $datos["codigo"] . ')" width="20px" height="15px">(' . $datos["fichas"] . ')</td></tr>';
-        } else {
-            echo '<td>N/A</td></tr>';
-        }
+    if ($proyectoRealizado) {
+        echo '<td><span style="color: green;">✓ REALIZADO</span></td>
+          <td><img src="imagenes/cerrar.bmp" alt="Realizado" title="Proyecto con actividades marcadas" onclick="openModalObservacionesdos(' . $datos["codigo"] . ',\'' . $ficha . '\',\'' . $cliente . '\',' . $ubicacion . ',\'' . $datos["cod_proyecto"] . '\', ' . $datos["cod_planif"] . ')" width="30px" height="30px" border="null"/></td>
+        </tr>';
     } else {
-        echo '<td><img class="imgLink" id="m_observaciones" src="imagenes/nuevo.bmp" alt="Marcar" title="Modificar Observaciones" onclick="openModalObservacionesdos(' . $datos["codigo"] . ',\'' .$ficha . '\',\''. $cliente .'\','. $ubicacion .',\''. $datos["cod_proyecto"] .'\', false, ' . $datos["cod_planif"] . ')" width="15px" height="15px"></td>
-        <td>N/A</td>
-         <td><img class="imgLink" id="m_observaciones" src="imagenes/detalle.bmp" alt="Modificar Observaciones" title="Modificar Observaciones" onclick="openModalObservaciones(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["observaciones"] . ')</td>';
-        if ($datos["participantes"] == 'T') {
-            echo '<td><img class="imgLink" id="m_participantes" src="imagenes/detalle.bmp" alt="Modificar Participantes" title="Modificar Participantes" onclick="openModalParticipantes(' . $datos["codigo"] . ')" width="15px" height="15px">(' . $datos["fichas"] . ')</td></tr>';
-        } else {
-            echo '<td>N/A</td></tr>';
-        }
+        echo '<td><span style="color: orange;">⏳ PENDIENTE</span></td>
+          <td><img class="imgLink" id="m_observaciones" src="imagenes/nuevo.bmp" alt="Marcar" title="Marcar Actividades" onclick="openModalObservacionesdos(' . $datos["codigo"] . ',\'' . $ficha . '\',\'' . $cliente . '\',' . $ubicacion . ',\'' . $datos["cod_proyecto"] . '\', ' . $datos["cod_planif"] . ')" width="30px" height="30px"></td>
+        </tr>';
     }
-    
- echo $result;   
 }
+?>

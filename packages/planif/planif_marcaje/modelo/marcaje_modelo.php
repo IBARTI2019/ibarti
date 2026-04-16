@@ -20,13 +20,11 @@ class Marcaje
         //       -- AND TIME(pd.fecha_fin) <= CURRENT_TIME()
         $this->datos  = array();
         $where = " WHERE
-        p.codigo = pd.cod_planif_cl_trab
-        AND pd.cod_proyecto = pp.codigo
-        AND pd.cod_actividad = pa.codigo
-        ANd p.cod_ubicacion = cu.codigo
-        and pa.obligatoria='T'
-        AND DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d')
-        AND p.cod_ficha = '$ficha'
+            p.codigo = pd.cod_planif_cl_trab
+            AND pd.cod_proyecto = pp.codigo
+            AND p.cod_ubicacion = cu.codigo
+            AND DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d')
+            AND p.cod_ficha = '$ficha'
         ";
 
         if ($cliente != 'TODOS' && $cliente != "" && $cliente != null) {
@@ -38,35 +36,29 @@ class Marcaje
         }
 
         $sql = "SELECT
-            pd.codigo, cu.descripcion ubicacion, pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad, 
-            IF(pd.realizado = 'T', 'SI', 'NO') realizado, pd.link, TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
-            pa.participantes,
-            (
-                SELECT
-                    COUNT(b.codigo)
+                    pd.codigo,
+                    cu.descripcion ubicacion,
+                    pd.cod_proyecto,
+                    pp.descripcion proyecto,
+                     IF(
+                        (SELECT COUNT(*) FROM planif_clientes_superv_trab_det 
+                        WHERE cod_planif_cl_trab = p.codigo 
+                        AND cod_proyecto = pp.codigo 
+                        AND realizado = 'T') > 0,
+                        'SI', 'NO'
+                    ) as realizado,
+                    TIME(p.fecha_inicio) hora_inicio,
+                    TIME(p.fecha_fin) hora_fin,
+                    p.codigo cod_planif
                 FROM
-                    planif_clientes_superv_trab_det a,
-                    planif_clientes_superv_trab_det_observ b
-                WHERE
-                    a.codigo = b.cod_det
-                AND a.codigo = pd.codigo 
-            ) observaciones,
-            (SELECT
-                    COUNT(b.codigo)
-                    FROM
-                        planif_clientes_superv_trab_det a,
-                        planif_clientes_superv_trab_det_participantes b
-                    WHERE
-                        a.codigo = b.cod_det
-            AND a.codigo = pd.codigo) fichas,
-            p.codigo cod_planif
-            FROM
-                planif_clientes_superv_trab p,
-                planif_clientes_superv_trab_det pd,
-                planif_proyecto pp,
-                planif_actividad pa,
-                clientes_ubicacion cu 
-                " . $where . " ORDER BY hora_inicio ASC";
+                    planif_clientes_superv_trab p,
+                    planif_clientes_superv_trab_det pd,
+                    planif_proyecto pp,
+                    planif_actividad pa,
+                    clientes_ubicacion cu 
+                " . $where . " 
+                  GROUP BY p.codigo, pd.cod_proyecto
+                  ORDER BY hora_inicio ASC";
 
         $query = $this->bd->consultar($sql);
         while ($datos = $this->bd->obtener_fila($query)) {
@@ -75,22 +67,17 @@ class Marcaje
         return $this->datos;
     }
 
-function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto, $codigo = '')
-   
+    function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto, $codigo = '')
     {
-        //  -- AND TIME(pd.fecha_fin) <= CURRENT_TIME()
-        //   AND pp.codigo='$proyecto'
-        
-        $this->datos  = array();
+        $this->datos = array();
         $where = " WHERE
-        p.codigo = pd.cod_planif_cl_trab
-        AND pd.cod_proyecto = pp.codigo
-        AND pd.cod_actividad = pa.codigo
-        ANd p.cod_ubicacion = cu.codigo
-        and pa.obligatoria='F'
-        AND DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d')
-        AND p.cod_ficha = '$ficha' 
-        ";
+            p.codigo = pd.cod_planif_cl_trab
+            AND pd.cod_proyecto = pp.codigo
+            AND pp.codigo='$proyecto'
+            AND pd.cod_actividad = pa.codigo
+            AND p.cod_ubicacion = cu.codigo
+            AND DATE_FORMAT(p.fecha_inicio, '%Y-%m-%d') = DATE_FORMAT(CURDATE(), '%Y-%m-%d')
+            AND p.cod_ficha = '$ficha'";
 
         if ($cliente != 'TODOS' && $cliente != "" && $cliente != null) {
             $where .= " AND p.cod_cliente = '$cliente'";
@@ -103,47 +90,48 @@ function get_actividadesNO($ficha, $cliente, $ubicacion, $proyecto, $codigo = ''
         if ($codigo != 'TODOS' && $codigo != "" && $codigo != null) {
             $where .= " AND p.codigo = '$codigo'";
         }
-        
 
         $sql = "SELECT
-            pd.codigo, cu.descripcion ubicacion, pd.cod_proyecto, pp.descripcion proyecto, pd.cod_actividad, pa.descripcion actividad, 
-            IF(pd.realizado = 'T', 'SI', 'NO') realizado, pd.link, TIME(pd.fecha_inicio) hora_inicio, TIME(pd.fecha_fin) hora_fin,
+            pd.codigo, 
+            cu.descripcion ubicacion, 
+            pd.cod_proyecto, 
+            pp.descripcion proyecto, 
+            pd.cod_actividad, 
+            pa.descripcion actividad, 
+            IF(pd.realizado = 'T', 'SI', 'NO') realizado, 
+            pd.link, 
+            TIME(pd.fecha_inicio) hora_inicio, 
+            TIME(pd.fecha_fin) hora_fin,
             pa.participantes,
+            pa.obligatoria, 
             (
-                SELECT
-                    COUNT(b.codigo)
-                FROM
-                    planif_clientes_superv_trab_det a,
+                SELECT COUNT(b.codigo)
+                FROM planif_clientes_superv_trab_det a,
                     planif_clientes_superv_trab_det_observ b
-                WHERE
-                    a.codigo = b.cod_det
-                AND a.codigo = pd.codigo 
+                WHERE a.codigo = b.cod_det AND a.codigo = pd.codigo 
             ) observaciones,
-            (SELECT
-                    COUNT(b.codigo)
-                    FROM
-                        planif_clientes_superv_trab_det a,
-                        planif_clientes_superv_trab_det_participantes b
-                    WHERE
-                        a.codigo = b.cod_det
-            AND a.codigo = pd.codigo) fichas
-            FROM
-                planif_clientes_superv_trab p,
-                planif_clientes_superv_trab_det pd,
-                planif_proyecto pp,
-                planif_actividad pa,
-                clientes_ubicacion cu 
-                " . $where . " ORDER BY hora_inicio ASC";
+            (
+                SELECT COUNT(b.codigo)
+                FROM planif_clientes_superv_trab_det a,
+                    planif_clientes_superv_trab_det_participantes b
+                WHERE a.codigo = b.cod_det AND a.codigo = pd.codigo
+            ) fichas
+        FROM
+            planif_clientes_superv_trab p,
+            planif_clientes_superv_trab_det pd,
+            planif_proyecto pp,
+            planif_actividad pa,
+            clientes_ubicacion cu 
+        " . $where . " 
+        ORDER BY pa.obligatoria DESC, hora_inicio ASC";
 
         $query = $this->bd->consultar($sql);
         while ($datos = $this->bd->obtener_fila($query)) {
             $this->datos[] = $datos;
         }
         return $this->datos;
-        
     }
 
-    
     function get_participantes($codigo)
     {
         $this->datos  = array();
