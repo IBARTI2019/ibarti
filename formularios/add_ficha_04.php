@@ -177,7 +177,7 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
                 <select id="ano_recibo" style="width: 120px;">
 					<option value="">Año...</option>
 					<?php
-						 // Obtener año de ingreso desde $fec_ingreso (formato DD-MM-YYYY)
+						// Obtener año de ingreso desde $fec_ingreso (formato DD-MM-YYYY)
 						if (!empty($fec_ingreso)) {
 							$fecha_parts = explode('-', $fec_ingreso);
 							$ano_ingreso = intval($fecha_parts[2]);
@@ -187,8 +187,11 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 						
 						$ano_actual = intval(date('Y'));
 						
-						// Generar opciones desde año_ingreso hasta año_actual
-						for($i = $ano_ingreso; $i <= $ano_actual; $i++) {
+						// Forzar que el año mínimo sea 2026 (Marzo 2026)
+						$ano_minimo = max($ano_ingreso, 2026);
+						
+						// Generar opciones desde año_minimo hasta año_actual
+						for($i = $ano_minimo; $i <= $ano_actual; $i++) {
 							echo '<option value="'.$i.'">'.$i.'</option>';
 						}
 					?>
@@ -308,6 +311,8 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 		$("#ano_recibo").val("");
 		$("#mes_recibo").val("");
 		$("#quincena_recibo").val("");
+
+		filtrarMesesPorAno();
 	}
 
 	function cerrarModalRecibosPago() {
@@ -385,6 +390,49 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 		$("#generar_recibo").css('opacity', '1');
 	}
 
+	function filtrarMesesPorAno() {
+		var anoSeleccionado = $("#ano_recibo").val();
+		var $mesSelect = $("#mes_recibo");
+		
+		// Guardar el valor seleccionado actualmente
+		var valorActual = $mesSelect.val();
+		
+		// Limpiar y volver a llenar las opciones de meses
+		$mesSelect.empty();
+		$mesSelect.append('<option value="">Mes...</option>');
+		
+		var meses = [
+			{valor: "01", nombre: "Enero"},
+			{valor: "02", nombre: "Febrero"},
+			{valor: "03", nombre: "Marzo"},
+			{valor: "04", nombre: "Abril"},
+			{valor: "05", nombre: "Mayo"},
+			{valor: "06", nombre: "Junio"},
+			{valor: "07", nombre: "Julio"},
+			{valor: "08", nombre: "Agosto"},
+			{valor: "09", nombre: "Septiembre"},
+			{valor: "10", nombre: "Octubre"},
+			{valor: "11", nombre: "Noviembre"},
+			{valor: "12", nombre: "Diciembre"}
+		];
+		
+		// Determinar desde qué mes mostrar (si es 2026, empezar desde Marzo)
+		var mesInicio = 1;
+		if (anoSeleccionado == "2026") {
+			mesInicio = 3; // Marzo es el mes 3
+		}
+		
+		// Agregar las opciones de meses desde mesInicio hasta Diciembre
+		for (var i = mesInicio - 1; i < meses.length; i++) {
+			$mesSelect.append('<option value="' + meses[i].valor + '">' + meses[i].nombre + '</option>');
+		}
+		
+		// Restaurar el valor anterior si es válido
+		if (valorActual && parseInt(valorActual) >= mesInicio) {
+			$mesSelect.val(valorActual);
+		}
+	}
+
 	function downloadReciboPago(ficha) {
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', 'http://190.120.252.243:4500/dowload-file-recibo/', true);
@@ -421,4 +469,10 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 		// Enviamos los datos como JSON tal como lo espera tu endpoint
 		xhr.send(JSON.stringify({ "ficha": ficha }));
 	}
+
+	$(document).ready(function() {
+		$("#ano_recibo").on('change', function() {
+			filtrarMesesPorAno();
+		});
+	});
 </script>
