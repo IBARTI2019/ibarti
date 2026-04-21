@@ -6,22 +6,24 @@ require_once('autentificacion/aut_verifica_menu.php');
 $bd = new DataBase();
 
 // --- LÓGICA DE PERIODOS PERMITIDOS ---
+$fecha_limite = new DateTime('2026-03-01'); // Fecha mínima: Marzo 2026
 $fecha_actual = new DateTime();
-$fecha_anterior = (new DateTime())->modify('-1 month');
 
-// Creamos un array con las dos opciones permitidas
-$periodos = [
-    [
-        "anio" => $fecha_actual->format('Y'),
-        "mes_num" => $fecha_actual->format('n'),
-        "mes_nombre" => strftime('%B', $fecha_actual->getTimestamp()) // O usar array manual
-    ],
-    [
-        "anio" => $fecha_anterior->format('Y'),
-        "mes_num" => $fecha_anterior->format('n'),
-        "mes_nombre" => strftime('%B', $fecha_anterior->getTimestamp())
-    ]
-];
+$fecha_referencia = ($fecha_actual < $fecha_limite) ? clone $fecha_limite : clone $fecha_actual;
+
+// Generamos periodos desde marzo 2026 hasta la fecha actual
+$periodos = [];
+$fecha_temp = clone $fecha_limite;
+
+while ($fecha_temp <= $fecha_referencia) {
+    $periodos[] = [
+        "anio" => $fecha_temp->format('Y'),
+        "mes_num" => $fecha_temp->format('n'),
+        "mes_nombre" => strftime('%B', $fecha_temp->getTimestamp())
+    ];
+    // Avanzamos al siguiente mes
+    $fecha_temp->modify('+1 month');
+}
 
 // Nombres de meses manual para evitar problemas de locale en el servidor
 $meses_nombres = [
