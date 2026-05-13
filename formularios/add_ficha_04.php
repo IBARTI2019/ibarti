@@ -320,7 +320,7 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 		$("#recibo_generado").html("");
 	}
 
-		function generarReciboPago() {
+	function generarReciboPago() {
 		var ficha = $("#ficha_recibo").val();
 		var ano = $("#ano_recibo").val();
 		var mes = $("#mes_recibo").val();
@@ -349,7 +349,7 @@ $archivo = "pestanas/add_ficha2&Nmenu=$Nmenu&codigo=$codigo&mod=$mod&pagina=3&me
 		var nombreQuincena = (quincena === '01') ? '1era Quincena' : '2da Quincena';
 		
 		// Construir la URL del archivo en S3
-		var urlS3 = 'https://ibarti-expedientes-prod.s3.us-east-2.amazonaws.com/RECIBOS-' + ficha + '/Recibo_' + ano + '-' + mes + '-' + quincena + '.pdf';
+		var urlS3 = 'https://ibarti-expedientes-prod.s3.us-east-2.amazonaws.com/RECIBOS-' + ficha + '/Recibo_' + ano + '-' + parseInt(mes) + '-' + quincena + '.pdf';
 		
 		descargarReciboDesdeS3(urlS3, ficha, ano, mes, quincena, nombreMes, nombreQuincena);
 	}
