@@ -44,7 +44,7 @@ if(isset($reporte)){
 		}
 	
 		if($ubicacion != "TODOS"){
-			$where .= " AND cliente_ubicacion.codigo = '$ubicacion' "; 
+			$where .= " AND clientes_ubicacion.codigo = '$ubicacion' "; 
 		}
 	
 		if($vencimiento != "TODOS"){
@@ -68,7 +68,7 @@ if(isset($reporte)){
 		FROM clientes_ub_alcance, prod_sub_lineas, clientes_ubicacion, clientes, regiones, estados, ciudades
 		$where
 		ORDER BY 5,6 ASC;";
-
+	
 	if($reporte== 'excel'){
 
 		header("Content-type: application/vnd.ms-excel");
