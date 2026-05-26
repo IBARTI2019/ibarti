@@ -43,7 +43,7 @@ if($metodo == "agregar"){
 					// Insert Detail
 					$sql = "INSERT INTO prod_asignacion_det (cod_asignacion, cod_producto, cod_almacen, cantidad)
 							VALUES ($codigo, '$producto', '$almacen', $cantidad)";
-					if(!$bd->consultar($sql)){ $error = true; break; }
+					if(!$bd->consultar($sql)){ $error = true; $msg_err = "Error Detalle: " . mysql_error(); break; }
 
 					// Modify Stock reservado
 					if($tipo == 'ASIGNACION'){
@@ -53,7 +53,7 @@ if($metodo == "agregar"){
 						$sql = "UPDATE stock SET stock_reservado = stock_reservado - $cantidad 
 								WHERE cod_producto = '$producto' AND cod_almacen = '$almacen'";
 					}
-					if(!$bd->consultar($sql)){ $error = true; break; }
+					if(!$bd->consultar($sql)){ $error = true; $msg_err = "Error Stock: " . mysql_error(); break; }
 
 					// Insert EANs
 					if(trim($eans) != ""){

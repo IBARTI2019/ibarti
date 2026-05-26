@@ -423,7 +423,7 @@ if ($metodo == 'modificar') {
 					<span class="textfieldRequiredMsg">La Fecha Es Requerida.</span>
 					<span class="textfieldInvalidFormatMsg">Formato Invalido.</span></td>
 				<td class="etiqueta" width="13%">Descripci&oacute;n:</td>
-				<td id="input02" width="20%"><input type="text" name="descripcion" maxlength="60" size="30" value="<?php echo $descripcion;?>" <?php if($metodo=="modificar") echo 'readonly';?>/><br>
+				<td id="input02" width="20%"><textarea name="descripcion" cols="40" rows="3" maxlength="255" <?php if($metodo=="modificar") echo 'readonly';?>><?php echo htmlspecialchars($descripcion);?></textarea><br>
 					<span class="textfieldRequiredMsg">La Descripcion es Requerida.</span>
 					<span class="textfieldMinCharsMsg">Debe Escribir mínimo 2 Caracteres.</span></td>
 			</tr>
