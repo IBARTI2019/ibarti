@@ -7,8 +7,8 @@ $bd = new DataBase();
 $tipo        = $_POST["tipo"];
 $fecha       = conversion($_POST["fecha"]);
 $descripcion = $_POST["descripcion"];
-$ubicacion   = $_POST["ubicacion"];
-$trabajador  = $_POST["trabajador"];
+$ubicacion   = ($_POST["ubicacion"] != "") ? "'".$_POST["ubicacion"]."'" : "NULL";
+$trabajador  = ($_POST["trabajador"] != "") ? "'".$_POST["trabajador"]."'" : "NULL";
 $incr        = $_POST["incremento"];
 $usuario     = $_POST["usuario"];
 $metodo      = $_POST["metodo"];
@@ -22,9 +22,10 @@ if($metodo == "agregar"){
 
 	// 1. Insert header
 	$sql = "INSERT INTO prod_asignacion (tipo, fecha, cod_ubicacion, cod_ficha, descripcion, cod_us_ing, fec_us_ing) 
-			VALUES ('$tipo', '$fecha', '$ubicacion', '$trabajador', '$descripcion', '$usuario', CURRENT_TIMESTAMP)";
+			VALUES ('$tipo', '$fecha', $ubicacion, $trabajador, '$descripcion', '$usuario', CURRENT_TIMESTAMP)";
 	if(!$bd->consultar($sql)){
 		$error = true;
+		$msg_err = "Error Cabecera: " . mysql_error();
 	}else{
 		$query_id = $bd->consultar("SELECT LAST_INSERT_ID() AS id");
 		$row_id = $bd->obtener_fila($query_id, 0);
@@ -62,7 +63,7 @@ if($metodo == "agregar"){
 							if($ean != ""){
 								$sql = "INSERT INTO prod_asignacion_eans (cod_asignacion, cod_producto, cod_ean)
 										VALUES ($codigo, '$producto', '$ean')";
-								if(!$bd->consultar($sql)){ $error = true; break; }
+								if(!$bd->consultar($sql)){ $error = true; $msg_err = "Error EAN: ".mysql_error(); break; }
 							}
 						}
 						if($error) break;
@@ -74,7 +75,7 @@ if($metodo == "agregar"){
 
 	if($error){
 		$bd->consultar("ROLLBACK");
-		echo "<script>alert('Error crítico de base de datos. Se canceló el guardado para proteger la integridad.');</script>";
+		echo "<script>alert('Error crítico de base de datos. Se canceló el guardado.\\nDetalle: ".addslashes($msg_err)."');</script>";
 	}else{
 		$bd->consultar("COMMIT");
 	}
