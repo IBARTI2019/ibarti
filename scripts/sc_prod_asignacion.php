@@ -23,11 +23,12 @@ if($metodo == "agregar"){
 	// 1. Insert header
 	$sql = "INSERT INTO prod_asignacion (tipo, fecha, cod_ubicacion, cod_ficha, descripcion, cod_us_ing, fec_us_ing) 
 			VALUES ('$tipo', '$fecha', '$ubicacion', '$trabajador', '$descripcion', '$usuario', CURRENT_TIMESTAMP)";
-	echo $sql;
 	if(!$bd->consultar($sql)){
 		$error = true;
 	}else{
-		$codigo = $bd->insert_id();
+		$query_id = $bd->consultar("SELECT LAST_INSERT_ID() AS id");
+		$row_id = $bd->obtener_fila($query_id, 0);
+		$codigo = $row_id['id'];
 		// 2. Loop through details
 		for ($i = 1; $i <= $incr; $i++) {
 			if(isset($_POST['relacion_'.$i.''])) {
@@ -41,7 +42,6 @@ if($metodo == "agregar"){
 					// Insert Detail
 					$sql = "INSERT INTO prod_asignacion_det (cod_asignacion, cod_producto, cod_almacen, cantidad)
 							VALUES ($codigo, '$producto', '$almacen', $cantidad)";
-					echo $sql;
 					if(!$bd->consultar($sql)){ $error = true; break; }
 
 					// Modify Stock reservado
@@ -52,7 +52,6 @@ if($metodo == "agregar"){
 						$sql = "UPDATE stock SET stock_reservado = stock_reservado - $cantidad 
 								WHERE cod_producto = '$producto' AND cod_almacen = '$almacen'";
 					}
-					echo $sql;
 					if(!$bd->consultar($sql)){ $error = true; break; }
 
 					// Insert EANs
@@ -63,7 +62,6 @@ if($metodo == "agregar"){
 							if($ean != ""){
 								$sql = "INSERT INTO prod_asignacion_eans (cod_asignacion, cod_producto, cod_ean)
 										VALUES ($codigo, '$producto', '$ean')";
-								echo $sql;
 								if(!$bd->consultar($sql)){ $error = true; break; }
 							}
 						}
