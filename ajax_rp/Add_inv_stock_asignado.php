@@ -71,14 +71,32 @@ $trabajador = $_POST['trabajador'];
             <th width="25%" class="etiqueta">Custodio / Destino</th>
             <th width="15%" class="etiqueta">Linea</th>
             <th width="15%" class="etiqueta">Sub Linea</th>
-            <th width="15%" class="etiqueta">Producto</th>
-            <th width="5%" class="etiqueta">Stock En Custodia</th>
-    </tr>
+            <th width="15%" class="etiqueta">Producto </th>
+            <th width="10%" class="etiqueta">EANs </th>
+            <th width="5%" class="etiqueta">Stock</th>
+	</tr>
     <?php
     $valor = 0;
     $query = $bd->consultar($sql);
 
         while ($datos=$bd->obtener_fila($query,0)){
+            $cod_ficha = $datos['cod_ficha'];
+            $serial = $datos['serial'];
+            $ficha_cond = ($cod_ficha == 'ASIGNADO A UBICACION' || $cod_ficha == 'UBICACION' || $cod_ficha == '') ? "AND (pa.cod_ficha = '' OR pa.cod_ficha IS NULL)" : "AND pa.cod_ficha = '$cod_ficha'";
+
+            $sql_eans = "SELECT sub.cod_ean FROM (
+                  SELECT pae.cod_ean, SUM(CASE WHEN pa.tipo = 'ASIGNACION' THEN 1 ELSE -1 END) as balance
+                  FROM prod_asignacion_eans pae
+                  JOIN prod_asignacion pa ON pae.cod_asignacion = pa.codigo
+                  WHERE pae.cod_producto = '$serial' $ficha_cond
+                  GROUP BY pae.cod_ean ) as sub WHERE sub.balance > 0";
+            $q_eans = $bd->consultar($sql_eans);
+            $eans_arr = [];
+            while($re = $bd->obtener_fila($q_eans, 0)){
+                $eans_arr[] = $re['cod_ean'];
+            }
+            $eans_str = implode(', ', $eans_arr);
+
             if ($valor == 0){
                 $fondo = 'fondo01';
                 $valor = 1;
@@ -93,7 +111,8 @@ $trabajador = $_POST['trabajador'];
                     <td class="texto">'.longitud($datos["linea"]).'</td>
                     <td class="texto">'.longitud($datos["sub_linea"]).'</td>
                     <td class="texto">'.$datos["producto"].' ('.$datos["serial"].')</td>
-                    <td class="texto" align="center"><b>'.$datos["balance"].'</b></td>
+                    <td class="texto">'.$eans_str.'</td>
+                    <td class="texto"><b>'.$datos["balance"].'</b></td>
                   </tr>';
         };?>
 </table>

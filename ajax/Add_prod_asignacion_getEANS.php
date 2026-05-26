@@ -20,16 +20,7 @@ if ($tipo == 'ASIGNACION') {
             WHERE p.cod_producto = '$codigo'
               AND p.cod_almacen = '$almacen'
               AND p.inStock = 'T'
-              AND p.cod_ean NOT IN (
-                  SELECT sub.cod_ean FROM (
-                      SELECT pae.cod_ean, 
-                             SUM(CASE WHEN pa.tipo = 'ASIGNACION' THEN 1 ELSE -1 END) as balance
-                      FROM prod_asignacion_eans pae
-                      JOIN prod_asignacion pa ON pae.cod_asignacion = pa.codigo
-                      WHERE pae.cod_producto = '$codigo'
-                      GROUP BY pae.cod_ean
-                  ) as sub WHERE sub.balance > 0
-              )
+              AND p.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans)
             ORDER BY 1 DESC";
 } else {
     // DEVOLUCION

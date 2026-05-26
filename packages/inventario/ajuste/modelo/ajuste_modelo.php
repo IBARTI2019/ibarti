@@ -81,7 +81,7 @@ class Ajuste
 
   public function get_stock_actual($producto,$almacen){
     $this->datos   = array();
-    $sql = " SELECT FORMAT(stock_actual,0) stock_actual
+    $sql = " SELECT FORMAT(GREATEST(0, stock_actual - stock_reservado),0) stock_actual
     FROM stock WHERE cod_producto = '$producto' AND cod_almacen = '$almacen'";
     $query = $this->bd->consultar($sql);
     return  $this->datos = $this->bd->obtener_fila($query);
@@ -201,7 +201,7 @@ public function get_eans($cod,$salida,$almacen){
   $this->datos   = array();
   if($salida){
     $sql = " SELECT cod_ean FROM prod_ean WHERE inStock = 'T' AND cod_producto = '$cod'
-    AND cod_almacen = '$almacen'
+    AND cod_almacen = '$almacen' AND cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans)
     ORDER BY 1 DESC";
   }else{
     $sql = " SELECT a.cod_producto, a.cod_ean
@@ -222,7 +222,7 @@ public function get_cantidad_mayor_a_stock_actual($cod_ajuste){
   $sql = "
   SELECT
   ajuste_reng.cantidad
-  ,stock.stock_actual
+  ,GREATEST(0, stock.stock_actual - stock.stock_reservado) as stock_actual
    ,stock.cod_producto
   FROM 
   ajuste_reng
@@ -233,7 +233,7 @@ public function get_cantidad_mayor_a_stock_actual($cod_ajuste){
   stock.cod_almacen =ajuste_reng.cod_almacen
   GROUP BY ajuste_reng.cod_almacen,ajuste_reng.cod_producto,ajuste_reng.cantidad
   HAVING
-  ajuste_reng.cantidad>stock.stock_actual
+  ajuste_reng.cantidad > GREATEST(0, stock.stock_actual - stock.stock_reservado)
   ";
   $query = $this->bd->consultar($sql);
 

@@ -79,31 +79,31 @@ if(isset($reporte)){
 
         $query01  = $bd->consultar($sql);
         echo "<table border=1>";
-        echo "<tr>
-                <th> ".$leng['ficha']." </th>
-                <th> ".$leng['ci']." </th>
-                <th> Custodio / Destino </th>
-                <th> Linea </th>
-                <th> Sub Linea </th>
-                <th> Producto </th>
-                <th> Código Item </th>
-                <th> EAN / Seriales </th>
-                <th> Stock en Custodia </th>
-              </tr>";
-        
-        while ($row01 = $bd->obtener_num($query01)){
-            echo "<tr>
-                    <td>".$row01[0]."</td>
-                    <td>".$row01[1]."</td>
-                    <td>".$row01[2]."</td>
-                    <td>".$row01[3]."</td>
-                    <td>".$row01[4]."</td>
-                    <td>".$row01[5]."</td>
-                    <td>".$row01[6]."</td>
-                    <td>".$row01[8]."</td> <td><b>".$row01[7]."</b></td>
-                  </tr>";
-        }
-        echo "</table>";
+        echo "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']." </th><th> ".$leng['trabajador']." </th>
+			   <th> Linea </th><th> Sub Linea </th><th> Producto </th><th> Serial </th><th> EANs </th><th> Stock en Custodia </th></tr>";
+		
+		while ($row01 = $bd->obtener_num($query01)){
+            $cod_ficha = $row01[0];
+            $ficha_cond = ($cod_ficha == 'ASIGNADO A UBICACION' || $cod_ficha == 'UBICACION' || $cod_ficha == '') ? "AND (pa.cod_ficha = '' OR pa.cod_ficha IS NULL)" : "AND pa.cod_ficha = '$cod_ficha'";
+
+            $sql_eans = "SELECT sub.cod_ean FROM (
+                  SELECT pae.cod_ean, SUM(CASE WHEN pa.tipo = 'ASIGNACION' THEN 1 ELSE -1 END) as balance
+                  FROM prod_asignacion_eans pae
+                  JOIN prod_asignacion pa ON pae.cod_asignacion = pa.codigo
+                  WHERE pae.cod_producto = '$serial' $ficha_cond
+                  GROUP BY pae.cod_ean ) as sub WHERE sub.balance > 0";
+            $q_eans = $bd->consultar($sql_eans);
+            $eans_arr = [];
+            while($re = $bd->obtener_fila($q_eans, 0)){
+                $eans_arr[] = $re['cod_ean'];
+            }
+            $eans_str = implode(', ', $eans_arr);
+
+		 echo "<tr><td> ".$row01[0]." </td><td>".$row01[1]."</td><td>".$row01[2]."</td>
+					<td>".$row01[3]."</td><td>".$row01[4]."</td><td>".$row01[5]."</td><td>".$row01[6]."</td>
+					<td>".$eans_str."</td><td>".$row01[7]."</td></tr>";
+		}
+		 echo "</table>";
     }
 
     if($reporte == 'pdf'){
@@ -119,30 +119,44 @@ if(isset($reporte)){
 
         echo "<br><div>
         <table>
-        <tbody>
+		<tbody>
             <tr style='background-color: #4CAF50;'>
-                <th width='10%'>".$leng['ficha']."</th>
-                <th width='10%'>".$leng['ci']."</th>
-                <th width='20%'>Custodio / Destino</th>
-                <th width='15%'>Linea</th>
-                <th width='20%'>Producto</th>
-                <th width='15%'>EAN / Seriales</th>
-                <th width='10%' style='text-align:center;'>Stock Custodia</th>
+            <th width='10%'>".$leng['ficha']."</th>
+            <th width='20%'>".$leng['trabajador']."</th>
+            <th width='15%'>Linea</th>
+            <th width='25%'>Producto</th>
+            <th width='20%'>EANs</th>
+            <th width='10%'  style='text-align:center;'>Stock Custodia</th>
             </tr>";
 
-        $f = 0;
-        while ($row = $bd->obtener_num($query)){
+            $f=0;
+    while ($row = $bd->obtener_num($query)){
+            $cod_ficha = $row[0];
+            $ficha_cond = ($cod_ficha == 'ASIGNADO A UBICACION' || $cod_ficha == 'UBICACION' || $cod_ficha == '') ? "AND (pa.cod_ficha = '' OR pa.cod_ficha IS NULL)" : "AND pa.cod_ficha = '$cod_ficha'";
+
+            $sql_eans = "SELECT sub.cod_ean FROM (
+                  SELECT pae.cod_ean, SUM(CASE WHEN pa.tipo = 'ASIGNACION' THEN 1 ELSE -1 END) as balance
+                  FROM prod_asignacion_eans pae
+                  JOIN prod_asignacion pa ON pae.cod_asignacion = pa.codigo
+                  WHERE pae.cod_producto = '$serial' $ficha_cond
+                  GROUP BY pae.cod_ean ) as sub WHERE sub.balance > 0";
+            $q_eans = $bd->consultar($sql_eans);
+            $eans_arr = [];
+            while($re = $bd->obtener_fila($q_eans, 0)){
+                $eans_arr[] = $re['cod_ean'];
+            }
+            $eans_str = implode(', ', $eans_arr);
+
             $clase_fila = ($f % 2 == 0) ? "" : "class='odd_row'";
-            $display_eans = (!empty($row[8])) ? $row[8] : '-';
             
             echo "<tr $clase_fila>
-                    <td>".$row[0]."</td>
-                    <td>".$row[1]."</td>
-                    <td>".$row[2]."</td>
-                    <td>".$row[3]."</td>
-                    <td>".$row[5]." (".$row[6].")</td>
-                    <td>".$display_eans."</td> <td style='text-align:center;'><b>".$row[7]."</b></td>
-                  </tr>";
+                 <td width='10%'>".$row[0]."</td>
+            <td width='20%'>".$row[2]."</td>
+			<td width='15%'>".$row[3]."</td>
+            <td width='25%'>".$row[5]." (".$row[6].")</td>
+            <td width='20%'>".$eans_str."</td>
+            <td width='10%' style='text-align:center;'>".$row[7]."</td>
+			</tr>";
             $f++;
         }
 

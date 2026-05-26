@@ -17,11 +17,11 @@ $tieneeans=$_POST['tieneeans'];
 $vinculo    = "inicio.php?area=formularios/Add_EANS_clientes.php";
 if ($metodo=="buscar"){
     $where="1=1";
-    if ($rel2 <> "") { $where.="prod_ean.cod_ean like '%$rel2%'"; }
+    if ($rel2 <> "") { $where.=" AND prod_ean.cod_ean like '%$rel2%'"; }
 
     $where.=" ORDER BY prod_ean.cod_ean DESC";
-    $query="SELECT count(*) as filas FROM productos,prod_ean WHERE productos.item=prod_ean.cod_producto";
-    $sql="SELECT prod_ean.cod_producto as codigo,prod_ean.cod_ean as eans FROM prod_ean WHERE  prod_ean.cod_producto ='$producto' and prod_ean.cod_ean like '%$rel2%'";
+    $query="SELECT count(*) as filas FROM productos,prod_ean WHERE productos.item=prod_ean.cod_producto AND prod_ean.cod_producto ='$producto' AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans) AND ".$where;
+    $sql="SELECT prod_ean.cod_producto as codigo,prod_ean.cod_ean as eans FROM prod_ean WHERE prod_ean.cod_producto ='$producto' AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans) AND ".$where;
 } 
 
 $rs_busqueda=$bd->consultar($query);
