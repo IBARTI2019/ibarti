@@ -44,7 +44,7 @@ if(isset($generar_tipo)){
     WHERE e.cod_almacen = a.cod_almacen 
     AND e.cod_producto = a.cod_producto
     ORDER BY e.cod_ajuste DESC, e.reng_num DESC LIMIT 1) cos_prom_actual,IF(b.ean = 'T', 1, a.stock_actual) stock_actual,
-  pe.cod_ean
+  pe.cod_ean, a.stock_reservado
   FROM stock a
 LEFT JOIN prod_ean pe ON  a.cod_producto = pe.cod_producto AND a.cod_almacen = pe.cod_almacen AND pe.inStock = 'T',
  productos b, almacenes c,prod_lineas d,prod_sub_lineas e
@@ -59,11 +59,11 @@ LEFT JOIN prod_ean pe ON  a.cod_producto = pe.cod_producto AND a.cod_almacen = p
     $query  = $bd->consultar($sql);
     echo "<table border=1>
     <tr><th colspan='9'>".$titulo."</th></tr>
-    <tr><th> Serial </th><th>".$leng["producto"]." <th>Linea</th><th> Sub Linea</th><th>Almacen</th><th>Importe</th><th>Ultimo Costo Promedio</th> <th>Stock</th><th>EAN</th> </tr>";
+    <tr><th> Serial </th><th>".$leng["producto"]." <th>Linea</th><th> Sub Linea</th><th>Almacen</th><th>Importe</th><th>Ultimo Costo Promedio</th> <th>Stock</th><th>Reservado</th><th>EAN</th> </tr>";
 
     while ($dato = $bd->obtener_fila($query)){
      echo "<tr><td>".$dato[0]."</td><td>".$dato[1]."</td><td>".$dato[2]."</td><td>".$dato[3]."</td>
-     <td>".$dato[4]."</td><td>".$dato[5]."</td><td>".$dato[6]."</td><td>".$dato[7]."</td><td>".$dato[8]."</td></tr>";
+     <td>".$dato[4]."</td><td>".$dato[5]."</td><td>".$dato[6]."</td><td>".$dato[7]."</td><td>".$dato[9]."</td><td>".$dato[8]."</td></tr>";
    }
    echo "</table>";
  }
@@ -86,6 +86,7 @@ LEFT JOIN prod_ean pe ON  a.cod_producto = pe.cod_producto AND a.cod_almacen = p
   <th width:'15%'>Sub Linea</th>
   <th width:'20%'>Almacen</th>
   <th width:'10%'>Stock</th>
+  <th width:'10%'>Asignado / Reservado</th>
   </tr>";
 
   $f=0;
@@ -100,7 +101,8 @@ LEFT JOIN prod_ean pe ON  a.cod_producto = pe.cod_producto AND a.cod_almacen = p
   <td width:'15%'>".$row[2]."</td>
   <td width:'15%'>".$row[3]."</td>
   <td width:'20%'>".$row[4]."</td>
-  <td width:'10%'>".$row[7]."</td></tr>";
+  <td width:'10%'>".$row[7]."</td>
+  <td width:'10%'>".$row[9]."</td></tr>";
 
   $f++;
 }

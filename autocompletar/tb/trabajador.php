@@ -3,8 +3,8 @@ include_once('../../funciones/funciones.php');
 require("../../autentificacion/aut_config.inc.php");
 require_once("../../" . class_bd);
 $bd = new DataBase();
-$typing     = $_GET['q'];
-$filtro     = $_GET['filtro'];
+$typing     = isset($_GET['q']) ? $_GET['q'] : '';
+$filtro     = isset($_GET['filtro']) ? $_GET['filtro'] : 'TODOS';
 $where  = " ";
 switch ($filtro) {
 	case "codigo":
@@ -26,8 +26,17 @@ switch ($filtro) {
 		$where  .= " WHERE LOCATE(REPLACE(REPLACE('".$typing."', '-', ''), ' ', ''), REPLACE(REPLACE(v_ficha.telefono , '-', ''), ' ', '')) ";
 		break;
 	case "TODOS":
-		$where  .= " WHERE LOCATE('$typing', v_ficha.cod_ficha) OR LOCATE('$typing', v_ficha.ap_nombre) OR LOCATE('$typing', v_ficha.cedula) ";
+		$where  .= " WHERE (LOCATE('$typing', v_ficha.cod_ficha) OR LOCATE('$typing', v_ficha.ap_nombre) OR LOCATE('$typing', v_ficha.cedula)) ";
 		break;
+}
+
+if(isset($_GET['ubicacion']) && $_GET['ubicacion'] != ''){
+	$ubicacion = $_GET['ubicacion'];
+	if(trim($where) == ""){
+		$where = " WHERE v_ficha.cod_ubicacion = '$ubicacion' ";
+	} else {
+		$where .= " AND v_ficha.cod_ubicacion = '$ubicacion' ";
+	}
 }
 
 if(isset($_GET['activos'])){

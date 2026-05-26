@@ -75,7 +75,8 @@ $prod_producto     = $producto->get_prod_productos("TODOS");
         <th width="25%" align="center">Almacen</th>
         <th width="25%" align="center">Producto</th>
         <th width="20%" align="center">Serial</th>
-        <th width="10%" align="center">Stock</th>
+        <th width="10%" align="center">Stock Actual</th>
+        <th width="10%" align="center">Asignado / Reservado</th>
         <th width="10%" align="center">Importe</th>
         <th width="10%" align="center">Costo Promedio</th>
       </tr>

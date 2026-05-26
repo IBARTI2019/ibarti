@@ -16,8 +16,8 @@
 						toastr.error(cantidad+ " La Cantidad Supera el Stock Actual \n Stock Actual = "+cantidad_max);
 						$("#validar").prop('disabled', false);
 					}else{
+						$("#validar").val("Guardando...");
 						$("#salvar").click();
-						$("#validar").prop('disabled', false);
 					}
 				}else{
 					$("#validar").prop('disabled', false);

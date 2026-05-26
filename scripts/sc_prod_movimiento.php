@@ -40,27 +40,39 @@ $proced   = $_POST['proced'];
 $metodo   = $_POST['metodo'];
 
 	if(isset($_POST['proced'])){
+		$error = false;
+		$bd->consultar("START TRANSACTION");
+
   	 $sql    = "$SELECT $proced('$metodo', '$codigo', '$producto', '$trabajador',
 	                            '$cliente', '$ubicacion', '$tipo_mov', '$fecha',
 							    '$observacion',
                                 '$campo01', '$campo02', '$campo03', '$campo04', '$usuario', '$activo')";
-	 $query = $bd->consultar($sql);
+	 if(!$bd->consultar($sql)) { $error = true; }
 
-  	if($metodo == "agregar"){
+  	if($metodo == "agregar" && !$error){
   		$sql    = "SELECT MAX(prod_movimiento.codigo) codigo FROM prod_movimiento
                   WHERE prod_movimiento.cod_ficha = '$trabajador'";
 
   		 $query = $bd->consultar($sql);
+		   if(!$query) { $error = true; } else {
   		 $datos = $bd->obtener_fila($query,0);
   		 $codigo = $datos[0];
-
-  		 echo '<form id="pdf" name="pdf" action="" method="post" target="_blank">
-  						<input type="hidden" id="codigo" name="codigo" value="'.$codigo.'">
-              <input type="hidden" id="href" name="href" value="'.$href.'">
-  		 			</form>';
-  		 echo "<script> Pdf(); </script>";
-
+		   }
   	}
+
+	if($error){
+		$bd->consultar("ROLLBACK");
+		echo "<script>alert('Error crítico de base de datos. Transacción anulada.');</script>";
+	}else{
+		$bd->consultar("COMMIT");
+		if($metodo == "agregar"){
+			echo '<form id="pdf" name="pdf" action="" method="post" target="_blank">
+						<input type="hidden" id="codigo" name="codigo" value="'.$codigo.'">
+			<input type="hidden" id="href" name="href" value="'.$href.'">
+					</form>';
+			echo "<script> Pdf(); </script>";
+		}
+	}
 	}
  require_once('../funciones/sc_direccionar.php');
 ?>

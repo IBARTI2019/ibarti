@@ -8,7 +8,7 @@ $bd = new DataBase();
 $producto   = $_POST['producto'];
 $almacen    = $_POST['almacen'];
 $cod_ficha    = $_POST['cod_ficha'];
- $sql = "SELECT IF(FORMAT(stock.stock_actual,0) < FORMAT(clientes_ub_alcance.cantidad,0) ,FORMAT(stock.stock_actual,0) ,FORMAT(clientes_ub_alcance.cantidad,0) ) stock_actual
+ $sql = "SELECT IF(FORMAT(GREATEST(0, stock.stock_actual - stock.stock_reservado),0) < FORMAT(clientes_ub_alcance.cantidad,0) ,FORMAT(GREATEST(0, stock.stock_actual - stock.stock_reservado),0) ,FORMAT(clientes_ub_alcance.cantidad,0) ) stock_actual
     FROM stock,clientes_ub_alcance,productos 
 WHERE stock.cod_producto = '$producto' 
 AND stock.cod_almacen = '$almacen'

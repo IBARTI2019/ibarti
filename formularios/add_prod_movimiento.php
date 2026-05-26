@@ -128,6 +128,18 @@ function Add_filtroX(){  // CARGAR  UBICACION DE CLIENTE  Y tamaño  //
 	}
 }
 
+  function Redireccionar(){
+     location.href=$('#href').val();
+  	}
+
+$(document).ready(function() {
+    $("form").submit(function() {
+        $("#salvar").val('Guardando...');
+        $("#salvar").css('opacity', '0.5');
+        $("#salvar").css('pointer-events', 'none');
+        return true;
+    });
+});
 function Validar01(valor){
     if(valor != ""){
 		document.getElementById("ubicacion2").value = valor;
