@@ -13,7 +13,7 @@ function enviar_mail_html($host,$puerto,$smtpSecure,$cuentaDeEnvio,$passwordCuen
 	$mail->Port       = $puerto;  
 	$mail->SMTPAuth = true;
 	$mail->SMTPSecure = $smtpSecure; 
-	$mail->SMTPDebug = 1; // debugging: 1 = errors and messages, 2 = messages only
+	$mail->SMTPDebug = 0;
 
 	$mail->From     = $cuentaDeEnvio;
 	$mail->FromName = $nombre;

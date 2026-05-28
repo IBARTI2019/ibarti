@@ -90,7 +90,7 @@ if(isset($reporte)){
                   SELECT pae.cod_ean, SUM(CASE WHEN pa.tipo = 'ASIGNACION' THEN 1 ELSE -1 END) as balance
                   FROM prod_asignacion_eans pae
                   JOIN prod_asignacion pa ON pae.cod_asignacion = pa.codigo
-                  WHERE pae.cod_producto = '$serial' $ficha_cond
+                  WHERE pae.cod_producto = '{$row01[6]}' $ficha_cond
                   GROUP BY pae.cod_ean ) as sub WHERE sub.balance > 0";
             $q_eans = $bd->consultar($sql_eans);
             $eans_arr = [];
@@ -138,7 +138,7 @@ if(isset($reporte)){
                   SELECT pae.cod_ean, SUM(CASE WHEN pa.tipo = 'ASIGNACION' THEN 1 ELSE -1 END) as balance
                   FROM prod_asignacion_eans pae
                   JOIN prod_asignacion pa ON pae.cod_asignacion = pa.codigo
-                  WHERE pae.cod_producto = '$serial' $ficha_cond
+                  WHERE pae.cod_producto = '{$row[6]}' $ficha_cond
                   GROUP BY pae.cod_ean ) as sub WHERE sub.balance > 0";
             $q_eans = $bd->consultar($sql_eans);
             $eans_arr = [];

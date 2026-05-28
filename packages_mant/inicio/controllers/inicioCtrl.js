@@ -305,15 +305,21 @@ function enviar_mail(){
 				$('#cargando').show();
 			},
 			success:  function (response) {
-				var resp = JSON.parse(response);
-				if((typeof resp.error == "undefined") || (resp.error == false)){
-					toastr.success(resp.mensaje);
-					$("#fase2").hide();
-					$("#fase3").show();
-					$('#cargando').hide();
-				}else{
+				try {
+					var resp = JSON.parse(response);
+					if((typeof resp.error == "undefined") || (resp.error == false)){
+						toastr.success(resp.mensaje);
+						$("#fase2").hide();
+						$("#fase3").show();
+						$('#cargando').hide();
+					}else{
+						$('#fase2').show();
+						toastr.error(resp.mensaje);
+					}
+				} catch(e) {
 					$('#fase2').show();
-					toastr.error(resp.mensaje);
+					$('#cargando').hide();
+					toastr.error('Error al procesar respuesta del servidor');
 				}
 
 			},
