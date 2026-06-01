@@ -124,8 +124,8 @@ if(isset($_POST['proced'])){
 				$neto = $cos_promedio * $cantidad;
 
 				$sql = " INSERT INTO ajuste_reng(cod_ajuste, reng_num, cod_almacen, cod_producto,
-				fec_vencimiento, cantidad, costo, neto,  importe, cos_promedio)
-				VALUES ($cod_ajuste, $i, '$almacen', '$producto', '0000-00-00',
+				fec_vencimiento, lote, cantidad, costo, neto,  importe, cos_promedio)
+				VALUES ($cod_ajuste, $i, '$almacen', '$producto', '0000-00-00', '19830906',
 				$cantidad, $cos_promedio, $neto, $neto, $cos_promedio); ";
 
 				if(!$bd->consultar($sql)) { $error = true; break; }
