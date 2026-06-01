@@ -225,7 +225,7 @@ if(isset($_POST['proced'])){
 	}
 }
 
-require_once('../funciones/sc_direccionar.php');
+// require_once('../funciones/sc_direccionar.php');
 ?>
 <body>
 
