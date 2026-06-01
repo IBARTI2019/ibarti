@@ -122,11 +122,13 @@ if(isset($_POST['proced'])){
 				}
 				}
 				$neto = $cos_promedio * $cantidad;
-
+				if($nro_ajuste_c == ""){
+					$nro_ajuste_c = 0;
+				}
 				$sql = " INSERT INTO ajuste_reng(cod_ajuste, reng_num, cod_almacen, cod_producto,
-				fec_vencimiento, lote, cantidad, costo, neto,  importe, cos_promedio)
+				fec_vencimiento, lote, cantidad, costo, neto,  importe, cos_promedio, aplicar,anulado,cod_anulado)
 				VALUES ($cod_ajuste, $i, '$almacen', '$producto', '0000-00-00', '19830906',
-				$cantidad, $cos_promedio, $neto, $neto, $cos_promedio); ";
+				$cantidad, $cos_promedio, $neto, $neto, $cos_promedio, 'OUT','F','$nro_ajuste_c'); ";
 
 				if(!$bd->consultar($sql)) { $error = true; break; }
 
