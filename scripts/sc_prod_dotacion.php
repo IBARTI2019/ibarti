@@ -18,6 +18,8 @@ include_once('../funciones/funciones.php');
 require("../autentificacion/aut_config.inc.php");
 require_once("../".class_bd);
 $bd = new DataBase();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 $tabla_id = 'codigo';
 
 $codigo      = $_POST["codigo"];
@@ -147,16 +149,11 @@ if(isset($_POST['proced'])){
 		}
 	}
 
-	if($error){
-		$bd->consultar("ROLLBACK");
-		echo "<script>alert('Error crítico de base de datos. Transacción anulada.');</script>";
-	}else{
-		$bd->consultar("COMMIT");
-		echo '<form id="pdf" name="pdf" action="" method="post" target="_blank">
-		<input type="hidden" id="codigo" name="codigo" value="'.$codigo.'">
-		</form>';
-		echo "<script> Pdf(); </script>";
-	}
+if($error){
+	$err = mysql_error();
+	$bd->consultar("ROLLBACK");
+	echo "<script>alert('Error crítico de base de datos: ' . addslashes($err) . '. Transacción anulada.');</script>";
+}
 
 	if($metodo == "agregar" && !$error){
 		// Query header data
