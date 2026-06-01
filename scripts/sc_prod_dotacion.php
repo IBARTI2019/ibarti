@@ -154,7 +154,9 @@ if(isset($_POST['proced'])){
 		}
 	}	
 
-	if($error){
+	if(!$error){
+		$bd->consultar("COMMIT");
+	} else {
 		// Capturamos el error pasándole el link actual de la base de datos
 		$err = mysql_error($bd->conexion()); 
 		$bd->consultar("ROLLBACK");
