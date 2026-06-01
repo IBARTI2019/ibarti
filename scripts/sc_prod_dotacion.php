@@ -150,12 +150,16 @@ if(isset($_POST['proced'])){
 				}
 			}
 		}
-	}
+	}	
 
 	if($error){
-		$err = mysql_error();
+		// Capturamos el error pasándole el link actual de la base de datos
+		$err = mysql_error($bd->conexion()); 
 		$bd->consultar("ROLLBACK");
-		echo "<script>alert('Error crítico de base de datos: ' . addslashes($err) . '. Transacción anulada.');</script>";
+		
+		// Escapamos correctamente para evitar romper el alert de JS
+		$err_clean = addslashes($err);
+		echo "<script>alert('Error crítico de base de datos: $err_clean. Transacción anulada.');</script>";
 	}
 
 	if($metodo == "agregar" && !$error){
