@@ -137,7 +137,7 @@ if(isset($_POST['proced'])){
 				if(!$bd->consultar($sql)) { $error = true; break; }
 
 				// Insert EANs
-				$eans     = $_POST['eans_'.$i.''];
+				$eans = isset($_POST['eans_'.$i]) ? $_POST['eans_'.$i] : "";
 				if(trim($eans) != ""){
 					$eans_array = explode(",", $eans);
 					foreach($eans_array as $ean){
@@ -231,7 +231,7 @@ if(isset($_POST['proced'])){
 	}
 }
 
-// require_once('../funciones/sc_direccionar.php');
+require_once('../funciones/sc_direccionar.php');
 ?>
 <body>
 
