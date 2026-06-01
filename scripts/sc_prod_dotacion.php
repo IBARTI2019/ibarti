@@ -132,9 +132,9 @@ if(isset($_POST['proced'])){
 
 				if(!$bd->consultar($sql)) { $error = true; break; }
 
-				$sql = " UPDATE stock SET stock_actual = stock_actual - $cantidad
-				WHERE cod_producto = '$producto' AND cod_almacen = '$almacen'; ";
-				if(!$bd->consultar($sql)) { $error = true; break; }
+				// $sql = " UPDATE stock SET stock_actual = stock_actual - $cantidad
+				// WHERE cod_producto = '$producto' AND cod_almacen = '$almacen'; ";
+				// if(!$bd->consultar($sql)) { $error = true; break; }
 
 				// Insert EANs
 				$eans = isset($_POST['eans_'.$i]) ? $_POST['eans_'.$i] : "";
