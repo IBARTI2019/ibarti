@@ -1,3 +1,7 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+?>
 <script type="text/javascript" src="../jquery.js"></script>
 <script language="JavaScript" type="text/javascript">
 	function Pdf(){
@@ -18,8 +22,6 @@ include_once('../funciones/funciones.php');
 require("../autentificacion/aut_config.inc.php");
 require_once("../".class_bd);
 $bd = new DataBase();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 $tabla_id = 'codigo';
 
 $codigo      = $_POST["codigo"];
