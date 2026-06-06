@@ -23,15 +23,15 @@ if ($trabajador == "" && $ubicacion == "") {
         
         if ($bd->num_fila($query) > 0) {
             echo "<table width='100%' class='fondo00'>";
-            echo "<tr class='fondo01'><th>Sub Línea (Alcance Configurado)</th><th>Cantidad Permitida</th><th>Días Reposición</th><th>Vencimiento</th></tr>";
+            echo "<tr class='fondo01'><th style='text-align: center;'>Sub Línea (Alcance Configurado)</th><th style='text-align: center;'>Cantidad Permitida</th><th style='text-align: center;'>Días Reposición</th><th style='text-align: center;'>Vencimiento</th></tr>";
             $i = 0;
             while ($row = $bd->obtener_fila($query, 0)) {
                 $fondo = ($i % 2 == 0) ? "fondo02" : "fondo01";
                 echo "<tr class='$fondo'>";
-                echo "<td class='texto'>".$row['descripcion']."</td>";
-                echo "<td class='texto' align='center'>".$row['cantidad']."</td>";
-                echo "<td class='texto' align='center'>".$row['dias']."</td>";
-                echo "<td class='texto' align='center'>".$row['vencimiento']."</td>";
+                echo "<td class='texto' style='text-align: center;'>".$row['descripcion']."</td>";
+                echo "<td class='texto' style='text-align: center;'>".$row['cantidad']."</td>";
+                echo "<td class='texto' style='text-align: center;'>".$row['dias']."</td>";
+                echo "<td class='texto' style='text-align: center;'>".$row['vencimiento']."</td>";
                 echo "</tr>";
                 $i++;
             }
@@ -56,14 +56,14 @@ if ($trabajador == "" && $ubicacion == "") {
     
     if ($bd->num_fila($query) > 0) {
         echo "<table width='100%' class='fondo00'>";
-        echo "<tr class='fondo01'><th>Producto</th><th>Código</th><th>Cantidad actual en Custodia</th></tr>";
+        echo "<tr class='fondo01'><th style='text-align: center;'>Producto</th><th style='text-align: center;'>Código</th><th style='text-align: center;'>Cantidad actual en Custodia</th></tr>";
         $i = 0;
         while ($row = $bd->obtener_fila($query, 0)) {
             $fondo = ($i % 2 == 0) ? "fondo02" : "fondo01";
             echo "<tr class='$fondo'>";
-            echo "<td class='texto'>".$row['descripcion']."</td>";
-            echo "<td class='texto'>".$row['item']."</td>";
-            echo "<td class='texto' align='center'><b>".$row['asignado']."</b></td>";
+            echo "<td class='texto' style='text-align: center;'>".$row['descripcion']."</td>";
+            echo "<td class='texto' style='text-align: center;'>".$row['item']."</td>";
+            echo "<td class='texto' style='text-align: center;'><b>".$row['asignado']."</b></td>";
             echo "</tr>";
             $i++;
         }

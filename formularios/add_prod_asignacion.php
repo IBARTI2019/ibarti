@@ -21,6 +21,11 @@
 		$("#salvar").click();
 	}
 
+	function Pdf(){
+		$('#pdf').attr('action', "reportes/rp_inv_prod_asignacion.php");
+		$('#pdf').submit();
+	}
+
 function ActivarSubLinea(codigo, relacion, contenido){  
 	if(codigo!=''){
 		var valor = "ajax/Add_prod_linea.php";
@@ -591,7 +596,13 @@ if ($metodo == 'modificar') {
                     <span class="art-button-r"> </span>
                     <input type="button" id="validar" value="Guardar" class="readon art-button" onClick="Validar()"/>
                 </span>
-            <?php } ?>
+            <?php } else { ?>
+				<span class="art-button-wrapper">
+					<span class="art-button-l"> </span>
+					<span class="art-button-r"> </span>
+					<input type="button" name="pdf" onClick="Pdf()" value="Imprimir" class="readon art-button" />
+				</span>&nbsp;
+			<?php } ?>
 			<span class="art-button-wrapper">
 				<span class="art-button-l"> </span>
 				<span class="art-button-r"> </span>
@@ -599,11 +610,16 @@ if ($metodo == 'modificar') {
 			</span>
 			<input type="hidden" name="metodo" id="metodo" value="<?php echo $metodo;?>" />
 			<input type="hidden" name="proced" value="<?php echo $proced;?>" />
-			<input type="hidden" name="usuario" value="<?php echo $usuario;?>" />
+			<input type="hidden" name="usuario" id="usuario" value="<?php echo $usuario;?>" />
+			<input type="hidden" name="r_rol" id="r_rol" value="<?php echo isset($_SESSION['r_rol']) ? $_SESSION['r_rol'] : '';?>" />
+			<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo isset($_SESSION['r_cliente']) ? $_SESSION['r_cliente'] : '';?>" />
 			<input type="hidden" name="href" value="<?php echo $archivo2;?>"/>
 			<input type="hidden" name="incremento" id="incremento" value="1" />
 		</div>
 	</fieldset>
+</form>
+<form id="pdf" name="pdf" action="" method="post" target="_blank">
+	<input type="hidden" name="codigo" value="<?php echo isset($_GET['codigo']) ? $_GET['codigo'] : ''; ?>">
 </form>
 <hr />
 <script type="text/javascript">
