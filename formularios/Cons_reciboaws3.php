@@ -1,6 +1,6 @@
 <?php
 $Nmenu = 482;
-$titulo = " Enviar Recibos a AWS S3 ";
+$titulo = " Enviar Recibos y Alimentación";
 
 require_once('autentificacion/aut_verifica_menu.php');
 $bd = new DataBase();
@@ -9,21 +9,17 @@ $bd = new DataBase();
 $fecha_actual = new DateTime();
 $fecha_anterior = (new DateTime())->modify('-1 month');
 
-// Creamos un array con las dos opciones permitidas
 $periodos = [
     [
         "anio" => $fecha_actual->format('Y'),
         "mes_num" => $fecha_actual->format('n'),
-        "mes_nombre" => strftime('%B', $fecha_actual->getTimestamp()) // O usar array manual
     ],
     [
         "anio" => $fecha_anterior->format('Y'),
         "mes_num" => $fecha_anterior->format('n'),
-        "mes_nombre" => strftime('%B', $fecha_anterior->getTimestamp())
     ]
 ];
 
-// Nombres de meses manual para evitar problemas de locale en el servidor
 $meses_nombres = [
     1 => "Enero", 2 => "Febrero", 3 => "Marzo", 4 => "Abril", 
     5 => "Mayo", 6 => "Junio", 7 => "Julio", 8 => "Agosto", 
@@ -32,33 +28,88 @@ $meses_nombres = [
 
 $sql_contractos = "SELECT codigo, descripcion FROM contractos WHERE status = 'T' ORDER BY 2 ASC";
 ?>
+
 <script language="javascript">
+// Control visual dinámico para adaptar textos según el proceso
+function alternarCamposPorProceso() {
+    const tipoProceso = document.getElementById('tipo').value;
+    const filaQuincena = document.getElementById('fila_quincena');
+    const filaContrato = document.getElementById('fila_contrato');
+    const labelRecibos = document.getElementById('label_recibos');
+    const inputRecibos = document.getElementById('file_recibos');
+    
+    if (tipoProceso === 'alimentacion') {
+        filaQuincena.style.display = 'none';
+        filaContrato.style.display = 'none'; // Ocultamos el campo Contrato
+        document.getElementById('quincena').value = ''; // Limpiamos quincena
+        document.getElementById('co_contrato').value = ''; // Limpiamos contrato
+        
+        // Adaptamos el texto para Cestaticket
+        labelRecibos.innerHTML = "Archivo Alimentación Humanis:";
+        inputRecibos.accept = ".xls,.xlsx,.txt,.pdf"; 
+    } else {
+        filaQuincena.style.display = ''; // Muestra quincena por defecto
+        filaContrato.style.display = ''; // Muestra contrato por defecto
+        
+        // Restauramos texto original para Recibos
+        labelRecibos.innerHTML = "Archivo Recibos Humanis:";
+        inputRecibos.accept = ".pdf";
+    }
+}
 
 function enviarDatosWebhook() {
-    // 1. Capturamos los valores de los selectores por sus IDs
-    const datos = {
-        anio: document.getElementById('co_cont').value,
-        mes: document.getElementById('mes_cont').value,
-        quincena: document.getElementById('quincena').value,
-        contrato: document.getElementById('co_contrato').value,
-        test: false
-    };
+    const tipoProceso = document.getElementById('tipo').value;
+    
+    // Captura de elementos
+    const anio = document.getElementById('co_cont').value;
+    const mes = document.getElementById('mes_cont').value;
+    const contrato = document.getElementById('co_contrato').value;
+    const quincena = document.getElementById('quincena').value;
+    
+    const fileRecibos = document.getElementById('file_recibos').files[0];
+    const fileTasas = document.getElementById('file_tasas').files[0];
 
-    // 2. Validación básica: evitar enviar si faltan campos
-    if (!datos.anio || !datos.mes || !datos.quincena || !datos.contrato) {
-        alert("Por favor, complete todos los campos antes de procesar.");
+    // 1. Validaciones base comunes (Se eliminó 'contrato' de la validación global obligatoria)
+    if (!tipoProceso || !anio || !mes || !fileTasas || !fileRecibos) {
+        alert("Por favor, complete todos los campos requeridos, cargue las Tasas y el archivo de Humanis correspondientes.");
         return;
     }
 
-    // 3. Configuración del envío al endpoint de n8n
-    const url = 'http://212.56.33.4:5678/webhook/api/v1/procesar-recibos';
+    // 2. Validaciones específicas condicionales
+    if (tipoProceso === 'recibos') {
+        if (!contrato) {
+            alert("Debe seleccionar un Contrato para el proceso de Recibos de Pago.");
+            return;
+        }
+        if (!quincena) {
+            alert("Debe seleccionar una quincena para el proceso de Recibos.");
+            return;
+        }
+    }
+
+    // 3. Construcción del FormData
+    const formData = new FormData();
+    formData.append('tipo', tipoProceso);
+    formData.append('anio', anio);
+    formData.append('mes', mes);
+    formData.append('test', 'false');
+    formData.append('tasas', fileTasas); 
+    formData.append('humanis_file', fileRecibos); 
+
+    // Solo adjuntamos parámetros de nómina si corresponde
+    if (tipoProceso === 'recibos') {
+        formData.append('contrato', contrato);
+        formData.append('quincena', quincena);
+    }
+
+    // 4. Endpoint de n8n
+    const url = 'http://212.56.33.4:5678/webhook/api/v1/procesar-recibos-full';
+
+    document.getElementById('salvar').disabled = true;
 
     fetch(url, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(datos) // Convertimos el objeto JS a JSON
+        body: formData 
     })
     .then(response => {
         if (!response.ok) {
@@ -68,28 +119,57 @@ function enviarDatosWebhook() {
     })
     .then(data => {
         console.log('Éxito:', data);
-        alert("¡Proceso iniciado correctamente en n8n!");
+        alert("¡Proceso enviado y ejecutándose con éxito!");
+        document.getElementById('salvar').disabled = false;
     })
     .catch((error) => {
         console.error('Error:', error);
         alert("Hubo un problema al conectar con el servicio de recibos.");
+        document.getElementById('salvar').disabled = false;
     });
 }
 
+function exportarExcelClientes() {
+    const urlPhp = "reportes/plantilla_tasas.php"; 
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = urlPhp;
+    form.target = "_blank"; 
+
+    const inputReporte = document.createElement("input");
+    inputReporte.type = "hidden";
+    inputReporte.name = "reporte";
+    inputReporte.value = "excel";
+
+    form.appendChild(inputReporte);
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+}
 </script>
 
 <br>
 <div align="center" class="etiqueta_title"> <?php echo $titulo; ?> </div>
 <br/>
-<form name="form_recibo" id="form_recibo">
-    <table width="500px" border="0" align="center">
+<form name="form_recibo" id="form_recibo" enctype="multipart/form-data">
+    <table width="600px" border="0" align="center">
         <tr>
-            <td class="etiqueta" width="40%">Año:</td>
+            <td class="etiqueta" width="40%">Tipo de Proceso:</td>
+            <td>
+                <select name="tipo" id="tipo" style="width:250px;" onchange="alternarCamposPorProceso()">
+                    <option value="recibos">Recibos de Pago (Nómina)</option>
+                    <option value="alimentacion">Cesta Ticket (Alimentación)</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="etiqueta">Año:</td>
             <td id="select01">
-                <select name="co_cont" id="co_cont" style="width:200px;">
+                <select name="co_cont" id="co_cont" style="width:250px;">
                     <option value="">Seleccione Año..</option>
                     <?php
-                        // Solo mostramos los años de los dos periodos (evita duplicados con unique)
                         $anios_unicos = array_unique([$periodos[0]['anio'], $periodos[1]['anio']]);
                         foreach ($anios_unicos as $a) {
                             echo '<option value="' . $a . '">' . $a . '</option>';
@@ -102,10 +182,9 @@ function enviarDatosWebhook() {
         <tr>
             <td class="etiqueta">Mes:</td>
             <td id="select02">
-                <select name="mes_cont" id="mes_cont" style="width:200px;">
+                <select name="mes_cont" id="mes_cont" style="width:250px;">
                     <option value="">Seleccione Mes..</option>
                     <?php
-                        // Mostramos solo el mes actual y el anterior
                         foreach ($periodos as $p) {
                             echo '<option value="' . $p['mes_num'] . '">' . $meses_nombres[$p['mes_num']] . '</option>';
                         }
@@ -113,30 +192,44 @@ function enviarDatosWebhook() {
                 </select>
             </td>
         </tr>
-        <tr>
-            <td class="etiqueta"><?php echo "Quincena" ?>:</td>
+
+        <tr id="fila_quincena">
+            <td class="etiqueta">Quincena:</td>
             <td id="select03">
-                <select name="quincena" id="quincena" style="width:200px;">
+                <select name="quincena" id="quincena" style="width:250px;">
                     <option value="">Seleccione Quincena..</option>
                     <option value="1">1era Quincena</option>
                     <option value="2">2da Quincena</option>
                 </select>
-                <br><span class="selectRequiredMsg">Debe Seleccionar una Quincena.</span>
+            </td>
+        </tr>
+
+        <tr id="fila_contrato">
+            <td class="etiqueta">Contrato:</td>
+            <td id="select04">
+                <select name="co_contrato" id="co_contrato" style="width:250px;">
+                    <option value="">Seleccione Contrato..</option>
+                    <?php
+                    $query = $bd->consultar($sql_contractos);
+                    while($row02=$bd->obtener_fila($query,0)){
+                        echo '<option value="'.$row02[0].'">'.$row02[1].'</option>';
+                    }?>
+                </select>
             </td>
         </tr>
 
         <tr>
-            <td class="etiqueta"><?php echo "Contrato" ?>:</td>
-            <td id="select04">
-                <select name="co_contrato" id="co_contrato" style="width:200px;">
-                    <option value="">Seleccione Contrato..</option>
-               	  <?php
-				    $query = $bd->consultar($sql_contractos);
-                     while($row02=$bd->obtener_fila($query,0)){
-						   echo '<option value="'.$row02[0].'">'.$row02[1].'</option>';
-					 }?>
-                </select>
-                <br><span class="selectRequiredMsg">Debe Seleccionar un Tipo de Contrato.</span>
+            <td class="etiqueta">Archivo Tasas (HTML/Excel):</td>
+            <td>
+                <input type="file" name="file_tasas" id="file_tasas" accept=".xls,.xlsx" style="width:250px;" />
+            </td>
+        </tr>
+
+        <tr id="fila_recibos">
+            <td class="etiqueta" id="label_recibos">Archivo Recibos Humanis:</td>
+            <td>
+                <input type="file" name="file_recibos" id="file_recibos" accept=".pdf" style="width:250px;" />
+                <br><small style="color: gray;">* Campo obligatorio para procesar la información</small>
             </td>
         </tr>
     </table>
@@ -144,27 +237,34 @@ function enviarDatosWebhook() {
 
     <div align="center">  
         <span class="art-button-wrapper">
-                        <span class="art-button-l"> </span>
-                        <span class="art-button-r"> </span>
-                    <input type="button" name="salvar"  id="salvar" value="Enviar" onclick="enviarDatosWebhook()" class="readon art-button" />
-                    </span>&nbsp;
-                <span class="art-button-wrapper">
-                        <span class="art-button-l"> </span>
-                        <span class="art-button-r"> </span>
-                    <input type="reset" id="limpiar" value="Restablecer" class="readon art-button" />
-                    </span>&nbsp;
-                <span class="art-button-wrapper">
-                        <span class="art-button-l"> </span>
-                        <span class="art-button-r"> </span>
-                    <input type="button" id="volver" value="Volver" onClick="history.back(-1);" class="readon art-button" />
-                    </span>
+            <span class="art-button-l"> </span>
+            <span class="art-button-r"> </span>
+            <input type="button" name="salvar" id="salvar" value="Enviar" onclick="enviarDatosWebhook()" class="readon art-button" />
+        </span>&nbsp;
+        
+        <span class="art-button-wrapper">
+            <span class="art-button-l"> </span>
+            <span class="art-button-r"> </span>
+            <input type="reset" id="limpiar" value="Restablecer" class="readon art-button" onclick="setTimeout(alternarCamposPorProceso, 50)" />
+        </span>&nbsp;
+        
+        <span class="art-button-wrapper">
+            <span class="art-button-l"> </span>
+            <span class="art-button-r"> </span>
+            <input type="button" name="tasa_clientes" id="tasa_clientes" value="Generar Plantilla de Tasas" onclick="exportarExcelClientes()" class="readon art-button" />
+        </span>&nbsp;
+
+        <span class="art-button-wrapper">
+            <span class="art-button-l"> </span>
+            <span class="art-button-r"> </span>
+            <input type="button" id="volver" value="Volver" onClick="history.back(-1);" class="readon art-button" />
+        </span>
         <input type="hidden" id="usuario" value="<?php echo $usuario;?>"/>
     </div>
 </form>
 <br />
-<br />
 <div align="center">
 </div>
 <script type="text/javascript">
-	var select01 = new Spry.Widget.ValidationSelect("select01", {validateOn:["blur", "change"]});
+    var select01 = new Spry.Widget.ValidationSelect("select01", {validateOn:["blur", "change"]});
 </script>
