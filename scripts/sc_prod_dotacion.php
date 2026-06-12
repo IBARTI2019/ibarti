@@ -214,6 +214,7 @@ if(isset($_POST['proced'])){
 		$json_payload = json_encode($payload);
 
 		// Send to webhook
+		/*
 		$url = 'http://212.56.33.4:5678/webhook/dotaciones';
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_POST, true);
@@ -222,6 +223,7 @@ if(isset($_POST['proced'])){
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($ch);
 		curl_close($ch);
+		*/
 
 		// echo $json_payload;
 		// Optionally log the response or handle errors
