@@ -27,6 +27,15 @@ $meses_nombres = [
 ];
 
 $sql_contractos = "SELECT codigo, descripcion FROM contractos WHERE status = 'T' ORDER BY 2 ASC";
+
+// --- CONSULTA DE ÚLTIMAS EJECUCIONES (proc_recibos_n8n) ---
+// Mantenemos el orden estricto de las columnas para los índices numéricos:
+// 0: cod_contrato, 1: contrato_desc, 2: anio, 3: mes, 4: quincena, 5: procesando, 6: ultima_act, 7: tipo
+$sql_ejecuciones = "SELECT p.cod_contrato, c.descripcion AS contrato_desc, p.anio, p.mes, p.quincena, p.procesando, p.ultima_act, p.tipo 
+                    FROM proc_recibos_n8n p
+                    LEFT JOIN contractos c ON TRIM(p.cod_contrato) = TRIM(c.codigo)
+                    ORDER BY p.ultima_act DESC 
+                    LIMIT 10";
 ?>
 
 <script language="javascript">
@@ -40,18 +49,16 @@ function alternarCamposPorProceso() {
     
     if (tipoProceso === 'alimentacion') {
         filaQuincena.style.display = 'none';
-        filaContrato.style.display = 'none'; // Ocultamos el campo Contrato
-        document.getElementById('quincena').value = ''; // Limpiamos quincena
-        document.getElementById('co_contrato').value = ''; // Limpiamos contrato
+        filaContrato.style.display = 'none'; 
+        document.getElementById('quincena').value = ''; 
+        document.getElementById('co_contrato').value = ''; 
         
-        // Adaptamos el texto para Cestaticket
         labelRecibos.innerHTML = "Archivo Alimentación Humanis:";
         inputRecibos.accept = ".xls,.xlsx,.txt,.pdf"; 
     } else {
-        filaQuincena.style.display = ''; // Muestra quincena por defecto
-        filaContrato.style.display = ''; // Muestra contrato por defecto
+        filaQuincena.style.display = ''; 
+        filaContrato.style.display = ''; 
         
-        // Restauramos texto original para Recibos
         labelRecibos.innerHTML = "Archivo Recibos Humanis:";
         inputRecibos.accept = ".pdf";
     }
@@ -60,7 +67,6 @@ function alternarCamposPorProceso() {
 function enviarDatosWebhook() {
     const tipoProceso = document.getElementById('tipo').value;
     
-    // Captura de elementos
     const anio = document.getElementById('co_cont').value;
     const mes = document.getElementById('mes_cont').value;
     const contrato = document.getElementById('co_contrato').value;
@@ -69,13 +75,11 @@ function enviarDatosWebhook() {
     const fileRecibos = document.getElementById('file_recibos').files[0];
     const fileTasas = document.getElementById('file_tasas').files[0];
 
-    // 1. Validaciones base comunes (Se eliminó 'contrato' de la validación global obligatoria)
     if (!tipoProceso || !anio || !mes || !fileTasas || !fileRecibos) {
         alert("Por favor, complete todos los campos requeridos, cargue las Tasas y el archivo de Humanis correspondientes.");
         return;
     }
 
-    // 2. Validaciones específicas condicionales
     if (tipoProceso === 'recibos') {
         if (!contrato) {
             alert("Debe seleccionar un Contrato para el proceso de Recibos de Pago.");
@@ -87,7 +91,6 @@ function enviarDatosWebhook() {
         }
     }
 
-    // 3. Construcción del FormData
     const formData = new FormData();
     formData.append('tipo', tipoProceso);
     formData.append('anio', anio);
@@ -96,13 +99,11 @@ function enviarDatosWebhook() {
     formData.append('tasas', fileTasas); 
     formData.append('humanis_file', fileRecibos); 
 
-    // Solo adjuntamos parámetros de nómina si corresponde
     if (tipoProceso === 'recibos') {
         formData.append('contrato', contrato);
         formData.append('quincena', quincena);
     }
 
-    // 4. Endpoint de n8n
     const url = 'http://212.56.33.4:5678/webhook/api/v1/procesar-recibos-full';
 
     document.getElementById('salvar').disabled = true;
@@ -120,7 +121,7 @@ function enviarDatosWebhook() {
     .then(data => {
         console.log('Éxito:', data);
         alert("¡Proceso enviado y ejecutándose con éxito!");
-        document.getElementById('salvar').disabled = false;
+        location.reload();
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -212,7 +213,7 @@ function exportarExcelClientes() {
                     <?php
                     $query = $bd->consultar($sql_contractos);
                     while($row02=$bd->obtener_fila($query,0)){
-                        echo '<option value="'.$row02[0].'">'.$row02[1].'</option>';
+                        echo '<option value="'.trim($row02[0]).'">'.$row02[1].'</option>';
                     }?>
                 </select>
             </td>
@@ -262,9 +263,100 @@ function exportarExcelClientes() {
         <input type="hidden" id="usuario" value="<?php echo $usuario;?>"/>
     </div>
 </form>
-<br />
+
+<br /><hr style="width: 80%; border: 1px solid #ccc;" /><br />
+
 <div align="center">
+    <div class="etiqueta_title" style="font-size: 14px; margin-bottom: 10px;"> Historial de Últimos Procesos </div>
+    
+    <table width="85%" class="tabla_sistema" style="border-collapse: collapse;">
+        <tr>
+            <td width="12%">Proceso</td>
+            <td width="28%">Contrato Especificado</td>
+            <td width="8%">Año</td>
+            <td width="12%">Mes</td>
+            <td width="15%">Quincena</td>
+            <td width="15%">Última Act.</td>
+            <td width="10%">Estatus</td>
+        </tr>
+        
+        <?php
+        $query_ejec = $bd->consultar($sql_ejecuciones);
+
+        // CONTROL DE ERROR 1: ¿La consulta falló en el motor de BD?
+        if (!$query_ejec) {
+            echo '<tr style="background-color: #ffffff; text-align: center;"><td colspan="7" style="color: red; padding: 15px; font-weight:bold;">';
+            echo 'Error en la consulta SQL del Historial. Asegúrate de que exista la tabla proc_recibos_n8n.';
+            echo '</td></tr>';
+        } else {
+            
+            $hubo_render = false;
+
+            // Bucle directo usando el método original con índice 0 para asegurar compatibilidad core
+            while ($reg = $bd->obtener_fila($query_ejec, 0)) {
+                $hubo_render = true;
+
+                // Mapeo híbrido robusto basado en el orden estricto de tu SELECT
+                $r_cod_contrato  = isset($reg['cod_contrato'])  ? $reg['cod_contrato']  : (isset($reg[0]) ? $reg[0] : '');
+                $r_contrato_desc = isset($reg['contrato_desc']) ? $reg['contrato_desc'] : (isset($reg[1]) ? $reg[1] : '');
+                $r_anio          = isset($reg['anio'])          ? $reg['anio']          : (isset($reg[2]) ? $reg[2] : '');
+                $r_mes           = isset($reg['mes'])           ? $reg['mes']           : (isset($reg[3]) ? $reg[3] : '');
+                $r_quincena      = isset($reg['quincena'])      ? $reg['quincena']      : (isset($reg[4]) ? $reg[4] : '');
+                $r_procesando    = isset($reg['procesando'])    ? $reg['procesando']    : (isset($reg[5]) ? $reg[5] : '');
+                $r_ultima_act    = isset($reg['ultima_act'])    ? $reg['ultima_act']    : (isset($reg[6]) ? $reg[6] : '');
+                $r_tipo          = isset($reg['tipo'])          ? $reg['tipo']          : (isset($reg[7]) ? $reg[7] : '');
+
+                // 1. Procesamiento visual del Tipo de Proceso y textos derivados
+                $tipo_raw = trim(strtolower((string)$r_tipo));
+                if ($tipo_raw === 'alimentacion' || empty($r_cod_contrato)) {
+                    $tipo_print = "Alimentación";
+                    $contrato_print = "N/A (Cesta Ticket)";
+                    $quincena_print = "N/A (Mensual)";
+                } else {
+                    $tipo_print = "Nómina";
+                    $contrato_print = (!empty($r_contrato_desc)) ? trim($r_cod_contrato) . " - " . $r_contrato_desc : "Contrato (" . trim($r_cod_contrato) . ")";
+                    $quincena_print = (trim($r_quincena) == '1') ? "1era Quincena" : "2da Quincena";
+                }
+
+                // 2. Mapeo de meses y formato de fecha
+                $mes_index = (int)$r_mes;
+                $mes_print = isset($meses_nombres[$mes_index]) ? $meses_nombres[$mes_index] : $r_mes;
+                $fecha_print = (!empty($r_ultima_act)) ? date('d/m/Y h:i A', strtotime($r_ultima_act)) : 'N/R';
+
+                // 3. NUEVA LÓGICA DE STATUS: T = En Proceso, F = Completado
+                $proc_flag = strtoupper(trim((string)$r_procesando));
+                
+                if ($proc_flag === 'T') {
+                    $badge_color = "#2980b9"; // Azul corporativo
+                    $status_txt  = "PROCESANDO";
+                } else {
+                    $badge_color = "#27ae60"; // Verde éxito
+                    $status_txt  = "COMPLETADO";
+                }
+
+                $badge_html = '<span style="background-color: '.$badge_color.'; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-block;">'.$status_txt.'</span>';
+                
+                // 4. Imprimir la fila en la tabla
+                echo '<tr style="background-color: #ffffff; text-align: center; border-bottom: 1px solid #eee;">';
+                echo '<td style="font-weight: bold; color: #34495e;">'.$tipo_print.'</td>';
+                echo '<td align="left" style="padding-left: 10px;">'.$contrato_print.'</td>';
+                echo '<td>'.$r_anio.'</td>';
+                echo '<td>'.$mes_print.'</td>';
+                echo '<td>'.$quincena_print.'</td>';
+                echo '<td>'.$fecha_print.'</td>';
+                echo '<td>'.$badge_html.'</td>';
+                echo '</tr>';
+            }
+
+            // Si el bucle termina en cero iteraciones, pintamos el aviso clásico vacío
+            if (!$hubo_render) {
+                echo '<tr style="background-color: #ffffff; text-align: center;"><td colspan="7" style="color: gray; padding: 15px;">No se registran ejecuciones en la tabla proc_recibos_n8n.</td></tr>';
+            }
+        }
+        ?>
+    </table>
 </div>
+</br>
 <script type="text/javascript">
     var select01 = new Spry.Widget.ValidationSelect("select01", {validateOn:["blur", "change"]});
 </script>
