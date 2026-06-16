@@ -350,7 +350,7 @@ function exportarExcelClientes() {
 
             // Si el bucle termina en cero iteraciones, pintamos el aviso clásico vacío
             if (!$hubo_render) {
-                echo '<tr style="background-color: #ffffff; text-align: center;"><td colspan="7" style="color: gray; padding: 15px;">No se registran ejecuciones en la tabla proc_recibos_n8n.</td></tr>';
+                echo '<tr style="background-color: #ffffff; text-align: center;"><td colspan="7" style="color: gray; padding: 15px;">No se registran ejecuciones.</td></tr>';
             }
         }
         ?>
