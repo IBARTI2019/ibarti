@@ -74,7 +74,7 @@ $trabajador = $_POST['trabajador'];
             <th width="15%" class="etiqueta">Producto </th>
             <th width="10%" class="etiqueta">EANs </th>
             <th width="5%" class="etiqueta">Stock</th>
-	</tr>
+    </tr>
     <?php
     $valor = 0;
     $query = $bd->consultar($sql);
@@ -90,12 +90,28 @@ $trabajador = $_POST['trabajador'];
                   JOIN prod_asignacion pa ON pae.cod_asignacion = pa.codigo
                   WHERE pae.cod_producto = '$serial' $ficha_cond
                   GROUP BY pae.cod_ean ) as sub WHERE sub.balance > 0";
+            
             $q_eans = $bd->consultar($sql_eans);
-            $eans_arr = [];
+            
+            // MODIFICACIÓN: Construimos los EANs agrupados de a dos por línea
+            $eans_html = "";
+            $contador_eans = 0;
+            
             while($re = $bd->obtener_fila($q_eans, 0)){
-                $eans_arr[] = $re['cod_ean'];
+                $contador_eans++;
+                
+                // Agregamos el EAN
+                $eans_html .= $re['cod_ean'];
+                
+                // Si el contador es par, metemos un salto de línea. Si no, una separación.
+                if ($contador_eans % 2 == 0) {
+                    $eans_html .= "<br />";
+                } else {
+                    $eans_html .= " &nbsp; "; // Espacio en blanco de separación
+                }
             }
-            $eans_str = implode(', ', $eans_arr);
+            // Limpiamos espacios sobrantes al final
+            $eans_html = rtrim($eans_html, " &nbsp; ");
 
             if ($valor == 0){
                 $fondo = 'fondo01';
@@ -104,6 +120,7 @@ $trabajador = $_POST['trabajador'];
                 $fondo = 'fondo02';
                 $valor = 0;
             }
+            
             echo '<tr class="'.$fondo.'">
                     <td class="texto">'.$datos["cod_ficha"].'</td>
                     <td class="texto">'.$datos["cedula"].'</td>
@@ -111,7 +128,7 @@ $trabajador = $_POST['trabajador'];
                     <td class="texto">'.longitud($datos["linea"]).'</td>
                     <td class="texto">'.longitud($datos["sub_linea"]).'</td>
                     <td class="texto">'.$datos["producto"].' ('.$datos["serial"].')</td>
-                    <td class="texto">'.$eans_str.'</td>
+                    <td class="texto" style="white-space: nowrap; line-height: 1.4;">'.$eans_html.'</td>
                     <td class="texto"><b>'.$datos["balance"].'</b></td>
                   </tr>';
         };?>
