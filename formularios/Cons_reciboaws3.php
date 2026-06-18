@@ -35,7 +35,7 @@ $sql_ejecuciones = "SELECT p.cod_contrato, c.descripcion AS contrato_desc, p.ani
                     FROM proc_recibos_n8n p
                     LEFT JOIN contractos c ON TRIM(p.cod_contrato) = TRIM(c.codigo)
                     ORDER BY p.ultima_act DESC 
-                    LIMIT 10";
+                    LIMIT 20";
 ?>
 
 <script language="javascript">
