@@ -134,6 +134,18 @@ function actualizarResumen() {
 }
 
 function cantidad_maxima(cod_almacen, relacion) {
+    var tipo = document.getElementById('tipo') ? document.getElementById('tipo').value : "";
+    var inputCantidad = document.getElementById('ped_cantidad');
+
+    if (tipo == "DEVOLUCION") {
+        if (inputCantidad) {
+            inputCantidad.disabled = false;
+            inputCantidad.removeAttribute("data-max-stock");
+            inputCantidad.removeAttribute("max");
+        }
+        return;
+    }
+
     var producto = document.getElementById('stdIDProd').value;
     if (cod_almacen != '') {
         var valor = "ajax/Add_prod_asignacion_max.php";
@@ -143,15 +155,22 @@ function cantidad_maxima(cod_almacen, relacion) {
             if (ajax.readyState == 4) {
                 var resp = JSON.parse(ajax.responseText);
                 var max_disp = parseInt(resp.stock_actual);
-                document.getElementById('ped_cantidad').value = ""; // Reset quantity
-                document.getElementById('ped_cantidad').max = max_disp;
+                var inputCantidad = document.getElementById('ped_cantidad');
+
+                if (inputCantidad) {
+                    inputCantidad.value = "";
+                    inputCantidad.max = max_disp;
+                }
+
                 if(max_disp == 0){
                     toastr.warning("No hay stock físico disponible para asignar en este almacén.");
-                    document.getElementById('ped_cantidad').disabled = true;
+                    if (inputCantidad) inputCantidad.disabled = true;
                 } else {
                     toastr.info("Stock físico disponible: " + max_disp);
-                    document.getElementById('ped_cantidad').disabled = false;
-                    document.getElementById('ped_cantidad').setAttribute("data-max-stock", max_disp);
+                    if (inputCantidad) {
+                        inputCantidad.disabled = false;
+                        inputCantidad.setAttribute("data-max-stock", max_disp);
+                    }
                 }
             }
         }
