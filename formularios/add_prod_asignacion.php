@@ -323,6 +323,8 @@ function selectEAN(ean, estado, eventObj){
 }
 
 function getIfEAN(item, cantidad, almacen, numX, callback){
+    var tipo = document.getElementById('tipo') ? document.getElementById('tipo').value : "";
+
     $.ajax({
         data: {"codigo": item},
         url: 'ajax/Add_prod_asignacion_getIfEAN.php',
@@ -332,7 +334,11 @@ function getIfEAN(item, cantidad, almacen, numX, callback){
             if(resp[0] == 'T'){
                 ean_cantidad_requerida = cantidad;
                 ean_renglon_actual = numX;
-                cargarEANS(item, almacen);
+                cargarEANS(item, almacen, function(){
+                    if(tipo == "DEVOLUCION"){
+                        callback();
+                    }
+                });
                 $("#cant_ing").html(cantidad);
             }else{
                 callback();
@@ -345,7 +351,7 @@ function getIfEAN(item, cantidad, almacen, numX, callback){
     });
 }
 
-function cargarEANS(item, almacen){
+function cargarEANS(item, almacen, emptyCallback){
     var tipo = $("#tipo").val();
     var ubicacion = $("#ubicacion").val();
     var ficha = document.getElementById("stdID").value;
@@ -372,7 +378,11 @@ function cargarEANS(item, almacen){
                 });
                 eanModalOpen();
             }else{
-                toastr.warning('No hay EANs disponibles para esta operación.');
+                if(typeof emptyCallback === "function"){
+                    emptyCallback();
+                }else{
+                    toastr.warning('No hay EANs disponibles para esta operación.');
+                }
             }
         },
         error: function(xhr, ajaxOptions, thrownError) {
