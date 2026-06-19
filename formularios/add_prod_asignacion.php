@@ -364,6 +364,13 @@ function cargarEANS(item, almacen, emptyCallback){
             eans_seleccionados = [];
             $('#listar_eans').html('');
             var resp = JSON.parse(response);
+            if(resp.allow_without_ean === true){
+                if(typeof emptyCallback === "function"){
+                    emptyCallback();
+                }
+                return;
+            }
+
             if(resp.length > 0){
                 var reng_num_ean = 0;
                 jQuery.each(resp, function(i) {
