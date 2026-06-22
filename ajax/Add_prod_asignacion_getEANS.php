@@ -20,7 +20,7 @@ if ($tipo == 'ASIGNACION') {
             WHERE p.cod_producto = '$codigo'
               AND p.cod_almacen = '$almacen'
               AND p.inStock = 'T'
-              AND p.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans)
+              AND p.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans  WHERE v_stock_asignado_eans.cod_producto = '$codigo')
             ORDER BY 1 DESC";
 } else {
     // DEVOLUCION
