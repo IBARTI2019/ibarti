@@ -201,7 +201,7 @@ public function get_eans($cod,$salida,$almacen){
   $this->datos   = array();
   if($salida){
     $sql = " SELECT cod_ean FROM prod_ean WHERE inStock = 'T' AND cod_producto = '$cod'
-    AND cod_almacen = '$almacen' AND cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans)
+    AND cod_almacen = '$almacen' AND cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans WHERE v_stock_asignado_eans.cod_producto = '$cod')
     ORDER BY 1 DESC";
   }else{
     $sql = " SELECT a.cod_producto, a.cod_ean
