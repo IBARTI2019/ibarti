@@ -7,18 +7,27 @@ $bd = new DataBase();
 
 // --- LÓGICA DE PERIODOS PERMITIDOS ---
 $fecha_actual = new DateTime();
-$fecha_anterior = (new DateTime())->modify('-1 month');
+$anio_actual = $fecha_actual->format('Y');
+$mes_actual = (int)$fecha_actual->format('m');
+$anio_anterior = (int)$anio_actual - 1;
 
-$periodos = [
-    [
-        "anio" => $fecha_actual->format('Y'),
-        "mes_num" => $fecha_actual->format('n'),
-    ],
-    [
-        "anio" => $fecha_anterior->format('Y'),
-        "mes_num" => $fecha_anterior->format('n'),
-    ]
-];
+$periodos = [];
+
+// Generamos los meses transcurridos del año actual (evita meses futuros)
+for ($m = 1; $m <= $mes_actual; $m++) {
+    $periodos[] = [
+        "anio" => $anio_actual,
+        "mes_num" => $m
+    ];
+}
+
+// Generamos los 12 meses para el año anterior completos
+for ($m = 1; $m <= 12; $m++) {
+    $periodos[] = [
+        "anio" => (string)$anio_anterior,
+        "mes_num" => $m
+    ];
+}
 
 $meses_nombres = [
     1 => "Enero", 2 => "Febrero", 3 => "Marzo", 4 => "Abril", 
@@ -28,9 +37,6 @@ $meses_nombres = [
 
 $sql_contractos = "SELECT codigo, descripcion FROM contractos WHERE status = 'T' ORDER BY 2 ASC";
 
-// --- CONSULTA DE ÚLTIMAS EJECUCIONES (proc_recibos_n8n) ---
-// Mantenemos el orden estricto de las columnas para los índices numéricos:
-// 0: cod_contrato, 1: contrato_desc, 2: anio, 3: mes, 4: quincena, 5: procesando, 6: ultima_act, 7: tipo
 $sql_ejecuciones = "SELECT p.cod_contrato, c.descripcion AS contrato_desc, p.anio, p.mes, p.quincena, p.procesando, p.ultima_act, p.tipo 
                     FROM proc_recibos_n8n p
                     LEFT JOIN contractos c ON TRIM(p.cod_contrato) = TRIM(c.codigo)
@@ -39,6 +45,31 @@ $sql_ejecuciones = "SELECT p.cod_contrato, c.descripcion AS contrato_desc, p.ani
 ?>
 
 <script language="javascript">
+// Pasamos el array de periodos válidos de PHP a JavaScript de forma segura
+const periodosValidos = <?php echo json_encode($periodos); ?>;
+const nombresMeses = <?php echo json_encode($meses_nombres); ?>;
+
+// Actualiza los meses disponibles dependiendo del año seleccionado
+function actualizarMesesPorAnio() {
+    const anioSeleccionado = document.getElementById('co_cont').value;
+    const selectMes = document.getElementById('mes_cont');
+    
+    // Limpiar opciones anteriores
+    selectMes.innerHTML = '<option value="">Seleccione Mes..</option>';
+    
+    if (!anioSeleccionado) return;
+
+    // Filtrar los meses que corresponden al año seleccionado
+    const mesesFiltrados = periodosValidos.filter(p => p.anio === anioSeleccionado);
+    
+    mesesFiltrados.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.mes_num;
+        option.text = nombresMeses[p.mes_num];
+        selectMes.appendChild(option);
+    });
+}
+
 // Control visual dinámico para adaptar textos según el proceso
 function alternarCamposPorProceso() {
     const tipoProceso = document.getElementById('tipo').value;
@@ -168,10 +199,10 @@ function exportarExcelClientes() {
         <tr>
             <td class="etiqueta">Año:</td>
             <td id="select01">
-                <select name="co_cont" id="co_cont" style="width:250px;">
+                <select name="co_cont" id="co_cont" style="width:250px;" onchange="actualizarMesesPorAnio()">
                     <option value="">Seleccione Año..</option>
                     <?php
-                        $anios_unicos = array_unique([$periodos[0]['anio'], $periodos[1]['anio']]);
+                        $anios_unicos = array_unique(array_column($periodos, 'anio'));
                         foreach ($anios_unicos as $a) {
                             echo '<option value="' . $a . '">' . $a . '</option>';
                         }
@@ -185,12 +216,7 @@ function exportarExcelClientes() {
             <td id="select02">
                 <select name="mes_cont" id="mes_cont" style="width:250px;">
                     <option value="">Seleccione Mes..</option>
-                    <?php
-                        foreach ($periodos as $p) {
-                            echo '<option value="' . $p['mes_num'] . '">' . $meses_nombres[$p['mes_num']] . '</option>';
-                        }
-                    ?>
-                </select>
+                    </select>
             </td>
         </tr>
 
@@ -246,7 +272,7 @@ function exportarExcelClientes() {
         <span class="art-button-wrapper">
             <span class="art-button-l"> </span>
             <span class="art-button-r"> </span>
-            <input type="reset" id="limpiar" value="Restablecer" class="readon art-button" onclick="setTimeout(alternarCamposPorProceso, 50)" />
+            <input type="reset" id="limpiar" value="Restablecer" class="readon art-button" onclick="setTimeout(() => { alternarCamposPorProceso(); actualizarMesesPorAnio(); }, 50)" />
         </span>&nbsp;
         
         <span class="art-button-wrapper">
@@ -283,20 +309,16 @@ function exportarExcelClientes() {
         <?php
         $query_ejec = $bd->consultar($sql_ejecuciones);
 
-        // CONTROL DE ERROR 1: ¿La consulta falló en el motor de BD?
         if (!$query_ejec) {
             echo '<tr style="background-color: #ffffff; text-align: center;"><td colspan="7" style="color: red; padding: 15px; font-weight:bold;">';
             echo 'Error en la consulta SQL del Historial. Asegúrate de que exista la tabla proc_recibos_n8n.';
             echo '</td></tr>';
         } else {
-            
             $hubo_render = false;
 
-            // Bucle directo usando el método original con índice 0 para asegurar compatibilidad core
             while ($reg = $bd->obtener_fila($query_ejec, 0)) {
                 $hubo_render = true;
 
-                // Mapeo híbrido robusto basado en el orden estricto de tu SELECT
                 $r_cod_contrato  = isset($reg['cod_contrato'])  ? $reg['cod_contrato']  : (isset($reg[0]) ? $reg[0] : '');
                 $r_contrato_desc = isset($reg['contrato_desc']) ? $reg['contrato_desc'] : (isset($reg[1]) ? $reg[1] : '');
                 $r_anio          = isset($reg['anio'])          ? $reg['anio']          : (isset($reg[2]) ? $reg[2] : '');
@@ -306,7 +328,6 @@ function exportarExcelClientes() {
                 $r_ultima_act    = isset($reg['ultima_act'])    ? $reg['ultima_act']    : (isset($reg[6]) ? $reg[6] : '');
                 $r_tipo          = isset($reg['tipo'])          ? $reg['tipo']          : (isset($reg[7]) ? $reg[7] : '');
 
-                // 1. Procesamiento visual del Tipo de Proceso y textos derivados
                 $tipo_raw = trim(strtolower((string)$r_tipo));
                 if ($tipo_raw === 'alimentacion' || empty($r_cod_contrato)) {
                     $tipo_print = "Alimentación";
@@ -318,25 +339,22 @@ function exportarExcelClientes() {
                     $quincena_print = (trim($r_quincena) == '1') ? "1era Quincena" : "2da Quincena";
                 }
 
-                // 2. Mapeo de meses y formato de fecha
                 $mes_index = (int)$r_mes;
                 $mes_print = isset($meses_nombres[$mes_index]) ? $meses_nombres[$mes_index] : $r_mes;
                 $fecha_print = (!empty($r_ultima_act)) ? date('d/m/Y h:i A', strtotime($r_ultima_act)) : 'N/R';
 
-                // 3. NUEVA LÓGICA DE STATUS: T = En Proceso, F = Completado
                 $proc_flag = strtoupper(trim((string)$r_procesando));
                 
                 if ($proc_flag === 'T') {
-                    $badge_color = "#2980b9"; // Azul corporativo
+                    $badge_color = "#2980b9";
                     $status_txt  = "PROCESANDO";
                 } else {
-                    $badge_color = "#27ae60"; // Verde éxito
+                    $badge_color = "#27ae60";
                     $status_txt  = "COMPLETADO";
                 }
 
                 $badge_html = '<span style="background-color: '.$badge_color.'; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-block;">'.$status_txt.'</span>';
                 
-                // 4. Imprimir la fila en la tabla
                 echo '<tr style="background-color: #ffffff; text-align: center; border-bottom: 1px solid #eee;">';
                 echo '<td style="font-weight: bold; color: #34495e;">'.$tipo_print.'</td>';
                 echo '<td align="left" style="padding-left: 10px;">'.$contrato_print.'</td>';
@@ -348,7 +366,6 @@ function exportarExcelClientes() {
                 echo '</tr>';
             }
 
-            // Si el bucle termina en cero iteraciones, pintamos el aviso clásico vacío
             if (!$hubo_render) {
                 echo '<tr style="background-color: #ffffff; text-align: center;"><td colspan="7" style="color: gray; padding: 15px;">No se registran ejecuciones.</td></tr>';
             }
