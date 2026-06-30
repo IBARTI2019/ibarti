@@ -11,29 +11,29 @@ $anio_actual = $fecha_actual->format('Y');
 $mes_actual = (int)$fecha_actual->format('m');
 $anio_anterior = (int)$anio_actual - 1;
 
-$periodos = [];
+$periodos = array(); // Cambiado [] por array() para PHP antiguo
 
-// Generamos los meses transcurridos del año actual (evita meses futuros)
+// Generamos los meses transcurridos del año actual
 for ($m = 1; $m <= $mes_actual; $m++) {
-    $periodos[] = [
+    $periodos[] = array(
         "anio" => $anio_actual,
         "mes_num" => $m
-    ];
+    );
 }
 
 // Generamos los 12 meses para el año anterior completos
 for ($m = 1; $m <= 12; $m++) {
-    $periodos[] = [
+    $periodos[] = array(
         "anio" => (string)$anio_anterior,
         "mes_num" => $m
-    ];
+    );
 }
 
-$meses_nombres = [
+$meses_nombres = array(
     1 => "Enero", 2 => "Febrero", 3 => "Marzo", 4 => "Abril", 
     5 => "Mayo", 6 => "Junio", 7 => "Julio", 8 => "Agosto", 
     9 => "Septiembre", 10 => "Octubre", 11 => "Noviembre", 12 => "Diciembre"
-];
+);
 
 $sql_contractos = "SELECT codigo, descripcion FROM contractos WHERE status = 'T' ORDER BY 2 ASC";
 
