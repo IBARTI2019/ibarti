@@ -206,7 +206,14 @@ function exportarExcelClientes() {
                 <select name="co_cont" id="co_cont" style="width:250px;" onchange="actualizarMesesPorAnio()">
                     <option value="">Seleccione Año..</option>
                     <?php
-                        $anios_unicos = array_unique(array_column($periodos, 'anio'));
+                        // SOLUCIÓN MANUAL PARA PHP < 5.5 (Reemplaza a array_column)
+                        $anios_unicos = array();
+                        foreach ($periodos as $p) {
+                            if (!in_array($p['anio'], $anios_unicos)) {
+                                $anios_unicos[] = $p['anio'];
+                            }
+                        }
+                        
                         foreach ($anios_unicos as $a) {
                             echo '<option value="' . $a . '">' . $a . '</option>';
                         }
