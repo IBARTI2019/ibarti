@@ -87,6 +87,7 @@ if ($metodo == 'modificar') {
     <input type="submit" name="buscarCliente" id="buscarCliente" hidden="">
     <span class="art-button-wrapper">
       <img border="null" width="25px" height="25px" src="imagenes/buscar.bmp" title="Buscar Registro" id="buscarC" onclick="buscar_precliente(true);" />
+      <img border="null" width="25px" height="25px" src="imagenes/actualizar.bmp" title="Sincronizar Zoho CRM" id="sync_zoho_btn" onclick="sincronizarConZoho()" style="cursor: pointer;" />
     </span>
   </form>
   <div class="tabla_sistema listar">
