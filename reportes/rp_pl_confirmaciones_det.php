@@ -19,7 +19,7 @@ $fecha_D   = conversion($_POST['fecha_desde']);
 $fecha_H   = conversion($_POST['fecha_hasta']);
 
 $reporte         = $_POST['reporte'];
-$archivo         = "rp_pl_trab_real_".$fecha."";
+$archivo         = "rp_pl_confirmaciones_".$fecha."";
 $titulo          = "HISTORIAL DE CONFIRMACIONES \n";
 
 if(isset($reporte)){
@@ -116,7 +116,7 @@ AND planif_clientes_trab_det.fecha BETWEEN \"$fecha_D\" AND \"$fecha_H\"
 			if ($f%2==0){
 				echo "<tr>";
 			}else{
-				echo "<tr class='class= odd_row'>";
+				echo "<tr class='odd_row'>";
 			}
 			echo   "<td width='10%'>".$row[0]."</td>
 			<td width='10%'>".$row[1]."</td>
