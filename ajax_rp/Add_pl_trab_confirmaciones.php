@@ -48,7 +48,7 @@ v_ficha
 $where
 ORDER BY 1, 2 ASC ";
 
-?><table class="tabla_sistema" width="100%" border="0" align="center">
+?><table class="tabla" width="96%" border="0" align="center">
 	<tr class="fondo00">
 		<th width="8%" class="etiqueta">Fecha</th>
 		<th width="5%" class="etiqueta"><?php echo $leng['ficha']?></th>
