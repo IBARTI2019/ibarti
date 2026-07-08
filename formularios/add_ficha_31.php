@@ -39,7 +39,7 @@ if($metodo == 'modificar'){
 	$nombres        = $result['nombres'];
 	$fec_nacimiento = conversion($result['fec_nacimiento']);
 	$carnet         = $result['carnet'];
-	$fec_venc_carnet = conversion($result['fec_carnet']);
+	$fec_venc_carnet = conversion($result['fec_carnet'], true);
 	$fec_ingreso    = conversion($result['fec_ingreso']);
 	$sexo           = $result['sexo'];
 	$telefono       = $result['telefono'];

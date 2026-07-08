@@ -18,11 +18,11 @@ $correo         = htmlspecialchars($_POST["correo"]);
 $experiencia    = htmlspecialchars($_POST["experiencia"]);
 $carnet         = $_POST['carnet'];
 $foto           = '';
-$fec_venc_carnet   = conversion($_POST['fec_venc_carnet']);
+$fec_venc_carnet   = conversion($_POST['fec_venc_carnet'], true);
 
-if($fec_venc_carnet == ''){
-	$fec_venc_carnet   = '0000-00-00';
-}
+// if($fec_venc_carnet == ''){
+// 	$fec_venc_carnet   = '0000-00-00';
+// }
 
 $fec_ingreso    = conversion($_POST['fec_ingreso']);
 

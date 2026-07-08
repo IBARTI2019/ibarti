@@ -58,7 +58,7 @@ function mensajeria($mensaje) {
 	</script>';
 }
 
-function conversion($fecha){
+function conversion($fecha, $allow_blanck = false){
 	if($fecha!=''){
 		if($fecha == 'DD-MM-AAAA'){
 			$fecha='0000-00-00';
@@ -75,7 +75,11 @@ function conversion($fecha){
 			}
 		}
 	}else{
-		$fecha='0000-00-00';
+		if($allow_blanck){
+			return $fecha;
+		}else{
+			$fecha='0000-00-00';
+		}
 	}
 	
 	return $fecha;

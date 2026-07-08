@@ -341,7 +341,7 @@ if ($metodo == 'modificar' or $metodo == 'consultar') {
 	$fec_nacimiento = conversion($result['fec_nacimiento']);
 	$lugar_nac      = $result['lugar_nac'];
 	$carnet         = $result['carnet'];
-	$fec_venc_carnet = conversion($result['fec_carnet']);
+	$fec_venc_carnet = conversion($result['fec_carnet'], true);
 	$fec_ingreso    = conversion($result['fec_ingreso']);
 	$sexo           = $result['sexo'];
 	$telefono       = $result['telefono'];
