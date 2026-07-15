@@ -40,7 +40,7 @@ if(isset($reporte)){
     $sql = " SELECT 
                 IFNULL(v_ficha.cod_ficha, 'UBICACION') AS cod_ficha, -- [0]
                 IFNULL(v_ficha.cedula, '-') AS cedula,                 -- [1]
-                IFNULL(v_ficha.ap_nombre, CONCAT('STOCK: ', clientes_ubicacion.descripcion)) AS trabajador, -- [2]
+                IFNULL(v_ficha.ap_nombre, clientes_ubicacion.descripcion) AS trabajador, -- [2]
                 prod_lineas.descripcion AS linea,                      -- [3]
                 prod_sub_lineas.descripcion AS sub_linea,              -- [4]
                 productos.descripcion AS producto,                     -- [5]
@@ -86,7 +86,7 @@ if(isset($reporte)){
             GROUP BY 
                 IFNULL(v_ficha.cod_ficha, 'ASIGNADO A UBICACION'),
                 IFNULL(v_ficha.cedula, '-'),
-                IFNULL(v_ficha.nombres, CONCAT('STOCK: ', clientes_ubicacion.descripcion)),
+                IFNULL(v_ficha.nombres, clientes_ubicacion.descripcion),
                 clientes.nombre,
                 clientes_ubicacion.descripcion,
                 prod_lineas.descripcion, 

@@ -32,7 +32,7 @@ if($trabajador != NULL && $trabajador != ""){
 $sql = " SELECT 
             IFNULL(v_ficha.cod_ficha, 'ASIGNADO A UBICACION') AS cod_ficha,
             IFNULL(v_ficha.cedula, '-') AS cedula, 
-            IFNULL(v_ficha.nombres, CONCAT('STOCK: ', clientes_ubicacion.descripcion)) AS trabajador,
+            IFNULL(v_ficha.nombres, clientes_ubicacion.descripcion) AS trabajador,
             clientes.nombre AS cliente,
             clientes_ubicacion.descripcion AS ubicacion,
             prod_lineas.descripcion AS linea,
@@ -80,7 +80,7 @@ $sql = " SELECT
         GROUP BY 
             IFNULL(v_ficha.cod_ficha, 'ASIGNADO A UBICACION'),
             IFNULL(v_ficha.cedula, '-'),
-            IFNULL(v_ficha.nombres, CONCAT('STOCK: ', clientes_ubicacion.descripcion)),
+            IFNULL(v_ficha.nombres, clientes_ubicacion.descripcion),
             clientes.nombre,
             clientes_ubicacion.descripcion,
             prod_lineas.descripcion, 
