@@ -37,7 +37,6 @@ if(isset($reporte)){
         $where .= " AND v_ficha.cod_ficha = '$trabajador' ";
     }
 
-    // Consulta SQL optimizada incluyendo la subconsulta para traer los EANs/Seriales específicos
     $sql = " SELECT 
                 IFNULL(v_ficha.cod_ficha, 'UBICACION') AS cod_ficha, -- [0]
                 IFNULL(v_ficha.cedula, '-') AS cedula,                 -- [1]
@@ -47,10 +46,34 @@ if(isset($reporte)){
                 productos.descripcion AS producto,                     -- [5]
                 productos.item AS producto_item,                       -- [6]
                 SUM(IF(prod_asignacion.tipo = 'ASIGNACION', prod_asignacion_det.cantidad, -prod_asignacion_det.cantidad)) AS balance, -- [7]
-                (SELECT GROUP_CONCAT(pae.cod_ean SEPARATOR ', ') 
-                 FROM prod_asignacion_eans AS pae 
-                 WHERE pae.cod_asignacion = prod_asignacion.codigo 
-                   AND pae.cod_producto = prod_asignacion_det.cod_producto) AS eans -- [8]
+                -- Subquerie optimizada que calcula el balance de cada EAN antes de concatenar
+                (
+                    SELECT GROUP_CONCAT(sub_eans.cod_ean SEPARATOR ', ')
+                    FROM (
+                        SELECT 
+                            pae_int.cod_ean, 
+                            pae_int.cod_producto,
+                            pa_int.cod_ubicacion,
+                            pa_int.cod_ficha,
+                            SUM(CASE WHEN pa_int.tipo = 'ASIGNACION' THEN 1 ELSE -1 END) AS balance_ean
+                        FROM prod_asignacion_eans pae_int
+                        INNER JOIN prod_asignacion pa_int ON pae_int.cod_asignacion = pa_int.codigo
+                        GROUP BY 
+                            pae_int.cod_ean, 
+                            pae_int.cod_producto,
+                            pa_int.cod_ubicacion,
+                            pa_int.cod_ficha
+                    ) AS sub_eans
+                    WHERE sub_eans.cod_producto = productos.item 
+                    AND sub_eans.cod_ubicacion = prod_asignacion.cod_ubicacion
+                    AND (
+                        (prod_asignacion.cod_ficha IS NULL AND (sub_eans.cod_ficha IS NULL OR sub_eans.cod_ficha = ''))
+                        OR 
+                        (prod_asignacion.cod_ficha = sub_eans.cod_ficha)
+                    )
+                    AND sub_eans.balance_ean > 0 
+                ) AS eans_acumulados, -- [8] (Se corrigió la coma faltante aquí)
+                clientes.nombre AS cliente -- [9]
             FROM prod_asignacion
             INNER JOIN prod_asignacion_det ON prod_asignacion.codigo = prod_asignacion_det.cod_asignacion
             INNER JOIN productos           ON prod_asignacion_det.cod_producto = productos.item
@@ -59,18 +82,21 @@ if(isset($reporte)){
             INNER JOIN clientes_ubicacion  ON prod_asignacion.cod_ubicacion = clientes_ubicacion.codigo
             INNER JOIN clientes            ON clientes_ubicacion.cod_cliente = clientes.codigo
             LEFT JOIN v_ficha              ON prod_asignacion.cod_ficha = v_ficha.cod_ficha
-          $where
-          GROUP BY 
-            v_ficha.cod_ficha, 
-            v_ficha.cedula, 
-            v_ficha.ap_nombre, 
-            clientes_ubicacion.descripcion,
-            prod_lineas.descripcion, 
-            prod_sub_lineas.descripcion, 
-            productos.descripcion, 
-            productos.item
-          HAVING balance > 0
-          ORDER BY trabajador ASC, productos.descripcion ASC ";
+            $where
+            GROUP BY 
+                IFNULL(v_ficha.cod_ficha, 'ASIGNADO A UBICACION'),
+                IFNULL(v_ficha.cedula, '-'),
+                IFNULL(v_ficha.nombres, CONCAT('STOCK: ', clientes_ubicacion.descripcion)),
+                clientes.nombre,
+                clientes_ubicacion.descripcion,
+                prod_lineas.descripcion, 
+                prod_sub_lineas.descripcion, 
+                productos.descripcion, 
+                productos.item,
+                prod_asignacion.cod_ubicacion,
+                prod_asignacion.cod_ficha
+            HAVING balance > 0
+            ORDER BY trabajador ASC, productos.descripcion ASC ";
 
     if($reporte == 'excel'){
         echo "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />";
@@ -79,31 +105,18 @@ if(isset($reporte)){
 
         $query01  = $bd->consultar($sql);
         echo "<table border=1>";
-        echo "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']." </th><th> ".$leng['trabajador']." </th>
-			   <th> Linea </th><th> Sub Linea </th><th> Producto </th><th> Serial </th><th> EANs </th><th> Stock en Custodia </th></tr>";
-		
-		while ($row01 = $bd->obtener_num($query01)){
-            $cod_ficha = $row01[0];
-            $ficha_cond = ($cod_ficha == 'ASIGNADO A UBICACION' || $cod_ficha == 'UBICACION' || $cod_ficha == '') ? "AND (pa.cod_ficha = '' OR pa.cod_ficha IS NULL)" : "AND pa.cod_ficha = '$cod_ficha'";
+        echo "<tr><th> ".$leng['ficha']." </th><th> ".$leng['ci']." </th><th> ".$leng['cliente']." </th><th> Custodio / Destino </th>
+               <th> Linea </th><th> Sub Linea </th><th> Producto </th><th> Serial </th><th> EANs </th><th> Stock en Custodia </th></tr>";
+        
+        while ($row01 = $bd->obtener_num($query01)){
+            // Usamos directamente los EANs precalculados en la posición [8]
+            $eans_str = !empty($row01[8]) ? $row01[8] : "-";
 
-            $sql_eans = "SELECT sub.cod_ean FROM (
-                  SELECT pae.cod_ean, SUM(CASE WHEN pa.tipo = 'ASIGNACION' THEN 1 ELSE -1 END) as balance
-                  FROM prod_asignacion_eans pae
-                  JOIN prod_asignacion pa ON pae.cod_asignacion = pa.codigo
-                  WHERE pae.cod_producto = '{$row01[6]}' $ficha_cond
-                  GROUP BY pae.cod_ean ) as sub WHERE sub.balance > 0";
-            $q_eans = $bd->consultar($sql_eans);
-            $eans_arr = [];
-            while($re = $bd->obtener_fila($q_eans, 0)){
-                $eans_arr[] = $re['cod_ean'];
-            }
-            $eans_str = implode(', ', $eans_arr);
-
-		 echo "<tr><td> ".$row01[0]." </td><td>".$row01[1]."</td><td>".$row01[2]."</td>
-					<td>".$row01[3]."</td><td>".$row01[4]."</td><td>".$row01[5]."</td><td>".$row01[6]."</td>
-					<td>".$eans_str."</td><td>".$row01[7]."</td></tr>";
-		}
-		 echo "</table>";
+            echo "<tr><td> ".$row01[0]." </td><td>".$row01[1]."</td><td>".$row01[9]."</td><td>".$row01[2]."</td>
+                    <td>".$row01[3]."</td><td>".$row01[4]."</td><td>".$row01[5]."</td><td>".$row01[6]."</td>
+                    <td style='mso-number-format:\"@\";'>".$eans_str."</td><td>".$row01[7]."</td></tr>";
+        }
+         echo "</table>";
     }
 
     if($reporte == 'pdf'){
@@ -119,44 +132,31 @@ if(isset($reporte)){
 
         echo "<br><div>
         <table>
-		<tbody>
+        <tbody>
             <tr style='background-color: #4CAF50;'>
             <th width='10%'>".$leng['ficha']."</th>
-            <th width='20%'>".$leng['trabajador']."</th>
+            <th width='20%'>Custodio / Destino</th>
             <th width='15%'>Linea</th>
             <th width='25%'>Producto</th>
             <th width='20%'>EANs</th>
             <th width='10%'  style='text-align:center;'>Stock Custodia</th>
             </tr>";
 
-            $f=0;
-    while ($row = $bd->obtener_num($query)){
-            $cod_ficha = $row[0];
-            $ficha_cond = ($cod_ficha == 'ASIGNADO A UBICACION' || $cod_ficha == 'UBICACION' || $cod_ficha == '') ? "AND (pa.cod_ficha = '' OR pa.cod_ficha IS NULL)" : "AND pa.cod_ficha = '$cod_ficha'";
-
-            $sql_eans = "SELECT sub.cod_ean FROM (
-                  SELECT pae.cod_ean, SUM(CASE WHEN pa.tipo = 'ASIGNACION' THEN 1 ELSE -1 END) as balance
-                  FROM prod_asignacion_eans pae
-                  JOIN prod_asignacion pa ON pae.cod_asignacion = pa.codigo
-                  WHERE pae.cod_producto = '{$row[6]}' $ficha_cond
-                  GROUP BY pae.cod_ean ) as sub WHERE sub.balance > 0";
-            $q_eans = $bd->consultar($sql_eans);
-            $eans_arr = [];
-            while($re = $bd->obtener_fila($q_eans, 0)){
-                $eans_arr[] = $re['cod_ean'];
-            }
-            $eans_str = implode(', ', $eans_arr);
+        $f=0;
+        while ($row = $bd->obtener_num($query)){
+            // Usamos directamente los EANs precalculados en la posición [8]
+            $eans_str = !empty($row[8]) ? $row[8] : "-";
 
             $clase_fila = ($f % 2 == 0) ? "" : "class='odd_row'";
             
             echo "<tr $clase_fila>
                  <td width='10%'>".$row[0]."</td>
             <td width='20%'>".$row[2]."</td>
-			<td width='15%'>".$row[3]."</td>
+            <td width='15%'>".$row[3]."</td>
             <td width='25%'>".$row[5]." (".$row[6].")</td>
             <td width='20%'>".$eans_str."</td>
             <td width='10%' style='text-align:center;'>".$row[7]."</td>
-			</tr>";
+            </tr>";
             $f++;
         }
 
