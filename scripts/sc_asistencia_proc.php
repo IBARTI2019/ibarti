@@ -97,6 +97,7 @@ if (isset($_POST['metodo'])) {
 						$query_asistencias = false;
 					}
 					// echo "Resultado de la consulta de asistencias: " . ($query_asistencias ? 'Éxito' : 'Fallo');
+					/*
 					if ($query_asistencias) {
 						$count = 0;
 						while ($asistencia = $bd2->obtener_fila($query_asistencias, 0)) {
@@ -136,6 +137,7 @@ if (isset($_POST['metodo'])) {
 						}
 						// echo "Total asistencias procesadas: $count";
 					}
+					*/
 				} else {
 					$mensaje = "HAY CONCEPTOS DE REPLICAR EN LAS ASISTENCIA \n  ASISTENCIA NO CERRADA";
 				}

@@ -45,7 +45,9 @@ $SQL_PAG = "SELECT asistencia.cod_ficha, ficha.cedula,
 					   IF(ISNULL(asistencia_clasif.descripcion),'N/A',asistencia_clasif.descripcion) asistencia_clasif,
 					   conceptos.abrev, asistencia.hora_extra,
 					   asistencia.hora_extra_n, asistencia.vale,
-					   asistencia.feriado, asistencia.no_laboral AS NL
+					   asistencia.feriado, asistencia.no_laboral AS NL,
+					   IFNULL(asistencia.prop_modo, 'AUTO') AS prop_modo,
+					   IFNULL(asistencia.prop_observacion, '') AS prop_observacion
 				  FROM asistencia LEFT JOIN asistencia_clasif ON asistencia_clasif.codigo = asistencia.cod_asistencia_clasif,
 				  ficha, trab_roles, clientes, clientes_ubicacion , conceptos
 			     WHERE asistencia.cod_as_apertura = '$cod_apertura'
@@ -55,7 +57,7 @@ $SQL_PAG = "SELECT asistencia.cod_ficha, ficha.cedula,
 				   AND asistencia.cod_ubicacion = clientes_ubicacion.codigo
 				   AND asistencia.cod_concepto = conceptos.codigo
 				   AND trab_roles.cod_rol = '$cod_rol'
-			  ORDER BY $orden ASC";
+			  ORDER BY FIELD(prop_modo, 'ALERTA', 'REVISAR', 'AUTO'), $orden ASC";
 
 // TODO LOS CLIENTES
 $sql_cliente = "SELECT clientes_ubicacion.cod_cliente, clientes.nombre AS cliente
@@ -75,16 +77,19 @@ $sql_conceptos = "SELECT conceptos.codigo, conceptos.descripcion, conceptos.abre
 					ORDER BY 3 ASC";
 
 ?>
+<?php echo PropuestaBadgeCSS(); ?>
+<?php echo PropuestaResumenHTML($bd, $SQL_PAG); ?>
 <table width="100%" border="0" align="center">
 	<tr class="fondo00">
-		<th width="36%" class="etiqueta"><?php echo $leng["trabajador"]; ?></th>
-		<th width="20%" class="etiqueta"><?php echo $leng["cliente"]; ?></th>
-		<th width="16%" class="etiqueta"><?php echo $leng["ubicacion"]; ?></th>
-		<th width="8%" class="etiqueta"><?php echo $leng["concepto"]; ?></th>
-		<th width="8%" class="etiqueta">Clasificación <br> Asistencia</th>
-		<th width="6%" class="etiqueta">Horas<br />Extras<br />Diurna</th>
-		<th width="6%" class="etiqueta">Horas<br />Extras<br />Noturna</th>
-		<th width="6%" class="etiqueta">Vale</th>
+		<th width="26%" class="etiqueta"><?php echo $leng["trabajador"]; ?></th>
+		<th width="13%" class="etiqueta">Estado</th>
+		<th width="18%" class="etiqueta"><?php echo $leng["cliente"]; ?></th>
+		<th width="14%" class="etiqueta"><?php echo $leng["ubicacion"]; ?></th>
+		<th width="6%" class="etiqueta"><?php echo $leng["concepto"]; ?></th>
+		<th width="6%" class="etiqueta">Clasificación <br> Asistencia</th>
+		<th width="5%" class="etiqueta">Horas<br />Extras<br />Diurna</th>
+		<th width="5%" class="etiqueta">Horas<br />Extras<br />Noturna</th>
+		<th width="5%" class="etiqueta">Vale</th>
 		<th width="6%" class="img"><img src="imagenes/loading2.gif" width="40px" height="40px" /></th>
 	</tr><?php echo '<td><select name="trabajador" id="trabajador" style="width:210px;">
 							   <option value="">seleccione...</option>';
@@ -93,6 +98,7 @@ $sql_conceptos = "SELECT conceptos.codigo, conceptos.descripcion, conceptos.abre
 				echo '<option value="' . $row03[0] . '">' . $row03[1] . '&nbsp;(' . $row03[0] . ')</option>';
 			}
 			echo '</select></td>
+				<td align="center">-</td>
 				<td><select name="cliente" id="cliente" style="width:160px;"
 							onchange="Actualizar02(this.value)">
 						   <option value="">Seleccione...</option>';
@@ -134,6 +140,7 @@ $sql_conceptos = "SELECT conceptos.codigo, conceptos.descripcion, conceptos.abre
 				echo '<tr class="' . $fondo . '">
 		                 <td class="texto">' . $datos["cod_ficha"] . " - " . longitud($datos["trabajador"]) . '<input type="hidden"
 						 id="trabajadores' . $i . '" value="' . $datos["cod_ficha"] . '"/></td>
+				  <td align="center">' . PropuestaBadgeHTML($datos['prop_modo'], $datos['prop_observacion']) . '</td>
 				  <td> <select id="cliente' . $i . '" style="width:160px;"
 						        onchange="Actualizar01(this.value, ' . $i . ')">
 							   <option value="' . $datos["cod_cliente"] . '">' . $datos["cliente"] . '</option>';

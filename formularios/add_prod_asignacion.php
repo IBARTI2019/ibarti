@@ -21,6 +21,11 @@
 		$("#salvar").click();
 	}
 
+	function Pdf(){
+		$('#pdf').attr('action', "reportes/rp_inv_prod_asignacion.php");
+		$('#pdf').submit();
+	}
+
 function ActivarSubLinea(codigo, relacion, contenido){  
 	if(codigo!=''){
 		var valor = "ajax/Add_prod_linea.php";
@@ -129,6 +134,18 @@ function actualizarResumen() {
 }
 
 function cantidad_maxima(cod_almacen, relacion) {
+    var tipo = document.getElementById('tipo') ? document.getElementById('tipo').value : "";
+    var inputCantidad = document.getElementById('ped_cantidad');
+
+    if (tipo == "DEVOLUCION") {
+        if (inputCantidad) {
+            inputCantidad.disabled = false;
+            inputCantidad.removeAttribute("data-max-stock");
+            inputCantidad.removeAttribute("max");
+        }
+        return;
+    }
+
     var producto = document.getElementById('stdIDProd').value;
     if (cod_almacen != '') {
         var valor = "ajax/Add_prod_asignacion_max.php";
@@ -138,15 +155,22 @@ function cantidad_maxima(cod_almacen, relacion) {
             if (ajax.readyState == 4) {
                 var resp = JSON.parse(ajax.responseText);
                 var max_disp = parseInt(resp.stock_actual);
-                document.getElementById('ped_cantidad').value = ""; // Reset quantity
-                document.getElementById('ped_cantidad').max = max_disp;
+                var inputCantidad = document.getElementById('ped_cantidad');
+
+                if (inputCantidad) {
+                    inputCantidad.value = "";
+                    inputCantidad.max = max_disp;
+                }
+
                 if(max_disp == 0){
                     toastr.warning("No hay stock físico disponible para asignar en este almacén.");
-                    document.getElementById('ped_cantidad').disabled = true;
+                    if (inputCantidad) inputCantidad.disabled = true;
                 } else {
                     toastr.info("Stock físico disponible: " + max_disp);
-                    document.getElementById('ped_cantidad').disabled = false;
-                    document.getElementById('ped_cantidad').setAttribute("data-max-stock", max_disp);
+                    if (inputCantidad) {
+                        inputCantidad.disabled = false;
+                        inputCantidad.setAttribute("data-max-stock", max_disp);
+                    }
                 }
             }
         }
@@ -299,6 +323,8 @@ function selectEAN(ean, estado, eventObj){
 }
 
 function getIfEAN(item, cantidad, almacen, numX, callback){
+    var tipo = document.getElementById('tipo') ? document.getElementById('tipo').value : "";
+
     $.ajax({
         data: {"codigo": item},
         url: 'ajax/Add_prod_asignacion_getIfEAN.php',
@@ -308,7 +334,11 @@ function getIfEAN(item, cantidad, almacen, numX, callback){
             if(resp[0] == 'T'){
                 ean_cantidad_requerida = cantidad;
                 ean_renglon_actual = numX;
-                cargarEANS(item, almacen);
+                cargarEANS(item, almacen, function(){
+                    if(tipo == "DEVOLUCION"){
+                        callback();
+                    }
+                });
                 $("#cant_ing").html(cantidad);
             }else{
                 callback();
@@ -321,7 +351,7 @@ function getIfEAN(item, cantidad, almacen, numX, callback){
     });
 }
 
-function cargarEANS(item, almacen){
+function cargarEANS(item, almacen, emptyCallback){
     var tipo = $("#tipo").val();
     var ubicacion = $("#ubicacion").val();
     var ficha = document.getElementById("stdID").value;
@@ -334,6 +364,13 @@ function cargarEANS(item, almacen){
             eans_seleccionados = [];
             $('#listar_eans').html('');
             var resp = JSON.parse(response);
+            if(resp.allow_without_ean === true){
+                if(typeof emptyCallback === "function"){
+                    emptyCallback();
+                }
+                return;
+            }
+
             if(resp.length > 0){
                 var reng_num_ean = 0;
                 jQuery.each(resp, function(i) {
@@ -348,7 +385,11 @@ function cargarEANS(item, almacen){
                 });
                 eanModalOpen();
             }else{
-                toastr.warning('No hay EANs disponibles para esta operación.');
+                if(typeof emptyCallback === "function"){
+                    emptyCallback();
+                }else{
+                    toastr.warning('No hay EANs disponibles para esta operación.');
+                }
             }
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -591,7 +632,13 @@ if ($metodo == 'modificar') {
                     <span class="art-button-r"> </span>
                     <input type="button" id="validar" value="Guardar" class="readon art-button" onClick="Validar()"/>
                 </span>
-            <?php } ?>
+            <?php } else { ?>
+				<span class="art-button-wrapper">
+					<span class="art-button-l"> </span>
+					<span class="art-button-r"> </span>
+					<input type="button" name="pdf" onClick="Pdf()" value="Imprimir" class="readon art-button" />
+				</span>&nbsp;
+			<?php } ?>
 			<span class="art-button-wrapper">
 				<span class="art-button-l"> </span>
 				<span class="art-button-r"> </span>
@@ -599,11 +646,16 @@ if ($metodo == 'modificar') {
 			</span>
 			<input type="hidden" name="metodo" id="metodo" value="<?php echo $metodo;?>" />
 			<input type="hidden" name="proced" value="<?php echo $proced;?>" />
-			<input type="hidden" name="usuario" value="<?php echo $usuario;?>" />
+			<input type="hidden" name="usuario" id="usuario" value="<?php echo $usuario;?>" />
+			<input type="hidden" name="r_rol" id="r_rol" value="<?php echo isset($_SESSION['r_rol']) ? $_SESSION['r_rol'] : '';?>" />
+			<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo isset($_SESSION['r_cliente']) ? $_SESSION['r_cliente'] : '';?>" />
 			<input type="hidden" name="href" value="<?php echo $archivo2;?>"/>
 			<input type="hidden" name="incremento" id="incremento" value="1" />
 		</div>
 	</fieldset>
+</form>
+<form id="pdf" name="pdf" action="" method="post" target="_blank">
+	<input type="hidden" name="codigo" value="<?php echo isset($_GET['codigo']) ? $_GET['codigo'] : ''; ?>">
 </form>
 <hr />
 <script type="text/javascript">

@@ -66,7 +66,7 @@ width:700px;*/
 }
 
 .fieldset {
-	width:880px;
+	width:88%;
 	padding:2px;
 	margin:15px 22px;
 }
@@ -293,7 +293,7 @@ label {
 					overflow:scroll;
 					overflow-y:scroll;
 					overflow-x:hidden;
-					width:960px;
+					width:96%;
 					height:280px;
 					/* background-color: #99FF99; /* Color de Fondo en Hex   // r,g,b  0,153,0  verde claro */
 
@@ -333,7 +333,7 @@ label {
 					overflow:scroll;
 					overflow-y:auto;
 					overflow-x:auto;
-					width: 95%;
+					width: 98%;
 					height:280px;
 					border-style: inset;
 					border-color:  #009900;

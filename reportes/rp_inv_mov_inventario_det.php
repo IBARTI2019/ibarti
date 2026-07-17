@@ -49,7 +49,8 @@ AND ajuste_alcance.fecha BETWEEN '$fecha_D' AND '$fecha_H' ";
 	$sql = " SELECT ajuste.codigo,ajuste.referencia,ajuste.fecha,prod_mov_tipo.descripcion ajuste, almacenes.descripcion almacen,
 	IF(prod_sub_lineas.talla = 'T', CONCAT(productos.descripcion,' ',tallas.descripcion), productos.descripcion ) producto ,
 	ajuste_reng.cantidad,ajuste_reng.costo,ajuste_reng.neto,
-ajuste_reng.cant_acum,ajuste_reng.importe importe_acum,ajuste_reng.cos_promedio ,ajuste_reng.aplicar
+ajuste_reng.cant_acum,ajuste_reng.importe importe_acum,ajuste_reng.cos_promedio ,ajuste_reng.aplicar,
+(SELECT GROUP_CONCAT(cod_ean SEPARATOR ', ') FROM ajuste_reng_eans WHERE cod_ajuste = ajuste.codigo AND reng_num = ajuste_reng.reng_num) AS eans
 FROM ajuste,ajuste_reng,prod_mov_tipo,almacenes,productos,prod_sub_lineas,tallas
 $where ";
 
@@ -68,7 +69,8 @@ $where ";
 		0 cant_acum,
 		0 importe_acum,
 		0 cos_promedio,
-		'OUT' aplicar
+		'OUT' aplicar,
+		'' eans
 		FROM ajuste_alcance, ajuste_alcance_reng, almacenes, productos
 		$where_alcance ";
 	}
@@ -83,13 +85,13 @@ $where ";
 		$query01  = $bd->consultar($sql);
 
 		echo "<table border=1>";
-		echo "<th> CODIGO</th><th> REFERENCIA</th><th> FECHA</th><th> AJUSTE </th><th> ALMACEN </th><th> PRODUCTO </th> <th> CANTIDAD </th>
+		echo "<th> CODIGO</th><th> REFERENCIA</th><th> FECHA</th><th> AJUSTE </th><th> ALMACEN </th><th> PRODUCTO </th> <th> EANs </th> <th> CANTIDAD </th>
 		<th> COSTO </th> <th> IMPORTE </th> <th> CANTIDAD ACUMULADA </th> <th> IMPORTE ACUMULADO </th>
 		<th> COSTO PROMEDIO </th>
 		</tr>";
 
 		while ($row01 = $bd->obtener_num($query01)) {
-			echo "<tr><td>" . $row01[0] . "</td><td>" . $row01[1] . "</td><td>" . $row01[2] . "</td><td>" . $row01[3] . "</td><td>" . $row01[4] . "</td><td>" . $row01[5] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td><td>" . $row01[8] . "</td><td>" . $row01[9] . "</td><td>" . $row01[10] . "</td><td>" . $row01[11] . "</td></tr>";
+			echo "<tr><td>" . $row01[0] . "</td><td>" . $row01[1] . "</td><td>" . $row01[2] . "</td><td>" . $row01[3] . "</td><td>" . $row01[4] . "</td><td>" . $row01[5] . "</td><td>" . $row01[13] . "</td><td>" . $row01[6] . "</td><td>" . $row01[7] . "</td><td>" . $row01[8] . "</td><td>" . $row01[9] . "</td><td>" . $row01[10] . "</td><td>" . $row01[11] . "</td></tr>";
 		}
 		echo "</table>";
 	}
@@ -115,6 +117,7 @@ $where ";
 		<th>Ajuste</th>
 		<th>Almacen</th>
 		<th>Producto</th>
+		<th>EANs</th>
 		<th>Cantidad</th>
 		<th>Costo</th>
 		</tr>";
@@ -130,7 +133,8 @@ $where ";
 			<td width='10%'>" . $row[2] . "</td>
 			<td width='10%'>" . $row[3] . "</td>
 			<td width='15%'>" . $row[4] . "</td>
-			<td width='35%'>" . $row[5] . "</td>
+			<td width='20%'>" . $row[5] . "</td>
+			<td width='15%'>" . $row[13] . "</td>
 			<td width='10%'>" . $row[6] . "</td>
 			<td width='10%'>" . $row[7] . "</td></tr>";
 

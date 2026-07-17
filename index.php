@@ -33,7 +33,7 @@
 </head>
 <body>
 <div id="art-main">
-        <div class="art-sheet">
+        <div class="art-sheet" style="width: 992px; margin: 0px auto 0px auto;">
             <div class="art-sheet-tl"></div>
             <div class="art-sheet-tr"></div>
             <div class="art-sheet-bl"></div>

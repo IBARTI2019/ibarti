@@ -13,6 +13,7 @@ foreach ($lista_preclientes as  $datos) {
     <td>'.$datos["codigo"].'</td>
     <td>'.$datos["rif"].'</td>
     <td>'.$datos["nombre"].'</td>
+    <td>'.$datos["abrev"].'</td>
     <td>'.$datos["region"].'</td>
     <td>'.statuscal($datos["status"]).'</td>
     </tr>';
