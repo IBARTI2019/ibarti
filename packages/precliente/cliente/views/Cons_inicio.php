@@ -11,8 +11,8 @@ $matriz  =  $cliente->get();
     <th width="12%">Codigo</th>
     <th width="12%"><?php echo $leng["rif"];?></th>
     <th width="32%">Nombre</th>
-    <th width="32%">Abrev</th>
-    <th width="22%"><?php echo $leng['region'];?></th>
+    <th width="12%">Abrev</th>
+    <th width="12%"><?php echo $leng['region'];?></th>
     <th width="14%" >Activo</th>
    <th width="6%" align="center"><img src="imagenes/nuevo.bmp" alt="Agregar" onclick="Cons_precliente('', 'agregar')" title="Agregar Registro" width="30px" height="30px" border="null"/></th>
   </tr>
