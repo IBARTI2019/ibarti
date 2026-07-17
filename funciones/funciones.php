@@ -311,7 +311,7 @@ function statusrfid($valor){
 
 		function Asistencia_orden($valor){
 
-			if ( $valor == '`asisntecia`.`cod_ficha`' ) {
+			if ( $valor == '`asistencia`.`cod_ficha`' ) {
 				$result = 'Ficha';
 
 			}elseif ($valor == '`ficha`.`cedula`' ){
@@ -407,6 +407,47 @@ function Feriado_as($valor, $tipo){
 		$resul ='';
 	}
 	return $resul;
+}
+
+function PropuestaBadgeCSS(){
+	return '<style>
+  .badge-auto { background-color: #dcfce7; color: #1a7f37; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 11px; white-space: nowrap; }
+  .badge-revisar { background-color: #fef3c7; color: #b45309; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 11px; white-space: nowrap; }
+  .badge-alerta { background-color: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 11px; white-space: nowrap; }
+  .badge-obs { display: block; margin-top: 3px; font-size: 10px; color: #5a6472; white-space: normal; word-break: break-word; overflow-wrap: break-word; max-width: 270px; }
+</style>';
+}
+
+function PropuestaBadgeHTML($modo, $obs){
+	$modo_txt = !empty($modo) ? $modo : 'AUTO';
+	$badge_class = 'badge-auto';
+	if ($modo_txt == 'REVISAR') $badge_class = 'badge-revisar';
+	if ($modo_txt == 'ALERTA')  $badge_class = 'badge-alerta';
+
+	$obs_txt = !empty($obs) ? '<span class="badge-obs">'.htmlspecialchars($obs).'</span>' : '';
+
+	return '<span class="'.$badge_class.'">'.htmlspecialchars($modo_txt).'</span>'.$obs_txt;
+}
+
+function PropuestaResumenHTML($bd, $sql_base){
+	$conteos = array('AUTO' => 0, 'REVISAR' => 0, 'ALERTA' => 0);
+
+	$sql_resumen = "SELECT prop_modo, COUNT(*) AS total FROM (" . $sql_base . ") x GROUP BY prop_modo";
+	$query = $bd->consultar($sql_resumen);
+	while ($row = $bd->obtener_fila($query, 0)) {
+		$modo = !empty($row['prop_modo']) ? $row['prop_modo'] : 'AUTO';
+		if (isset($conteos[$modo])) {
+			$conteos[$modo] = (int) $row['total'];
+		}
+	}
+
+	$html  = '<div id="resumen_estado" style="margin:8px 0;">';
+	$html .= '<span class="badge-auto">'    . $conteos['AUTO']    . ' AUTO</span>&nbsp;&nbsp;';
+	$html .= '<span class="badge-revisar">' . $conteos['REVISAR'] . ' REVISAR</span>&nbsp;&nbsp;';
+	$html .= '<span class="badge-alerta">'  . $conteos['ALERTA']  . ' ALERTA</span>';
+	$html .= '</div>';
+
+	return $html;
 }
 
 function imgExtension($link){

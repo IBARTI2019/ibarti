@@ -20,7 +20,7 @@ $metodo      = "nomina";
       <td class="etiqueta">Asistencia Orden: </td>
       	<td id="select_2_01"><select name="as_orden" style="width:200px">
                                      <option value="<?php echo $datos[0];?>"><?php  echo Asistencia_orden($datos[0]);?></option>
-						             <option value="`asisntecia`.`cod_ficha`"> Ficha </option>
+						             <option value="`asistencia`.`cod_ficha`"> Ficha </option>
                                      <option value="`ficha`.`cedula`"> Cedula </option>
                                      <option value="trabajador"> Trabajador </option>
                                      <option value="cliente"> Cliente </option>

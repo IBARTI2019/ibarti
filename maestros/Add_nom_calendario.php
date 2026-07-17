@@ -56,6 +56,41 @@ if ($metodo == 'modificar') {
                 <span class="radioRequiredMsg">Debe seleccionar un Campo.</span>
             </td>
         </tr>
+
+        <tr>
+            <td class="etiqueta">Roles que Aplican:</td>
+            <td>
+                <div style="max-height: 180px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; width: 280px; background-color: #fff; border-radius: 4px;">
+                <?php
+                    // 1. Consultar todos los roles activos del sistema
+                    $sql_roles = "SELECT codigo, descripcion FROM roles WHERE status = 'T' ORDER BY descripcion ASC;";
+                    $query_roles = $bd->consultar($sql_roles);
+                    
+                    // 2. Si estamos modificando, traer los roles que ya están asociados a este calendario
+                    $roles_guardados = array();
+                    if ($metodo == 'modificar' && !empty($codigo)) {
+                        $sql_assoc = "SELECT cod_rol FROM roles_calendario WHERE cod_calendario = '$codigo';";
+                        $query_assoc = $bd->consultar($sql_assoc);
+                        while ($row_assoc = $bd->obtener_fila($query_assoc, 0)) {
+                            $roles_guardados[] = $row_assoc['cod_rol'];
+                        }
+                    }
+
+                    // 3. Renderizar la lista de checkboxes
+                    while ($rol = $bd->obtener_fila($query_roles, 0)) {
+                        $checked = in_array($rol['codigo'], $roles_guardados) ? 'checked="checked"' : '';
+                        echo '<div style="padding: 3px 0;">';
+                        echo '  <label style="cursor: pointer; font-size: 13px;">';
+                        echo '    <input type="checkbox" name="roles_destino[]" value="'.$rol['codigo'].'" '.$checked.' style="width: auto; margin-right: 6px;" /> ';
+                        echo $rol['descripcion'];
+                        echo '  </label>';
+                        echo '</div>';
+                    }
+                ?>
+                </div>
+                <span class="texto" style="font-size: 11px; color: #5a6472;">Selecciona uno o varios roles para este calendario.</span>
+            </td>
+        </tr>
         <tr>
             <td height="8" colspan="2" align="center">
                 <hr>
