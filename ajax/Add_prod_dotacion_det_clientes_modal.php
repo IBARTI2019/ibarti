@@ -17,17 +17,20 @@ $vinculo    = "inicio.php?area=formularios/Add_EANS_clientes.php";
 if ($metodo=="buscar"){
     $comodin=$_POST['comodin'];
     if ($comodin <> "") { 
-        $query="SELECT count(*) as filas FROM productos,prod_ean WHERE productos.item=prod_ean.cod_producto AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans)";
-        $sql="SELECT prod_ean.cod_producto as codigo,prod_ean.cod_ean as eans FROM prod_ean WHERE prod_ean.cod_producto ='$rel2' AND prod_ean.cod_ean like '%$comodin%' AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans)"; 
+        $query="SELECT count(*) as filas FROM productos,prod_ean WHERE productos.item=prod_ean.cod_producto AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans  WHERE v_stock_asignado_eans.cod_producto = '$rel2')";
+        $sql="SELECT prod_ean.cod_producto as codigo,prod_ean.cod_ean as eans FROM prod_ean WHERE prod_ean.cod_producto ='$rel2' AND prod_ean.cod_ean like '%$comodin%' AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans WHERE v_stock_asignado_eans.cod_producto = '$rel2')"; 
     } else {
         $fondo = 'fondo02';
-        $query="SELECT count(*) as filas FROM productos,prod_ean WHERE productos.item=prod_ean.cod_producto AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans)";     
-        $sql="SELECT prod_ean.cod_producto as codigo,prod_ean.cod_ean as eans FROM prod_ean WHERE prod_ean.cod_producto ='$rel2' AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans)"; 
+        $query="SELECT count(*) as filas FROM productos,prod_ean WHERE productos.item=prod_ean.cod_producto AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans WHERE v_stock_asignado_eans.cod_producto = '$rel2')";     
+        $sql="SELECT prod_ean.cod_producto as codigo,prod_ean.cod_ean as eans FROM prod_ean WHERE prod_ean.cod_producto ='$rel2' AND prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans WHERE v_stock_asignado_eans.cod_producto = '$rel2')"; 
     }
 }
 if ($metodo=="agregar"){
-    $where=" prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans) ";
-    if ($rel2 <> "") { $where.=" AND prod_ean.cod_producto='$rel2'"; }
+    $where=" prod_ean.cod_ean NOT IN (SELECT cod_ean FROM v_stock_asignado_eans ";
+    if ($rel2 <> "") { $where.=" WHERE v_stock_asignado_eans.cod_producto = '$rel2') AND prod_ean.cod_producto='$rel2'"; }
+    else{
+        $where.=") ";
+    }
 
     $where.=" ORDER BY prod_ean.cod_ean DESC";
     $query="SELECT count(*) as filas FROM productos,prod_ean WHERE productos.item=prod_ean.cod_producto AND ".$where;

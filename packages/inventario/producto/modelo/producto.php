@@ -17,6 +17,8 @@ $fecha_actual = date('Y-m-d H:i:s');
 
 if(isset($_POST["eans"])){
   $eans = $_POST["eans"];
+} else {
+  $eans = [];
 }
 
 if(isset($_POST['proced'])){
@@ -33,7 +35,7 @@ if(isset($_POST['proced'])){
     $result['sql'][] = $sql;
     $query = $bd->consultar($sql);
 
-    if($ean == 'T' && isset($_POST["eans"])){
+    if($ean == 'T'){
       // Obtener EANs actuales de la base de datos
       $sql_existing = "SELECT cod_ean FROM prod_ean WHERE cod_producto = '$item'";
       $query_existing = $bd->consultar($sql_existing);
@@ -51,10 +53,15 @@ if(isset($_POST['proced'])){
       // EANs a insertar (están en el nuevo array pero no en la BD)
       $eans_to_insert = array_diff($new_eans, $existing_eans);
       
-      // Eliminar solo los EANs que ya no están en la lista
+      // Eliminar solo los EANs que ya no están en la lista y que NO tienen movimientos
       if (!empty($eans_to_delete)) {
         $eans_delete_list = "'" . implode("','", $eans_to_delete) . "'";
-        $sql_delete = "DELETE FROM prod_ean WHERE cod_producto = '$item' AND cod_ean IN ($eans_delete_list) AND cod_ean NOT IN (SELECT cod_ean FROM ajuste_reng_eans)";
+        $sql_delete = "DELETE FROM prod_ean 
+                       WHERE cod_producto = '$item' 
+                       AND cod_ean IN ($eans_delete_list) 
+                       AND cod_ean NOT IN (SELECT cod_ean FROM ajuste_reng_eans)
+                       AND cod_ean NOT IN (SELECT cod_ean FROM prod_asignacion_eans)
+                       AND cod_ean NOT IN (SELECT cod_ean FROM ajuste_alcance_reng_eans)";
         $bd->consultar($sql_delete);
         $result['sql'][] = $sql_delete;
       }

@@ -21,6 +21,11 @@
 		$("#salvar").click();
 	}
 
+	function Pdf(){
+		$('#pdf').attr('action', "reportes/rp_inv_prod_asignacion.php");
+		$('#pdf').submit();
+	}
+
 function ActivarSubLinea(codigo, relacion, contenido){  
 	if(codigo!=''){
 		var valor = "ajax/Add_prod_linea.php";
@@ -101,6 +106,80 @@ function ToggleFicha(){
 	}
 }
 
+function actualizarResumen() {
+    var tipo = document.getElementById('tipo').value;
+    var ubicacion = document.getElementById('ubicacion').value;
+    var trabajador = document.getElementById('stdID') ? document.getElementById('stdID').value : "";
+
+    if(ubicacion != "" || trabajador != "") {
+        var valor = "ajax/Add_prod_asignacion_resumen.php";
+        ajax = nuevoAjax();
+        ajax.open("POST", valor, true);
+        ajax.onreadystatechange = function () {
+            if (ajax.readyState == 4) {
+                var contenedor = document.getElementById('resumen_custodia');
+                if(contenedor) {
+                    contenedor.innerHTML = ajax.responseText;
+                }
+            }
+        }
+        ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        ajax.send("tipo=" + tipo + "&ubicacion=" + ubicacion + "&trabajador=" + trabajador);
+    } else {
+        var contenedor = document.getElementById('resumen_custodia');
+        if(contenedor) {
+            contenedor.innerHTML = "";
+        }
+    }
+}
+
+function cantidad_maxima(cod_almacen, relacion) {
+    var tipo = document.getElementById('tipo') ? document.getElementById('tipo').value : "";
+    var inputCantidad = document.getElementById('ped_cantidad');
+
+    if (tipo == "DEVOLUCION") {
+        if (inputCantidad) {
+            inputCantidad.disabled = false;
+            inputCantidad.removeAttribute("data-max-stock");
+            inputCantidad.removeAttribute("max");
+        }
+        return;
+    }
+
+    var producto = document.getElementById('stdIDProd').value;
+    if (cod_almacen != '') {
+        var valor = "ajax/Add_prod_asignacion_max.php";
+        ajax = nuevoAjax();
+        ajax.open("POST", valor, true);
+        ajax.onreadystatechange = function () {
+            if (ajax.readyState == 4) {
+                var resp = JSON.parse(ajax.responseText);
+                var max_disp = parseInt(resp.stock_actual);
+                var inputCantidad = document.getElementById('ped_cantidad');
+
+                if (inputCantidad) {
+                    inputCantidad.value = "";
+                    inputCantidad.max = max_disp;
+                }
+
+                if(max_disp == 0){
+                    toastr.warning("No hay stock físico disponible para asignar en este almacén.");
+                    if (inputCantidad) inputCantidad.disabled = true;
+                } else {
+                    toastr.info("Stock físico disponible: " + max_disp);
+                    if (inputCantidad) {
+                        inputCantidad.disabled = false;
+                        inputCantidad.setAttribute("data-max-stock", max_disp);
+                    }
+                }
+            }
+        }
+        ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        ajax.send("producto=" + producto + "&almacen=" + cod_almacen);
+    }
+}
+
+
 function BorrarFila(numX){
 	$("#tr_asig_"+numX).remove();
     $("#hidden_asig_"+numX).remove();
@@ -121,6 +200,12 @@ function validarCamp(){
 	if(select03 == ""){ valido++; mensaje += " Debe Seleccionar Un Producto \n"; }
 	if(select04 == ""){ valido++; mensaje += " Debe Seleccionar Un Almacen \n"; }
 	if(input01 == "" || input01 == 0){ valido++; mensaje += " Debe Ingresar la Cantidad \n "; }
+	
+	max_stock = Number(document.getElementById('ped_cantidad').getAttribute("data-max-stock") || 0);
+	if(document.getElementById('tipo').value == "ASIGNACION" && input01 > max_stock) { 
+		valido++; 
+		mensaje += " La cantidad excede el stock físico disponible ("+max_stock+"). \n"; 
+	}
 
 	if(valido ==  1){
 		getIfEAN(select03, input01, select04, global_num, function(){
@@ -238,6 +323,8 @@ function selectEAN(ean, estado, eventObj){
 }
 
 function getIfEAN(item, cantidad, almacen, numX, callback){
+    var tipo = document.getElementById('tipo') ? document.getElementById('tipo').value : "";
+
     $.ajax({
         data: {"codigo": item},
         url: 'ajax/Add_prod_asignacion_getIfEAN.php',
@@ -247,7 +334,11 @@ function getIfEAN(item, cantidad, almacen, numX, callback){
             if(resp[0] == 'T'){
                 ean_cantidad_requerida = cantidad;
                 ean_renglon_actual = numX;
-                cargarEANS(item, almacen);
+                cargarEANS(item, almacen, function(){
+                    if(tipo == "DEVOLUCION"){
+                        callback();
+                    }
+                });
                 $("#cant_ing").html(cantidad);
             }else{
                 callback();
@@ -260,7 +351,7 @@ function getIfEAN(item, cantidad, almacen, numX, callback){
     });
 }
 
-function cargarEANS(item, almacen){
+function cargarEANS(item, almacen, emptyCallback){
     var tipo = $("#tipo").val();
     var ubicacion = $("#ubicacion").val();
     var ficha = document.getElementById("stdID").value;
@@ -273,6 +364,13 @@ function cargarEANS(item, almacen){
             eans_seleccionados = [];
             $('#listar_eans').html('');
             var resp = JSON.parse(response);
+            if(resp.allow_without_ean === true){
+                if(typeof emptyCallback === "function"){
+                    emptyCallback();
+                }
+                return;
+            }
+
             if(resp.length > 0){
                 var reng_num_ean = 0;
                 jQuery.each(resp, function(i) {
@@ -287,7 +385,11 @@ function cargarEANS(item, almacen){
                 });
                 eanModalOpen();
             }else{
-                toastr.warning('No hay EANs disponibles para esta operación.');
+                if(typeof emptyCallback === "function"){
+                    emptyCallback();
+                }else{
+                    toastr.warning('No hay EANs disponibles para esta operación.');
+                }
             }
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -413,7 +515,7 @@ if ($metodo == 'modificar') {
 			<tr>
 				<td class="etiqueta" width="13%">Operación:</td>
 				<td width="20%">
-                    <select name="tipo" id="tipo" style="width: 150px;" <?php if($metodo=="modificar") echo 'disabled="disabled"';?>>
+                    <select name="tipo" id="tipo" style="width: 150px;" onchange="actualizarResumen()" <?php if($metodo=="modificar") echo 'disabled="disabled"';?>>
                         <option value="ASIGNACION" <?php if($tipo=="ASIGNACION") echo "selected";?>>ASIGNACION</option>
                         <option value="DEVOLUCION" <?php if($tipo=="DEVOLUCION") echo "selected";?>>DEVOLUCION</option>
                     </select>
@@ -423,7 +525,7 @@ if ($metodo == 'modificar') {
 					<span class="textfieldRequiredMsg">La Fecha Es Requerida.</span>
 					<span class="textfieldInvalidFormatMsg">Formato Invalido.</span></td>
 				<td class="etiqueta" width="13%">Descripci&oacute;n:</td>
-				<td id="input02" width="20%"><input type="text" name="descripcion" maxlength="60" size="30" value="<?php echo $descripcion;?>" <?php if($metodo=="modificar") echo 'readonly';?>/><br>
+				<td id="input02" width="20%"><textarea name="descripcion" cols="40" rows="3" maxlength="255" <?php if($metodo=="modificar") echo 'readonly';?>><?php echo htmlspecialchars($descripcion);?></textarea><br>
 					<span class="textfieldRequiredMsg">La Descripcion es Requerida.</span>
 					<span class="textfieldMinCharsMsg">Debe Escribir mínimo 2 Caracteres.</span></td>
 			</tr>
@@ -444,7 +546,7 @@ if ($metodo == 'modificar') {
                 </td>
 				<td class="etiqueta">Ubicación:</td>
 				<td colspan="2">
-                    <select name="ubicacion" id="ubicacion" style="width:250px;" onchange="ToggleFicha()" <?php if($metodo=="modificar") echo 'disabled="disabled"';?>>
+                    <select name="ubicacion" id="ubicacion" style="width:250px;" onchange="ToggleFicha(); actualizarResumen();" <?php if($metodo=="modificar") echo 'disabled="disabled"';?>>
                         <option value="">Seleccione...</option>
                         <?php 
                         if ($metodo == 'modificar') {
@@ -469,6 +571,7 @@ if ($metodo == 'modificar') {
 			</tr>
 		</table>
 	</fieldset>
+	<div id="resumen_custodia"></div>
 	<fieldset class="fieldset" id="detalle">
 		<legend>Detalle de Productos: </legend>
 		<table width="95%" align="center">
@@ -529,7 +632,13 @@ if ($metodo == 'modificar') {
                     <span class="art-button-r"> </span>
                     <input type="button" id="validar" value="Guardar" class="readon art-button" onClick="Validar()"/>
                 </span>
-            <?php } ?>
+            <?php } else { ?>
+				<span class="art-button-wrapper">
+					<span class="art-button-l"> </span>
+					<span class="art-button-r"> </span>
+					<input type="button" name="pdf" onClick="Pdf()" value="Imprimir" class="readon art-button" />
+				</span>&nbsp;
+			<?php } ?>
 			<span class="art-button-wrapper">
 				<span class="art-button-l"> </span>
 				<span class="art-button-r"> </span>
@@ -537,11 +646,16 @@ if ($metodo == 'modificar') {
 			</span>
 			<input type="hidden" name="metodo" id="metodo" value="<?php echo $metodo;?>" />
 			<input type="hidden" name="proced" value="<?php echo $proced;?>" />
-			<input type="hidden" name="usuario" value="<?php echo $usuario;?>" />
+			<input type="hidden" name="usuario" id="usuario" value="<?php echo $usuario;?>" />
+			<input type="hidden" name="r_rol" id="r_rol" value="<?php echo isset($_SESSION['r_rol']) ? $_SESSION['r_rol'] : '';?>" />
+			<input type="hidden" name="r_cliente" id="r_cliente" value="<?php echo isset($_SESSION['r_cliente']) ? $_SESSION['r_cliente'] : '';?>" />
 			<input type="hidden" name="href" value="<?php echo $archivo2;?>"/>
 			<input type="hidden" name="incremento" id="incremento" value="1" />
 		</div>
 	</fieldset>
+</form>
+<form id="pdf" name="pdf" action="" method="post" target="_blank">
+	<input type="hidden" name="codigo" value="<?php echo isset($_GET['codigo']) ? $_GET['codigo'] : ''; ?>">
 </form>
 <hr />
 <script type="text/javascript">
@@ -581,8 +695,12 @@ $(document).ready(function() {
 	new Autocomplete("stdName", function() {
 		this.setValue = function(id) {
 			document.getElementById("stdID").value = id; 
+			actualizarResumen();
 		}
-		if (this.isModified) this.setValue("");
+		if (this.isModified) {
+			this.setValue("");
+			actualizarResumen();
+		}
 		if (this.value.length < 1) return ;
 		var ubicacion_val = document.getElementById('ubicacion').value;
 		return "autocompletar/tb/trabajador.php?q="+this.text.value +"&filtro=TODOS&r_cliente="+r_cliente+"&r_rol="+r_rol+"&usuario="+usuario+"&activos=true&ubicacion="+ubicacion_val;

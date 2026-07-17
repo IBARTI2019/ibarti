@@ -1,3 +1,7 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+?>
 <script type="text/javascript" src="../jquery.js"></script>
 <script language="JavaScript" type="text/javascript">
 	function Pdf(){
@@ -58,6 +62,7 @@ if(isset($_POST['proced'])){
 			$codigo = $datos[0];
 			$sql = " SELECT a.n_ajuste FROM control a ";
 			$query = $bd->consultar($sql);
+		}
 		if(!$query) { $error = true; } else {
 			$data =$bd->obtener_fila($query,0);
 			$nro_ajuste   =  $data[0];
@@ -77,85 +82,84 @@ if(isset($_POST['proced'])){
 	if(!$error){
 		for ($i = 1; $i <= $incr; $i++) {
 			if($error) break;
-		if(isset($_POST['relacion_'.$i.''])) {
-			$relacion = $_POST['relacion_'.$i.''];
-		} else {
-			$relacion =  "";
-		}
+			if(isset($_POST['relacion_'.$i.''])) {
+				$relacion = $_POST['relacion_'.$i.''];
+			} else {
+				$relacion =  "";
+			}
 
-		if(($relacion !="")&& ($metodo == "agregar")){
-		 //	$tipo     = $_POST['tipo'.$i.''];
-			$producto = $_POST['producto_'.$i.''];
-			$producto_old = $producto;
-			$cantidad = $_POST['cantidad_'.$i.''];
-			$almacen = $_POST['almacen_'.$i.''];
-				$sql = "$SELECT p_prod_dotacion_det('$metodo', '$codigo', '$producto', '$producto_old', '$almacen', '$cantidad')";
-				if(!$bd->consultar($sql)) { $error = true; break; }
-			
-			$sql = "SELECT cos_promedio
-			FROM ajuste_reng
-			WHERE ajuste_reng.cod_producto = '$producto' AND cod_almacen='$almacen'
-			ORDER BY cod_ajuste DESC,reng_num DESC
-			LIMIT 1";
-
-		
-			$query = $bd->consultar($sql);
-			$data =$bd->obtener_fila($query,0);
-			$cos_promedio   =  $data[0];
-			if(is_null($cos_promedio)){
+			if(($relacion !="")&& ($metodo == "agregar")){
+			//	$tipo     = $_POST['tipo'.$i.''];
+				$producto = $_POST['producto_'.$i.''];
+				$producto_old = $producto;
+				$cantidad = $_POST['cantidad_'.$i.''];
+				$almacen = $_POST['almacen_'.$i.''];
+					$sql = "$SELECT p_prod_dotacion_det('$metodo', '$codigo', '$producto', '$producto_old', '$almacen', '$cantidad')";
+					if(!$bd->consultar($sql)) { $error = true; break; }
+				
 				$sql = "SELECT cos_promedio
 				FROM ajuste_reng
-				WHERE ajuste_reng.cod_producto = '$producto' AND cod_almacen='001'
+				WHERE ajuste_reng.cod_producto = '$producto' AND cod_almacen='$almacen'
 				ORDER BY cod_ajuste DESC,reng_num DESC
 				LIMIT 1";
-			$query = $bd->consultar($sql);
-			if(!$query) { $error = true; break; }
-			$data =$bd->obtener_fila($query,0);
-			$cos_promedio   =  $data[0];
-			if(is_null($cos_promedio)){
-				$cos_promedio = 0;
-			}
-			}
-			$neto = $cos_promedio * $cantidad;
 
-			$sql = " INSERT INTO ajuste_reng(cod_ajuste, reng_num, cod_almacen, cod_producto,
-			cantidad, costo, neto,  importe, cos_promedio)
-			VALUES ($cod_ajuste, $i, '$almacen', '$producto',
-			$cantidad, $cos_promedio, $neto, $neto, $cos_promedio); ";
-
-			if(!$bd->consultar($sql)) { $error = true; break; }
-
-			$sql = " UPDATE stock SET stock_actual = stock_actual - $cantidad
-			WHERE cod_producto = '$producto' AND cod_almacen = '$almacen'; ";
-			if(!$bd->consultar($sql)) { $error = true; break; }
-
-			// Insert EANs
-			$eans     = $_POST['eans_'.$i.''];
-			if(trim($eans) != ""){
-				$eans_array = explode(",", $eans);
-				foreach($eans_array as $ean){
-					$ean = trim($ean);
-					if($ean != ""){
-						$sql = "INSERT INTO prod_dotacion_eans (cod_dotacion, cod_producto, cod_ean)
-								VALUES ($codigo, '$producto', '$ean')";
-						if(!$bd->consultar($sql)){ $error = true; break; }
-					}
+			
+				$query = $bd->consultar($sql);
+				$data =$bd->obtener_fila($query,0);
+				$cos_promedio   =  $data[0];
+				if(is_null($cos_promedio)){
+					$sql = "SELECT cos_promedio
+					FROM ajuste_reng
+					WHERE ajuste_reng.cod_producto = '$producto' AND cod_almacen='001'
+					ORDER BY cod_ajuste DESC,reng_num DESC
+					LIMIT 1";
+				$query = $bd->consultar($sql);
+				if(!$query) { $error = true; break; }
+				$data =$bd->obtener_fila($query,0);
+				$cos_promedio   =  $data[0];
+				if(is_null($cos_promedio)){
+					$cos_promedio = 0;
 				}
-				if($error) break;
+				}
+				$neto = $cos_promedio * $cantidad;
+				if($nro_ajuste_c == ""){
+					$nro_ajuste_c = 0;
+				}
+				$sql = " INSERT INTO ajuste_reng(cod_ajuste, reng_num, cod_almacen, cod_producto,
+				fec_vencimiento, lote, cantidad, costo, neto,  importe, cos_promedio, aplicar,anulado,cod_anulado)
+				VALUES ($cod_ajuste, $i, '$almacen', '$producto', '0000-00-00', '19830906',
+				$cantidad, $cos_promedio, $neto, $neto, $cos_promedio, 'OUT','F','$nro_ajuste_c'); ";
+
+				if(!$bd->consultar($sql)) { $error = true; break; }
+
+				// Insert EANs
+				$eans = isset($_POST['eans_'.$i]) ? $_POST['eans_'.$i] : "";
+				if(trim($eans) != ""){
+					$eans_array = explode(",", $eans);
+					foreach($eans_array as $ean){
+						$ean = trim($ean);
+						if($ean != ""){
+							$sql = "INSERT INTO prod_dotacion_eans (cod_dotacion, cod_producto, cod_ean)
+									VALUES ($codigo, '$producto', '$ean')";
+							if(!$bd->consultar($sql)){ $error = true; break; }
+						}
+					}
+					if($error) break;
+				}
 			}
 		}
-		}
-	}
+	}	
 
-	if($error){
-		$bd->consultar("ROLLBACK");
-		echo "<script>alert('Error crítico de base de datos. Transacción anulada.');</script>";
-	}else{
+	if(!$error){
 		$bd->consultar("COMMIT");
-		echo '<form id="pdf" name="pdf" action="" method="post" target="_blank">
-		<input type="hidden" id="codigo" name="codigo" value="'.$codigo.'">
-		</form>';
-		echo "<script> Pdf(); </script>";
+	} else {
+		// Capturamos el error pasándole el link actual de la base de datos
+		$err = mysql_error($bd->conexion()); 
+		$bd->consultar("ROLLBACK");
+		
+		// Escapamos correctamente para evitar romper el alert de JS
+		$err_clean = addslashes($err);
+		echo "<script>alert('Error crítico de base de datos: $err_clean. Transacción anulada.');</script>";
 	}
 
 	if($metodo == "agregar" && !$error){
@@ -210,6 +214,7 @@ if(isset($_POST['proced'])){
 		$json_payload = json_encode($payload);
 
 		// Send to webhook
+		/*
 		$url = 'http://212.56.33.4:5678/webhook/dotaciones';
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_POST, true);
@@ -218,15 +223,15 @@ if(isset($_POST['proced'])){
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($ch);
 		curl_close($ch);
+		*/
 
 		// echo $json_payload;
 		// Optionally log the response or handle errors
 		// For now, just send
 	}
-
 }
 
-	require_once('../funciones/sc_direccionar.php');
+require_once('../funciones/sc_direccionar.php');
 ?>
 <body>
 

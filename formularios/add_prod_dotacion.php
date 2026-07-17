@@ -14,12 +14,14 @@
 					var cantidad_max   = Number(document.getElementById('cantidad_'+numX+'').getAttribute("max"));
 					if(cantidad > cantidad_max){
 						toastr.error(cantidad+ " La Cantidad Supera el Stock Actual \n Stock Actual = "+cantidad_max);
+						$("#validar").val("Guardar");
 						$("#validar").prop('disabled', false);
 					}else{
 						$("#validar").val("Guardando...");
 						$("#salvar").click();
 					}
 				}else{
+					$("#validar").val("Guardar");
 					$("#validar").prop('disabled', false);
 					toastr.error("La talla no corresponde a la de la Configuracion!..")
 				}
@@ -232,15 +234,18 @@ function validarAlcance(numX) {
 						}
 					}
 				}
+				$("#validar").val("Guardar");
 				$("#validar").prop('disabled', false);
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
+				$("#validar").val("Guardar");
 				$("#validar").prop('disabled', false);
 				alert(xhr.status);
 				alert(thrownError);
 			}
 		});
 	} else {
+		$("#validar").val("Guardar");
 		$("#validar").prop('disabled', false);
 		alert("Error en Data para aperturar");
 	}
@@ -251,6 +256,7 @@ function validarCamp(metodo){
 	if(metodo == 'eliminar'){
 		document.getElementById('tr_1_'+numX).remove();
 		document.getElementById('incremento').value = numX -1;
+		$("#validar").val("Guardar");
 		$("#validar").prop('disabled', false);
 	}else{
 		var valido     = 1;
@@ -301,6 +307,7 @@ function validarCamp(metodo){
 				validarAlcance(numX);
 			}else{
 				toastr.error(mensaje);
+				$("#validar").val("Guardar");
 				$("#validar").prop('disabled', false);
 			}
 		}

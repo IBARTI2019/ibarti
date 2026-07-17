@@ -19,15 +19,7 @@ $fecha_H    = conversion($_POST['fecha_hasta']);
 $almacen    = $_POST['almacen'];
 
 
-	$where = "  WHERE DATE_FORMAT(prod_asignacion.fecha, '%Y-%m-%d') BETWEEN  \"$fecha_D\" AND \"$fecha_H\"
-   	              AND prod_asignacion.codigo = prod_asignacion_det.cod_asignacion
-   	              AND prod_asignacion.cod_ubicacion = clientes_ubicacion.codigo
-				  AND clientes_ubicacion.cod_cliente = clientes.codigo
-			      AND prod_asignacion_det.cod_producto = productos.item
-			      AND productos.cod_linea = prod_lineas.codigo
-			      AND productos.cod_sub_linea = prod_sub_lineas.codigo
-				  AND v_ficha.cod_ficha = prod_asignacion.cod_ficha 
-			     ";
+	$where = "  WHERE DATE_FORMAT(prod_asignacion.fecha, '%Y-%m-%d') BETWEEN  \"$fecha_D\" AND \"$fecha_H\" ";
 
 	if($restri  == "T"){
 		$where  .= " AND prod_asignacion.cod_ubicacion IN (SELECT cod_ubicacion FROM usuario_clientes WHERE
@@ -49,8 +41,8 @@ $almacen    = $_POST['almacen'];
 		$where  .= " AND  prod_asignacion.tipo  = '$tipo' ";
 	}
 
-	if($trabajador != NULL){
-		$where  .= " AND v_ficha.cod_ficha = '$trabajador' ";
+	if($trabajador != "TODOS" && $trabajador != NULL && $trabajador != ""){
+		$where  .= " AND prod_asignacion.cod_ficha = '$trabajador' ";
 	}
 
 	if($cliente != "TODOS" && $cliente != ""){
@@ -64,8 +56,10 @@ $almacen    = $_POST['almacen'];
 		$where  .= " AND prod_asignacion_det.cod_almacen = '$almacen' ";
 	}
 
- $sql = " SELECT prod_asignacion.codigo, prod_asignacion.fecha as fec_asignacion, v_ficha.cod_ficha,
-                 v_ficha.cedula, v_ficha.nombres AS trabajador,
+ $sql = " SELECT prod_asignacion.codigo, prod_asignacion.fecha as fec_asignacion, 
+                 IFNULL(v_ficha.cod_ficha, 'N/A') as cod_ficha,
+                 IFNULL(v_ficha.cedula, 'N/A') as cedula, 
+                 IFNULL(v_ficha.nombres, 'SIN FICHA (UBICACION)') AS trabajador,
                  prod_asignacion.descripcion, prod_lineas.descripcion AS linea,
                  prod_sub_lineas.descripcion AS sub_linea, productos.descripcion AS producto,
                  prod_asignacion_det.cantidad,clientes.nombre cliente, clientes_ubicacion.descripcion ubicacion,
@@ -73,10 +67,16 @@ $almacen    = $_POST['almacen'];
 				 almacenes.descripcion almacen,
 				 prod_asignacion.tipo,
 				 (SELECT GROUP_CONCAT(cod_ean SEPARATOR ', ') FROM prod_asignacion_eans WHERE cod_asignacion = prod_asignacion.codigo AND cod_producto = prod_asignacion_det.cod_producto) AS eans
-            FROM prod_asignacion , prod_asignacion_det , productos , prod_lineas ,
-                 prod_sub_lineas, v_ficha,clientes,clientes_ubicacion,almacenes
+            FROM prod_asignacion 
+            INNER JOIN prod_asignacion_det ON prod_asignacion.codigo = prod_asignacion_det.cod_asignacion
+            INNER JOIN productos ON prod_asignacion_det.cod_producto = productos.item
+            INNER JOIN prod_lineas ON productos.cod_linea = prod_lineas.codigo
+            INNER JOIN prod_sub_lineas ON productos.cod_sub_linea = prod_sub_lineas.codigo
+            INNER JOIN clientes_ubicacion ON prod_asignacion.cod_ubicacion = clientes_ubicacion.codigo
+            INNER JOIN clientes ON clientes_ubicacion.cod_cliente = clientes.codigo
+            INNER JOIN almacenes ON prod_asignacion_det.cod_almacen = almacenes.codigo
+            LEFT JOIN v_ficha ON v_ficha.cod_ficha = prod_asignacion.cod_ficha
           $where
-		  AND prod_asignacion_det.cod_almacen = almacenes.codigo
 ORDER BY 2 DESC, prod_asignacion.codigo DESC ";
 ?>
 

@@ -87,6 +87,7 @@ if ($metodo == 'modificar') {
     <input type="submit" name="buscarCliente" id="buscarCliente" hidden="">
     <span class="art-button-wrapper">
       <img border="null" width="25px" height="25px" src="imagenes/buscar.bmp" title="Buscar Registro" id="buscarC" onclick="buscar_precliente(true);" />
+      <img border="null" width="25px" height="25px" src="imagenes/actualizar.bmp" title="Sincronizar Zoho CRM" id="sync_zoho_btn" onclick="sincronizarConZoho()" style="cursor: pointer;" />
     </span>
   </form>
   <div class="tabla_sistema listar">
@@ -97,6 +98,7 @@ if ($metodo == 'modificar') {
           <th width="12%">Codigo</th>
           <th width="12%"><?php echo $leng["rif"]; ?></th>
           <th width="32%">Nombre</th>
+          <th width="12%">Abrev</th>
           <th width="22%"><?php echo $leng['region']; ?></th>
           <th width="14%">Activo</th>
         </tr>
@@ -110,6 +112,7 @@ if ($metodo == 'modificar') {
         <td>' . $datos["codigo"] . '</td>
         <td>' . $datos["rif"] . '</td>
         <td>' . $datos["nombre"] . '</td>
+          <td>' . $datos["abrev"] . '</td>
         <td>' . $datos["region"] . '</td>
         <td>' . statuscal($datos["status"]) . '</td>
         </tr>';

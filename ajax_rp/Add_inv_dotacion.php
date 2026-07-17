@@ -29,6 +29,7 @@ $almacen    = $_POST['almacen'];
 			      AND productos.cod_talla = tallas.codigo
 			      AND productos.cod_sub_linea = prod_sub_lineas.codigo
 				  AND v_ficha.cod_ficha = prod_dotacion.cod_ficha 
+				  AND prod_dotacion_det.cod_almacen = almacenes.codigo 
 			     ";
 
 	if($restri  == "T"){

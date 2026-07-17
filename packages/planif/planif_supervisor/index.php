@@ -8,7 +8,6 @@
 
 <style>
 	#supervisor-wrap {
-		width: 19vw;
 		left: 0px;
 		position: absolute;
 		height: 470px;

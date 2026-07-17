@@ -129,9 +129,18 @@ require Leng;
             <div class="art-sheet-cc"></div>
             <div class="art-sheet-body">
                 <div class="art-header">
-                    <div class="art-header-center">
-                        <div class="art-header-png"></div>
-                    </div>
+                    <!-- <div class="art-header-center"> -->
+                        <!-- <div class="art-header-png"></div> -->
+                         <div class="header-container">
+                            <div class="logo-section">
+                                <h1 class="logo-text"><span class="letter-i">I</span>barti</h1>
+                            </div>
+                            
+                            <div class="slogan-section">
+                                <p class="slogan-text">Herramienta Tecnológica en Gestión de Seguridad</p>
+                            </div>
+                        </div>
+                    <!-- </div> -->
                     <script type="text/javascript" src="swfobject.js"></script>
                     <div id="art-flash-area">
                         <div id="art-flash-container">

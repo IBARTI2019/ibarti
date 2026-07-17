@@ -2,7 +2,7 @@ $(function () {
   Cons_precliente("", "agregar");
 });
 
-$('#addDoc').submit(function (ev) {
+$("#addDoc").submit(function (ev) {
   saveDocuments();
   ev.preventDefault();
 });
@@ -15,7 +15,7 @@ function Cons_precliente(cod, metodo) {
     var parametros = {
       codigo: cod,
       metodo: metodo,
-      usuario: usuario
+      usuario: usuario,
     };
     $.ajax({
       data: parametros,
@@ -37,7 +37,7 @@ function Cons_precliente(cod, metodo) {
       error: function (xhr, ajaxOptions, thrownError) {
         alert(xhr.status);
         alert(thrownError);
-      }
+      },
     });
   } else {
     alert(errorMessage);
@@ -144,7 +144,7 @@ function save_precliente() {
       responsable: responsable,
       empresa_actual: empresa_actual,
       cantidad_hombres: cantidad_hombres,
-      problema_identificado: problema_identificado
+      problema_identificado: problema_identificado,
     };
 
     $.ajax({
@@ -198,7 +198,7 @@ function save_precliente() {
       error: function (xhr, ajaxOptions, thrownError) {
         alert(xhr.status);
         alert(thrownError);
-      }
+      },
     });
   } else {
     alert(errorMessage);
@@ -212,7 +212,7 @@ function Borrar_precliente() {
     var parametros = {
       codigo: cod,
       tabla: "preclientes",
-      usuario: usuario
+      usuario: usuario,
     };
     $.ajax({
       data: parametros,
@@ -237,7 +237,7 @@ function Borrar_precliente() {
       error: function (xhr, ajaxOptions, thrownError) {
         alert(xhr.status);
         alert(thrownError);
-      }
+      },
     });
   }
 }
@@ -308,13 +308,12 @@ function buscar_precliente(isBuscar) {
       $("#buscarCliente").attr("disabled", false);
       $("#buscarC").attr("disabled", false);
       $("#buscarC").prop("src", "imagenes/buscar.bmp");
-    }
+    },
   });
 }
 ////////////////////////////////////////////////////////////////////////
 var modificar = false;
 var pos_modificar;
-
 
 function agregar_db() {
   var documentos = [];
@@ -333,7 +332,7 @@ function agregar_db() {
     telefonos: telefonos,
     correos: correos,
     observacion: observacion,
-    motivo: "set_contactos"
+    motivo: "set_contactos",
   };
   $.ajax({
     data: parametros,
@@ -345,10 +344,62 @@ function agregar_db() {
     error: function (xhr, ajaxOptions, thrownError) {
       toastr.error(xhr.status);
       toastr.error(thrownError);
-    }
+    },
   });
 }
 
 function Pdf() {
   $("#pdf").submit();
+}
+
+function sincronizarConZoho() {
+  var btn = $("#sync_zoho_btn");
+
+  // Efecto visual de carga usando jQuery (consistente con tu proyecto)
+  btn.css("opacity", "0.4");
+  btn.prop("src", "imagenes/loading3.gif"); // Reutiliza el gif de carga que ya tienes en el proyecto
+  btn.prop("title", "Sincronizando con Zoho... por favor espere");
+
+  $.ajax({
+    url: "packages/precliente/cliente/modelo/sync_button.php",
+    type: "post",
+    dataType: "json",
+    success: function (data) {
+      if (data.status === "success") {
+        alert("¡Éxito! Sincronización completada con Zoho.");
+        buscar_precliente(true);
+      } else {
+        // CAPTURAMOS LOS DETALLES: Une todas las líneas de error que devolvió Python
+        var detallesError =
+          data.details && data.details.join
+            ? data.details.join("\n")
+            : data.details;
+
+        alert(
+          "Error en la sincronización: " +
+            data.message +
+            "\n\nDetalles de la consola:\n" +
+            detallesError,
+        );
+      }
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      console.error(xhr.responseText);
+      // Alerta avanzada de diagnóstico para ver el error real de Windows/PHP
+      alert(
+        "Error del Servidor: " +
+          xhr.status +
+          " - " +
+          thrownError +
+          "\n\nRespuesta interna:\n" +
+          xhr.responseText,
+      );
+    },
+    complete: function () {
+      // Restablecer el botón a su estado original
+      btn.css("opacity", "1");
+      btn.prop("src", "imagenes/actualizar.bmp");
+      btn.prop("title", "Sincronizar Zoho CRM");
+    },
+  });
 }

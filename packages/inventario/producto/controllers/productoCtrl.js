@@ -20,6 +20,8 @@ function Cons_producto(cod, met){
 	var error        = 0;
 	var errorMessage = ' ';
 	metodo = met;
+	eans = [];
+	reng_num = 0;
 	if(error == 0){
 		var parametros = {"codigo" : cod, "metodo": metodo};
 		$.ajax({
@@ -154,7 +156,8 @@ function save_producto(){
 							Cons_producto(item, "MODIFICAR");
 						}
 					}else if(metodo == "MODIFICAR"){
-						alert("Actualización Exitosa!..");
+						toastr.success("Actualización Exitosa!..");
+						Cons_producto(item, "MODIFICAR");
 					}
 				}
 			},
@@ -372,11 +375,11 @@ function agregar_ean(){
     }
 
     if(error == 0){
-    	reng_num++;
         eans.push(ean);
+    	reng_num = eans.length;
         var tr = ('<tr id="tr_' + reng_num + '"></tr>');
         var td01 = ('<td><input type="text" id="reng_num_' + reng_num + '" value="' + ean + '" style="width:300px"></td>');
-		var td02 = ('<td><img  class="imgLink" border="null" width="20px" height="20px" src="imagenes/borrar.bmp"onclick="Borrar_ean(' + reng_num + ')" title="Borrar Registro"/> </td>');
+		var td02 = ('<td><img  class="imgLink" border="null" width="20px" height="20px" src="imagenes/borrar.bmp" onclick="Borrar_ean(' + reng_num + ')" title="Borrar Registro"/> </td>');
 
         $('#listar_eans').append(tr);
         $('#tr_' + reng_num + '').append(td01);
@@ -392,31 +395,27 @@ function Borrar_ean(intemsV){
     var error        = 0;
     var errorMessage = ' ';
 
-   // eanIsStock(cod_producto, ean, =>{
-
-   // });
-   console.log(eans[intemsV]);
     if(error == 0){
 
     var datos = eans;
     $("#listar_eans").html("");
     eans = [];
-    reng_num = 0;
+    var old_reng = 0;
     jQuery.each(datos, function(i) {
-        reng_num++;
-        console.log(intemsV,reng_num);
-        if (reng_num != intemsV) {
+        old_reng++;
+        if (old_reng != intemsV) {
             eans.push(datos[i]);
 
 	        var tr = ('<tr id="tr_' + eans.length + '"></tr>');
 	        var td01 = ('<td><input type="text" id="reng_num_' + eans.length + '" value="' + datos[i] + '" style="width:300px"></td>');
-			var td02 = ('<td><img  class="imgLink" border="null" width="20px" height="20px" src="imagenes/borrar.bmp"onclick="Borrar_ean(' + eans.length + ')" title="Borrar Registro"/> </td>');
+			var td02 = ('<td><img  class="imgLink" border="null" width="20px" height="20px" src="imagenes/borrar.bmp" onclick="Borrar_ean(' + eans.length + ')" title="Borrar Registro"/> </td>');
 
 	        $('#listar_eans').append(tr);
 	        $('#tr_' + eans.length + '').append(td01);
 	        $('#tr_' + eans.length + '').append(td02);
         }
     });
+	reng_num = eans.length;
     }else{
         toastr.error(errorMessage);
     }
@@ -431,13 +430,13 @@ function cargarEans(codigo){
 	        success: function(response) {
 	        	console.log(response);
 	            var resp = JSON.parse(response);
-	            reng_num = 0;
+	            eans = [];
 	            jQuery.each(resp, function(i) {
-	            	    	reng_num++;
 					        eans.push(resp[i].cod_ean);
+	            	    	reng_num = eans.length;
 					        var tr = ('<tr id="tr_' + reng_num + '"></tr>');
 					        var td01 = ('<td><input type="text" id="reng_num_' + reng_num + '" value="' + resp[i].cod_ean + '" style="width:300px"></td>');
-							var td02 = ('<td><img  class="imgLink" border="null" width="20px" height="20px" src="imagenes/borrar.bmp"onclick="Borrar_ean(' + reng_num + ')" title="Borrar Registro"/> </td>');
+							var td02 = ('<td><img  class="imgLink" border="null" width="20px" height="20px" src="imagenes/borrar.bmp" onclick="Borrar_ean(' + reng_num + ')" title="Borrar Registro"/> </td>');
 
 					        $('#listar_eans').append(tr);
 					        $('#tr_' + reng_num + '').append(td01);
