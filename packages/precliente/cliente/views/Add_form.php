@@ -98,6 +98,7 @@ if ($metodo == 'modificar') {
           <th width="12%">Codigo</th>
           <th width="12%"><?php echo $leng["rif"]; ?></th>
           <th width="32%">Nombre</th>
+          <th width="12%">Abrev</th>
           <th width="22%"><?php echo $leng['region']; ?></th>
           <th width="14%">Activo</th>
         </tr>
@@ -111,6 +112,7 @@ if ($metodo == 'modificar') {
         <td>' . $datos["codigo"] . '</td>
         <td>' . $datos["rif"] . '</td>
         <td>' . $datos["nombre"] . '</td>
+          <td>' . $datos["abrev"] . '</td>
         <td>' . $datos["region"] . '</td>
         <td>' . statuscal($datos["status"]) . '</td>
         </tr>';
