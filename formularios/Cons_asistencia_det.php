@@ -1,4 +1,5 @@
 <?php echo PropuestaBadgeCSS(); ?>
+<?php echo AsistenciaGridCSS(); ?>
 <script language="JavaScript" type="text/javascript">
 	function ProcesarFacial() {
 		if (confirm("¿Está seguro de procesar y cargar las asistencias faciales del día?")) {
@@ -9,7 +10,7 @@
 			var contracto = document.getElementById("contracto").value;
 			var usuario = document.getElementById("usuario").value;
 
-			ajax = nuevoAjax();
+			var ajax = nuevoAjax();
 			ajax.open("POST", valor, true);
 			ajax.onreadystatechange = function() {
 				if (ajax.readyState == 1) {
@@ -32,7 +33,7 @@
 		var Contenedor = "ubicacionX" + campo01 + "";
 		var usuario = document.getElementById('usuario').value;
 		var valor = "ajax/add_ubicacion.php";
-		ajax = nuevoAjax();
+		var ajax = nuevoAjax();
 		ajax.open("POST", valor, true);
 		ajax.onreadystatechange = function() {
 			if (ajax.readyState == 4) {
@@ -49,7 +50,7 @@
 
 		var valor = "ajax/add_ubicacion.php";
 		var usuario = document.getElementById('usuario').value;
-		ajax = nuevoAjax();
+		var ajax = nuevoAjax();
 		ajax.open("POST", valor, true);
 		ajax.onreadystatechange = function() {
 			if (ajax.readyState == 4) {
@@ -66,7 +67,7 @@
 
 		var valor = "ajax/add_clasif_asistencia.php";
 		var usuario = document.getElementById('usuario').value;
-		ajax = nuevoAjax();
+		var ajax = nuevoAjax();
 		ajax.open("POST", valor, true);
 		ajax.onreadystatechange = function() {
 			if (ajax.readyState == 4) {
@@ -82,7 +83,7 @@
 		var Contenedor = "conceptoX" + auto + "";
 		var valor = "ajax/Add_as_concepto.php";
 		var fecha = document.getElementById('fec_diaria').value;
-		ajax = nuevoAjax();
+		var ajax = nuevoAjax();
 		ajax.open("POST", valor, true);
 		ajax.onreadystatechange = function() {
 			if (ajax.readyState == 4) {
@@ -102,7 +103,7 @@
 			var contracto = document.getElementById("contracto").value;
 			var usuario = document.getElementById("usuario").value;
 
-			ajax = nuevoAjax();
+			var ajax = nuevoAjax();
 			ajax.open("POST", valor, true);
 			ajax.onreadystatechange = function() {
 				if (ajax.readyState == 4) {
@@ -147,12 +148,13 @@
 
 		if (campo01 == 1) {
 			var valor = "scripts/sc_asistencia.php";
-			ajax = nuevoAjax();
+			var ajax = nuevoAjax();
 			ajax.open("POST", valor, true);
 			ajax.onreadystatechange = function() {
 				if (ajax.readyState == 4) {
 					document.getElementById("Contendor01").innerHTML = ajax.responseText;
 					//window.location.href=""+href+"";
+					Asistencia_Det();
 				}
 			}
 			ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -206,7 +208,7 @@
 
 		if (campo01 == 1) {
 			var valor = "scripts/sc_asistencia.php";
-			ajax = nuevoAjax();
+			var ajax = nuevoAjax();
 			ajax.open("POST", valor, true);
 			ajax.onreadystatechange = function() {
 				if (ajax.readyState == 4) {
@@ -232,7 +234,7 @@
 			var concepto_old = document.getElementById("concepto_old" + auto + "").value;
 			var proced = document.getElementById("proced").value;
 			var valor = "scripts/sc_asistencia.php";
-			ajax = nuevoAjax();
+			var ajax = nuevoAjax();
 			ajax.open("POST", valor, true);
 			ajax.onreadystatechange = function() {
 				if (ajax.readyState == 4) {
@@ -258,7 +260,7 @@
 		var usuario = document.getElementById("usuario").value;
 
 		var valor = "ajax/Add_asistencia_det.php";
-		ajax = nuevoAjax();
+		var ajax = nuevoAjax();
 		ajax.open("POST", valor, true);
 		ajax.onreadystatechange = function() {
 			if (ajax.readyState == 4) {
@@ -280,7 +282,7 @@
 			var contracto = document.getElementById("contracto").value;
 			var usuario = document.getElementById("usuario").value;
 
-			ajax = nuevoAjax();
+			var ajax = nuevoAjax();
 			ajax.open("POST", valor, true);
 			ajax.onreadystatechange = function() {
 				if (ajax.readyState == 1) {
@@ -307,7 +309,7 @@
 		var contracto = document.getElementById("contracto").value;
 		var usuario = document.getElementById("usuario").value;
 
-		ajax = nuevoAjax();
+		var ajax = nuevoAjax();
 		ajax.open("POST", valor, true);
 		ajax.onreadystatechange = function() {
 			if (ajax.readyState == 4) {
@@ -404,93 +406,7 @@ $query05 = $bd->consultar($sql05);
 $row05   = $bd->obtener_fila($query05, 0);
 $orden   = $row05[0];
 
-$SQL_PAG = "SELECT
-asistencia.cod_ficha,
-ficha.cedula,
-CONCAT( ficha.apellidos, ' ', ficha.nombres ) trabajador,
-asistencia.cod_cliente,
-clientes.nombre cliente,
-asistencia.cod_ubicacion,
-clientes_ubicacion.descripcion ubicacion,
-asistencia.cod_concepto,
-conceptos.descripcion concepto,
-IF
-( ISNULL( asistencia_clasif.descripcion ), '9999', asistencia.cod_asistencia_clasif ) cod_asistencia_clasif,
-IF
-( ISNULL( asistencia_clasif.descripcion ), 'N/A', asistencia_clasif.descripcion ) asistencia_clasif,
-conceptos.abrev,
-asistencia.hora_extra hora_extra_d,
-asistencia.hora_extra_n,
-asistencia.vale,
-asistencia.feriado,
-asistencia.no_laboral AS NL,
-IFNULL(asistencia.prop_modo, 'AUTO') AS prop_modo,
-IFNULL(asistencia.prop_observacion, '') AS prop_observacion
-FROM
-asistencia
-LEFT JOIN asistencia_clasif ON asistencia_clasif.codigo = asistencia.cod_asistencia_clasif,
-ficha,
-trab_roles,
-clientes,
-clientes_ubicacion,
-conceptos 
-WHERE
-asistencia.cod_as_apertura = '$cod_apertura' 
-AND asistencia.cod_ficha = ficha.cod_ficha 
-AND ficha.cod_ficha = trab_roles.cod_ficha 
-AND asistencia.cod_cliente = clientes.codigo 
-AND asistencia.cod_ubicacion = clientes_ubicacion.codigo 
-AND asistencia.cod_concepto = conceptos.codigo 
-AND trab_roles.cod_rol = '$cod_rol' AND '$fec_diaria' >= ficha.fec_ingreso UNION
-SELECT
-pctd.cod_ficha,
-f.cedula,
-CONCAT( f.apellidos, ' ', f.nombres ) trabajador,
-pctd.cod_cliente,
-c.nombre cliente,
-pctd.cod_ubicacion,
-cu.descripcion ubicacion,
-IF
-( cc.asist_diaria = 'F', cc.codigo, control.concepto_rep ) cod_concepto,
-IF
-( cc.asist_diaria = 'F', cc.descripcion, ccc.descripcion ) concepto,
-'9999' cod_asistencia_clasif,
-'N/A' asistencia_clasif,
-IF
-( cc.asist_diaria = 'F', cc.abrev, ccc.abrev ) concepto,
-0 hora_extra_d,
-0 hora_extra_n,
-0 vale,
-0 feriado,
-0 NL,
-'AUTO' AS prop_modo,
-'' AS prop_observacion
-FROM
-planif_clientes_trab_det pctd,
-ficha f,
-trab_roles,
-clientes c,
-clientes_ubicacion cu,
-turno t,
-horarios h,
-conceptos cc,
-control,
-conceptos ccc 
-WHERE
-pctd.fecha = '$fec_diaria' 
-AND pctd.cod_ficha = f.cod_ficha 
-AND pctd.cod_cliente = c.codigo 
-AND pctd.cod_ubicacion = cu.codigo 
-AND pctd.cod_turno = t.codigo 
-AND t.cod_horario = h.codigo 
-AND h.cod_concepto = cc.codigo 
-AND f.cod_contracto =  '$co_cont' 
-AND f.cod_ficha_status = control.ficha_activo
-AND f.cod_ficha = trab_roles.cod_ficha 
-AND trab_roles.cod_rol = '$cod_rol'  
-AND control.concepto_rep = ccc.codigo
-AND pctd.cod_ficha NOT IN ( SELECT cod_ficha FROM asistencia WHERE asistencia.cod_as_apertura = '$cod_apertura' )
-ORDER BY FIELD(prop_modo, 'ALERTA', 'REVISAR', 'AUTO'), $orden ASC";
+$SQL_PAG = SQL_AsistenciaDet($cod_apertura, $fec_diaria, $co_cont, $cod_rol, $orden);
 
 // TODO LOS CLIENTES
 $sql_cliente = "SELECT clientes_ubicacion.cod_cliente, clientes.nombre AS cliente
@@ -513,6 +429,7 @@ $sql_conceptos = " SELECT conceptos.codigo, conceptos.descripcion, conceptos.abr
 <div align="center" class="etiqueta_title"> Asistencia <?php echo $leng["nomina"] . ' Fecha Activa: ' . conversion($fec_diaria) . ' (' . $dia . ') , ' . $row04['contracto']; ?></div>
 <div id="Contendor01" class="mensaje"></div>
 <hr />
+<div class="asistencia-toolbar">
 <table width="98%">
 	<tr>
 		<td width="12%" class="etiqueta"><?php echo $leng["nomina"]; ?>: </td>
@@ -569,11 +486,13 @@ $sql_conceptos = " SELECT conceptos.codigo, conceptos.descripcion, conceptos.abr
 		</td>
 	</tr>
 </table>
+</div>
 <hr />
-<div class="listar">
+<div>
 	<form id="asistencia_01" name="asistencia_01" action="scripts/sc_asistencia.php" method="post">
 		<div id="contenedor_listar">
-			<?php echo PropuestaResumenHTML($bd, $SQL_PAG); ?>
+			<div class="asistencia-resumen"><?php echo PropuestaResumenHTML($bd, $SQL_PAG); ?></div>
+			<div class="asistencia-tabla-wrap">
 			<table width="100%" border="0" align="center">
 				<tr class="fondo00">
 					<th width="26%" class="etiqueta"><?php echo $leng["trabajador"]; ?></th>
@@ -676,12 +595,13 @@ $sql_conceptos = " SELECT conceptos.codigo, conceptos.descripcion, conceptos.abr
 				     onfocus="spryHora(this.id)" /></td>
 	   		    <td><input type="text" id="vale' . $i . '" style="width:40px" value="' . $datos["vale"] . '" maxlength="7"
 				     onfocus="spryVale(this.id)" /></td>
-			    <td align="center" class="imgLink"><img src="imagenes/actualizar.bmp" alt="Actualizar" title="Actualizar Registro" border="null" width="20px" height="20px" id="' . $i . '" onclick="ValidarSubmit(this.id)" />&nbsp;<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Registro"  width="20px" height="20px" id="' . $i . '" onclick="Borrar_Campo(this.id)"/>
+			    <td align="center" class="imgLink"><img src="imagenes/actualizar.bmp" alt="Actualizar" title="Actualizar Registro" border="null" width="26px" height="26px" id="' . $i . '" onclick="ValidarSubmit(this.id)" />&nbsp;<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Registro"  width="26px" height="26px" id="' . $i . '" onclick="Borrar_Campo(this.id)"/>
 				</td></tr>';
 						} ?><tr>
 					<td colspan="6"><input type="hidden" id="apertura" name="apertura" value="<?php echo $cod_apertura; ?>" /> <input type="hidden" id="fec_diaria" name="fec_diaria" value="<?php echo $fec_diaria; ?>" /> <input type="hidden" id="contracto" name="contracto" value="<?php echo $co_cont; ?>" /> <input type="hidden" id="Nmenu" name="Nmenu" value="<?php echo $Nmenu; ?>" /> <input type="hidden" id="mod" name="mod" value="<?php echo $mod; ?>" /> <input type="hidden" id="rol" name="rol" value="<?php echo $cod_rol; ?>" /> <input type="hidden" name="href" value="../inicio.php?area=<?php echo $href; ?>" /> <input type="hidden" name="metodo" value="agregar" /> <input type="hidden" name="usuario" id="usuario" value="<?php echo $usuario; ?>" /> <input type="hidden" id="i" value="<?php echo $i; ?>" /> <input type="hidden" name="ubicacion_old" value="" /> <input type="hidden" name="concepto_old" value="" /><input type="hidden" name="proced" id="proced" value="p_asistencia" /></td>
 				</tr>
 			</table>
+			</div>
 		</div>
 	</form>
 </div>

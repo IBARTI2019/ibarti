@@ -413,6 +413,25 @@ function Feriado_as($valor, $tipo){
 	return $resul;
 }
 
+// Estilos "scoped" para la pantalla de Asistencia (toolbar/resumen/tabla).
+// Todo va prefijado bajo .asistencia-toolbar/.asistencia-resumen/.asistencia-tabla-wrap
+// para no pisar clases globales (.fondo00/01/02, .etiqueta, .texto, .art-button, etc.)
+// que usan las demás pantallas del sistema.
+function AsistenciaGridCSS(){
+	return '<style>
+  .asistencia-toolbar { background-color: #EAFFEA; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+  .asistencia-resumen { border: 1px solid #cfe8cf; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; }
+  .asistencia-resumen span { margin-right: 10px; }
+  .asistencia-tabla-wrap { overflow-x: auto; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+  .asistencia-tabla-wrap table { width: 100%; }
+  .asistencia-tabla-wrap td, .asistencia-tabla-wrap th { padding: 6px 8px; font-size: 11px; }
+  .asistencia-tabla-wrap tr.fondo00 th { position: sticky; top: 0; z-index: 1; }
+  .asistencia-tabla-wrap table tr:hover { background-color: yellow; }
+  .asistencia-tabla-wrap .imgLink img { width: 26px; height: 26px; padding: 3px; }
+  .asistencia-tabla-wrap .imgLink img:hover { background-color: rgba(0,0,0,0.08); }
+</style>';
+}
+
 function PropuestaBadgeCSS(){
 	return '<style>
   .badge-auto { background-color: #dcfce7; color: #1a7f37; padding: 3px 8px; border-radius: 10px; font-weight: bold; font-size: 11px; white-space: nowrap; }
@@ -425,12 +444,14 @@ function PropuestaBadgeCSS(){
 function PropuestaBadgeHTML($modo, $obs){
 	$modo_txt = !empty($modo) ? $modo : 'AUTO';
 	$badge_class = 'badge-auto';
+	$modo_display = $modo_txt;
 	if ($modo_txt == 'REVISAR') $badge_class = 'badge-revisar';
 	if ($modo_txt == 'ALERTA')  $badge_class = 'badge-alerta';
+	if ($modo_txt == 'AUTO')    $modo_display = 'OK';
 
 	$obs_txt = !empty($obs) ? '<span class="badge-obs">'.htmlspecialchars($obs).'</span>' : '';
 
-	return '<span class="'.$badge_class.'">'.htmlspecialchars($modo_txt).'</span>'.$obs_txt;
+	return '<span class="'.$badge_class.'">'.htmlspecialchars($modo_display).'</span>'.$obs_txt;
 }
 
 function PropuestaResumenHTML($bd, $sql_base){
@@ -446,12 +467,102 @@ function PropuestaResumenHTML($bd, $sql_base){
 	}
 
 	$html  = '<div id="resumen_estado" style="margin:8px 0;">';
-	$html .= '<span class="badge-auto">'    . $conteos['AUTO']    . ' AUTO</span>&nbsp;&nbsp;';
+	$html .= '<span class="badge-auto">'    . $conteos['AUTO']    . ' OK</span>&nbsp;&nbsp;';
 	$html .= '<span class="badge-revisar">' . $conteos['REVISAR'] . ' REVISAR</span>&nbsp;&nbsp;';
 	$html .= '<span class="badge-alerta">'  . $conteos['ALERTA']  . ' ALERTA</span>';
 	$html .= '</div>';
 
 	return $html;
+}
+
+// Query compartida entre la carga inicial (Cons_asistencia_det.php) y el
+// refresco AJAX (ajax/Add_asistencia_det.php): trabajadores con asistencia ya
+// registrada para la apertura, UNION trabajadores con turno planificado ese
+// día que todavía no tienen fila en asistencia (badge REVISAR, concepto real
+// resuelto vía turno->horario->concepto).
+function SQL_AsistenciaDet($cod_apertura, $fec_diaria, $co_cont, $cod_rol, $orden){
+	return "SELECT
+asistencia.cod_ficha,
+ficha.cedula,
+CONCAT( ficha.apellidos, ' ', ficha.nombres ) trabajador,
+asistencia.cod_cliente,
+clientes.nombre cliente,
+asistencia.cod_ubicacion,
+clientes_ubicacion.descripcion ubicacion,
+asistencia.cod_concepto,
+conceptos.descripcion concepto,
+IF
+( ISNULL( asistencia_clasif.descripcion ), '9999', asistencia.cod_asistencia_clasif ) cod_asistencia_clasif,
+IF
+( ISNULL( asistencia_clasif.descripcion ), 'N/A', asistencia_clasif.descripcion ) asistencia_clasif,
+conceptos.abrev,
+asistencia.hora_extra hora_extra_d,
+asistencia.hora_extra_n,
+asistencia.vale,
+asistencia.feriado,
+asistencia.no_laboral AS NL,
+IFNULL(asistencia.prop_modo, 'AUTO') AS prop_modo,
+IFNULL(asistencia.prop_observacion, '') AS prop_observacion
+FROM
+asistencia
+LEFT JOIN asistencia_clasif ON asistencia_clasif.codigo = asistencia.cod_asistencia_clasif,
+ficha,
+trab_roles,
+clientes,
+clientes_ubicacion,
+conceptos
+WHERE
+asistencia.cod_as_apertura = '$cod_apertura'
+AND asistencia.cod_ficha = ficha.cod_ficha
+AND ficha.cod_ficha = trab_roles.cod_ficha
+AND asistencia.cod_cliente = clientes.codigo
+AND asistencia.cod_ubicacion = clientes_ubicacion.codigo
+AND asistencia.cod_concepto = conceptos.codigo
+AND trab_roles.cod_rol = '$cod_rol' AND '$fec_diaria' >= ficha.fec_ingreso UNION
+SELECT
+pctd.cod_ficha,
+f.cedula,
+CONCAT( f.apellidos, ' ', f.nombres ) trabajador,
+pctd.cod_cliente,
+c.nombre cliente,
+pctd.cod_ubicacion,
+cu.descripcion ubicacion,
+cc.codigo cod_concepto,
+cc.descripcion concepto,
+'9999' cod_asistencia_clasif,
+'N/A' asistencia_clasif,
+cc.abrev abrev,
+0 hora_extra_d,
+0 hora_extra_n,
+0 vale,
+0 feriado,
+0 NL,
+'REVISAR' AS prop_modo,
+'Turno planificado, aún no registrado en asistencia.' AS prop_observacion
+FROM
+planif_clientes_trab_det pctd,
+ficha f,
+trab_roles,
+clientes c,
+clientes_ubicacion cu,
+turno t,
+horarios h,
+conceptos cc,
+control
+WHERE
+pctd.fecha = '$fec_diaria'
+AND pctd.cod_ficha = f.cod_ficha
+AND pctd.cod_cliente = c.codigo
+AND pctd.cod_ubicacion = cu.codigo
+AND pctd.cod_turno = t.codigo
+AND t.cod_horario = h.codigo
+AND h.cod_concepto = cc.codigo
+AND f.cod_contracto =  '$co_cont'
+AND f.cod_ficha_status = control.ficha_activo
+AND f.cod_ficha = trab_roles.cod_ficha
+AND trab_roles.cod_rol = '$cod_rol'
+AND pctd.cod_ficha NOT IN ( SELECT cod_ficha FROM asistencia WHERE asistencia.cod_as_apertura = '$cod_apertura' )
+ORDER BY FIELD(prop_modo, 'ALERTA', 'REVISAR', 'AUTO'), $orden ASC";
 }
 
 function imgExtension($link){
