@@ -112,18 +112,89 @@ function marcasPorFicha($bd, $fichas, $fecha) {
 
 // Ventana de marcaje de entrada asociada a un concepto (ej. 'D' o 'N'),
 // resuelta dinámicamente contra horarios en vez de hardcodear códigos.
+// Incluye cod_horario para poder buscar overrides de horario_cl_ubicacion.
 function ventanaPorConcepto($bd, $abrev) {
     $abrev_esc = mysql_real_escape_string($abrev);
-    $sql = "SELECT h.inicio_marc_entrada, h.fin_marc_entrada
+    $sql = "SELECT h.codigo AS cod_horario, h.inicio_marc_entrada, h.fin_marc_entrada
               FROM horarios h
               INNER JOIN conceptos cc ON h.cod_concepto = cc.codigo
              WHERE cc.abrev = '$abrev_esc' AND h.status = 'T'
              LIMIT 1;";
     $q = $bd->consultar($sql);
     if ($r = $bd->obtener_fila($q, 0)) {
-        return array('ini' => $r['inicio_marc_entrada'], 'fin' => $r['fin_marc_entrada']);
+        return array('cod_horario' => $r['cod_horario'], 'ini' => $r['inicio_marc_entrada'], 'fin' => $r['fin_marc_entrada']);
     }
-    return array('ini' => null, 'fin' => null);
+    return array('cod_horario' => null, 'ini' => null, 'fin' => null);
+}
+
+// Ventana de marcaje personalizada para una combinación (ubicación, cargo,
+// horario) — tabla horario_cl_ubicacion, gestionada desde Cons_control.php.
+// Devuelve null si no hay override (el llamador debe usar la ventana del
+// horario estándar sin cambios). Si hay override pero sin rango configurado
+// (caso de los registros históricos que solo tienen hora_entrada), devuelve
+// una ventana "abierta" (ini == fin, misma regla que ya usa enVentana() para
+// el horario 24h) marcada con 'abierta' => true, para que el llamador proponga
+// REVISAR en vez de AUTO aunque el marcaje caiga dentro.
+function buscarOverrideHorario($bd, $ubicacion, $cargo, $cod_horario) {
+    if (empty($cod_horario)) {
+        return null;
+    }
+    $ubicacion_esc = mysql_real_escape_string($ubicacion);
+    $cargo_esc     = mysql_real_escape_string($cargo);
+    $horario_esc   = mysql_real_escape_string($cod_horario);
+    $sql = "SELECT hora_entrada, inicio_marc_entrada, fin_marc_entrada
+              FROM horario_cl_ubicacion
+             WHERE cod_cl_ubicacion = '$ubicacion_esc'
+               AND cod_cargo = '$cargo_esc'
+               AND cod_horario = '$horario_esc'
+             LIMIT 1;";
+    $q = $bd->consultar($sql);
+    $r = $bd->obtener_fila($q, 0);
+    if (!$r) {
+        return null;
+    }
+    if (empty($r['inicio_marc_entrada']) || empty($r['fin_marc_entrada'])) {
+        return array('ini' => $r['hora_entrada'], 'fin' => $r['hora_entrada'], 'abierta' => true);
+    }
+    return array('ini' => $r['inicio_marc_entrada'], 'fin' => $r['fin_marc_entrada'], 'abierta' => false);
+}
+
+// Versión en lote de buscarOverrideHorario() para PASE 1 (evita N+1 sobre el
+// roster completo). Devuelve un mapa "ubicacion|cargo|horario" => override.
+function overridesPorUbicCargoHorario($bd, $filas_planif) {
+    $mapa = array();
+    if (empty($filas_planif)) {
+        return $mapa;
+    }
+    $condiciones = array();
+    $claves_vistas = array();
+    foreach ($filas_planif as $row) {
+        $clave = $row['cod_ubicacion'] . '|' . $row['cod_cargo'] . '|' . $row['cod_horario'];
+        if (isset($claves_vistas[$clave])) {
+            continue;
+        }
+        $claves_vistas[$clave] = true;
+        $ubicacion_esc = mysql_real_escape_string($row['cod_ubicacion']);
+        $cargo_esc     = mysql_real_escape_string($row['cod_cargo']);
+        $horario_esc   = mysql_real_escape_string($row['cod_horario']);
+        $condiciones[] = "(cod_cl_ubicacion = '$ubicacion_esc' AND cod_cargo = '$cargo_esc' AND cod_horario = '$horario_esc')";
+    }
+    if (empty($condiciones)) {
+        return $mapa;
+    }
+    $sql = "SELECT cod_cl_ubicacion, cod_cargo, cod_horario, hora_entrada, inicio_marc_entrada, fin_marc_entrada
+              FROM horario_cl_ubicacion
+             WHERE " . implode(' OR ', $condiciones) . ";";
+    $q = $bd->consultar($sql);
+    while ($r = $bd->obtener_fila($q, 0)) {
+        $clave = $r['cod_cl_ubicacion'] . '|' . $r['cod_cargo'] . '|' . $r['cod_horario'];
+        if (empty($r['inicio_marc_entrada']) || empty($r['fin_marc_entrada'])) {
+            $mapa[$clave] = array('ini' => $r['hora_entrada'], 'fin' => $r['hora_entrada'], 'abierta' => true);
+        } else {
+            $mapa[$clave] = array('ini' => $r['inicio_marc_entrada'], 'fin' => $r['fin_marc_entrada'], 'abierta' => false);
+        }
+    }
+    return $mapa;
 }
 
 // Inserta una propuesta de asistencia (turno base, redoble o huérfana) y
@@ -220,7 +291,8 @@ while ($row = $bd->obtener_fila($query_planif, 0)) {
     $filas_planif[] = $row;
     $fichas_dia[$row['cod_ficha']] = true;
 }
-$marcas_por_ficha = marcasPorFicha($bd, array_keys($fichas_dia), $fec_diaria);
+$marcas_por_ficha  = marcasPorFicha($bd, array_keys($fichas_dia), $fec_diaria);
+$overrides_horario = overridesPorUbicCargoHorario($bd, $filas_planif);
 
 foreach ($filas_planif as $row) {
     $ficha             = $row['cod_ficha'];
@@ -231,6 +303,14 @@ foreach ($filas_planif as $row) {
     $cod_horario       = $row['cod_horario'];
     $ini_entrada       = $row['inicio_marc_entrada'];
     $fin_entrada       = $row['fin_marc_entrada'];
+
+    $override_abierta = false;
+    $clave_override    = $ubicacion . '|' . $cargo . '|' . $cod_horario;
+    if (isset($overrides_horario[$clave_override])) {
+        $ini_entrada       = $overrides_horario[$clave_override]['ini'];
+        $fin_entrada       = $overrides_horario[$clave_override]['fin'];
+        $override_abierta  = $overrides_horario[$clave_override]['abierta'];
+    }
 
     $marcas_ficha = isset($marcas_por_ficha[$ficha]) ? $marcas_por_ficha[$ficha] : array();
     $hay_marcas   = !empty($marcas_ficha);
@@ -301,6 +381,9 @@ foreach ($filas_planif as $row) {
                 if (!$resuelto['en_ventana']) {
                     $modo = 'REVISAR';
                     $obs  = "Marcaje " . substr($resuelto['hora'], 0, 5) . " fuera de ventana estándar.";
+                } elseif ($override_abierta) {
+                    $modo = 'REVISAR';
+                    $obs  = "Horario personalizado sin rango de marcaje configurado — verificar manualmente.";
                 }
             }
         }
@@ -338,7 +421,11 @@ while ($row = $bd->obtener_fila($query_redoble, 0)) {
             $marcas_extra = marcasPorFicha($bd, array($ficha), $fec_diaria);
             $marcas_ficha = isset($marcas_extra[$ficha]) ? $marcas_extra[$ficha] : array();
         }
-        $resuelto_n = resolverMarcaje($marcas_ficha, $vent_nocturno['ini'], $vent_nocturno['fin']);
+        $ventana_n = buscarOverrideHorario($bd, $ubicacion, $cargo, $vent_nocturno['cod_horario']);
+        if ($ventana_n === null) {
+            $ventana_n = array('ini' => $vent_nocturno['ini'], 'fin' => $vent_nocturno['fin']);
+        }
+        $resuelto_n = resolverMarcaje($marcas_ficha, $ventana_n['ini'], $ventana_n['fin']);
         if ($resuelto_n['en_ventana']) {
             $concepto_redoble = $es_feriado_dia ? 'RFNT' : 'RN';
             $obs = "Redoble: turno diurno cumplido + marcaje nocturno a las " . substr($resuelto_n['hora'], 0, 5) . ".";
@@ -351,7 +438,11 @@ while ($row = $bd->obtener_fila($query_redoble, 0)) {
         // (para no confundir con la simple salida del turno nocturno)?
         $marcas_siguiente = marcasPorFicha($bd, array($ficha), $fecha_siguiente);
         $marcas_siguiente = isset($marcas_siguiente[$ficha]) ? $marcas_siguiente[$ficha] : array();
-        $resuelto_d = resolverMarcaje($marcas_siguiente, $vent_diurno['ini'], $vent_diurno['fin']);
+        $ventana_d = buscarOverrideHorario($bd, $ubicacion, $cargo, $vent_diurno['cod_horario']);
+        if ($ventana_d === null) {
+            $ventana_d = array('ini' => $vent_diurno['ini'], 'fin' => $vent_diurno['fin']);
+        }
+        $resuelto_d = resolverMarcaje($marcas_siguiente, $ventana_d['ini'], $ventana_d['fin']);
 
         if ($resuelto_d['en_ventana']) {
             $marcas_tardias = 0;
