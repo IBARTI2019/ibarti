@@ -36,28 +36,7 @@ $row05   = $bd->obtener_fila($query05, 0);
 $orden   = $row05[0];
 $fec_diaria = $row05[1];
 
-$SQL_PAG = "SELECT asistencia.cod_ficha, ficha.cedula,
-					   CONCAT(ficha.apellidos, ' ', ficha.nombres) AS trabajador,
-					   asistencia.cod_cliente, clientes.nombre AS cliente,
-					   asistencia.cod_ubicacion, clientes_ubicacion.descripcion AS ubicacion,
-					   asistencia.cod_concepto, conceptos.descripcion AS concepto,
-					   IF(ISNULL(asistencia_clasif.descripcion),'9999',asistencia.cod_asistencia_clasif) cod_asistencia_clasif, 
-					   IF(ISNULL(asistencia_clasif.descripcion),'N/A',asistencia_clasif.descripcion) asistencia_clasif,
-					   conceptos.abrev, asistencia.hora_extra,
-					   asistencia.hora_extra_n, asistencia.vale,
-					   asistencia.feriado, asistencia.no_laboral AS NL,
-					   IFNULL(asistencia.prop_modo, 'AUTO') AS prop_modo,
-					   IFNULL(asistencia.prop_observacion, '') AS prop_observacion
-				  FROM asistencia LEFT JOIN asistencia_clasif ON asistencia_clasif.codigo = asistencia.cod_asistencia_clasif,
-				  ficha, trab_roles, clientes, clientes_ubicacion , conceptos
-			     WHERE asistencia.cod_as_apertura = '$cod_apertura'
-				   AND asistencia.cod_ficha = ficha.cod_ficha
-			       AND ficha.cod_ficha = trab_roles.cod_ficha
-			       AND asistencia.cod_cliente = clientes.codigo
-				   AND asistencia.cod_ubicacion = clientes_ubicacion.codigo
-				   AND asistencia.cod_concepto = conceptos.codigo
-				   AND trab_roles.cod_rol = '$cod_rol'
-			  ORDER BY FIELD(prop_modo, 'ALERTA', 'REVISAR', 'AUTO'), $orden ASC";
+$SQL_PAG = SQL_AsistenciaDet($cod_apertura, $fec_diaria, $co_cont, $cod_rol, $orden);
 
 // TODO LOS CLIENTES
 $sql_cliente = "SELECT clientes_ubicacion.cod_cliente, clientes.nombre AS cliente
@@ -78,7 +57,9 @@ $sql_conceptos = "SELECT conceptos.codigo, conceptos.descripcion, conceptos.abre
 
 ?>
 <?php echo PropuestaBadgeCSS(); ?>
-<?php echo PropuestaResumenHTML($bd, $SQL_PAG); ?>
+<?php echo AsistenciaGridCSS(); ?>
+<div class="asistencia-resumen"><?php echo PropuestaResumenHTML($bd, $SQL_PAG); ?></div>
+<div class="asistencia-tabla-wrap">
 <table width="100%" border="0" align="center">
 	<tr class="fondo00">
 		<th width="26%" class="etiqueta"><?php echo $leng["trabajador"]; ?></th>
@@ -171,7 +152,7 @@ $sql_conceptos = "SELECT conceptos.codigo, conceptos.descripcion, conceptos.abre
 					echo '<option value="' . $row04[0] . '">' . $row04[2] . Feriado_as($datos["feriado"], "FER") . Feriado_as($datos["NL"], "NL") . '</option>';
 				}
 				echo '</select><br/><input type="hidden" style="width:0px" id="feriado' . $i . '" name="feriado' . $i . '" value="' . $datos["feriado"] . '" /><input type="hidden" style="width:0px"  id="NL' . $i . '" name="NL' . $i . '" value="' . $datos["NL"] . '" /></td>
-							<td id="clasif_asistenciaX' . $i . '"><select name="clasif_asistencia" id="clasif_asistencia" style="width:120px">
+							<td id="clasif_asistenciaX' . $i . '"><select name="clasif_asistencia" id="clasif_asistencia' . $i . '" style="width:120px">
 							<option value="' . $datos["cod_asistencia_clasif"] . '">' . $datos["asistencia_clasif"] . '</option>                  </select></td>
 							<td><input type="text" id="horaD' . $i . '" style="width:40px" value="' . $datos["hora_extra_d"] . '" maxlength="3"
 				      onfocus="spryHora(this.id)" /><input type="hidden" id="ubicacion_old' . $i . '"  value="' . $datos["cod_ubicacion"] . '"/><input type="hidden" id="concepto_old' . $i . '"  value="' . $datos["cod_concepto"] . '"/></td>
@@ -179,8 +160,9 @@ $sql_conceptos = "SELECT conceptos.codigo, conceptos.descripcion, conceptos.abre
 				     onfocus="spryHora(this.id)" /></td>
 	   		    <td><input type="text" id="vale' . $i . '" style="width:40px" value="' . $datos["vale"] . '" maxlength="7"
 				     onfocus="spryVale(this.id)" /></td>
-			    <td align="center" class="imgLink"><img src="imagenes/actualizar.bmp" alt="Actualizar" title="Actualizar Registro" border="null" width="20px" height="20px" id="' . $i . '" onclick="ValidarSubmit(this.id)" />&nbsp;<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Registro"  width="20px" height="20px" id="' . $i . '" onclick="Borrar_Campo(this.id)"/> </td></tr>';
+			    <td align="center" class="imgLink"><img src="imagenes/actualizar.bmp" alt="Actualizar" title="Actualizar Registro" border="null" width="26px" height="26px" id="' . $i . '" onclick="ValidarSubmit(this.id)" />&nbsp;<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Registro"  width="26px" height="26px" id="' . $i . '" onclick="Borrar_Campo(this.id)"/> </td></tr>';
 			} ?><tr>
 		<td colspan="6"><input type="hidden" id="apertura" name="apertura" value="<?php echo $cod_apertura; ?>" /> <input type="hidden" id="fec_diaria" name="fec_diaria" value="<?php echo $fec_diaria; ?>" /> <input type="hidden" id="contracto" name="contracto" value="<?php echo $co_cont; ?>" /> <input type="hidden" id="Nmenu" name="Nmenu" value="<?php echo $Nmenu; ?>" /> <input type="hidden" id="mod" name="mod" value="<?php echo $mod; ?>" /> <input type="hidden" id="rol" name="rol" value="<?php echo $cod_rol; ?>" /> <input type="hidden" name="href" value="../inicio.php?area=<?php echo $href; ?>" /> <input type="hidden" name="metodo" value="agregar" /> <input type="hidden" name="usuario" id="usuario" value="<?php echo $usuario; ?>" /> <input type="hidden" id="i" value="<?php echo $i; ?>" /> <input type="hidden" name="ubicacion_old" value="" /> <input type="hidden" name="concepto_old" value="" /><input type="hidden" name="proced" id="proced" value="p_asistencia" /></td>
 	</tr>
 </table>
+</div>
