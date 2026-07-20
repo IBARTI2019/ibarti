@@ -26,7 +26,9 @@ class Planificacion
 					cargos.descripcion cargo,
 					horario_cl_ubicacion.cod_horario,
 					horarios.nombre horario,
-					horario_cl_ubicacion.hora_entrada 
+					horario_cl_ubicacion.hora_entrada,
+					horario_cl_ubicacion.inicio_marc_entrada,
+					horario_cl_ubicacion.fin_marc_entrada
 				FROM
 					horario_cl_ubicacion,
 					clientes,
