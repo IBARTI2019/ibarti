@@ -422,10 +422,10 @@ function AsistenciaGridCSS(){
   .asistencia-toolbar { background-color: #EAFFEA; border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
   .asistencia-resumen { border: 1px solid #cfe8cf; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; }
   .asistencia-resumen span { margin-right: 10px; }
-  .asistencia-tabla-wrap { overflow-x: auto; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+  .asistencia-tabla-wrap { overflow-x: auto; overflow-y: auto; max-height: 65vh; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
   .asistencia-tabla-wrap table { width: 100%; }
   .asistencia-tabla-wrap td, .asistencia-tabla-wrap th { padding: 6px 8px; font-size: 11px; }
-  .asistencia-tabla-wrap tr.fondo00 th { position: sticky; top: 0; z-index: 1; }
+  .asistencia-tabla-wrap tr.fondo00 th { position: sticky; top: 0; z-index: 1; background-color: #CAFFCA; }
   .asistencia-tabla-wrap table tr:hover { background-color: yellow; }
   .asistencia-tabla-wrap .imgLink img { width: 26px; height: 26px; padding: 3px; }
   .asistencia-tabla-wrap .imgLink img:hover { background-color: rgba(0,0,0,0.08); }
