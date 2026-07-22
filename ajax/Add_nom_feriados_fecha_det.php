@@ -9,10 +9,20 @@ $cod_det   = $_POST['cod_det'];
  $result = array();
 
   try {
-	$sql = " SELECT DATE_FORMAT(nom_calendario_det.fecha , '%m/%d/%Y') fecha FROM nom_calendario_det
+	// $codigo aquí siempre es el calendario VAR que se está editando (el dropdown que
+	// dispara esta consulta vía Feriado() está oculto para calendarios FIJO), así que
+	// sus fechas mantienen el año real sin remapear. $cod_det, en cambio, siempre es el
+	// calendario FIJO recién seleccionado en el dropdown — sus fechas se remapean al año
+	// actual para que el picker las muestre marcadas sin importar en qué año fueron
+	// guardadas originalmente (ver misma lógica/comentario en Add_nom_calendario_det.php).
+	$sql = " SELECT DATE_FORMAT(nom_calendario_det.fecha, '%m/%d/%Y') fecha
+	           FROM nom_calendario_det
 			      WHERE nom_calendario_det.cod_calendario = '$codigo'
             UNION ALL
-           SELECT DATE_FORMAT(nom_calendario_det.fecha , '%m/%d/%Y') fecha FROM nom_calendario_det
+           SELECT DATE_FORMAT(
+                    STR_TO_DATE(CONCAT(YEAR(CURDATE()), '-', MONTH(nom_calendario_det.fecha), '-', DAY(nom_calendario_det.fecha)), '%Y-%m-%d'),
+                    '%m/%d/%Y') fecha
+           FROM nom_calendario_det
             WHERE nom_calendario_det.cod_calendario = '$cod_det'
             ORDER BY 1 ASC ";
 

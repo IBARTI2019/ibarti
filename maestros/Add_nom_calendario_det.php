@@ -30,10 +30,26 @@
 	    $display = '';
 	}
 
-	$sql2 = " SELECT DATE_FORMAT(nom_calendario_det.fecha , '%m/%d/%Y') fecha FROM nom_calendario_det
+	// Los feriados FIJOS se repiten todos los años en el mismo día/mes: el año con que
+	// fueron guardados no tiene significado, así que para precargar el picker se
+	// remapean al año actual (CURDATE()) — de lo contrario, un feriado fijo guardado
+	// en un año anterior se vería "sin marcar" al abrir esta pantalla en un año nuevo,
+	// aunque el motor de asistencia sí lo siga reconociendo como feriado todos los años.
+	// La rama del calendario enlazado ($cod_det) siempre es FIJO por construcción (el
+	// dropdown "Calendario Fijo" solo ofrece calendarios tipo FIJO), así que se remapea
+	// siempre; la rama propia ($codigo) solo se remapea si este calendario es FIJO.
+	$sql2 = " SELECT DATE_FORMAT(
+	                    IF('$tipo' = 'FIJO',
+	                       STR_TO_DATE(CONCAT(YEAR(CURDATE()), '-', MONTH(nom_calendario_det.fecha), '-', DAY(nom_calendario_det.fecha)), '%Y-%m-%d'),
+	                       nom_calendario_det.fecha),
+	                    '%m/%d/%Y') fecha
+	            FROM nom_calendario_det
 			       WHERE nom_calendario_det.cod_calendario = '$codigo'
 						 UNION
-						 SELECT DATE_FORMAT(nom_calendario_det.fecha , '%m/%d/%Y') fecha FROM nom_calendario_det
+						 SELECT DATE_FORMAT(
+						          STR_TO_DATE(CONCAT(YEAR(CURDATE()), '-', MONTH(nom_calendario_det.fecha), '-', DAY(nom_calendario_det.fecha)), '%Y-%m-%d'),
+						          '%m/%d/%Y') fecha
+	            FROM nom_calendario_det
 				      WHERE nom_calendario_det.cod_calendario = '$cod_det'
 	 			      ORDER BY 1 ASC";
     $query2  = $bd->consultar($sql2);
@@ -240,6 +256,11 @@ $('#full-year').multiDatesPicker({
 
 </script>
 <div align="center" class="etiqueta_title"><?php echo $titulo;?> </div> <hr />
+<?php if ($tipo == "FIJO") { ?>
+<div align="center" class="texto" style="color:#5a6472; font-size:12px; margin-bottom:6px;">
+    Este calendario es <b>Fijo</b>: el año que selecciones abajo no importa, cada feriado se aplicará todos los años en el mismo día y mes.
+</div>
+<?php } ?>
 <div align="center" class="texto" <?php echo $display;?>> Calendario Fijo : <select name="calendario_Fijo" id="calendario_Fijo"
 	                                                                                  onchange="Feriado(this.value)" style="width:250px" value="0">
 							<option value="<?php echo $cod_calendario;?>"><?php echo $calendario;?></option>
