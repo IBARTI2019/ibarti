@@ -60,11 +60,23 @@ function resolverMarcaje($marcas, $ini, $fin) {
     return array('hora' => $marcas[0], 'en_ventana' => false);
 }
 
+// Un feriado FIJO (nom_calendario.tipo='FIJO') se repite todos los años en el mismo
+// día/mes sin importar el año con que fue registrado (ej. 01-enero) — se compara solo
+// mes/día. Un feriado VAR sí depende del año en que fue cargado (ej. Semana Santa,
+// que cambia cada año) — se compara la fecha completa. Se usa el tipo vigente del
+// calendario (nc.tipo), no el copiado en nom_calendario_det.tipo al insertar, para que
+// un cambio posterior de FIJO<->VAR en el calendario se refleje de inmediato.
 function esFeriado($bd, $rol, $fecha) {
     $sql = "SELECT COUNT(*) AS cnt
               FROM nom_calendario_det ncd
-              INNER JOIN roles_calendario rc ON ncd.cod_calendario = rc.cod_calendario
-             WHERE rc.cod_rol = '$rol' AND ncd.fecha = '$fecha'";
+              INNER JOIN nom_calendario nc ON ncd.cod_calendario = nc.codigo
+              INNER JOIN roles_calendario rc ON nc.codigo = rc.cod_calendario
+             WHERE rc.cod_rol = '$rol'
+               AND nc.status = 'T'
+               AND (
+                     (nc.tipo = 'FIJO' AND DATE_FORMAT(ncd.fecha, '%m-%d') = DATE_FORMAT('$fecha', '%m-%d'))
+                  OR (nc.tipo <> 'FIJO' AND ncd.fecha = '$fecha')
+                   )";
     $q = $bd->consultar($sql);
     $r = $bd->obtener_fila($q, 0);
     return ($r && $r['cnt'] > 0);
