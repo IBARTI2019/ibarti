@@ -421,11 +421,25 @@ while ($row = $bd->obtener_fila($query_redoble, 0)) {
             $marcas_extra = marcasPorFicha($bd, array($ficha), $fec_diaria);
             $marcas_ficha = isset($marcas_extra[$ficha]) ? $marcas_extra[$ficha] : array();
         }
+
+        // Excluir la marca que ya fue consumida por el turno D base (misma resolución
+        // que hizo PASE 1). Si solo hubo una marca en el día, no debe quedar ninguna
+        // disponible para el redoble: la ventana nocturna estándar cruza medianoche y
+        // puede solaparse con una entrada diurna temprana (ej. ventana abierta por
+        // horario personalizado + marcaje 05:29 con nocturno estándar hasta 06:10) —
+        // sin esta exclusión, esa única marca se contaba dos veces (D y RN).
+        $ventana_d_base = buscarOverrideHorario($bd, $ubicacion, $cargo, $vent_diurno['cod_horario']);
+        if ($ventana_d_base === null) {
+            $ventana_d_base = array('ini' => $vent_diurno['ini'], 'fin' => $vent_diurno['fin']);
+        }
+        $resuelto_d_base   = resolverMarcaje($marcas_ficha, $ventana_d_base['ini'], $ventana_d_base['fin']);
+        $marcas_restantes  = array_values(array_diff($marcas_ficha, array($resuelto_d_base['hora'])));
+
         $ventana_n = buscarOverrideHorario($bd, $ubicacion, $cargo, $vent_nocturno['cod_horario']);
         if ($ventana_n === null) {
             $ventana_n = array('ini' => $vent_nocturno['ini'], 'fin' => $vent_nocturno['fin']);
         }
-        $resuelto_n = resolverMarcaje($marcas_ficha, $ventana_n['ini'], $ventana_n['fin']);
+        $resuelto_n = resolverMarcaje($marcas_restantes, $ventana_n['ini'], $ventana_n['fin']);
         if ($resuelto_n['en_ventana']) {
             $concepto_redoble = $es_feriado_dia ? 'RFNT' : 'RN';
             $obs = "Redoble: turno diurno cumplido + marcaje nocturno a las " . substr($resuelto_n['hora'], 0, 5) . ".";
