@@ -47,13 +47,13 @@ $a   = $fecha_N1[2];
 		}
 
 if (isset($_POST['metodo'])) {
+	$calendario_Fijo_param = ($calendario_Fijo === '') ? 'NULL' : "'$calendario_Fijo'";
 
-
-	$sql   = "$SELECT $proced('borrar', '$codigo', '', '', '', '$usuario')";
+	$sql   = "$SELECT $proced('borrar', '$codigo', '', 0, '', '$usuario')";
 	$query = $bd->consultar($sql);
 
 
-	$sql    = "$SELECT $proced2('mod_calend_nl', '$codigo', '$calendario_Fijo', '',
+	$sql    = "$SELECT $proced2('mod_calend_nl', '$codigo', $calendario_Fijo_param, '',
 	                           '', '$usuario', '')";
 	$query = $bd->consultar($sql);
 
@@ -64,7 +64,7 @@ if (isset($_POST['metodo'])) {
 	foreach ($fechaX as $k => $valorX) {
 		$fechaN = conversionCal02($valorX);
 
-		$sql    = "$SELECT $proced('$metodo', '$codigo', '$tipo', '$calendario_Fijo', '$fechaN', '$usuario')";
+		$sql    = "$SELECT $proced('$metodo', '$codigo', '$tipo', $calendario_Fijo_param, '$fechaN', '$usuario')";
 	// echo $sql, "<br />";
 		$query = $bd->consultar($sql);
 	}
