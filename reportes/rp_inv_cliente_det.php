@@ -78,7 +78,8 @@ if (isset($reporte)) {
 	clientes_ubicacion.latitud latitud_ubicacion,
 	clientes_ubicacion.longitud longitud_ubicacion,
 	clientes_ubicacion.status status_ubic,
-	clientes.codigo cod_cliente
+	clientes.codigo cod_cliente,
+	clientes_ubicacion.codigo cod_ubicacion
 	FROM clientes_ubicacion 
 	LEFT JOIN clientes_ub_puesto ON clientes_ub_puesto.cod_cl_ubicacion = clientes_ubicacion.codigo, 
 	clientes, clientes_tipos, regiones , estados , ciudades
@@ -95,7 +96,7 @@ if (isset($reporte)) {
 		while ($row01 = $bd->obtener_fila($query01)) {
 			if ($index == 0){
 			echo "<table border=1>";
-			echo "<tr><th> " . $leng['region'] . " </th><th> " . $leng['estado'] . " </th><th> CIUDAD && MUNICIPIO </th><th> " . $leng['cliente'] . " </th>
+			echo "<tr><th> " . $leng['region'] . " </th><th> " . $leng['estado'] . " </th><th> CIUDAD && MUNICIPIO </th><th> Cod. " . $leng['cliente'] . " </th><th> " . $leng['cliente'] . " </th>
 			<th> Tipo </th><th> " . $leng['rif'] . " </th>";
 	
 			$sql_contacts = "SELECT documento, nombres, cargo, telefono, correo FROM clientes_contactos WHERE cod_cliente = '". $row01["cod_cliente"]  ."'";
@@ -105,13 +106,14 @@ if (isset($reporte)) {
 				echo "<th> Documento Contacto ". $contact_index ." </th><th> Nombres Contacto " . $contact_index . " </th><th> Cargo Contacto ". $contact_index . " </th><th> Telefono Contacto " . $contact_index . " </th><th> Correo Contacto " . $contact_index . " </th>";
 				$contact_index += 1;
 			}
-			echo "<th> Contacto Ubicacion</th><th> Geolicalización Cliente </th><th> Latitud Cliente </th><th> Longitud Cliente </th><th> " . $leng['ubicacion'] . " </th>
+			echo "<th> Contacto Ubicacion</th><th> Geolicalización Cliente </th><th> Latitud Cliente </th><th> Longitud Cliente </th><th> Cod. " . $leng['ubicacion'] . " </th><th> " . $leng['ubicacion'] . " </th>
 			<th> Puesto </th><th> Actividades del puesto </th><th> Observacion del puesto </th><th> Teléfono </th><th> " . $leng['correo'] . " </th><th> Dirección</th>
 			<th>Estatus</th><th> Geolicalización Ubicación </th><th> Latitud Ubicación </th><th> Longitud Ubicación </th><th> Estatus Ubicación </th></tr>";
 			}
 			echo "<tr><td > " . $row01["region"] . " </td>
 			<td>" . $row01["estado"] . "</td>
 			<td>" . $row01["ciudad"] . "</td>
+			<td>" . $row01["cod_cliente"] . "</td>
 			<td>" . $row01["cliente"] . "</td>
 			<td>" . $row01["cliente_tipo"] . "</td>
 			<td>" . $row01["rif"] . "</td>";
@@ -123,6 +125,7 @@ if (isset($reporte)) {
 			<td>" . $row01["geolocalizacion_cliente"] . "</td>
 			<td>" . floatval($row01["latitud_cliente"]) . "</td>
 			<td>" . floatval($row01["longitud_cliente"]) . "</td>
+			<td>" . $row01["cod_ubicacion"] . "</td>
 			<td>" . $row01["ubicacion"] . "</td>
 			<td>" . $row01["cliente_puesto_nombre"] . "</td>
 			<td>" . $row01["cliente_puesto_actividades"] . "</td>
