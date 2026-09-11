@@ -119,61 +119,65 @@ $metodo   = $_POST['metodo'];
 	$rech      = 0;
 	$apt       = 0;
 
-	if($status == $apto){
-	   $status =  $aprobado;
-	}
-		
-	if(($status == $nuevo) or ($status == $rechazado)){
-		
-		if($refp01_apto == 'S'){
-		$apt++;
-		}elseif($refp01_apto == 'N'){
-		$rech++;	
+	if ($status == $aprobado) {
+		// Protegido: no re-evaluar por cambios en checks
+	} elseif (($status == $nuevo) or ($status == $apto) or ($status == $rechazado)) {
+
+		if ($refp01_apto == 'S') {
+			$apt++;
+		} elseif ($refp01_apto == 'N') {
+			$rech++;
 		}
-		
-		if($refp02_apto == 'S'){
-		$apt++;
-		}elseif($refp02_apto == 'N'){
-		$rech++;	
-		}		
-		
-		if($refp03_apto == 'S'){
-		$apt++;
-		}elseif($refp03_apto == 'N'){
-		$rech++;	
-		}		
-		
-		if($refl01_apto == 'S'){
-		$apt++;
-		}elseif($refl01_apto == 'N'){
-		$rech++;	
-		}	
-		
-		/* if($refl02_apto == 'S'){
-		$apt++;
-		}elseif($refl02_apto == 'N'){
-		$rech++;	
-		} */
-						
-		if($psi_apto == 'A' OR $psi_apto== 'C'){
-		$apt++;
-		}elseif($psi_apto == 'R' ){
-		$rech++;	
+
+		if ($refp02_apto == 'S') {
+			$apt++;
+		} elseif ($refp02_apto == 'N') {
+			$rech++;
 		}
-		
-		if($pol_apto == 'A'){
-		$apt++;
-		}elseif($pol_apto == 'R'){
-		$rech++;	
-		}			
+
+		if ($refp03_apto == 'S') {
+			$apt++;
+		} elseif ($refp03_apto == 'N') {
+			$rech++;
+		}
+
+		if ($refl01_apto == 'S') {
+			$apt++;
+		} elseif ($refl01_apto == 'N') {
+			$rech++;
+		}
+
+		/*
+		if ($refl02_apto == 'S') {
+			$apt++;
+		} elseif ($refl02_apto == 'N') {
+			$rech++;
+		}
+		*/
+
+		if ($psi_apto == 'A' OR $psi_apto == 'C') {
+			$apt++;
+		} elseif ($psi_apto == 'R') {
+			$rech++;
+		}
+
+		if ($pol_apto == 'A') {
+			$apt++;
+		} elseif ($pol_apto == 'R') {
+			$rech++;
+		}
 		// VALIDO
-		if($rech > 0){
-		$status =  $rechazado;	
-		}elseif($apt >= 6){
-	   $status = $apto;			
-		}else{
-	   $status =  $status;		
-		}		
+		if ($rech > 0) {
+			$status = $rechazado;
+		} elseif ($apt >= 6) {
+			if ($status == $apto) {
+				$status = $aprobado;
+			} else {
+				$status = $apto;
+			}
+		} else {
+			$status = $status;
+		}
 	}		
 	
 
