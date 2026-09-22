@@ -127,10 +127,10 @@ class Contratacion
 	public function verificar_cont_det($cliente, $contrat)
 	{
 		$this->datos   = array();
-		$sql = " SELECT COUNT(a.codigo) contra, MIN(a.fecha) fecha_min, MAX(pc.fecha_fin) fecha_max
-		FROM clientes_contratacion_ap a, planif_clientes pc
-		WHERE a.cod_cliente = '$cliente' AND a.cod_contratacion = '$contrat' 
-		AND pc.cod_contratacion = a.cod_contratacion AND pc.cod_cliente = a.cod_cliente ";
+		$sql = " SELECT COUNT(pc.codigo) contra, MIN(pc.fecha_inicio) fecha_min, MAX(pc.fecha_fin) fecha_max
+		FROM planif_clientes pc
+		WHERE pc.cod_cliente = '$cliente' AND pc.cod_contratacion = '$contrat'
+		AND pc.`status` = 'T' ";
 		$query = $this->bd->consultar($sql);
 		return $this->datos = $this->bd->obtener_fila($query);
 	}
