@@ -289,6 +289,7 @@ $sql_planificados = "SELECT
                      INNER JOIN clientes_ubicacion cu ON pctd.cod_ubicacion = cu.codigo AND cu.reconocimiento_facial = 'T'
                      WHERE pctd.fecha = '$fec_diaria'
                        AND f.cod_contracto = '$contracto'
+                       AND f.fec_ingreso <= '$fec_diaria'
                        AND NOT EXISTS (
                            SELECT 1 FROM asistencia ast
                             WHERE ast.cod_as_apertura = '$apertura'
@@ -498,6 +499,7 @@ $sql_huerfanas = "SELECT h.cod_ficha, MIN(h.fecha_dispositivo) AS primera_marca,
                      LEFT JOIN planif_clientes_trab_det pctd ON pctd.cod_ficha = h.cod_ficha AND pctd.fecha = '$fec_diaria'
                     WHERE DATE(h.fecha_dispositivo) = '$fec_diaria'
                       AND f.cod_contracto = '$contracto'
+                      AND f.fec_ingreso <= '$fec_diaria'
                       AND pctd.codigo IS NULL
                       AND NOT EXISTS (
                           SELECT 1 FROM asistencia ast
