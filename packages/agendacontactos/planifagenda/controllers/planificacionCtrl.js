@@ -1200,6 +1200,21 @@ function editarActividad(event) {
 function save_planif_apertura() {
 	var fec_inicio = $("#ap_fecha_inicio").val();
 	var fec_fin = $("#ap_fecha_fin").val();
+	var hoyStr = moment().format('YYYY-MM-DD');
+
+	if (!fec_inicio) {
+		toastr.warning("Debe ingresar la fecha de inicio.");
+		return;
+	}
+	if (fec_inicio < hoyStr) {
+		toastr.error("La fecha inicial no puede ser menor a la fecha actual.");
+		return;
+	}
+	if (fec_fin && fec_fin < fec_inicio) {
+		toastr.error("La fecha final no puede ser menor a la fecha de inicio.");
+		return;
+	}
+
 	var parametros = {
 		"codigo": '', "ubic": ubicacion, "cargo": cargo,
 		"fec_inicio": fec_inicio, "fec_fin": fec_fin,

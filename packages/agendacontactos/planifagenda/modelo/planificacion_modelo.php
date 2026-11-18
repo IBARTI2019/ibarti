@@ -267,11 +267,16 @@ class Planificacion
 	function get_planif_ap_inicio($ubic, $cargo)
 	{
 		$this->datos  = array();
-		$sql = "SELECT a.codigo, IFNULL (DATE_ADD(fecha_fin, INTERVAL 1 DAY), CURDATE()) fecha_inicio
+		$sql = "SELECT a.codigo, IFNULL(GREATEST(DATE_ADD(fecha_fin, INTERVAL 1 DAY), CURDATE()), CURDATE()) fecha_inicio
 		FROM planif_clientes_superv a WHERE a.cod_ubicacion = $ubic AND a.cod_cargo = '$cargo'
 		ORDER BY a.codigo DESC LIMIT 0, 1; ";
 		$query = $this->bd->consultar($sql);
-		return $this->datos = $this->bd->obtener_fila($query);
+		$row = $this->bd->obtener_fila($query);
+		if (!$row || empty($row['fecha_inicio']) || $row['fecha_inicio'] < date('Y-m-d')) {
+			if (!$row) $row = array();
+			$row['fecha_inicio'] = date('Y-m-d');
+		}
+		return $this->datos = $row;
 	}
 
 	function get_supervision_det($cliente, $ubicacion, $cargo)

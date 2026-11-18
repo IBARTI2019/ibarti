@@ -225,11 +225,16 @@ class Planificacion
 	function get_planif_ap_inicio($cliente, $contratacion)
 	{
 		$this->datos  = array();
-		$sql = "SELECT a.codigo, IFNULL (DATE_ADD(fecha_fin, INTERVAL 1 DAY), CURDATE()) fecha_inicio
+		$sql = "SELECT a.codigo, IFNULL(GREATEST(DATE_ADD(fecha_fin, INTERVAL 1 DAY), CURDATE()), CURDATE()) fecha_inicio
 		FROM planif_clientes a WHERE a.cod_cliente = '$cliente' AND a.cod_contratacion = '$contratacion'
 		ORDER BY a.codigo DESC LIMIT 0, 1; ";
 		$query = $this->bd->consultar($sql);
-		return $this->datos = $this->bd->obtener_fila($query);
+		$row = $this->bd->obtener_fila($query);
+		if (!$row || empty($row['fecha_inicio']) || $row['fecha_inicio'] < date('Y-m-d')) {
+			if (!$row) $row = array();
+			$row['fecha_inicio'] = date('Y-m-d');
+		}
+		return $this->datos = $row;
 	}
 
 	function get_contratacion_det($contratacion, $ubic)

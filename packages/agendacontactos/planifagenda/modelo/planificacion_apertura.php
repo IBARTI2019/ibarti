@@ -14,6 +14,13 @@ foreach ($_POST as $nombre_campo => $valor) {
 if (isset($_POST['metodo'])) {
   try {
     if ($metodo == "agregar") {
+      $hoy = date('Y-m-d');
+      if ($fec_inicio < $hoy) {
+        throw new Exception("La fecha inicial no puede ser menor a la fecha actual.");
+      }
+      if ($fec_fin < $fec_inicio) {
+        throw new Exception("La fecha final no puede ser menor a la fecha inicial.");
+      }
       $sql  = "INSERT INTO planif_clientes_superv
       (codigo, cod_ubicacion, cod_cargo,fecha_inicio, fecha_fin,
       cod_us_ing, fec_us_ing, cod_us_mod, fec_us_mod,  `status`)

@@ -11,6 +11,11 @@ $ubic = $_POST["ubic"];
 $cargo = $_POST["cargo"];
 $planif      = new Planificacion;
 $ap_incio   = $planif->get_planif_ap_inicio($ubic, $cargo);
+$fecha_actual = date('Y-m-d');
+$fecha_minima = $fecha_actual;
+if (!empty($ap_incio['fecha_inicio']) && $ap_incio['fecha_inicio'] > $fecha_actual) {
+  $fecha_minima = $ap_incio['fecha_inicio'];
+}
 ?>
 <form action="" method="post" name="add_planif_ap_ing" id="add_planif_ap_ing">
   <table width="100%" align="center">
@@ -21,9 +26,9 @@ $ap_incio   = $planif->get_planif_ap_inicio($ubic, $cargo);
     </tr>
     <tr>
       <td width="14%" class="etiqueta">Fecha Inicio:</td>
-      <td width="18%"><input type="date" id="ap_fecha_inicio" min="<?php echo $ap_incio['fecha_inicio']; ?>" value="<?php echo $ap_incio['fecha_inicio']; ?>" required></td> <!-- Omitir onchange="ActFechaMin(this.value, 'ap_fecha_fin')"-->
+      <td width="18%"><input type="date" id="ap_fecha_inicio" min="<?php echo $fecha_minima; ?>" value="<?php echo $fecha_minima; ?>" onchange="$('#ap_fecha_fin').attr('min', this.value);" required></td>
       <td width="14%" class="etiqueta">Fecha Fin:</td>
-      <td width="18%"><input type="date" id="ap_fecha_fin" value="" min="<?php echo $ap_incio['fecha_inicio']; ?>" required></td>
+      <td width="18%"><input type="date" id="ap_fecha_fin" value="" min="<?php echo $fecha_minima; ?>" required></td>
       <td><span style="float: right;" align="center">
           <img class="imgLink" style="display: none;" width="25px" height="25px" src="imagenes/borrar.bmp" title="Borrar Registro" onclick="Borrar_horario()" id="borrar_horario" />
           <img class="imgLink" style="display: none;" width="25px" height="25px" src="imagenes/nuevo.bmp" alt="Agregar" onclick="irAAgregarHorario()" title="Agregar Registro" id="agregar_horario" />
