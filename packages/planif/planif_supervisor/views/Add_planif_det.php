@@ -27,6 +27,16 @@ if (isset($_POST['fecha_desde'])) {
 	$mod  = $plan->get_ultima_mod($apertura);
 
 	$fechas = $plan->get_fechas_apertura($apertura, $ubicacion, $cargo);
+	if ($fechas) {
+		$hoy = date('Y-m-d');
+		if ($hoy >= $fechas['fecha_inicio'] && $hoy <= $fechas['fecha_fin']) {
+			$fechas['fecha_actual'] = $hoy;
+		} elseif ($hoy > $fechas['fecha_fin']) {
+			$fechas['fecha_actual'] = $fechas['fecha_fin'];
+		} else {
+			$fechas['fecha_actual'] = $fechas['fecha_inicio'];
+		}
+	}
 
 	$supervisores = $plan->get_supervisores($ubicacion, null, $usuario, $cargo);
 	$result['html'] = '</br></br><div align="center" class="etiqueta_title">Planificación Detalle</div>

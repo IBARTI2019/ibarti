@@ -31,7 +31,7 @@ if (isset($_SESSION['usuario_cod'])) {
 				<div><span class="etiqueta">A partir de que fecha desea se aplique esta actualizacion?..</span></div>
 				<br>
 				<div align="center"><span>Fecha:</span>
-					<input type="date" id="cont_ap_fecha" min="<?php echo date("d-m-Y"); ?>" value="<?php echo date("d-m-Y"); ?>" required>
+					<input type="date" id="cont_ap_fecha" min="<?php echo date("Y-m-d"); ?>" value="<?php echo date("Y-m-d"); ?>" required>
 				</div>
 				<br>
 				<div align="center"><span class="art-button-wrapper" id="contrato_ap">

@@ -459,6 +459,17 @@ function cargar_planif_superv_det(apertura) {
 			var resp = JSON.parse(response);
 			$("#cont_planif_det").html(resp["html"]);
 			var fechas = resp["fechas"];
+			var initialDate = (fechas && fechas.fecha_actual) ? fechas.fecha_actual : fechas.fecha_inicio;
+			var hoyStr = moment().format('YYYY-MM-DD');
+			if (fechas && fechas.fecha_inicio && fechas.fecha_fin) {
+				if (hoyStr >= fechas.fecha_inicio && hoyStr <= fechas.fecha_fin) {
+					initialDate = hoyStr;
+				} else if (hoyStr > fechas.fecha_fin) {
+					initialDate = fechas.fecha_fin;
+				} else {
+					initialDate = fechas.fecha_inicio;
+				}
+			}
 			cantidad_trab_sin_planificar(cliente, apertura);
 			var containerEx = document.getElementById('external-events-list');
 			calendarSuperv = new FullCalendar.Draggable(containerEx, {
@@ -596,7 +607,7 @@ function cargar_planif_superv_det(apertura) {
 						eventActual.remove();
 					}
 				},
-				initialDate: fechas.fecha_inicio,
+				initialDate: initialDate,
 				navLinks: true,
 				dayMaxEvents: true,
 				locale: 'es',
@@ -735,6 +746,17 @@ function cargar_planif_superv_trab_det(ficha) {
 			var resp = JSON.parse(response);
 			if (resp["data"].length > 0) {
 				var fechas = resp["fechas"];
+			var initialDate = (fechas && fechas.fecha_actual) ? fechas.fecha_actual : fechas.fecha_inicio;
+			var hoyStr = moment().format('YYYY-MM-DD');
+			if (fechas && fechas.fecha_inicio && fechas.fecha_fin) {
+				if (hoyStr >= fechas.fecha_inicio && hoyStr <= fechas.fecha_fin) {
+					initialDate = hoyStr;
+				} else if (hoyStr > fechas.fecha_fin) {
+					initialDate = fechas.fecha_fin;
+				} else {
+					initialDate = fechas.fecha_inicio;
+				}
+			}
 				var calendarTrabEl = document.getElementById('calendarTrab');
 				calendarTrab = new FullCalendar.Calendar(calendarTrabEl, {
 					initialView: "listMonth",
@@ -766,7 +788,7 @@ function cargar_planif_superv_trab_det(ficha) {
 					},
 					editable: false,
 					selectable: false,
-					initialDate: fechas.fecha_inicio,
+					initialDate: initialDate,
 					navLinks: true,
 					dayMaxEvents: true,
 					locale: 'es',
