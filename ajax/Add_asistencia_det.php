@@ -55,6 +55,11 @@ $sql_conceptos = "SELECT conceptos.codigo, conceptos.descripcion, conceptos.abre
 						 AND conceptos.asist_diaria = 'T'
 					ORDER BY 3 ASC";
 
+$sql_ctrl = "SELECT IFNULL(calc_he_auto, 'S') AS calc_he_auto FROM control LIMIT 1";
+$query_ctrl = $bd->consultar($sql_ctrl);
+$row_ctrl = $bd->obtener_fila($query_ctrl, 0);
+$calc_he_auto = !empty($row_ctrl['calc_he_auto']) ? $row_ctrl['calc_he_auto'] : 'S';
+
 ?>
 <?php echo PropuestaBadgeCSS(); ?>
 <?php echo AsistenciaGridCSS(); ?>
@@ -153,10 +158,15 @@ $sql_conceptos = "SELECT conceptos.codigo, conceptos.descripcion, conceptos.abre
 				}
 				echo '</select><br/><input type="hidden" style="width:0px" id="feriado' . $i . '" name="feriado' . $i . '" value="' . $datos["feriado"] . '" /><input type="hidden" style="width:0px"  id="NL' . $i . '" name="NL' . $i . '" value="' . $datos["NL"] . '" /></td>
 							<td id="clasif_asistenciaX' . $i . '"><select name="clasif_asistencia" id="clasif_asistencia' . $i . '" style="width:120px">
-							<option value="' . $datos["cod_asistencia_clasif"] . '">' . $datos["asistencia_clasif"] . '</option>                  </select></td>
-							<td><input type="text" id="horaD' . $i . '" style="width:40px; background:#f0f0f0; border:1px solid #ccc; text-align:center;" value="' . $datos["hora_extra_d"] . '" readonly="readonly" title="Cálculo automático" /><input type="hidden" id="ubicacion_old' . $i . '"  value="' . $datos["cod_ubicacion"] . '"/><input type="hidden" id="concepto_old' . $i . '"  value="' . $datos["cod_concepto"] . '"/></td>
-				<td><input type="text" id="horaN' . $i . '" style="width:40px; background:#f0f0f0; border:1px solid #ccc; text-align:center;" value="' . $datos["hora_extra_n"] . '" readonly="readonly" title="Cálculo automático" /></td>
-	   		    <td><input type="text" id="vale' . $i . '" style="width:40px" value="' . $datos["vale"] . '" maxlength="7"
+							<option value="' . $datos["cod_asistencia_clasif"] . '">' . $datos["asistencia_clasif"] . '</option>                  </select></td>';
+				if ($calc_he_auto == 'S') {
+					echo '<td><input type="text" id="horaD' . $i . '" style="width:40px; background:#f0f0f0; border:1px solid #ccc; text-align:center;" value="' . $datos["hora_extra_d"] . '" readonly="readonly" title="Cálculo automático" /><input type="hidden" id="ubicacion_old' . $i . '"  value="' . $datos["cod_ubicacion"] . '"/><input type="hidden" id="concepto_old' . $i . '"  value="' . $datos["cod_concepto"] . '"/></td>
+				<td><input type="text" id="horaN' . $i . '" style="width:40px; background:#f0f0f0; border:1px solid #ccc; text-align:center;" value="' . $datos["hora_extra_n"] . '" readonly="readonly" title="Cálculo automático" /></td>';
+				} else {
+					echo '<td><input type="text" id="horaD' . $i . '" style="width:40px" value="' . $datos["hora_extra_d"] . '" maxlength="3" onfocus="spryHora(this.id)" /><input type="hidden" id="ubicacion_old' . $i . '"  value="' . $datos["cod_ubicacion"] . '"/><input type="hidden" id="concepto_old' . $i . '"  value="' . $datos["cod_concepto"] . '"/></td>
+				<td><input type="text" id="horaN' . $i . '" style="width:40px" value="' . $datos["hora_extra_n"] . '" maxlength="3" onfocus="spryHora(this.id)" /></td>';
+				}
+				echo '<td><input type="text" id="vale' . $i . '" style="width:40px" value="' . $datos["vale"] . '" maxlength="7"
 				     onfocus="spryVale(this.id)" /></td>
 			    <td align="center" class="imgLink"><img src="imagenes/actualizar.bmp" alt="Actualizar" title="Actualizar Registro" border="null" width="26px" height="26px" id="' . $i . '" onclick="ValidarSubmit(this.id)" />&nbsp;<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Registro"  width="26px" height="26px" id="' . $i . '" onclick="Borrar_Campo(this.id)"/> </td></tr>';
 			} ?><tr>
