@@ -136,5 +136,23 @@ if (isset($_POST['proced'])) {
 
 		$query = $bd->consultar($sql);
 	}
+
+	// Guardar configuracion de calculo automatico de horas extras (ciclo)
+	$calc_he_auto    = isset($_POST['calc_he_auto']) ? $_POST['calc_he_auto'] : 'S';
+	$dias_ciclo_he   = (isset($_POST['dias_ciclo_he']) && $_POST['dias_ciclo_he'] != '') ? (int)$_POST['dias_ciclo_he'] : 56;
+	$max_horas_ciclo = (isset($_POST['max_horas_ciclo']) && $_POST['max_horas_ciclo'] != '') ? (float)$_POST['max_horas_ciclo'] : 320.00;
+
+	$sql_ctrl = "UPDATE control SET calc_he_auto = '$calc_he_auto', dias_ciclo_he = $dias_ciclo_he, max_horas_ciclo = $max_horas_ciclo";
+	$bd->consultar($sql_ctrl);
+
+	$bd->consultar("DELETE FROM control_conceptos_he");
+	if (isset($_POST['conceptos_he']) && is_array($_POST['conceptos_he'])) {
+		foreach ($_POST['conceptos_he'] as $cod_c) {
+			$cod_c = preg_replace('/[^a-zA-Z0-9_-]/', '', $cod_c);
+			if ($cod_c != '') {
+				$bd->consultar("INSERT INTO control_conceptos_he (cod_concepto) VALUES ('$cod_c')");
+			}
+		}
+	}
 }
 require_once('../funciones/sc_direccionar.php');

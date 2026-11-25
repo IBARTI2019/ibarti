@@ -52,6 +52,8 @@ function save_horario() {
 	var fin_m_salida = $("#fin_m_salida").val();
 	var dia_trabajo = $("#dia_trabajo").val();
 	var minutos_trabajo = $("#minutos_trabajo").val();
+	var horas_trabajo = $("#horas_trabajo").val();
+	var tipo_hora_extra = $("#tipo_hora_extra").val();
 	var status;
 	if( $('#activo').is(':checked') ) {
     	status = 'T';
@@ -70,6 +72,7 @@ function save_horario() {
 			"inicio_m_entrada": inicio_m_entrada, "fin_m_entrada": fin_m_entrada,
 			"inicio_m_salida": inicio_m_salida, "fin_m_salida": fin_m_salida,
 			"dia_trabajo": dia_trabajo, "minutos_trabajo": minutos_trabajo,
+			"horas_trabajo": horas_trabajo, "tipo_hora_extra": tipo_hora_extra,
 			"proced": proced, "usuario": usuario,
 			"metodo": metodo
 		};

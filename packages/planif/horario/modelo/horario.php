@@ -15,10 +15,13 @@ $result = array();
 	if(isset($_POST['proced'])){
 		try {
     $proced = $_POST['proced'];
+    $horas_trabajo   = isset($_POST['horas_trabajo']) ? $_POST['horas_trabajo'] : '0.00';
+    $tipo_hora_extra = isset($_POST['tipo_hora_extra']) ? $_POST['tipo_hora_extra'] : 'DIURNO';
+
     $sql    = "$SELECT $proced('$metodo', '$codigo', '$nombre',  '$concepto',
                                '$h_entrada', '$h_salida', '$inicio_m_entrada', '$fin_m_entrada',
                                '$inicio_m_salida', '$fin_m_salida', '$dia_trabajo', '$minutos_trabajo',
-                               '$usuario', '$status')";
+                               '$usuario', '$status', '$horas_trabajo', '$tipo_hora_extra')";
 	 $query = $bd->consultar($sql);
 
    $result['sql'] = $sql;

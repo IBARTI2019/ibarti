@@ -33,7 +33,8 @@ control.cod_turno_dl, turno.descripcion AS turno_dl ,
 control.control_arma_linea AS cod_ar_linea, prod_lineas.descripcion AS ar_linea,
 control.control_uniforme_linea AS cod_uniforme_linea, pl.descripcion AS uniforme_linea,
 control.url_doc, control.rop_meses,control.dias_nov_notif,control.min_nov_notif, control.porc_min_aprob_encuesta_preing,
-control.min_confirm, control.max_confirm, control.min_in_transport, control.max_in_transport
+control.min_confirm, control.max_confirm, control.min_in_transport, control.max_in_transport,
+control.calc_he_auto, control.dias_ciclo_he, control.max_horas_ciclo
 FROM control, paises, clientes, ficha_status,
 conceptos, conceptos AS r, conceptos AS cest, conceptos AS hora_ex_d, conceptos AS hora_ex_n,
 roles, cargos, turno, prod_lineas, prod_lineas pl
@@ -108,6 +109,9 @@ $min_confirm       = $result['min_confirm'];
 $max_confirm       = $result['max_confirm'];
 $min_in_transport       = $result['min_in_transport'];
 $max_in_transport       = $result['max_in_transport'];
+$calc_he_auto           = isset($result['calc_he_auto']) ? $result['calc_he_auto'] : 'S';
+$dias_ciclo_he          = isset($result['dias_ciclo_he']) ? $result['dias_ciclo_he'] : 56;
+$max_horas_ciclo        = isset($result['max_horas_ciclo']) ? $result['max_horas_ciclo'] : 320.00;
 ?>
 <table width="80%" align="center">
   <tr valign="top">

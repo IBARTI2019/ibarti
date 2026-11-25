@@ -150,6 +150,53 @@
         </select><br />
         	<span class="selectRequiredMsg">Debe Seleccionar Un Campo.</span></td>
 	 </tr>
+     <tr>
+        <td height="8" colspan="2" align="center"><hr></td>
+     </tr>
+     <tr valign="top">
+		<td height="23" colspan="2" class="etiqueta_title" align="center">CALCULO AUTOMATICO DE HORAS EXTRAS (CICLO DE TRABAJO)</td>
+     </tr>
+     <tr>
+        <td height="8" colspan="2" align="center"><hr></td>
+     </tr>
+     <tr>
+	    <td class="etiqueta">Activar C&aacute;lculo Autom&aacute;tico:</td>
+		<td>SI<input type="radio" name="calc_he_auto" value="S" style="width:auto" <?php echo CheckX($calc_he_auto, "S");?> /> NO<input type="radio" name="calc_he_auto" value="N" style="width:auto" <?php echo CheckX($calc_he_auto, "N");?> /></td>
+	 </tr>
+     <tr>
+        <td class="etiqueta">D&iacute;as del Ciclo (Semanas):</td>
+        <td><input type="number" name="dias_ciclo_he" id="dias_ciclo_he" min="1" max="365" size="10" value="<?php echo $dias_ciclo_he;?>" style="width:100px;" /> d&iacute;as (ej. 56 = 8 semanas)</td>
+     </tr>
+     <tr>
+        <td class="etiqueta">L&iacute;mite de Horas Normales en Ciclo:</td>
+        <td><input type="number" name="max_horas_ciclo" id="max_horas_ciclo" min="1" max="1000" step="0.5" size="10" value="<?php echo $max_horas_ciclo;?>" style="width:100px;" /> horas (ej. 320.00)</td>
+     </tr>
+     <tr>
+        <td class="etiqueta" valign="top">Conceptos que Computan Horas:</td>
+        <td>
+           <div style="background:#f4f4f4; padding:5px; border-radius:4px; max-height:260px; overflow-y:auto; border:1px solid #ddd;">
+           <table width="100%" border="0">
+              <?php
+              $sql_c = "SELECT c.codigo, c.abrev, c.descripcion, IFNULL(h.horas_trabajo, 0.00) as horas_trabajo, IFNULL(h.tipo_hora_extra, 'DIURNO') as tipo_hora_extra,
+                               IF(cc.cod_concepto IS NOT NULL, 1, 0) AS marcado
+                          FROM conceptos c
+                          LEFT JOIN horarios h ON c.cod_horario = h.codigo
+                          LEFT JOIN control_conceptos_he cc ON c.codigo = cc.cod_concepto
+                         WHERE c.status = 'T' AND c.asist_diaria = 'T'
+                         ORDER BY c.abrev ASC";
+              $query_c = $bd->consultar($sql_c);
+              while($row_c = $bd->obtener_fila($query_c, 0)){
+                  $checked = ($row_c['marcado'] == 1) ? 'checked="checked"' : '';
+                  echo '<tr>
+                          <td width="30px"><input type="checkbox" name="conceptos_he[]" value="'.$row_c['codigo'].'" '.$checked.' style="width:auto;" /></td>
+                          <td><strong>['.$row_c['abrev'].'] '.$row_c['descripcion'].'</strong> <span style="color:#666;">('.$row_c['codigo'].' - '.$row_c['horas_trabajo'].' hrs - '.$row_c['tipo_hora_extra'].')</span></td>
+                        </tr>';
+              }
+              ?>
+           </table>
+           </div>
+        </td>
+     </tr>
  <tr>
         <td height="8" colspan="2" align="center"><hr></td>
      </tr>

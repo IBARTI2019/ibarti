@@ -37,7 +37,7 @@ class Horario
     'hora_salida' => '', 'inicio_marc_entrada' => '',
     'fin_marc_entrada' => '', 'inicio_marc_salida' => '',
     'fin_marc_salida' => '', 'dia_trabajo' => '',
-    'minutos_trabajo' => '', 'status' => 'T');
+    'minutos_trabajo' => '', 'horas_trabajo' => '0.00', 'tipo_hora_extra' => 'DIURNO', 'status' => 'T');
    return $this->horario;
  }
 
@@ -50,6 +50,7 @@ class Horario
   horarios.inicio_marc_entrada, horarios.fin_marc_entrada,
   horarios.inicio_marc_salida, horarios.fin_marc_salida,
   horarios.dia_trabajo, horarios.minutos_trabajo,
+  horarios.horas_trabajo, horarios.tipo_hora_extra,
   horarios.`status`
   FROM horarios, conceptos
   WHERE horarios.codigo = '$cod'

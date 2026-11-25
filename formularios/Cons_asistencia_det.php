@@ -528,8 +528,8 @@ $sql_conceptos = " SELECT conceptos.codigo, conceptos.descripcion, conceptos.abr
 						echo '</select></td>
 			  <td id="conceptoX"><select name="concepto" id="concepto" style="width:55px" onchange="ActualizarClasif(\'\', this.value)"><option value="">Selec...</option>                  </select></td>
 			  <td id="clasif_asistenciaX"><select name="clasif_asistencia" id="clasif_asistencia" style="width:120px"><option value="">Seleccione</option>                 </select></td>
-			  <td><input value="0.00" type="text" name="horaD" id="horaD" style="width:40px" maxlength="5"/></td>
-  			  <td><input value="0.00" type="text" name="horaN" id="horaN" style="width:40px" maxlength="5"/></td>
+			  <td><input value="0.00" type="text" name="horaD" id="horaD" style="width:40px; background:#f0f0f0; border:1px solid #ccc; text-align:center;" readonly="readonly" title="Cálculo automático"/></td>
+  			  <td><input value="0.00" type="text" name="horaN" id="horaN" style="width:40px; background:#f0f0f0; border:1px solid #ccc; text-align:center;" readonly="readonly" title="Cálculo automático"/></td>
   			  <td><input type="text" name="vale"  id="vale" style="width:40px" value="0" maxlength="8"/></td>'; ?>
 				<td align="center"><span class="art-button-wrapper">
 						<span class="art-button-l"> </span>
@@ -589,10 +589,8 @@ $sql_conceptos = " SELECT conceptos.codigo, conceptos.descripcion, conceptos.abr
 							echo '</select><br/><input type="hidden" style="width:0px" id="feriado' . $i . '" name="feriado' . $i . '" value="' . $datos["feriado"] . '" /><input type="hidden" style="width:0px"  id="NL' . $i . '" name="NL' . $i . '" value="' . $datos["NL"] . '" /></td>
 							<td id="clasif_asistenciaX' . $i . '"><select name="clasif_asistencia" id="clasif_asistencia' . $i . '" style="width:120px">
 							<option value="' . $datos["cod_asistencia_clasif"] . '">' . $datos["asistencia_clasif"] . '</option>                  </select></td>
-							<td><input type="text" id="horaD' . $i . '" style="width:40px" value="' . $datos["hora_extra_d"] . '" maxlength="3"
-				      onfocus="spryHora(this.id)" /><input type="hidden" id="ubicacion_old' . $i . '"  value="' . $datos["cod_ubicacion"] . '"/><input type="hidden" id="concepto_old' . $i . '"  value="' . $datos["cod_concepto"] . '"/></td>
-				<td><input type="text" id="horaN' . $i . '" style="width:40px" value="' . $datos["hora_extra_n"] . '" maxlength="3"
-				     onfocus="spryHora(this.id)" /></td>
+							<td><input type="text" id="horaD' . $i . '" style="width:40px; background:#f0f0f0; border:1px solid #ccc; text-align:center;" value="' . $datos["hora_extra_d"] . '" readonly="readonly" title="Cálculo automático" /><input type="hidden" id="ubicacion_old' . $i . '"  value="' . $datos["cod_ubicacion"] . '"/><input type="hidden" id="concepto_old' . $i . '"  value="' . $datos["cod_concepto"] . '"/></td>
+				<td><input type="text" id="horaN' . $i . '" style="width:40px; background:#f0f0f0; border:1px solid #ccc; text-align:center;" value="' . $datos["hora_extra_n"] . '" readonly="readonly" title="Cálculo automático" /></td>
 	   		    <td><input type="text" id="vale' . $i . '" style="width:40px" value="' . $datos["vale"] . '" maxlength="7"
 				     onfocus="spryVale(this.id)" /></td>
 			    <td align="center" class="imgLink"><img src="imagenes/actualizar.bmp" alt="Actualizar" title="Actualizar Registro" border="null" width="26px" height="26px" id="' . $i . '" onclick="ValidarSubmit(this.id)" />&nbsp;<img src="imagenes/borrar.bmp" alt="Borrar" title="Borrar Registro"  width="26px" height="26px" id="' . $i . '" onclick="Borrar_Campo(this.id)"/>
@@ -632,22 +630,6 @@ $sql_conceptos = " SELECT conceptos.codigo, conceptos.descripcion, conceptos.abr
 	var concepto = new Spry.Widget.ValidationSelect('concepto', {
 		validateOn: ["blur", "change"]
 	});
-	var horaD = new Spry.Widget.ValidationTextField("horaD", "currency", {
-		format: "comma_dot",
-		validateOn: ["blur"],
-		useCharacterMasking: true,
-		minValue: "0",
-		maxValue: "24",
-		isRequired: false
-	});
-	var horaN = new Spry.Widget.ValidationTextField("horaN", "currency", {
-		format: "comma_dot",
-		validateOn: ["blur"],
-		useCharacterMasking: true,
-		minValue: "0",
-		maxValue: "24",
-		isRequired: false
-	});
 	var Vvale = new Spry.Widget.ValidationTextField("vale", "currency", {
 		format: "comma_dot",
 		validateOn: ["blur"],
@@ -658,14 +640,7 @@ $sql_conceptos = " SELECT conceptos.codigo, conceptos.descripcion, conceptos.abr
 	});
 
 	function spryHora(ValorX) {
-		var horaN = new Spry.Widget.ValidationTextField(ValorX, "currency", {
-			format: "comma_dot",
-			validateOn: ["blur"],
-			useCharacterMasking: true,
-			minValue: "0",
-			maxValue: "24",
-			isRequired: false
-		});
+		// Solo lectura - calculo automatico
 	}
 
 	function spryVale(ValorX) {

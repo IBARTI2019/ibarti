@@ -98,6 +98,19 @@ $concepto = $horario->get_concepto($hor['cod_concepto']);
       </td>
     </tr>
     <tr>
+      <td class="etiqueta">Horas De Trabajo: </td>
+      <td>
+        <input type="number" name="horas_trabajo" id="horas_trabajo" step="0.5" min="0" max="72" required value="<?php echo isset($hor['horas_trabajo']) ? $hor['horas_trabajo'] : '0.00';?>" onchange="if($('#minutos_trabajo').val()==''||$('#minutos_trabajo').val()=='0'){$('#minutos_trabajo').val(Math.round(this.value*60));}" />
+      </td>
+      <td class="etiqueta">Tipo Horas Extras: </td>
+      <td>
+        <select name="tipo_hora_extra" id="tipo_hora_extra" style="width:150px" required>
+          <option value="DIURNO" <?php echo (isset($hor['tipo_hora_extra']) && $hor['tipo_hora_extra'] == 'DIURNO') ? 'selected' : '';?>>DIURNO</option>
+          <option value="NOCTURNO" <?php echo (isset($hor['tipo_hora_extra']) && $hor['tipo_hora_extra'] == 'NOCTURNO') ? 'selected' : '';?>>NOCTURNO</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
       <td height="8" colspan="4" align="center"><hr></td>
     </tr>
   </table>
